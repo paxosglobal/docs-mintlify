@@ -119,16 +119,49 @@ clean_docusaurus_content() {
     sed -i '' 's/<FeatureContainer>/<CardGroup cols={2}>/g' "$file"
     sed -i '' 's/<\/FeatureContainer>/<\/CardGroup>/g' "$file"
     
-    # Convert FeatureCard to Card (more sophisticated conversion)
-    # Handle FeatureCard with href and title attributes
-    sed -E -i '' 's/<FeatureCard[^>]*href="([^"]*)"[^>]*title="([^"]*)"[^>]*>/<Card title="\2" href="\1">/g' "$file"
-    sed -i '' 's/<\/FeatureCard>/<\/Card>/g' "$file"
+    # Convert FeatureCard to Card - using a more robust approach
+    # First, let's use a Python script to handle the complex multi-line conversion
+    python3 -c "
+import re
+
+def convert_feature_cards(content):
+    # Pattern to match FeatureCard tags including multi-line attributes
+    # This handles cases where attributes span multiple lines
+    pattern = r'<FeatureCard([^>]*)>(.*?)<\/FeatureCard>'
     
-    # Handle FeatureCard with only title
-    sed -E -i '' 's/<FeatureCard[^>]*title="([^"]*)"[^>]*>/<Card title="\1">/g' "$file"
+    def replace_feature_card(match):
+        attributes = match.group(1)
+        content = match.group(2)
+        
+        # Extract href and title, ignore imgURL
+        href_match = re.search(r'href=\"([^\"]+)\"', attributes)
+        title_match = re.search(r'title=\"([^\"]+)\"', attributes)
+        
+        href = href_match.group(1) if href_match else ''
+        title = title_match.group(1) if title_match else ''
+        
+        # Build the Card tag
+        card_attrs = []
+        if title:
+            card_attrs.append(f'title=\"{title}\"')
+        if href:
+            card_attrs.append(f'href=\"{href}\"')
+        
+        attrs_str = ' ' + ' '.join(card_attrs) if card_attrs else ''
+        
+        return f'<Card{attrs_str}>{content}</Card>'
     
-    # Handle basic FeatureCard without attributes
-    sed -i '' 's/<FeatureCard>/<Card>/g' "$file"
+    # Use DOTALL flag to handle multi-line matches
+    return re.sub(pattern, replace_feature_card, content, flags=re.DOTALL)
+
+with open('$file', 'r') as f:
+    content = f.read()
+
+content = convert_feature_cards(content)
+
+with open('$file', 'w') as f:
+    f.write(content)
+"
     
     # Convert <Image /> tags to Markdown images
     # Basic conversion: <Image src="SRC" alt="ALT" ... /> -> ![ALT](SRC)
@@ -136,8 +169,27 @@ clean_docusaurus_content() {
     # Fallback when alt is missing: <Image src="SRC" ... /> -> ![](SRC)
     sed -E -i '' 's/<Image[^>]*src="([^"]*)"[^>]*\/>/![](\1)/g' "$file"
     
-    # Remove link reference definitions (safer approach)
-    sed -i '' '/^\[[^\]]*\]: /d' "$file"
+    # Convert link reference definitions to new guide structure
+    # Pattern: [name]: /guide/page -> [name]: /guides/guide/page
+    sed -i '' 's|\]: /identity/|\]: /guides/identity/|g' "$file"
+    sed -i '' 's|\]: /developer/|\]: /guides/developer/|g' "$file"
+    sed -i '' 's|\]: /stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
+    sed -i '' 's|\]: /webhooks/|\]: /guides/webhooks/|g' "$file"
+    sed -i '' 's|\]: /transfers/|\]: /guides/transfers/|g' "$file"
+    sed -i '' 's|\]: /profiles/|\]: /guides/profiles/|g' "$file"
+    sed -i '' 's|\]: /accounts/|\]: /guides/accounts/|g' "$file"
+    sed -i '' 's|\]: /orders/|\]: /guides/orders/|g' "$file"
+    
+    # Also handle link reference definitions without leading slash
+    # Pattern: [name]: guide/page -> [name]: /guides/guide/page
+    sed -i '' 's|\]: identity/|\]: /guides/identity/|g' "$file"
+    sed -i '' 's|\]: developer/|\]: /guides/developer/|g' "$file"
+    sed -i '' 's|\]: stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
+    sed -i '' 's|\]: webhooks/|\]: /guides/webhooks/|g' "$file"
+    sed -i '' 's|\]: transfers/|\]: /guides/transfers/|g' "$file"
+    sed -i '' 's|\]: profiles/|\]: /guides/profiles/|g' "$file"
+    sed -i '' 's|\]: accounts/|\]: /guides/accounts/|g' "$file"
+    sed -i '' 's|\]: orders/|\]: /guides/orders/|g' "$file"
     
     # Convert Docusaurus admonitions to Mintlify format with proper matching
     # Handle specific admonition types with their proper closing tags
@@ -228,6 +280,80 @@ def ensure_closed_admonitions(file_path):
         f.write(content)
 
 ensure_closed_admonitions('$file')
+"
+}
+
+# Function to convert internal guide links to new Mintlify structure
+convert_internal_links() {
+    local file="$1"
+    
+    # Convert internal guide links from Docusaurus to Mintlify format
+    # Pattern: /guide-name/page-name -> /guides/guide-name/page-name
+    
+    # Common guide conversions
+    sed -i '' 's|href="/identity/|href="/guides/identity/|g' "$file"
+    sed -i '' 's|](/identity/|](guides/identity/|g' "$file"
+    sed -i '' 's|href="/developer/|href="/guides/developer/|g' "$file"
+    sed -i '' 's|](developer/|](guides/developer/|g' "$file"
+    sed -i '' 's|href="/stablecoin-operations/|href="/guides/stablecoin-operations/|g' "$file"
+    sed -i '' 's|](stablecoin-operations/|](guides/stablecoin-operations/|g' "$file"
+    sed -i '' 's|href="/webhooks/|href="/guides/webhooks/|g' "$file"
+    sed -i '' 's|](webhooks/|](guides/webhooks/|g' "$file"
+    sed -i '' 's|href="/transfers/|href="/guides/transfers/|g' "$file"
+    sed -i '' 's|](transfers/|](guides/transfers/|g' "$file"
+    sed -i '' 's|href="/profiles/|href="/guides/profiles/|g' "$file"
+    sed -i '' 's|](profiles/|](guides/profiles/|g' "$file"
+    sed -i '' 's|href="/accounts/|href="/guides/accounts/|g' "$file"
+    sed -i '' 's|](accounts/|](guides/accounts/|g' "$file"
+    sed -i '' 's|href="/orders/|href="/guides/orders/|g' "$file"
+    sed -i '' 's|](orders/|](guides/orders/|g' "$file"
+    
+    # Handle Card href attributes specifically
+    sed -E -i '' 's|href="/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)"|href="/guides/\1/\2"|g' "$file"
+    
+    # Generic pattern for any remaining internal guide links
+    # This catches patterns like /guide-name/page-name that weren't handled above
+    python3 -c "
+import re
+
+def convert_remaining_links(content):
+    # Pattern to match internal links that start with / and have guide structure
+    # but avoid API links, images, and other non-guide links
+    
+    def convert_link(match):
+        full_match = match.group(0)
+        link_part = match.group(1)
+        
+        # Skip if it's already converted, an API link, image, or other special path
+        if (link_part.startswith('guides/') or 
+            link_part.startswith('api-reference/') or 
+            link_part.startswith('images/') or 
+            link_part.startswith('img/') or
+            link_part.startswith('api/') or
+            '.' in link_part.split('/')[-1]):  # Has file extension
+            return full_match
+        
+        # Check if it looks like a guide link (has at least guide/page structure)
+        parts = link_part.split('/')
+        if len(parts) >= 2 and parts[0] and parts[1]:
+            # Convert to /guides/ structure (preserve leading slash)
+            return full_match.replace(f'/{link_part}', f'/guides/{link_part}')
+        
+        return full_match
+    
+    # Match both href and markdown link patterns
+    content = re.sub(r'href=\"(/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\"', convert_link, content)
+    content = re.sub(r'\]\((/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\)', convert_link, content)
+    
+    return content
+
+with open('$file', 'r') as f:
+    content = f.read()
+
+content = convert_remaining_links(content)
+
+with open('$file', 'w') as f:
+    f.write(content)
 "
 }
 
@@ -381,7 +507,7 @@ migrate_images() {
     
     # Update image references from /img/ to /images/ (Mintlify format)
     sed -i '' 's|src="/img/|src="/images/|g' "$file"
-    sed -i '' 's|](/img/|](/images/|g' "$file"
+    sed -i '' 's|](img/|](images/|g' "$file"
     
     # Also handle any remaining <Image /> or <ImageNoBorder /> components
     sed -E -i '' 's|<Image[^>]*src="/images/([^"]*)"[^>]*alt="([^"]*)"[^>]*/>|![\2](/images/\1)|g' "$file"
@@ -465,6 +591,28 @@ convert_api_references() {
     sed -i '' 's|/api/v2#tag/Networks/operation/GetNetwork|/api-reference/networks/get-network|g' "$file"
     sed -i '' 's|/api/v2#tag/Networks|/api-reference/networks|g' "$file"
     
+    # Accounts endpoints
+    sed -i '' 's|/api/v2#tag/Accounts/operation/CreateAccount|/api-reference/accounts/create-account|g' "$file"
+    sed -i '' 's|/api/v2#tag/Accounts/operation/ListAccounts|/api-reference/accounts/list-accounts|g' "$file"
+    sed -i '' 's|/api/v2#tag/Accounts/operation/GetAccount|/api-reference/accounts/get-account|g' "$file"
+    sed -i '' 's|/api/v2#tag/Accounts|/api-reference/accounts|g' "$file"
+    
+    # Account Members endpoints
+    sed -i '' 's|/api/v2#tag/Account-Members/operation/AddAccountMembers|/api-reference/account-members/add-account-members|g' "$file"
+    sed -i '' 's|/api/v2#tag/Account-Members/operation/DeleteAccountMember|/api-reference/account-members/delete-account-member|g' "$file"
+    sed -i '' 's|/api/v2#tag/Account-Members|/api-reference/account-members|g' "$file"
+    
+    # Orders endpoints
+    sed -i '' 's|/api/v2#tag/Orders/operation/CreateOrder|/api-reference/orders/create-order|g' "$file"
+    sed -i '' 's|/api/v2#tag/Orders/operation/ListOrders|/api-reference/orders/list-orders|g' "$file"
+    sed -i '' 's|/api/v2#tag/Orders/operation/GetOrder|/api-reference/orders/get-order|g' "$file"
+    sed -i '' 's|/api/v2#tag/Orders/operation/CancelOrder|/api-reference/orders/cancel-order|g' "$file"
+    sed -i '' 's|/api/v2#tag/Orders|/api-reference/orders|g' "$file"
+    
+    # Events endpoints
+    sed -i '' 's|/api/v2#tag/Events/operation/ListEvents|/api-reference/events/list-events|g' "$file"
+    sed -i '' 's|/api/v2#tag/Events|/api-reference/events|g' "$file"
+    
     # Generic fallback for any remaining /api/v2 references
     sed -i '' 's|/api/v2#tag/\([^/]*\)/operation/\([^]]*\)|/api-reference/\1/\2|g' "$file"
     sed -i '' 's|/api/v2#tag/\([^]]*\)|/api-reference/\1|g' "$file"
@@ -475,25 +623,41 @@ convert_api_references() {
     sed -i '' 's|/api-reference/Crypto-Withdrawals|/api-reference/crypto-withdrawals|g' "$file"
     sed -i '' 's|/api-reference/Institution-Members|/api-reference/institution-members|g' "$file"
     sed -i '' 's|/api-reference/Sandbox-Deposits|/api-reference/sandbox|g' "$file"
+    sed -i '' 's|/api-reference/Accounts|/api-reference/accounts|g' "$file"
+    sed -i '' 's|/api-reference/Account-Members|/api-reference/account-members|g' "$file"
+    sed -i '' 's|/api-reference/Orders|/api-reference/orders|g' "$file"
+    sed -i '' 's|/api-reference/Events|/api-reference/events|g' "$file"
+    sed -i '' 's|/api-reference/Identity|/api-reference/identity|g' "$file"
+    sed -i '' 's|/api-reference/Profiles|/api-reference/profiles|g' "$file"
+    sed -i '' 's|/api-reference/Webhooks|/api-reference/webhooks|g' "$file"
+    sed -i '' 's|/api-reference/Assets|/api-reference/assets|g' "$file"
+    sed -i '' 's|/api-reference/Networks|/api-reference/networks|g' "$file"
+    sed -i '' 's|/api-reference/Transfers|/api-reference/transfers|g' "$file"
     
-    # Convert operation names from PascalCase to kebab-case
+    # Generic conversion to lowercase for any remaining capitalized API references
     python3 -c "
 import re
 import sys
 
-def convert_operation_name(match):
-    operation = match.group(1)
-    # Convert PascalCase to kebab-case
-    operation = re.sub(r'([a-z0-9])([A-Z])', r'\1-\2', operation)
-    operation = operation.lower()
-    return f'/api-reference/{match.group(0).split(\"/\")[2]}/{operation}'
+def convert_to_lowercase(content):
+    # Convert any remaining /api-reference/CapitalizedTag to lowercase
+    def lowercase_api_ref(match):
+        tag = match.group(1)
+        # Convert CamelCase to kebab-case and lowercase
+        tag = re.sub(r'([a-z0-9])([A-Z])', r'\1-\2', tag)
+        tag = tag.lower()
+        return f'/api-reference/{tag}'
+    
+    # Pattern to match /api-reference/SomeTag (without operation)
+    pattern = r'/api-reference/([A-Z][a-zA-Z0-9-]*?)(?:/|$)'
+    content = re.sub(pattern, lowercase_api_ref, content)
+    
+    return content
 
 with open('$file', 'r') as f:
     content = f.read()
 
-# Pattern to match remaining operation conversions that need kebab-case
-pattern = r'/api-reference/([^/]+)/([A-Z][a-zA-Z0-9]*)'
-content = re.sub(pattern, convert_operation_name, content)
+content = convert_to_lowercase(content)
 
 with open('$file', 'w') as f:
     f.write(content)
@@ -540,6 +704,9 @@ if [ "$IS_FILE_MIGRATION" = "true" ]; then
         # Fix parsing issues
         fix_parsing_issues "$target_file"
         
+        # Convert internal guide links
+        convert_internal_links "$target_file"
+        
         echo "  ✅ Converted: $filename"
     done
 else
@@ -575,6 +742,9 @@ else
             
             # Fix parsing issues
             fix_parsing_issues "$target_file"
+            
+            # Convert internal guide links
+            convert_internal_links "$target_file"
             
             echo "  ✅ Converted: $filename"
         fi
@@ -637,9 +807,9 @@ if [ "$IS_ROOT_MIGRATION" = "root" ]; then
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/<\/\\Note>/<\/Note>/g' {} \;
 else
     find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Tip>/<\/Tip>/g' {} \;
-    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Warning>/<\/Warning>/g' {} \;
-    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Info>/<\/Info>/g' {} \;
-    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Note>/<\/Note>/g' {} \;
+    find "$TARGET_DIR" -exec sed -i '' 's/<\/\\Warning>/<\/Warning>/g' {} \;
+    find "$TARGET_DIR" -exec sed -i '' 's/<\/\\Info>/<\/Info>/g' {} \;
+    find "$TARGET_DIR" -exec sed -i '' 's/<\/\\Note>/<\/Note>/g' {} \;
 fi
 
 if [ "$IS_FILE_MIGRATION" = "true" ]; then

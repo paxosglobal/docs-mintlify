@@ -1,0 +1,78 @@
+---
+title: 'Make First API Request'
+description: Use the access token to retrieve a list of Profiles.
+---
+
+
+
+[access token]: /guides/developer/authenticate.mdx#token
+[adding scopes]: /guides/developer/authenticate.mdx#scopes
+[Profile]: /api-reference/profiles
+[List Profiles]: /api-reference/profiles/list-profiles
+[credentials]: /guides/developer/credentials.mdx
+[authentication]: /guides/developer/authenticate.mdx
+[Support]: https://support.paxos.com
+
+
+
+Since every account has a `DEFAULT` [Profile], sending a request using [List Profiles] will always return a result, assuming the `funding:read_profile` scope was included when [adding scopes] to the client.
+Include the [access token] from the authentication request in the authorization header.
+
+
+### Sandbox
+
+
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
+--header 'Accept: application/json' \
+{/* highlight-next-line */}
+--header 'Authorization: Bearer {access_token}'
+```
+
+
+### Production
+
+
+
+```shell
+curl --location 'https://api.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
+--header 'Accept: application/json' \
+{/* highlight-next-line */}
+--header 'Authorization: Bearer {access_token}'
+```
+
+
+
+
+A successful response includes all Profiles the client has access to.
+Using the `?order=ASC&order_by=CREATED_AT` parameters ensures the `DEFAULT` Profile is first in the list.
+
+```json
+
+{
+    "items": [
+        {/* highlight-start */}
+        {
+            "id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+            "nickname": "default",
+            "type": "DEFAULT"
+        },
+        {/* highlight-end */}
+        {
+            "id": "7437da4d-c114-4a1f-8659-ceeaf868a1eb",
+            "nickname": "Mint",
+            "type": "NORMAL"
+        },
+        {
+            "id": "4bdfed80-ed0d-461b-bfee-0ff5011a9db5",
+            "nickname": "Redeem",
+            "type": "NORMAL"
+        },
+    ]
+}
+
+```
+
+If you get an error, run through the [credentials] and [authentication] guides and ensure your setup is correct.
+If things are still not working, contact [Support].

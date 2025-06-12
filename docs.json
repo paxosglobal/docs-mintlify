@@ -38,7 +38,7 @@
           {
             "group": "Identity",
             "pages": [
-              "guides/identity/overview",
+              "guides/identity/index",
               {
                 "group": "Getting Started",
                 "pages": [
@@ -66,9 +66,9 @@
           {
             "group": "Stablecoin Operations",
             "pages": [
-              "guides/stablecoin-operations/mint",
-              "guides/stablecoin-operations/convert",
-              "guides/stablecoin-operations/redeem"
+              "guides/developer/mint",
+              "guides/developer/convert",
+              "guides/developer/redeem"
             ]
           }
         ]

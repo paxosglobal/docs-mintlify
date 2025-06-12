@@ -1,0 +1,45 @@
+---
+title: 'Rate Limits'
+description: Review REST, WebSocket and FIX limits.
+---
+
+
+
+
+
+Paxos implements REST and WebSocket limits to help ensure platform stability.
+All integrations should observe the stated rate limits to prevent disruptions.
+
+## REST Limits
+
+Paxos sets rate limits per endpoint and IP address, based on the average number of requests per second during a five (5) minute window.
+If you hit a rate limit on a specific endpoint, you will receive a `429` response status code. All requests from the offending IP are then throttled for five (5) minutes.
+
+<RestLimits />
+
+Minimally, Paxos recommends gracefully handling limits by watching for `429` status codes and building retry functionality.
+The retry mechanism should include a backoff schedule that takes volume into consideration.
+There are a number of open source tools available to help handle rate limits.
+
+## WebSocket Limits
+
+Market and execution data services have a rate limit of one (1) subscription per second from the same IP address.
+If the rate limit is exceeded, no error message is sent.
+Rather, each client must wait one (1) second before receiving data.
+For example, if 20 new clients connect from the same IP address, it will take about 20 seconds for all the clients to receive data.
+
+> When connecting a large number of clients, some may fail and close the connection before receiving a response from the server.
+
+Paxos recommends all clients implement a single `wss://` connection at the server level (multiplexing).
+Multiple connections can create logistical and update issues without providing appreciable performance gains.
+To support integration and platform stability and maintenance, each implementation should:
+- Ensure all application clients can easily rollout platform updates to users through a single mechanism.
+- Have a centralized reconnection mechanism to recover from any feed disruptions.
+- Have a reconnection mechanism in case of server disconnection. 
+- Observe the WebSocket rate limits.
+
+Paxos support may reach out to you if your client does not implement this guidance.
+
+## FIX Limits
+
+Maximum 150 messages per second, per session.

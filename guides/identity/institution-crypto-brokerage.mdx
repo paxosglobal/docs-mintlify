@@ -5,33 +5,33 @@ description: Create an Institution Identity, Account and Profile to provide Buy,
 
 
 
-[Enhanced Due Diligence]: /identity/edd
-[edd-guide]: /identity/edd
+[Enhanced Due Diligence]: /guides/identity/edd
+[edd-guide]: /guides/identity/edd
 [Get Identity]: /api-reference/identity/get-identity
 [Identity]: /api-reference/identity
 [identity-api]: /api-reference/identity
-[identity-required-details]: /identity/required-details#required-institution-details
-[identity-onboarding-decision]: /identity/statuses#onboarding-decision
-[institution-member-roles]: /identity/institution-types#member-roles
-[identity-status]: /identity/statuses
-[Account]: /api-reference/Accounts
-[Add Account Members]: /api-reference/Account-Members/account-members
-[Remove Account Members]: /api-reference/Account-Members/account-members
-[account-api]: /api-reference/Accounts
+[identity-required-details]: /guides/identity/required-details#required-institution-details
+[identity-onboarding-decision]: /guides/identity/statuses#onboarding-decision
+[institution-member-roles]: /guides/identity/institution-types#member-roles
+[identity-status]: /guides/identity/statuses
+[Account]: /api-reference/accounts
+[Add Account Members]: /api-reference/account-members/add-account-members
+[Remove Account Members]: /api-reference/account-members/delete-account-member
+[account-api]: /api-reference/accounts
 
 [Profile]: /api-reference/profiles
 [crypto-brokerage-fix]: /fix
 [crypto-brokerage-websocket]: /api/websocket
 [crypto-brokerage-fiat-crypto-subledger]: /crypto-brokerage/ledger-type#fiat-and-crypto-subledger
 [crypto-brokerage-fiat-crypto-omnibus]: /crypto-brokerage/ledger-type#fiat-and-crypto-omnibus
-[order-api]: /api-reference/Orders
-[fiat-transfers-quickstart]: /developer/fiat-transfers/quickstart
+[order-api]: /api-reference/orders
+[fiat-transfers-quickstart]: /guides/developer/fiat-transfers/quickstart
 [fiat-transfers-api]: /api-reference/fiat-transfers
 
 [dashboard-signup]: /dashboard/account
 [dashboard-create-api-key]: /dashboard/admin/api
 [webhook]: /webhooks
-[webhook-event]: /api-reference/Events
+[webhook-event]: /api-reference/events
 [support]: https://support.paxos.com
 
 
@@ -309,10 +309,10 @@ a [Fiat Deposit][fiat-transfers-api].
 
 For this guide, we will use the sandbox-only Test Funds feature in [Dashboard](https://dashboard.sandbox.paxos.com/) to fund the [Identity] with $10,000 USD. First,
 navigate to the [Dashboard Landing Page](https://dashboard.sandbox.paxos.com/) and locate the `Fund` button.
-![Fund button in Dashboard](/images/identity-guide-fund-account-button.png)
+![Fund button in Dashboard](/img/identity-guide-fund-account-button.png)
 
 Then select the [Profile] related to the [Account] created and fund for $10,000 USD
-![Funding the Account](/images/identity-guide-fund-account.png)
+![Funding the Account](/img/identity-guide-fund-account.png)
 
 ### ➋ Creating an Order
 To book an order, specify the `profile_id` which is linked to the `account_id` created above _(if one

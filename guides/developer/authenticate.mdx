@@ -1,0 +1,98 @@
+---
+title: 'Authenticate'
+description: Generate an authentication token.
+---
+
+
+
+[credentials]: /guides/developer/credentials.mdx
+[login]: https://dashboard.paxos.com
+[support]: https://support.liftdollar.com
+[oauth2]: https://oauth.net/code
+[convert]: /guides/developer/convert.mdx
+[make an API call in Sandbox]: /guides/developer/request.mdx
+[mint]: /guides/developer/mint.mdx
+[redeem]: /guides/developer/redeem.mdx
+
+
+
+The APIs use industry standard OAuth2 for authentication. 
+Most users find success with one of the libraries on the [OAuth2 website][oauth2].
+The following URLs can be used when using an off-the-shelf OAuth2 library:
+
+| Environment | Root URL | Full Path |
+| --- | --- | --- |
+| Sandbox | https://oauth.sandbox.paxos.com | https://oauth.sandbox.paxos.com/oauth2/token |
+| Production | https://oauth.paxos.com | https://oauth.paxos.com/oauth2/token |
+
+## ➊ Add Scopes (Client Permissions)
+
+When authenticating, include the scopes (**Client Permissions**) necessary for the client to complete the intended actions.
+
+> Scopes for each endpoint are listed in the **Authorizations** section in the [API Reference docs](/api/v2).
+> The [Market Data](/api-reference/Market-Data) and most [Pricing](/api-reference/Pricing) endpoints do not require authorization.
+
+For example, the following scopes (space delimited) should provide sufficient permissions to [mint], [redeem], and [convert] Paxos-isssued stablecoins:
+
+<Scopes />
+
+## ➋ Get Access Token
+
+Every endpoint that requires a **Scope** must be accompanied by an \"Authorization"` header 
+with a value that follows the \"Bearer {access_token}"` schema.
+
+
+### Sandbox
+
+
+
+To authenticate with https://oauth.sandbox.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
+The authentication request must include  `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
+Include sufficient `{client_scopes}` (**Client Permissions**).
+
+
+```shell
+curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
+--form grant_type=client_credentials \
+--form client_id={client_id} \
+--form client_secret={client_secret} \
+{/* highlight-next-line */}
+--form scope='{client_scopes}'
+```
+
+
+### Production
+
+
+
+To authenticate with https://oauth.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
+The authentication request must include the `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
+Include sufficient `{client_scopes}` (**Client Permissions**).
+
+
+```shell
+curl --location 'https://oauth.paxos.com/oauth2/token' \
+--form grant_type=client_credentials \
+--form client_id={client_id} \
+--form client_secret={client_secret} \
+{/* highlight-next-line */}
+--form scope='{client_scopes}'
+```
+
+
+
+
+Confirm the response includes the requisite scopes and save the `access_token` to use in the request authorization header (`-H "Authorization: Bearer {access_token}"`).
+
+```json
+{
+ "access_token": "{access_token}",
+ {/* highlight-next-line */}
+ "expires_in": 3599, // Seconds (59 Minutes and 59 Seconds)
+ {/* highlight-next-line */}
+ "scope": "{client_scopes}",
+ "token_type": "bearer"
+}
+```
+
+Once you have the `access_token`, [make an API call in Sandbox].
