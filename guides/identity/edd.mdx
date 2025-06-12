@@ -1,0 +1,65 @@
+---
+title: 'Enhanced Due Diligence'
+description: Manage the enhanced due diligence of an Identity on the Paxos Platform.
+---
+
+
+
+
+[create-identity]: /api/v2#tag/Identity/operation/CreateIdentity
+[update-identity]: /api/v2#tag/Identity/operation/UpdateIdentity
+[get-identity]: /api/v2#tag/Identity/operation/GetIdentity
+[list-identity]: /api/v2#tag/Identity/operation/ListIdentities
+[reference]: /api/v2#tag/Events
+[Support]: https://support.paxos.com/
+[events]: /api/v2#tag/Events
+[webhooks]: /webhooks/index.mdx
+[Get Event]: /api/v2#tag/Events/operation/GetEvent
+[List Events]: /api/v2#tag/Events/operation/ListEvents
+[upload]: /api/v2#tag/Identity-Documents/operation/DocumentUpload
+[consumer]: /webhooks/quickstart.mdx
+
+
+
+
+To ensure that Paxos meets regulatory requirements, when an identity is deemed high risk according to Paxos risk rating methodology, Paxos initiates a process called Enhanced Due Diligence (EDD).
+This can occur during onboarding, or during the lifecycle of an active identity (for example, if identity information changes that impacts risk rating; if suspicious transaction patterns occur on the account).
+When an identity enters the EDD process, Paxos requires the collection of documentary evidence supporting the initial KYC information provided.
+
+Paxos streamlines the collection of EDD information using a webhook-based or polling-based approach, which leverages [Paxos Webhooks][webhooks], [Events API][reference] and [Document Upload API][upload].
+
+## Webhook-based Approach
+
+<Image src="/img/events.png" align="right" width="50%" alt="Events"/>
+
+### ➊ Consume Documents Required Events
+
+Setup a [Webhook Consumer][consumer] to receive `identity.documents_required` [events] for your end users.
+
+### ➋ Fetch Required Documents
+
+Call [Get Event] to fetch the event's `identity_documents_required` object, which will allow you to understand which documents are required.
+
+### ➌ Upload the Required Documents
+
+For the event's associated `identity_id`, call [Document Upload][upload] to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.
+
+### ➍ Wait for Approval or Denial
+
+This will be followed by an `identity.approved` or `identity.denied` event based on the onboarding decision for that end user (this might take up to 1 full business day to complete).
+
+## Polling-based Approach
+
+### ➊ Poll for Documents Required Events
+
+Poll [List Events], offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
+
+<Info>
+
+Paxos recommends you keep track of the [Event][events] ids you've processed in order to idempotently process the event.
+
+</Info>
+
+### ➋ Upload the Required Documents
+
+For the event's associated `identity_id`, call [Document Upload][upload] to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.

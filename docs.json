@@ -31,6 +31,19 @@
               "essentials/navigation",
               "essentials/reusable-snippets"
             ]
+          },
+          {
+            "group": "Identity",
+            "pages": [
+              "guides/identity/overview",
+              "guides/identity/person-crypto-brokerage",
+              "guides/identity/institution-crypto-brokerage",
+              "guides/identity/required-details",
+              "guides/identity/statuses",
+              "guides/identity/edd",
+              "guides/identity/kyc-refresh",
+              "guides/identity/institution-types"
+            ]
           }
         ]
       },

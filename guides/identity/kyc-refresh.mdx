@@ -1,0 +1,117 @@
+---
+title: 'Periodic KYC Refresh'
+description: Manage the periodic KYC refresh of an Identity on the Paxos Platform in an automated, compliant way.
+---
+
+
+
+[create-identity]: /api/v2#tag/Identity/operation/CreateIdentity
+[update-identity]: /api/v2#tag/Identity/operation/UpdateIdentity
+[get-identity]: /api/v2#tag/Identity/operation/GetIdentity
+[webhooks]: /webhooks/quickstart.mdx
+[reference]: /api/v2#tag/Events
+[Support]: https://support.paxos.com
+[events]: /api/v2#tag/Events
+[consumer]: /webhooks/quickstart.mdx#consumer
+[Get Event]: /api/v2#tag/Events/operation/GetEvent
+[upload]: /api/v2#tag/Identity-Documents/operation/DocumentUpload
+[List Events]: /api/v2#tag/Events/operation/ListEvents
+[identity]: /api/v2#tag/Identity
+
+
+
+
+To ensure that Paxos meets regulatory requirements, KYC information of end user identities that are directly onboarded
+to Paxos must be periodically refreshed (every 1-3 years).
+All customers that integrate with Paxos [Identity APIs][identity] are subject to this process, and must integrate with the automated workflow outlined below to support it.
+
+Paxos streamlines KYC Refresh using a webhook-based or polling-based approach, which leverages [Paxos Webhooks][webhooks], [Events API][reference] and [Identity API][identity].
+
+## Webhook-based Approach
+
+<Image src="/img/kycrefresh.png" align="center" width="80%" alt="Sequence Diagram for KYC Refresh"/>
+
+### ➊ Consume KYC Refresh Events
+
+Setup a [Webhook Consumer][consumer] to receive the following KYC refresh events for your end users:
+
+- [`identity.kyc_refresh.started`][events]
+- [`identity.kyc_refresh.completed`][events]
+
+<Tip>
+
+Use [Get Event][Get Event] to get additional information about the KYC refresh event (`last_kyc_refresh_date`, `next_kyc_refresh_date`, etc.).
+
+</Tip>
+
+### ➋ Prompt End User about Periodic Refresh
+
+When an [`identity.kyc_refresh.started`][events] is received for your end user, prompt the user presenting their current KYC information indicating they should refresh their information if anything has changed, or continue without changes if everything is still accurate.
+
+### ➌ Inform Paxos about the Refresh
+
+When an end user indicates everything is still accurate, call [update-identity] with the `identity_id` specified in the request, setting the `last_kyc_refresh_date` to the timestamp the user confirmed their information is still accurate.
+
+If an end user refreshed their information, call [update-identity] as specified above, but also include any changes the end user has made to their information.
+
+<Info>
+
+Calling [update-identity] with only `last_kyc_refresh_date` and no other changes is considered by Paxos to be confirmation
+no information has changed, therefore a completed KYC refresh.
+The next KYC refresh date will be updated accordingly (1-3 years from the provided `last_kyc_refresh_date`).
+
+</Info>
+
+### ➍ Wait for Completion
+
+Once KYC refresh is complete, a [`identity.kyc_refresh.completed`][events] will be received for the end user in question.
+
+## Polling-based Approach
+
+### ➊ Poll for KYC Refresh Started Events
+
+Poll [List Events], offsetting the `created_at.gt` for each subsequent poll, fetching  [`identity.kyc_refresh.started`][events] events.
+
+<Info>
+
+We recommend you keep track of the [Event][events] ids you've processed in order to idempotently process the event.
+
+</Info>
+
+### ➋ Prompt End User about Periodic Refresh
+
+As described [above](#-prompt-end-user-about-periodic-refresh) in the webhook-based approach.
+
+### ➌ Inform Paxos about the Refresh
+
+As described [above](#-inform-paxos-about-the-refresh) in the webhook-based approach.
+
+### ➍ Poll for Completed Refreshes
+
+Poll [List Events], offsetting the `created_at.gt` for each subsequent poll, fetching  [`identity.kyc_refresh.completed`][events] events.
+
+## Advanced
+
+### Handling Expired Refreshes
+
+If an [`identity.kyc_refresh.expired`][events] is received, it means Paxos did not receive an [update-identity] request in the designated window to complete the KYC refresh process _(typically 30 days)_.
+If this occurs, several outcomes could be experienced:
+
+- Paxos will restart the KYC refresh process, and a new [`identity.kyc_refresh.started`][events] event will be posted
+- The Identity could be disabled (meaning the end user will only be able to Liquidate assets and withdraw fiat off platform)
+
+### Refreshes in Compliance Review
+
+In some cases, the Paxos compliance team might need to review the changes received from the end user as part of the
+KYC refresh process.
+In this case, the [`identity.kyc_refresh.completed`][events] event could experience a meaningful delay in being received.
+
+### Backdating the Last KYC Refresh Date
+
+If a historical record is known for the last KYC refresh dates of your end users **or** you've experienced an issue processing KYC refresh for an end-user then you can directly call [update-identity] setting the `last_kyc_refresh_date` to the known date in the past, and Paxos will accept this as the date KYC refresh was performed for the end user.
+
+<Warning>
+
+Setting this date beyond the 1-3 year refresh period for an end user will cause an immediate [`identity.kyc_refresh.started`][events] to be triggered for the end user.
+
+</Warning>

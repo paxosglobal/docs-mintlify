@@ -1,0 +1,102 @@
+---
+title: 'Required Details'
+description: Learn more about what details are required when creating an Identity
+---
+
+
+
+[create-identity]: /api/v2#tag/Identity
+[institution-types]: /identity/institution-types
+[regulation-status]: /identity/institution-types#creating-financially-regulated-institutions
+
+<Description description={frontMatter.description}/>
+
+## Key
+| Value | Description     |
+|-------|:-----------------------------------|
+| ✅    | Required field                                                                                      |
+| 🟡   | <div>Best effort optional field _<br/>(providing details here<br/> ensures less friction during<br/> onboarding)_</div> |
+| --   | Not applicable                                                                                      |
+
+## Required Person Details
+The required details for persons being onboarded as [Identities][create-identity] depend on the
+licensing arrangement and solution. See the table below:
+
+| Field                            | <span>Paxos Trust Company Licensing<br/>(Crypto Brokerage)</span> |
+|----------------------------------|:-----------------------------------------------------------------:|
+| `first_name`                     |                                 ✅                                 |
+| `last_name`                      |                                 ✅                                 |
+| `date_of_birth`                  |                                 ✅                                 |
+| `address`                        |                                 ✅                                 |
+| `nationality`                    |                                 ✅                                 |
+| `cip_id`                         |                                 ✅                                 |
+| `cip_id_type`                    |                                 ✅                                 |
+| `cip_id_country`                 |                                 ✅                                 |
+| `cdd.estimated_yearly_income`    |                                 ✅                                 |
+| `cdd.expected_transfer_value`    |                                 ✅                                 |
+| `cdd.source_of_wealth`           |                                 ✅                                 |
+| `cdd.employment_status`          |                                 ✅                                 |
+| `cdd.employment_industry_sector` |                                 ✅                                 |
+| `middle_name`                    |                                🟡                                 |
+| `phone_number`                   |                                🟡                                 |
+| `email`                          |                                🟡                                 |
+| `profession`                     |                                --                                 |
+| `country_of_birth`               |                                --                                 |
+| `cdd.aliases`                    |                                --                                 |
+| `cdd.estimated_net_worth`        |                                --                                 |
+| `cdd.customer_regions`           |                                --                                 |
+| `cdd.source_of_funds`            |                                --                                 |
+| `cdd.purpose_of_account`         |                                --                                 |
+
+## Required Institution Details
+
+Institution identities are used to represent all non-person entities. Details for institution identity type are recorded in `institution_details`. An institution identity also has `institution_members` associated with it. These define persons that have some relationship to the institution.
+
+### Required Fields for Institution Types
+
+The required fields for institutions being onboarded as [Identities][create-identity] depend on the institution type. See the table below:
+
+| Field                                |                <span>Trust</span>                 |    <span>Corporation, LLC, Partnership</span>     | <span>Registered Investment Advisor (RIA)</span>  |
+|--------------------------------------|:-------------------------------------------------:|:-------------------------------------------------:|:-------------------------------------------------:|
+| `name`                               |                         ✅                         |                         ✅                         |                         ✅                         |
+| `business_address`                   |                         ✅                         |                         ✅                         |                         ✅                         |
+| `phone_number`                       |                        🟡                         |                        🟡                         |                        🟡                         |
+| `email`                              |                        🟡                         |                        🟡                         |                        🟡                         |
+| `institution_type`                   |                         ✅                         |                         ✅                         |                         ✅                         |
+| `institution_sub_type`               |                         ✅                         |                         ✅                         |                         ✅                         |
+| `cip_id`                             |                         ✅                         |                         ✅                         |                         ✅                         |
+| `cip_id_type`                        |                         ✅                         |                         ✅                         |                         ✅                         |
+| `cip_id_country`                     |                         ✅                         |                         ✅                         |                         ✅                         |
+| `govt_registration_date`             |                         ✅                         |                         ✅                         |                        ✅                         |
+| `incorporation_address`              |                        🟡                         |                         ✅                         |                        ✅                         |
+| `regulation_status`                  |                        🟡                         |                         ✅                         |                         ✅                         |
+| `trading_type`                       |                        🟡                         |                         ✅                         |                        ✅                         |
+| `listed_exchange`                    |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `ticker_symbol`                      |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `parent_institution_name`            |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `regulator_name`                     |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
+| `regulator_jurisdiction`             |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
+| `regulator_register_number`          |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
+| `doing_business_as`                  |                        🟡                         |                        🟡                         |                        🟡                         |
+| `business_description`               |                        🟡                         |                        ✅                         |                        🟡                         |
+| `tax_details`                        | Auto-populated if cip_id_type is SSN, ITIN or EIN | Auto-populated if cip_id_type is SSN, ITIN or EIN | Auto-populated if cip_id_type is SSN, ITIN or EIN |
+| `tax_details_not_required`           |        Can be set for non-US institutions         |        Can be set for non-US institutions         |        Can be set for non-US institutions         |
+| `metadata`                           |                        🟡                         |                        🟡                         |                        🟡                         |
+| `ref_id`                             |                        🟡                         |                        🟡                         |                        🟡                         |
+| `cdd.aliases`                        |                        🟡                         |                        🟡                         |                        🟡                         |
+| `cdd.source_of_wealth`               |                        🟡                         |                        ✅                         |                        🟡                         |
+| `cdd.source_of_funds`                |                        🟡                         |                        ✅                         |                        🟡                         |
+| `cdd.industry_sector`                |                        🟡                         |                        ✅                         |                        🟡                         |
+| `cdd.has_underlying_trust_structure` |                        🟡                         |                        ✅                         |                        🟡                         |
+| `cdd.has_nominee_shareholders`       |                        🟡                         |                        ✅                         |                        🟡                         |
+| `cdd.is_publicly_traded`             |                        🟡                         |                        🟡                         |                        🟡                         |
+| `cdd.merchant_funding_source`        |                        Only for payments integrations                         |                        Only for payments integrations                         |                        Only for payments integrations                         |
+| `cdd.customer_regions`               |                        Only for payments integrations                         |                        Only for payments integrations                         |                        Only for payments integrations                         |
+
+**Notes:**
+- For Trusts: `institution_type` must be set to `TRUST`. `institution_sub_type` must be set to `INVESTMENT`. `incorporation_address` is required for Trusts where their `cip_id_type` is not `SSN` or `ITIN`.
+- For RIAs: Usage of this sub-type requires prior authorization and approval from Paxos. `institution_sub_type` must be set to `REGISTERED_INVESTMENT_ADVISOR`.
+- For `regulation_status`: Additional validations are tied to `trading_type` and other required fields. See [Institution Types and Members][institution-types] for details.
+
+For more information about institution types, member roles and requirements, please refer to [Institution Types and Members][institution-types].
+

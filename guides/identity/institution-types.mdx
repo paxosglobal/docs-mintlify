@@ -1,0 +1,94 @@
+---
+title: 'Institution Types and Members'
+description: Learn about institution types, member roles, and requirements
+---
+
+
+
+[create-identity]: /api/v2#tag/Identity
+
+<Description description={frontMatter.description}/>
+
+## Institution Types
+
+### Institution Type
+Institution type (`institution_type`) is the primary legal structure of the institution, which can be one of the following:
+
+| Institution Type | Description |
+|-----------------|-------------|
+| `CORPORATION` | A legal entity that is separate and distinct from its owners |
+| `LLC` | Limited Liability Company, a business structure that combines elements of partnerships and corporations |
+| `TRUST` | A legal entity created to hold and manage assets for beneficiaries |
+| `PARTNERSHIP` | A business relationship between two or more individuals who share management and profits |
+
+
+### Institution Subtypes
+Institution subtype (`institution_sub_type`) is the primary area of business activity of the institution, 
+work with your Paxos Partner to understand the mapping from your institution subtypes to ours.
+
+Paxos prohibits certain types of business activity ("Prohibited Businesses") in accordance with its Compliance policies. 
+The following non-exhaustive list is representative of the type of activity that Paxos prohibits on its platform. By creating a Paxos Identity, Paxos customers agree not to use Paxos services in connection with any of the following Prohibited Businesses.
+
+- `ADULT_ENTERTAINMENT`
+- `DRUGS`
+- `RANSOMWARE`
+- `SHELL_BANK`
+- `WEAPONS`
+
+### Creating Financially Regulated Institutions
+
+Please refer to the following table for creating institutions which are financially regulated.
+
+| Regulation Status | Description                                                        |
+|-------------------|--------------------------------------------------------------|
+| `US_REGULATED`    | Institution financially regulated in the US                  |
+| `INTL_REGULATED`  | Institution financially regulated by an international entity |
+| `NON_REGULATED`   | Non-financially regulated institution                        |
+
+Note that each category of `regulation_status` then has additional validations tied to `trading_type` and other required fields.
+
+| Regulation Status | Trading Type                 | Fields Required                                                                                                                        | Notes                                   |
+|-------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| `US_REGULATED`    | `PRIVATE`                    | `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`                                                                | Not publicly traded                     |
+| `US_REGULATED`    | `PUBLIC`                     | `listed_exchange`, `ticker_symbol`, `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`                            | Publicly traded                         |
+| `US_REGULATED`    | `PUBLICLY_TRADED_SUBSIDIARY` | `listed_exchange`, `ticker_symbol`, `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`, `parent_institution_name` | Subsidiary of a publicly traded company |
+| `INTL_REGULATED`  | `PRIVATE`                    | `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`                                                                | Not publicly traded                     |
+| `INTL_REGULATED`  | `PUBLIC`                     | `listed_exchange`, `ticker_symbol`, `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`                            | Publicly traded                         |
+| `INTL_REGULATED`  | `PUBLICLY_TRADED_SUBSIDIARY` | `listed_exchange`, `ticker_symbol`, `regulator_name`, `regulator_jurisdiction`, `regulator_register_number`, `parent_institution_name` | Subsidiary of a publicly traded company |
+| `NON_REGULATED`   | `PRIVATE`                    | None                                                                                                                                   | Not publicly traded                     |
+| `NON_REGULATED`   | `PUBLIC`                     | `listed_exchange`, `ticker_symbol`                                                                                                     | Publicly traded                         |
+
+Note: `NON_REGULATED` only supports `PRIVATE` and `PUBLIC` trading types. `PUBLICLY_TRADED_SUBSIDIARY` is not supported for `NON_REGULATED` institutions.
+
+## Institution Members
+
+### Member Roles
+
+Institution members can have one or more roles that define their relationship with the institution. Each role has specific requirements and applicability depending on the institution type:
+
+| Role                        | Description                                                                                                     |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------|
+| `BENEFICIAL_OWNER`          | Person who owns 25% or more of the institution.                                                            |
+| `ACCOUNT_OPENER`            | Person who opened the account on behalf of the institution.                                                |
+| `AUTHORIZED_USER`           | Person authorized to transact on behalf of the institution.                                                |
+| `MANAGEMENT_CONTROL_PERSON` | Person with significant management control over the institution (e.g., CEO, CFO, COO).                     |
+| `TRUSTEE`                   | Person who manages assets in a trust for beneficiaries and is legally responsible for the trust.           |
+| `GRANTOR`                   | Person who creates a trust by donating assets.                                                             |
+| `BENEFICIARY`               | Person who receives benefits from a trust.                                                                 |
+
+### Role Compatibility by Institution Type
+
+The following grid shows which roles are applicable for each institution type:
+
+| Role                        | <span>Trust</span> | <span>Corporation</span> | <span>LLC</span> | <span>Partnership</span> |
+|-----------------------------|:------------------:|:------------------------:|:----------------:|:------------------------:|
+| `BENEFICIAL_OWNER`          |         ✅         |            ✅            |        ✅        |            ✅            |
+| `AUTHORIZED_USER`           |         --         |            ✅            |        ✅        |            ✅            |
+| `MANAGEMENT_CONTROL_PERSON` |         --         |            ✅            |        ✅        |            ✅            |
+| `TRUSTEE`                   |         ✅         |            --            |        --        |            --            |
+| `GRANTOR`                   |         ✅         |            --            |        --        |            --            |
+| `BENEFICIARY`               |         ✅         |            --            |        --        |            --            |
+
+- **Trusts**: A trust institution must have members that collectively have the roles of BENEFICIARY, TRUSTEE, and GRANTOR. A member cannot have both BENEFICIAL_OWNER and BENEFICIARY roles.
+- **Corporations, LLCs, Partnerships**: These institutions typically require at least one BENEFICIAL_OWNER and one MANAGEMENT_CONTROL_PERSON.
+- For all institution types, members must be Identity objects already created in the system. 

@@ -1,0 +1,83 @@
+---
+title: 'Statuses'
+description: Learn more about Identity statuses and sub-statuses
+---
+
+
+
+[create-identity]: /api/v2#tag/Identities/operation/CreateIdentity
+[onboarding-decision]: /identity/statuses#onboarding-decision
+[automate-enhanced-due-diligence-guide]: /identity/edd
+
+<Description description={frontMatter.description}/>
+
+## Summary Status
+An [Identity][create-identity] has five (5) statuses:
+
+- `PENDING`: Initial state. The [Identity][create-identity] is waiting for an [Onboarding Decision][onboarding-decision] and is under review.
+- `APPROVED`: The [Identity][create-identity] passed internal review. It can be used with integrations, for example, creating orders.
+- `DENIED`: The [Identity][create-identity] failed internal review. It cannot be used with integrations.
+- `DISABLED`: The [Identity][create-identity] was `APPROVED` but has been off-boarded. It can only perform sell operations.
+- `ERROR`: The [Identity][create-identity] has been frozen for compliance reasons. It cannot be used with integrations.
+
+This status drives what actions the identity can perform across the platform according to the grid below: 
+
+| Status   | Hold Assets | Create Buy Orders | Create Sell Orders | Execute Open Orders | Create Crypto Deposit Address | Create Crypto Withdrawal | Receive Crypto Deposits |
+|----------|-------------|-------------------|---------------------|----------------------|-------------------------------|--------------------------|--------------------------|
+| `PENDING`  | ❌          | ❌                | ❌                  | ❌                   | ❌                            | ❌                       | ❌                       |
+| `DENIED`   | ❌          | ❌                | ❌                  | ❌                   | ❌                            | ❌                       | ❌                       |
+| `APPROVED` | ✅          | ✅                | ✅                  | ✅                   | ✅                            | ✅                       | ✅                       |
+| `DISABLED` | ✅          | ❌                | ✅                  | ✅                   | ❌                            | ❌                       | ❌*                      |
+| `ERROR`    | ✅          | ❌                | ❌                  | ✅                   | ❌                            | ❌                       | ❌*                      |
+
+_*Crypto deposits received to identities in disabled or error status will be held for review._
+
+## Sub Statuses
+
+The following sub-statuses are returned in identity responses and can be used to help explain why an [Identity][create-identity] is in a given summary status.
+
+### Sanctions Verification Status (Persons & Institutions)
+- **Field**: `sanctions_verification_status`
+  - **`PENDING`**: Sanctions check in progress.
+  - **`DENIED`**: Sanctions hit found, cannot proceed.
+  - **`APPROVED`**: No sanctions hit found, cleared to proceed.
+  - **`ERROR`**: Possible sanctions hit, held for manual review.
+
+### Additional Screening Status (Persons & Institutions)
+- **Field**: `additional_screening_status`
+  - **`PENDING`**: Additional screening checks are in progress.
+  - **`DENIED`**: Failed additional screening checks.
+  - **`APPROVED`**: Passed all additional screening checks.
+  - **`ERROR`**: Possible screening hit, held for manual review.
+
+<Tip>
+Additional screening includes checking for negative news or politically exposed persons, but explicitly excludes any sanctions checks (covered by the above `sanctions_verification_status`).
+</Tip>
+
+### ID Verification Status (Persons Only)
+- **Field**: `id_verification_status`
+  - **`PENDING`**: Verification is in progress. Checking the identity of the person.
+  - **`DENIED`**: Verification failed. Unable to verify the identity of the person.
+  - **`APPROVED`**: Verification successful. The identity of the person is confirmed.
+
+<Tip>
+When using passthrough IDV, the `id_verification_status` will reflect the `passthrough_verification_status` that was set. Note 
+that `passthrough_verification_status` can only ever be set to a terminal IDV status of `APPROVED` or `DENIED`.
+</Tip>
+
+
+## Onboarding Decision
+The onboarding decision is made based on the identities risk rating and the set of verifications (as exposed in sub-statuses above).
+Once there is sufficient information to make a decision, the [Identity][create-identity] will be `APPROVED` and able to trade or `DENIED` and rejected services.
+
+In the happy path where an [Identity][create-identity] is `LOW` or `MEDIUM` risk and all verifications automatically pass, the [Identity][create-identity] should be automatically `APPROVED` within seconds.
+
+<Tip>
+[Create Identity][create-identity] will always return an [Identity][create-identity] with a `PENDING` status as verifications are completed asynchronously. Poll until `APPROVED` or listen 
+to identity status update webhook events to get notified when the onboarding decision is made.
+</Tip>
+
+If certain verifications fail (e.g. if there is a true sanctions hit), this will lead to a manual review and a `DENIED` decision. The standard SLA to come to a decision is 24 hours, make 
+sure to plan for this when building integrations.
+
+When an [Identity][create-identity] is deemed `HIGH` risk, the [Identity][create-identity] will remain in `PENDING` until documents are provided and verified. See more on this topic in the [Automate Enhanced Due Diligence Guide][automate-enhanced-due-diligence-guide].
