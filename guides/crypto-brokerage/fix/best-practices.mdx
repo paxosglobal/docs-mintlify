@@ -1,0 +1,48 @@
+---
+title: 'FIX Best Practices'
+description: Learn about connection management, sequence number management and testing.
+---
+
+[fix-certify]: certify.mdx
+
+Paxos recommends following FIX industry best practices, in addition to the items outlined below.
+
+## Identity Mapping
+
+Use the following table to map Paxos identify information to the corresponding FIX tag.
+
+| Paxos Identity | FIX Tag |
+| --- | --- |
+| Customer ID | Account (1) |
+| Profile ID | ClientID (109) |
+
+## Sequence Number Management
+
+Periodically disconnecting the FIX connection.
+Resetting the message sequence number promotes a stable trading environment for all users.
+Paxos forces a disconnect and reset of sequence numbers weekly for all sessions.
+
+The exact time when the disconnect and reset to sequence numbers happen is discussed during the onboarding process.
+Clients must configure their FIX engines to expect a disconnect and sequence number reset at the agreed schedule, failure to do so will result in an invalid FIX session due to mismatching sequence numbers.
+
+Schedule times follow the US Eastern Time Zone (ET), an area five hours behind Greenwich Mean Time (GMT-5) during the winter months (referred to as Eastern Standard Time or EST) and four hours behind Greenwich Mean Time (GMT-4) during the summer months (referred to as Eastern Daylight Time or EDT).
+
+<Tip>
+
+Paxos Support may contact you regarding connection practices to prevent performance degradation.
+
+</Tip>
+
+## Cancel on Disconnect
+
+Cancel on Disconnect is enabled by default.
+When a disconnection occurs, the service automatically submits a cancel request for all open orders.
+
+## Use Multiple connections
+
+FIX supports multiple connections per trading account.
+Please submit a request to support@paxos.com to request additional connections. 
+
+## Implementation Testing
+
+Test the FIX implementation by following the [FIX certification process][fix-certify] in the Sandbox environment prior to going live in Production.

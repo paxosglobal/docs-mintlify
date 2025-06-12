@@ -1,0 +1,69 @@
+---
+title: 'Paxos API FAQ'
+description: Get answers to commonly asked questions.
+---
+
+[conversion-assets]: developer/convert.mdx#assets
+[cancel]: /api-reference/stablecoin-conversion/cancel-stablecoin-conversion
+[Support]: https://support.paxos.com
+[stablecoin conversion guide]: developer/convert.mdx
+
+## Stablecoin Conversions
+
+<details>
+<summary>
+<h3 id="get-started">How can I get started with conversions?</h3>
+</summary>
+<div>
+
+The [stablecoin conversion guide] takes you through the simple process. Reach out to [Support] if you need assistance.
+
+</div>
+</details>
+
+<details>
+<summary>
+<h3 id="fees">What are the conversion fees?</h3>
+</summary>
+<div>
+
+None. Conversions between the [supported asset pairs][conversion-assets] incure no fees.
+
+</div>
+</details>
+
+<details>
+<summary>
+<h3 id="limits">Are there any conversion limits?</h3>
+</summary>
+<div>
+
+By default, there is a $500,000 USD transaction limit per conversion.
+Contact [Support](https://support.paxos.com) for additional details.
+
+</div>
+</details>
+
+<details>
+<summary>
+<h3 id="dust">What is dust?</h3>
+</summary>
+<div>
+
+Dust is a small amount of an asset leftover from a transaction.
+Dust can accumulate when converting [assets with different precisions][conversion-assets].
+
+</div>
+</details>
+
+<details>
+<summary>
+<h3 id="cancel">Can I cancel a conversion?</h3>
+</summary>
+<div>
+
+Most conversions execute near instantaneously; however, under rare conditions a settlement delay may occur.
+You can use the [Cancel Stablecoin Conversion][cancel] endpoint to cancel a pending conversion.
+
+</div>
+</details>

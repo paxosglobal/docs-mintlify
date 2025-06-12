@@ -1,0 +1,23 @@
+---
+title: 'Webhooks'
+description: Webhooks provide a way for notifications to be delivered to an external web server whenever certain events occur.
+---
+
+[events]: /api-reference/events
+[Support]: https://support.paxos.com
+[Get Event]: /api-reference/events/get-event
+[List Events]: /api-reference/events/list-events
+[reference]: /api-reference/events
+[consumer]: /webhooks/quickstart.mdx
+[retries]: /webhooks/retries-and-limits.mdx
+
+![Webhooks](/images/webhooks.png)
+
+Paxos Webhooks allow you to register your own endpoints to receive asynchronous events driven by the Paxos Platform.
+Current webhook use-cases are restricted to [Identity Events][events], with more event types to follow. To get started, you will need to:
+1. Set up a [webhook consumer][consumer] for Paxos webhook events, which is an HTTP POST endpoint that accepts and processes [events].
+2. Test the webhook consumer by sending a test event to your endpoint.
+3. Secure the endpoint using either API key or OAuth-based authentication.
+4. Contact [Support] to go through webhook registration, specifying which [events] you would like to receive and process.
+
+For information about webhook delivery, retry policies, and rate limits, see the [Retries and Limits][retries] guide.

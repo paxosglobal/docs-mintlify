@@ -1,0 +1,55 @@
+---
+title: 'FIX Certification'
+description: Test and verify the FIX implementation in Sandbox before going to Production.
+---
+
+[fix-best-practices]: best-practices.mdx
+
+Paxos recommends testing the FIX implementation by running through the following test cases.
+These tests cover the most common scenarios when trading on the Paxos Platform: submitting orders for valid and invalid markets, order types, order execution and canceling orders.
+
+<Tip>
+
+If you have any questions or run into issues, contact support@paxos.com for assistance.
+
+</Tip>
+
+## SYM1: Symbology - Valid Market
+
+User submits order for each of the markets which the user expects to trade and processes corresponding confirmation response.
+
+## SYM2: Symbology - Invalid Market
+
+User submits order for invalid market symbol (for example, `XXXXXX`) and processes the corresponding reject response.
+
+## LIM1: Buy Limit (Buy 1.1 @ Limit $200 XBTUSD)
+
+User submits limit buy order for valid quantity, price and market, and the processes corresponding confirmation response.
+
+## LIM2: Sell Limit (Sell 0.001 @ Limit $200 XBTUSD)
+
+User submits limit sell order for valid quantity, price and market, and the processes corresponding confirmation response.
+
+## EX1: Single Execution - Fill
+
+User submits marketable limit order (limit price will be immediately executed, either partially or completely) and processes the corresponding confirmation and fill responses.
+
+## CXL1: Cancel New
+
+User submits a limit outside of current market price (so the order will not execute), processes the corresponding confirmation response, and then issues a cancel request and processes the corresponding cancel confirmation.
+
+## CXL2: Cancel Reject
+
+User attempts to cancel an invalid or non-existent order ID, or an order which has been previously completely filled, and processes the corresponding cancel reject response.
+
+## OPT1: Cancel on Disconnect (Optional) 
+
+User submits multiple orders with the limit outside of current market price (so the orders will not execute), processes the corresponding confirmation responses and then disconnects their FIX session to verify all open orders are canceled.
+
+## OPT2: Status Request (Optional) 
+
+User submits a status request for a previously submitted order and processes the corresponding status response.
+
+## Next Steps
+
+Read the FIX [best practices][fix-best-practices] guide.

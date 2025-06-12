@@ -1,0 +1,20 @@
+---
+title: 'Notifications'
+description: Understand how settlement notifications work.
+---
+
+[status]: status.mdx
+[support]: https://support.paxos.com
+[create]: /api/v2#operation/CreateTransaction
+
+<Description description={frontMatter.description}/>
+
+By default, each Profile owner receives an email notification when a settlement transaction is [created][create] and upon each [status][status] change.
+Currently, only email notifications are supported.
+Websocket and desktop notifications are being considered for future releases.
+
+> To test email notifications in Sandbox, contact [Support][support] to enable notifications.
+
+All settlement email notifications use the same template:
+
+![Settlements Email Notification](/images/settlement-notification.png)

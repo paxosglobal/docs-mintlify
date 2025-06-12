@@ -1,0 +1,44 @@
+---
+title: 'Choosing a Ledgering Strategy'
+description: Understand your options for ledgering fiat and cryptocurrency with Paxos.
+---
+
+[create-quote-execution]: ../api-reference/quote-executions/create-quote-execution
+[create-crypto-withdrawal]: ../api-reference/crypto-withdrawals/create-crypto-withdrawal
+[create-order]: ../api-reference/orders/create-order
+
+Crypto Brokerage customers have several options for how they ledger customer funds with Paxos.
+
+<Tip>
+This document outlines common strategies for managing balances on Paxos. Each Crypto Brokerage partner must use a strategy consistent with their business needs and Paxos's licensing requirements.
+
+**Please contact [Support](https://support.paxos.com/hc/en-us) before choosing a strategy and beginning your integration.**
+</Tip>
+
+### Fiat and Crypto Omnibus
+In this integration type, the Crypto Brokerage Partner relies on their own ledger for end-user’s fiat and crypto balances.
+On the Paxos ledger there is one profile within the account where both fiat and crypto are held on behalf of all of the end users.
+
+This option is typically only available in 1st-Party integrations, where the Crypto Brokerage Partner is relying exclusively on their own licensing and individual end users are not Paxos customers.
+
+### Fiat and Crypto Subledger
+In this integration type, the Crypto Brokerage Partner creates a Profile to hold the fiat and crypto balances for each individual user or account. This typically requires the use of Paxos's Identity and/or Account services. The Crypto Brokerage Partner is responsible for maintaining a mapping of individual user to their Paxos Profiles, Identities, and Accounts and passing the appropriate IDs on each request.
+
+This is the most common integration type for 3rd-Party integrations, where the Partner is relying on Paxos's licensing and individual end users are Paxos customers.
+
+### Fiat Omnibus and Crypto Subledger
+Here, the Crypto Brokerage Partner relies on a single ledger for their fiat balances and uses a unique Paxos Profile for each end-user’s crypto balances. On the Paxos ledger there is one profile within the account where all fiat is held on behalf of all of the end users.
+
+Crypto Brokerage Partners with Fiat Omnibus and Subledgered Crypto may leverage Directed Settlement. In Directed Settlement, the Crypto Brokerage Partner specifies ("directs") which subledgered profile should be credited or debited when a quote or trade is executed.
+
+When buying crypto, fiat is debited from the omnibus profile and crypto is credited upon trade or quote execution. When selling crypto, crypto is debited from the specified end user Profile and fiat is credited to the omnibus profile.
+
+### Required Fields:
+The table below outlines how to populate various fields for the Ledgering Strategies defined above. For more details please see our API reference Documentation for [Orders][create-order], [Transfers][create-crypto-withdrawal] and [Quotes][create-quote-execution].
+
+| API Parameters | Fiat Omnibus, Crypto Omnibus | Fiat Omnibus, Crypto Subledger (Directed Settlement) | Fiat and Crypto Subledger |
+| --- | --- | --- | --- |
+| `profile_id` | The Omnibus Profile ID | **Buy Orders:** Omnibus Profile ID <br />**Sell Orders:** the End-User Profile ID | The profile that is funding the trade. This should be populated with the end-user profile |
+| `recipient_profile_id` | Left Blank | **Buy Orders:** End User profile <br /> **Sell Orders:** Omnibus Profile ID | Left Blank |
+| `identity_id` | Required in third party integrations. | Required in third party integrations. | Required in third party integrations. |
+| `account_id`<br />`identity_account_id` | Potentially required in third party integrations. | Potentially required in third party integrations. | Potentially required in third party integrations. |

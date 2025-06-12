@@ -1,0 +1,98 @@
+---
+title: 'Migrate from v1 to v2 API'
+description: Learn how to migrate your REST integrations.
+---
+
+[v1]: https://developer.paxos.com/docs/#paxos-api
+[v2]: /api/v2
+[sandbox]: https://dashboard.sandbox.paxos.com/
+[guide]: developer/credentials.mdx
+[oauth]: https://oauth.net/2/
+[authentication]: /api/v2#section/Authentication
+[get-activities]: https://developer.paxos.com/docs/#getactivities
+[get-activity]: https://developer.paxos.com/docs/#getactivity
+[list-transfers]: /api-reference/transfers/list-transfers
+[list-auto-conversions]: https://developer.paxos.com/docs/#listautoconversions
+[get-transfer]: /api-reference/transfers/get-transfer
+[list-bank-accounts]: https://developer.paxos.com/docs/#listbankaccounts
+[list-fiat-accounts]: /api-reference/fiat-transfers/list-fiat-accounts
+[create-bank-account]: https://developer.paxos.com/docs/#createbankaccount
+[create-fiat-account]: /api-reference/fiat-transfers/create-fiat-account
+[GetBankAccount]: https://developer.paxos.com/docs/#getbankaccount
+[get-fiat-account]: /api-reference/fiat-transfers/get-fiat-account
+[ArchiveBankAccount]: https://developer.paxos.com/docs/#archivebankaccount
+[delete-fiat-account]: /api-reference/fiat-transfers/delete-fiat-account
+[CreateCbitWithdrawal]: https://developer.paxos.com/docs/#createcbitwithdrawal
+[create-fiat-withdrawal]: /api-reference/fiat-transfers/create-fiat-withdrawal
+[ListProfiles]: https://developer.paxos.com/docs/#listprofiles
+[list-profiles]: /api-reference/profiles/list-profiles
+[GetProfile]: https://developer.paxos.com/docs/#getprofile
+[get-profile]: /api-reference/profiles/get-profile
+[GetProfileBalances]: https://developer.paxos.com/docs/#getprofilebalances
+[list-profile-balances]: /api-reference/profiles/list-profile-balances
+[GetProfileDepositInstructions]: https://developer.paxos.com/docs/#getprofiledepositinstructions
+[create-deposit-address]: /api-reference/deposit-addresses/create-deposit-address
+[create-fiat-deposit-instructions]: /api-reference/fiat-transfers/create-fiat-deposit-instructions
+[CreateProfileTransfer]: https://developer.paxos.com/docs/#createprofiletransfer
+[create-internal-transfer]: /api-reference/internal-transfers/create-internal-transfer
+[CreateWireWithdrawal]: https://developer.paxos.com/docs/#createwirewithdrawal
+[GetCustStatus]: https://developer.paxos.com/docs/#getcuststatus
+[get-identity]: /api-reference/identity/get-identity
+[ListCryptoAddresses]: https://developer.paxos.com/docs/#listcryptoaddresses
+[CreatePeerTransfer]: https://developer.paxos.com/docs/#createpeertransfer
+[CreateCryptoWithdrawal]: https://developer.paxos.com/docs/#createcryptowithdrawal
+[create-crypto-withdrawal]: /api-reference/crypto-withdrawals/create-crypto-withdrawal
+[create-paxos-transfer]: /api-reference/paxos-transfers/create-paxos-transfer
+The Paxos v1 APIs have reached End of Life. 
+Access to all Paxos v1 APIs has been removed.
+This change ensures all Paxos customers are using supported APIs.
+
+Customers should migrate remaining usage from the v1 API as all functionality is now available in [Paxos v2 APIs][v2].
+We recommend you test your integrations in Sandbox before applying the changes to your integration in Production.
+
+To help with the transition, this guide provides suggestions on implementing similar functionality using the Paxos REST API (v2).
+
+<V1Migrate />
+
+## Get Started in Sandbox
+
+We recommend you test your integration in the Sandbox environment prior to deploying the changes in production.
+If not already done so, [sign up for a Sandbox account][sandbox].
+Then [configure API credentials][guide].
+
+| v1 API Endpoint | v2 API Endpoint |
+| --- | --- |
+| GetActivities | [List Transfers][list-transfers] |
+| GetActivity | [Get Transfer][get-transfer] |
+| ListAutoConversions | [List Transfers][list-transfers] |
+| ListBankAccounts | [List Fiat Accounts][list-fiat-accounts] |
+| CreateBankAccount | [Create Fiat Account][create-fiat-account] |
+| GetBankAccount | [Get Fiat Account][get-fiat-account] |
+| ArchiveBankAccount | [Delete Fiat Account][delete-fiat-account] |
+| CreateCbitWithdrawal<br />CBIT is no longer supported. [Use CUBIX](https://support.paxos.com/hc/en-us/articles/31700769434004) instead. | [Create Fiat Withdrawal][create-fiat-withdrawal] |
+| CreateCryptoWithdrawal | [Create Crypto Withdrawal][create-crypto-withdrawal] |
+| ListProfiles | [List Profiles][list-profiles] |
+| GetProfile | [Get Profile][get-profile] |
+| GetProfileBalances | [List Profile Balances][list-profile-balances] |
+| GetProfileDepositInstructions | [Create Deposit Address][create-deposit-address] and<br />[Create Fiat Deposit Instructions][create-fiat-deposit-instructions] |
+| CreateProfileTransfer | [Create Internal Transfer][create-internal-transfer] |
+| CreateWireWithdrawal | [Create Fiat Withdrawal][create-fiat-withdrawal] |
+| GetCustStatus | [Get Identity][get-identity] |
+| CreatePeerTransfer | [Create Paxos Transfer][create-paxos-transfer] |
+
+<V1Migrate />
+
+## Removed Endpoints
+
+The following APIs have been removed as there is no current v2 use case for them.
+
+- ArchiveProfile
+- GetCryptoAddress
+- CreateCryptoAddress
+- CreateSenWithdrawal
+- CreateSignetWithdrawal
+- CreateIntrabankWithdrawal
+- GetBankAccountAutoConversionInstructions
+- GetCryptoAddressAutoConversionInstructions
+- UpdateCryptoDeposit
+- RejectCryptoDeposit

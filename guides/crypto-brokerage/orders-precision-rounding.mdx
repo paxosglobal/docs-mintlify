@@ -1,0 +1,100 @@
+---
+title: 'Orders, Precision and Rounding'
+description: Learn about tick size, precision, rounding and other recommendations.
+---
+
+[contact-support]: https://support.paxos.com
+[create-order]: ../api-reference/orders/create-order
+[list-executions]: ../api-reference/orders/list-executions
+[list-orders]: ../api-reference/orders/list-orders
+[get-order]: ../api-reference/orders/get-order
+[get-ticker]: ../api-reference/market-data/get-ticker
+[get-order-book]: ../api-reference/market-data/get-order-book
+[list-historical-prices]: ../api-reference/pricing/list-historical-prices
+[v2-api]: ../../api/v2
+[fix-api]: https://developer.paxos.com/docs/itbit/fix/
+We recommend that [REST and WebSocket integrations](#rest-websocket-clients) support the maximum decimal precision of 0.000001 (1e-6) for all current and future assets ([parameter precision](#additional-parameter-precision)  differs for some services).
+
+All [FIX integrations](#fix-clients) should support up to 19 decimal places 0.0000000000000000001 (1e-19) for all assets.
+
+<Tip>
+Tick size, miniums and other precision information is for USD markets only.
+For information on other markets, [contact support][contact-support].
+</Tip>
+
+## Order Limitations
+
+- For market buy orders, the minimum quantity is 0.01 USD for all assets. For market sell or limit orders, the minimum size is eight ticks: 0.00000001 (1e-8).
+- For market orders, the maximum notional value is 500,000 USD. For limit orders, the maximum notional value is 1,500,000 USD for XBTUSD and ETHUSD markets, and 1,000,000 USD for other markets.
+- A taker order will be rejected if its limit price is 15% or more from the midpoint of the best bid and best ask.
+- For a comprehensive look at order constraints, please refer to our the documentation for the [Paxos v2 REST API docs][v2-api] or the [Paxos FIX API Reference page][fix-api]
+
+## Tick and Decimal Precision for REST and WebSocket Clients
+
+| Market | Minimum Tick Size (USD) | Maximum Decimal Precision (USD) |
+| --- | --- | --- |
+| AAVEUSD | 0.01 | 0.000001 (1e-6) |
+| BCHUSD | 0.05 | 0.000001 (1e-6) |
+| BTCUSD | 0.25 | 0.000001 (1e-6) |
+| ETHUSD | 0.05 | 0.000001 (1e-6) |
+| LINKUSD | 0.01 | 0.000001 (1e-6) |
+| LTCUSD | 0.01 | 0.000001 (1e-6) |
+| (MATICUSD)[\*](#matic) | 0.0001 | 0.000001 (1e-6) |
+| PAXGUSD | 0.01 | 0.000001 (1e-6) |
+| SOLUSD | 0.01  | 0.000001 (1e-6) |
+| UNIUSD | 0.01 |  0.000001 (1e-6) |
+
+<small id="matic">
+<em>
+
+\* Effective September 17, 2024, users can no longer buy MATIC.
+Users should exit their MATIC positions or transfer MATIC off-platform.
+As of October 3, 2024, users can only transfer MATIC off-platform.
+Contact support@paxos.com with questions or issues during the migration period.
+
+</em>
+</small>
+
+### Additional Parameter Precision
+
+The tick size and precision for some request and response parameters requires clients to implement differing precision.
+We recommend ensuring all REST clients implement the following:
+
+- `quote_amount` tick size of 0.01 (1e-2) for [Create Order][create-order].
+- `volume_weighted_average_price` tick size of 0.00000001 (1e-8) for [Get Order][get-order] and [List Orders][list-orders].
+- `average_price` precision of 0.000001 (1e-6) for [List Historical Prices][list-historical-prices].
+- `commission ` and `rebate` tick size of 0.0000000000000000001 (1e-19) for [List Executions][list-executions].
+- `gross_trade_amount` tick size of 0.00000000000001 (1e-14) for [List Executions][list-executions].
+- `amount` precision of 0.00000001 (1e-8) for [Get Ticker][get-ticker], [Get Order Book][get-order-book] and [List Executions][list-executions].
+- `base_amount` precision of 0.00000001 (1e-8) for [List Orders][list-orders], [Create Order][create-order] and [Get Order][get-order].
+- `amount_filled` precision of 0.00000001 (1e-8) for [List Orders][list-orders], [Create Order][create-order] and [Get Order][get-order].
+
+## Tick and Decimal Precision for FIX Clients
+
+Ideally, your FIX integrations should support up to 19 decimal places, 0.0000000000000000001 (1e-19), for all assets.
+Minimally, you your integrations must support 17 decimal places, 0.00000000000000001 (1e-17), for all assets.
+
+## Rounding
+
+Paxos uses different rounding logic for different services.
+
+### Volume Weighted Average Price
+
+The `volume_weighted_average_price` field is rounded using half-up logic after eight decimals.
+This provides the volume-weighted average price across all underlying executions for an order within [List Executions][list-executions].
+
+### HRQ Rounding
+
+Rounding differs depending on the direction and side in combination with the given quote amount or base amount.
+All assets are rounded to two (2) decimal points of precision except BRL.
+BRL is truncated to six (6) decimal points.
+
+- **Ceil**: Round up fully for any decimal places.
+- **Floor**: Round down fully for any decimal places.
+
+| Direction + Side | Rounding Behavior |
+| --- | --- |
+| Base Amount Input + BUY | Ceil (Quote Amount) |
+| Base Amount Input + SELL | Floor (Quote Amount) |
+| Quote Amount Input + BUY | Floor (Base Amount) |
+| Quote Input Amount + SELL | Ceil (Base Amount) |

@@ -1,0 +1,54 @@
+---
+title: 'Settlements'
+description: Propose, approve and manage two-way atomic transfers.
+---
+import {
+  FeatureCard,
+  FeatureContainer,
+} from "@site/src/components";
+
+[create]: /api/v2#operation/CreateTransaction
+[affirm]: /api/v2#operation/AffirmTransaction
+[notification]: settlements/notification.mdx
+[status]: settlements/status.mdx
+
+<Description description={frontMatter.description}/>
+
+![Settlements Profiles](/images/settlement-profiles.png)
+
+Use the Settlements API to facilitate simultaneous exchange of pre-funded assets.
+Automate a variety of use cases that require two-party approval, including
+net settlement of over-the-counter trades, withdrawal requests for tri-party collateral, payment requests, and bilateral settlement for marketplace end users.
+
+The simple request-and-approval workflow supports both one-directional and bidirectional transactions to allow a user to receive an asset (for example, send USDP) or simultaneously send and receive assets (for example, send USD and receive BTC and ETH).
+Only when all parties are in agreement and assets are fully funded does the Settlements API allow for change of custody.
+Upon completion, all settled assets are immediately available for trading, transferring, withdrawal or other supported activities.
+
+## Settlement Workflow
+
+The settlement workflow requires two parties to complete: The Source Profile owner who [initiates][create] the transaction and the Target Profile owner who [approves][affirm] the transaction.
+Most integrations follow a similar workflow:
+
+1. Both parties agree on the transaction details and share counterparty Profile IDs outside of the Paxos Platform (for example, via email, Telegram, or other application).
+1. The Source Profile owner [submits the transaction][create] to the settlement platform.
+1. The Target Profile owner receives a [notification][notification], reviews the transaction details and [approves the transaction][affirm].
+1. Both parties fund the associated Profiles via deposits if the requisite balances are not already present.
+1. Settlement (movement of assets between Profiles) occurs soon after both parties have sufficient assets on the platform.
+1. Once the transaction [settles][status], both parties can immediately utilize the new balance.
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" href="/settlements/quickstart">
+    Set up and complete the settlement workflow in the Sandbox environment.
+  </Card>
+  <Card title="Statuses" href="/settlements/status">
+    Learn more about settlement statuses.
+  </Card>
+  <Card title="Notifications" href="/settlements/notification">
+    Understand how settlement notifications work.
+  </Card>
+    <Card title="FAQ" href="/settlements/faq">
+    Get answers to common questions about the Settlements API.
+  </Card>
+</CardGroup>

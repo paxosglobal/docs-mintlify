@@ -1,0 +1,118 @@
+---
+title: 'Connect to the WebSocket Stablecoin Price Feed'
+description: Open a WebSocket connection to the Sandbox USDCUSD feed.
+---
+
+[wscat]: https://github.com/websockets/wscat
+[websocket-client]: https://pypi.org/project/websocket-client
+[websocket-reference]: api/websocket.mdx
+
+Use the command line to open a WebSocket connection to the Sandbox USDCUSD stablecoin market price feed.
+
+> See the [WebSocket API reference][websocket-reference] for more details.
+
+## ➊ Install WebSocket Client
+
+The quickest way to open a connection is by using [wscat][wscat], which runs in the terminal.
+Using the Python [websocket-client][websocket-client] package requires a bit of code and the Python shell. 
+
+<Tabs>
+<Tab title="SHELL">
+
+Open the terminal and install [wscat][wscat] using the `-g` (global) flag.
+
+```shell
+npm install -g wscat
+```
+
+Ensure [wscat][wscat] is working. If you see the version number, the module is working:
+
+```shell
+wscat --version
+```
+
+</Tab>
+<Tab title="PYTHON">
+
+Open the terminal and install the Python3 [websocket-client][websocket-client] library.
+
+```shell
+pip3 install websocket-client
+```
+
+Start the Python3 shell and check that [websocket-client][websocket-client] was installed correctly.
+If you don't see a `ModuleNotFoundError` message, the library is installed.
+
+```py
+python3
+...
+>>> import websocket
+>>> 
+```
+
+</Tab>
+</Tabs>
+
+Leave the terminal window open.
+
+## ➋ Connect to Sandbox Feed
+
+Open a long-lived connection to the Sandbox USDCUSD stablecoin market price feed.
+
+<Tabs>
+<Tab title="SHELL">
+
+```shell
+wscat --connect wss://ws.sandbox.paxos.com/marketdata/stablecoin/USDCUSD
+```
+
+</Tab>
+<Tab title="PYTHON">
+
+```py
+>>> import websocket # From the previous step
+>>> def on_message(wsapp, message):
+...     print(message)
+...
+>>> wsapp = websocket.WebSocketApp("wss://ws.sandbox.paxos.com/marketdata/stablecoin/USDCUSD", on_message=on_message)
+>>> wsapp.run_forever() # Press CTRL+C to quit
+```
+
+</Tab>
+</Tabs>
+
+## ➌ Review Sandbox Feed
+
+If everything worked, USDCUSD the pricing data streams to the terminal.
+
+<Tabs>
+<Tab title="SHELL">
+
+```json title="Sandbox USDCUSD stablecoin market price feed (wscat)"
+Connected (press CTRL+C to quit)
+{"market":"USDCUSD","price":"0.9996","timestamp":"2024-11-04T16:12:38.053038191Z"}
+
+{"market":"USDCUSD","price":"0.9996","timestamp":"2024-11-04T16:12:39.080704227Z"}
+
+{"market":"USDCUSD","price":"0.9996","timestamp":"2024-11-04T16:12:40.044403631Z"}
+
+...
+```
+
+</Tab>
+<Tab title="PYTHON">
+
+```json title="Sandbox USDCUSD stablecoin market price feed (websocket-client)"
+{"market":"USDCUSD","price":"0.9998","timestamp":"2024-11-04T17:23:50.050471826Z"}
+
+{"market":"USDCUSD","price":"0.9998","timestamp":"2024-11-04T17:23:51.064565343Z"}
+
+{"market":"USDCUSD","price":"1.0001","timestamp":"2024-11-04T17:23:52.05566422Z"}
+
+...
+```
+
+</Tab>
+</Tabs>
+
+  

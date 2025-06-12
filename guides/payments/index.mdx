@@ -1,0 +1,66 @@
+---
+title: 'Stablecoin Payments'
+description: Accept stablecoin pay-ins with real-time settlement. Issue on-chain refunds.
+---
+import {
+  FeatureCard,
+  FeatureContainer,
+} from "@site/src/components";
+
+[supported-assets]: /payments/faq#supported-assets
+[crypto-deposit-address]: payments/quickstart.mdx#pay-in-add-deposit-address
+[reconcile]: payments/quickstart.mdx#pay-in-monitor-reconcile
+[disseminate]: payments/quickstart.mdx#receive-payment
+[refund-reconcile]: payments/quickstart.mdx#refund-monitor-reconcile
+[initiate-withdrawal]: /payments/quickstart#refund-initiate
+[send-usd]: /payments/quickstart#refund-fund-account
+[withdraw USD]: /payments/quickstart#pay-in-withdraw-fiat
+
+Use the Paxos APIs to effortlessly integrate stablecoin payment acceptance into your platform.
+Features include:
+
+- Accept PYUSD, USDC and USDP payments via on-chain transfers.
+- Automatically convert the stablecoin to fiat, or opt to hold balances in stablecoin.
+- Reconcile transactions on the Paxos Platform.
+- Settle USD directly to your bank account.
+- Issue refunds to the original Buyer via stablecoin on-chain transfers.
+
+<Tip>
+
+In the documentation, a payment is considered to be the total amount processed, including both the incoming payment (pay-in) and returned payment (refund).
+
+</Tip>
+
+## Pay-ins Workflow
+
+![Payments](/images/payments.png)
+
+The pay-ins workflow involves two key personas: a Buyer purchasing goods or services using stablecoins and a Seller. 
+The Seller represents either a merchant that provides goods or services, or a payment processor acting as the intermediary to facilitate the transaction.
+Most pay-in integrations follow a similar workflow for the Seller:
+
+1. [Add a crypto deposit address][crypto-deposit-address] for a designated Profile, using one of the [supported blockchains][supported-assets].
+1. To [use stablecoins for pay-ins][disseminate], share the crypto deposit address with Buyers as a checkout option.<PaymentsConnectorTip />
+1. Configure a [pay-in monitoring and reconciliation][reconcile] request to confirm Pay-in transactions on the Paxos Platform.
+1. [Withdraw USD] to a bank account.
+## Refunds Workflow
+
+Issuing a refund is similar to pay-ins, except the funding flow is reversed: USD is first moved onto the Paxos Platform and then the stablecoin refund is sent to the Buyer's designated wallet.
+Most refund integrations follow a similar workflow for the Seller:
+
+1. [Send USD][send-usd] to a designated refund account.
+1. [Initiate a crypto withdrawal][initiate-withdrawal] to the Buyer's designated wallet address, using one of the [supported blockchains][supported-assets].
+1. Configure a [refund monitoring and reconciliation][refund-reconcile] request to confirm Pay-in transactions on the Paxos Platform.
+## Get Started
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" href="/payments/quickstart">
+    Accept stablecoin pay-ins with real-time settlement. Issue on-chain refunds.
+  </Card>
+  <Card title="Payments Statuses" href="/payments/status">
+    Learn more about payment statuses.
+  </Card>
+  <Card title="Payments FAQ" href="/payments/faq">
+    Get answers to common questions about payments.
+  </Card>
+</CardGroup>

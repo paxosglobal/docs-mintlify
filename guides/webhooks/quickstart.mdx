@@ -1,0 +1,190 @@
+---
+title: 'Get Started with Webhooks'
+description: Create and register a webhook consumer to start receiving events.
+---
+
+[events]: /api-reference/events
+[Support]: https://support.paxos.com
+[Get Event]: /api-reference/events/get-event
+[List Events]: /api-reference/events/list-events
+[reference]: /api-reference/events
+
+This guide walks you through setting up a webhook consumer that can integrate with Paxos to receive events that occur on
+the platform. Once completed you should have a webhook consumer, tested locally, and be ready to integrate and test in sandbox;
+this guide should take less than an hour to complete.
+
+## ➊ Create a Webhook Consumer
+To receive Paxos events, set up your webhook consumer that receives events as an HTTP/HTTPS POST endpoint using your language and tools of choice.
+### Go
+
+```go title="paxos_webhook_consumer.go"
+http.HandleFunc("/webhook/paxos", func(w http.ResponseWriter, req *http.Request) {
+    payload, err := io.ReadAll(req.Body)
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "error reading request body %v\n", err)
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+
+    event := paxos.Event{}
+    if err = json.Unmarshal(payload, &event); err != nil {
+        fmt.Fprintf(os.Stderr, "error parsing webhook event: %v\n", err)
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+
+    // Unmarshal the event data into an appropriate struct depending on its Type
+    switch event.Type {
+    case "identity.approved":
+        fmt.Printf("received documents required event: %v\n, processing...", event)
+        // process documents required event
+    }
+})
+```
+### Java
+
+```clike title="WebhookServlet.java"
+public class WebhookServlet extends HttpServlet {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            PaxosEvent event = objectMapper.readValue(req.getInputStream(), PaxosEvent.class);
+
+            // Unmarshal the event data into an appropriate struct depending on its Type
+            switch (event.type()) {
+                case "identity.documents_required":
+                    System.out.printf("received documents required event: %s, processing...%n", event);
+                    // process documents required event
+                    break;
+                default:
+                    System.out.printf("received unknown event type: %s%n", event.type());
+                    break;
+            }
+        } catch (IOException e) {
+            System.err.printf("error reading request body: %s%n", e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        } catch (Exception e) {
+            System.err.printf("error parsing webhook event: %s%n", e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+}
+```
+### Python
+
+```python title="paxos_webhook_consumer.py"
+# using django
+@csrf_exempt
+def paxos_webhook(request):
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    try:
+        payload = json.loads(request.body)
+        event_type = payload.get('type')
+
+        # Unmarshal the event data into an appropriate struct depending on its Type
+        if event_type == 'identity.documents_required':
+            print(f"received documents required event: {payload}, processing...")
+            # process documents required event
+        else:
+            print(f"received unknown event type: {event_type}")
+
+        return HttpResponse(status=200)
+    except json.JSONDecodeError as e:
+        print(f"error parsing webhook event: {e}")
+        return HttpResponse(status=400)
+    except Exception as e:
+        print(f"error reading request body: {e}")
+        return HttpResponse(status=503)
+
+```
+<Info>
+
+We are currently working on providing client libraries for the Paxos event object. In the meantime, please directly use the definition below:
+### Go
+
+```go title="paxos/event.go"
+package paxos
+
+type Event struct {
+    ID     string    `json:"id"`
+    Type   string    `json:"type"`
+    Source string    `json:"source"`
+    Time   time.Time `json:"time"`
+    Object string    `json:"object"`
+}
+```
+### Java
+
+```java title="com/paxos/PaxosEvent.java"
+package com.paxos;
+
+import java.time.LocalDateTime;
+
+public record PaxosEvent(
+    String id,
+    String type,
+    String source,
+    LocalDateTime time,
+    String object
+) {}
+```
+</Info>
+
+## ➋ Test the Consumer Locally
+<Warning>
+While we work on a CLI for testing your consumer locally, please directly test with the provided sample event payload below and
+reach out to [Support][Support] should you require any further assistance setting up your consumer.
+</Warning>
+
+The below curl command contains an example event that Paxos will send you when an identity is approved. We do not send
+the whole event payload to you in the webhook message, to get the whole payload you will need to integrate with the [Events API][reference]
+to call [Get Event] using the event ID (`id`) provided in the above payload.
+
+```shell
+curl -X POST http://localhost:8080/webhook/paxos \
+     -H "Content-Type: application/json" \
+     -d '{
+           "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+           "type": "identity.approved",
+           "source": "com.paxos",
+           "time": "2025-01-07T14:30:02Z",
+           "object": "event"
+         }'
+```
+
+When running the above, your consumer should receive the event, printing to standard output the below message:
+
+    received documents required event: \{bd019f1c-89a7-4372-9d21-eaad9280dc41 identity.approved com.paxos 2025-01-07 14:30:02 +0000 UTC event\}
+
+### Webhook Payload Format
+
+| Parameter | Description| Example |
+| --- |---|---|
+| `id` | The unique identifier of the event. This `id` can be used to fetch the full details of the event from the [Events API][reference]. | `bd019f1c-89a7-4372-9d21-eaad9280dc41` |
+| `type` | The type of the event. More details about available event types can be found on the corresponding events page, such as [Identity Events][events]. | `identity.disabled` |
+| `source` | The source of the event. This will always be `com.paxos`. | `com.paxos` |
+| `time` | The time the event was created. Formatted according to RFC3339 date-time. | `2025-01-01T14:30:02Z` |
+| `object` | The object type of the event. This will always be `event`. | `event` |
+## ➌ Secure the Consumer
+You must secure your consumer's endpoint by authenticating using either:
+
+- **API Key**, a secret key we will include in the header when calling your webhook consumer endpoint. You will need to let us know the API Key Header and the API Key.
+- **OAuth**, we will call your OAuth client using the provided client id / key to receive credentials to call your endpoint. You will need to provide us with the OAuth endpoint URL and the Client ID and the Client Secret.
+
+<Info>
+We do not currently support consumer-side signature-verification on our webhook event messages. To keep things secure,
+we therefore do not include the full event object in the webhook payload and require you to make an authenticated
+request to [Get Event] in order to fetch the full event object.
+</Info>
+## ➍ Register the Consumer
+We're working on supporting self-service registration in [Dashboard](https://dashboard.paxos.com/login), in the meantime please contact [Support] to initiate webhook registration.
+You'll need to let us know:
+ - Which [event types][events] you would like to receive and process
+ - Your webhook consumer endpoint URL
+ - The [authentication method](#secure-the-consumer) of your webhook consumer
+ - The environment (Sandbox or Prod) you would like to integrate with
