@@ -1,0 +1,52 @@
+---
+title: 'Fiat Transfers FAQ'
+description: Get answers to common questions about the Fiat Transfers API.
+---
+
+
+
+[transfers-fees]: https://cryptobrokerage.paxos.com/hc/en-us/articles/360042321231-Deposit-Withdrawal-Fees
+[jws-request-signing]: https://cryptobrokerage.paxos.com/hc/en-us/articles/6716212970516-How-to-Use-Request-Signing
+[list-fiat-accounts]: /api-reference/fiat-transfers/operation/ListFiatAccounts
+[get-fiat-account]: /api-reference/fiat-transfers/operation/GetFiatAccount
+[identity-api]: /api-reference/identity
+
+
+
+## What can I do with the Fiat Transfers API?
+
+- Paxos can accept wires from or send wires to a bank account, even if the bank account owner is not the same as the individual or institution onboarded with Paxos. This means Paxos allows wire transfers involving third-party bank accounts, subject to applicable compliance and regulatory checks.
+- Fund your Paxos corporate account or withdraw your funds to an external bank account.
+- Enable your users to directly fund their account or withdraw their funds to an external bank account.
+
+## How do I get the Identity ID required in requests?
+
+- Paxos will send you the Identity ID for your corporate account.
+- For user-based funding, Integrate the [Identity API][identity-api] and use the corresponding endpoints. 
+
+## How do I input the routing number (ABA) for US wires (Fedwire)?
+
+Use `routing_number_type` = `ABA`. For US domestic wires, set `fiat_network` = `WIRE` and `routing_number_type` = `ABA`. 
+
+## How do I input the SWIFT/BIC code for SWIFT wires?
+
+Use `routing_number_type` = `SWIFT`. For SWIFT wires, set `fiat_network` = `WIRE` and `routing_number_type` = `SWIFT`.
+
+## Do I need JWS request signing?
+
+It is recommended to have [JWS request signing][jws-request-signing] for fiat withdrawals. 
+JWS request signing uses a public-key cryptography with a client-controlled private key. 
+It adds an additional layer of security to withdrawals.
+It can prevent malicious withdrawals even if the API key secret is compromised. 
+When used, all API calls with this key will require a JWS signature.
+
+## How do I retrieve fiat account information?
+
+Use [Get Fiat Account][get-fiat-account] to get complete details of the fiat account. 
+[List Fiat Account][list-fiat-accounts] excludes beneficiary name and address details and only includes the last four (4) digits of the account number.
+
+## Are there fees associated with fiat transfers?
+
+For withdrawals, fees are in addition to the requested amount. 
+For deposits, fees are deducted from the received amount. 
+See [Deposit & Withdrawal Fees][transfers-fees] for the current fee structure.

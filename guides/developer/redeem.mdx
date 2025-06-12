@@ -8,16 +8,16 @@ description: Deposit stablecoin and convert to USD in one API call. Transfer USD
 [stablecoins]: blockchains.mdx#stablecoins
 [deposit-address]: /api-reference/deposit-addressesCreateDepositAddress
 [conversion-api]: /api-reference/stablecoin-conversion/create-stablecoin-conversion
-[conversion guide]: /guides/developer/convert.mdx
+[conversion guide]: developer/convert.mdx
 [fiat-withdraw]: /api-reference/fiat-transfers/operation/CreateFiatWithdrawal
-[fiat withdrawal guide]: /guides/developer/fiat-transfers/quickstart.mdx#withdrawal
+[fiat withdrawal guide]: developer/fiat-transfers/quickstart.mdx#withdrawal
 [List Transfers]: /api-reference/transfers/list-transfers
 [List Deposit Addresses]: /api-reference/deposit-addressesListDepositAddresses
-[token]: /guides/developer/authenticate.mdx
+[token]: developer/authenticate.mdx
 
 
 
-![Redeem Workflow](/images/redeem.png)
+![Redeem Workflow](/img/redeem.png)
 
 To redeem a [Paxos-issued stablecoin][stablecoins], use [Create Deposit Address][deposit-address] to add the appropriate address on the Paxos platform. Next, initiate a stablecoin transfer from your external address (**A** in the diagram).
 If you set `conversion_target_asset` to `USD` when creating the address, Paxos automatically credits your USD balance once the on-chain transfer is confirmed (**B**).

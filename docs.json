@@ -8,6 +8,60 @@
     "dark": "#15803D"
   },
   "favicon": "/favicon.ico",
+  "redirects": [
+    {
+      "source": "/identity/:slug*",
+      "destination": "/guides/identity/:slug*"
+    },
+    {
+      "source": "/developer/:slug*",
+      "destination": "/guides/developer/:slug*"
+    },
+    {
+      "source": "/developer/fiat-transfers/:slug*",
+      "destination": "/guides/developer/fiat-transfers/:slug*"
+    },
+    {
+      "source": "/developer/breaking-change/:slug*",
+      "destination": "/guides/developer/breaking-change/:slug*"
+    },
+    {
+      "source": "/webhooks/:slug*",
+      "destination": "/guides/webhooks/:slug*"
+    },
+    {
+      "source": "/transfers/:slug*",
+      "destination": "/guides/transfers/:slug*"
+    },
+    {
+      "source": "/profiles/:slug*",
+      "destination": "/guides/profiles/:slug*"
+    },
+    {
+      "source": "/accounts/:slug*",
+      "destination": "/guides/accounts/:slug*"
+    },
+    {
+      "source": "/orders/:slug*",
+      "destination": "/guides/orders/:slug*"
+    },
+    {
+      "source": "/stablecoin-operations/:slug*",
+      "destination": "/guides/stablecoin-operations/:slug*"
+    },
+    {
+      "source": "/crypto-brokerage/:slug*",
+      "destination": "/guides/crypto-brokerage/:slug*"
+    },
+    {
+      "source": "/settlements/:slug*",
+      "destination": "/guides/settlements/:slug*"
+    },
+    {
+      "source": "/payments/:slug*",
+      "destination": "/guides/payments/:slug*"
+    }
+  ],
   "navigation": {
     "tabs": [
       {

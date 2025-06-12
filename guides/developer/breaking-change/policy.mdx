@@ -1,0 +1,92 @@
+---
+title: 'API Breaking Change Policy'
+description: Learn about what qualifies as a breaking change and the what happens when one is necessary.
+---
+
+
+
+[Changelog]: /changelog
+
+
+
+The policy below applies only to Partners with a fully executed and active SLA.
+Paxos will make commercially reasonable efforts to notify users without a service agreement of breaking changes.
+
+
+<Tip>
+
+See the [Changelog] for current breaking changes.
+
+</Tip>
+
+
+## Definitions
+
+**"Core Platform Services”** means the services provided by Paxos that enable End Users to (i) onboard onto the Paxos platform (if applicable given the integration utilized by the Customer) and (ii) submit and execute Orders to buy and sell certain Cryptocurrency Assets from or to other individuals via the Exchange Platform or Paxos' liquidity providers using U.S. dollars or other Cryptocurrency Assets, and (iii) transfer Cryptocurrency Assets to and from the Exchange Platform.
+The Core Platform Services include (a) market and order data streams provided via websockets, (b) the Paxos FIX Service (if applicable given the API integration utilized by the Customer), (c) Reconciliation Reports and (d) the following v2 REST API services: Profiles, Markets, Orders, Quotes, Quote Executions, Pricing, Identity, Transfers and Accounts.
+For the avoidance of doubt, any service designated as a "Preview, “Beta” or “Alpha” in Paxos's API documentation is not included as part of the Core Platform Services.
+
+**“Exchange Platform”** means Paxos' cryptocurrency exchange platform and services whereby individuals can buy or sell certain Cryptocurrency Assets from or to other individuals or liquidity providers using U.S. dollars or other Cryptocurrency Assets.
+
+**“Paxos FIX Service”** means the Paxos service that allows Customer to send messages to and receive messages from the Exchange Platform using the FIX protocol.
+
+## Breaking Changes
+
+In the normal course of business, Paxos may need to make changes that will require Customer to adjust its integration with Paxos (**“Breaking Changes”**). When Paxos makes a Breaking Change to the Core Platform Services, Exchange Platform, or FIX Service, Paxos will ensure the previous functionality remains available to Customer for at least ninety (90) days to provide Customer time to make necessary changes.
+When Paxos makes a Breaking Change to Reconciliation Reports, Paxos will either allow Customer to immediately opt-in to the new version, or provide Customer with both the new and old version of the Reconciliation Reports for at least ninety (90) days (the **“Change Policy”**). 
+
+## Breaking Change Notifications
+
+When Paxos makes a Breaking Change to the Core Platform Services or FIX Service, Paxos will issue a Breaking Change notification.
+Such notification will be sent at least ninety (90) days ahead of the change to all registered Customer Service Contacts via email and include **“Breaking Change Notification”** in the subject.
+
+## Types of Breaking Changes
+
+For reference, the following changes qualify as examples of Breaking Changes:
+
+- Removing or renaming an API service.
+- Removal of a field or enumerated value from an API response.
+- Removing or renaming a column in the Reconciliation Reports.
+- Change of a request field or parameter from non-mandatory to mandatory.
+- Change of a field or parameter name.
+- Addition of new validation rules to a field, resulting in previously accepted requests being rejected.
+- Modification of the data type of a field (for example, converting a single object to a list of objects).
+
+This list is non-exhaustive and Paxos may identify additional Breaking Changes in its discretion.
+
+## Backwards Compatible Changes
+
+Backwards compatible changes are any changes that (i) are not explicitly identified by Paxos as Breaking Changes, (ii) do not materially reduce any functionality with respect to the Core Platform Services and (iii) do not materially change the schema or query parameters with respect to the Core Platform Services (collectively, **“Backwards Compatible Changes”**).
+All users of Paxos APIs should expect and manage identified Backwards Compatible Changes without error. 
+
+For reference, the following changes are considered Backwards Compatible Changes:
+
+- Addition of a new API service.
+- Addition of a method to an API service.
+- Addition of a new non-mandatory field, parameter, or header to an API request or response.
+- Changing the length or format of a field identified as a string in the API reference documentation.
+- Addition of new enumerated values, including but not limited to status codes or error codes.
+- Changes to error messages.
+- Addition of a new report to the Reconciliation Reports.
+- Addition of a new column to the Reconciliation Reports.
+- Modification of the order of columns to the Reconciliation Reports.
+- Deprecation of a field in a request or response without removing it.
+- Change in order of fields in an object, or objects in an array.
+- Addition of a new FIX tag.
+
+This list is non-exhaustive and Paxos may identify additional Backwards Compatible Changes in its discretion.
+
+## End of Life
+
+If Paxos decides to entirely remove or no longer support a Core Platform Service, Paxos will provide Customer Service Contacts with an **“End of Life”** notification at least ninety (90) days in advance of the change.
+
+## Exceptions
+
+This policy only applies to services listed as Core Platform Services.
+Paxos will use commercially reasonable efforts to provide advance notice of changes to other services over email to all Customer Service Contacts.
+
+## Required Changes
+
+Paxos may make breaking changes without notice in order to fix material defects or to comply with legal obligations.
+In addition, Paxos may throttle requests or disable access to any or all components of the Core Platform Services if Paxos determines that a Customer's usage of the service poses a risk to the stability of the platform.
+In the case where Paxos manually throttles requests or disables access, Paxos will immediately notify all registered Customer Service Contacts within forty-five (45) minutes of taking such action.

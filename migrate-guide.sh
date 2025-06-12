@@ -171,25 +171,27 @@ with open('$file', 'w') as f:
     
     # Convert link reference definitions to new guide structure
     # Pattern: [name]: /guide/page -> [name]: /guides/guide/page
-    sed -i '' 's|\]: /identity/|\]: /guides/identity/|g' "$file"
-    sed -i '' 's|\]: /developer/|\]: /guides/developer/|g' "$file"
-    sed -i '' 's|\]: /stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
-    sed -i '' 's|\]: /webhooks/|\]: /guides/webhooks/|g' "$file"
-    sed -i '' 's|\]: /transfers/|\]: /guides/transfers/|g' "$file"
-    sed -i '' 's|\]: /profiles/|\]: /guides/profiles/|g' "$file"
-    sed -i '' 's|\]: /accounts/|\]: /guides/accounts/|g' "$file"
-    sed -i '' 's|\]: /orders/|\]: /guides/orders/|g' "$file"
+    # COMMENTED OUT TO PRESERVE ORIGINAL DOCUSAURUS LINKS
+    # sed -i '' 's|\]: /identity/|\]: /guides/identity/|g' "$file"
+    # sed -i '' 's|\]: /developer/|\]: /guides/developer/|g' "$file"
+    # sed -i '' 's|\]: /stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
+    # sed -i '' 's|\]: /webhooks/|\]: /guides/webhooks/|g' "$file"
+    # sed -i '' 's|\]: /transfers/|\]: /guides/transfers/|g' "$file"
+    # sed -i '' 's|\]: /profiles/|\]: /guides/profiles/|g' "$file"
+    # sed -i '' 's|\]: /accounts/|\]: /guides/accounts/|g' "$file"
+    # sed -i '' 's|\]: /orders/|\]: /guides/orders/|g' "$file"
     
     # Also handle link reference definitions without leading slash
     # Pattern: [name]: guide/page -> [name]: /guides/guide/page
-    sed -i '' 's|\]: identity/|\]: /guides/identity/|g' "$file"
-    sed -i '' 's|\]: developer/|\]: /guides/developer/|g' "$file"
-    sed -i '' 's|\]: stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
-    sed -i '' 's|\]: webhooks/|\]: /guides/webhooks/|g' "$file"
-    sed -i '' 's|\]: transfers/|\]: /guides/transfers/|g' "$file"
-    sed -i '' 's|\]: profiles/|\]: /guides/profiles/|g' "$file"
-    sed -i '' 's|\]: accounts/|\]: /guides/accounts/|g' "$file"
-    sed -i '' 's|\]: orders/|\]: /guides/orders/|g' "$file"
+    # COMMENTED OUT TO PRESERVE ORIGINAL DOCUSAURUS LINKS
+    # sed -i '' 's|\]: identity/|\]: /guides/identity/|g' "$file"
+    # sed -i '' 's|\]: developer/|\]: /guides/developer/|g' "$file"
+    # sed -i '' 's|\]: stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
+    # sed -i '' 's|\]: webhooks/|\]: /guides/webhooks/|g' "$file"
+    # sed -i '' 's|\]: transfers/|\]: /guides/transfers/|g' "$file"
+    # sed -i '' 's|\]: profiles/|\]: /guides/profiles/|g' "$file"
+    # sed -i '' 's|\]: accounts/|\]: /guides/accounts/|g' "$file"
+    # sed -i '' 's|\]: orders/|\]: /guides/orders/|g' "$file"
     
     # Convert Docusaurus admonitions to Mintlify format with proper matching
     # Handle specific admonition types with their proper closing tags
@@ -287,74 +289,80 @@ ensure_closed_admonitions('$file')
 convert_internal_links() {
     local file="$1"
     
+    # COMMENTED OUT: Preserve original Docusaurus links for backwards compatibility
+    # The physical files will be in /guides/ but links will remain as /guide-name/
+    # This allows setting up redirects in Mintlify configuration
+    
     # Convert internal guide links from Docusaurus to Mintlify format
     # Pattern: /guide-name/page-name -> /guides/guide-name/page-name
     
-    # Common guide conversions
-    sed -i '' 's|href="/identity/|href="/guides/identity/|g' "$file"
-    sed -i '' 's|](/identity/|](guides/identity/|g' "$file"
-    sed -i '' 's|href="/developer/|href="/guides/developer/|g' "$file"
-    sed -i '' 's|](developer/|](guides/developer/|g' "$file"
-    sed -i '' 's|href="/stablecoin-operations/|href="/guides/stablecoin-operations/|g' "$file"
-    sed -i '' 's|](stablecoin-operations/|](guides/stablecoin-operations/|g' "$file"
-    sed -i '' 's|href="/webhooks/|href="/guides/webhooks/|g' "$file"
-    sed -i '' 's|](webhooks/|](guides/webhooks/|g' "$file"
-    sed -i '' 's|href="/transfers/|href="/guides/transfers/|g' "$file"
-    sed -i '' 's|](transfers/|](guides/transfers/|g' "$file"
-    sed -i '' 's|href="/profiles/|href="/guides/profiles/|g' "$file"
-    sed -i '' 's|](profiles/|](guides/profiles/|g' "$file"
-    sed -i '' 's|href="/accounts/|href="/guides/accounts/|g' "$file"
-    sed -i '' 's|](accounts/|](guides/accounts/|g' "$file"
-    sed -i '' 's|href="/orders/|href="/guides/orders/|g' "$file"
-    sed -i '' 's|](orders/|](guides/orders/|g' "$file"
+    # Common guide conversions - COMMENTED OUT TO PRESERVE ORIGINAL LINKS
+    # sed -i '' 's|href="/identity/|href="/guides/identity/|g' "$file"
+    # sed -i '' 's|](/identity/|](guides/identity/|g' "$file"
+    # sed -i '' 's|href="/developer/|href="/guides/developer/|g' "$file"
+    # sed -i '' 's|](developer/|](guides/developer/|g' "$file"
+    # sed -i '' 's|href="/stablecoin-operations/|href="/guides/stablecoin-operations/|g' "$file"
+    # sed -i '' 's|](stablecoin-operations/|](guides/stablecoin-operations/|g' "$file"
+    # sed -i '' 's|href="/webhooks/|href="/guides/webhooks/|g' "$file"
+    # sed -i '' 's|](webhooks/|](guides/webhooks/|g' "$file"
+    # sed -i '' 's|href="/transfers/|href="/guides/transfers/|g' "$file"
+    # sed -i '' 's|](transfers/|](guides/transfers/|g' "$file"
+    # sed -i '' 's|href="/profiles/|href="/guides/profiles/|g' "$file"
+    # sed -i '' 's|](profiles/|](guides/profiles/|g' "$file"
+    # sed -i '' 's|href="/accounts/|href="/guides/accounts/|g' "$file"
+    # sed -i '' 's|](accounts/|](guides/accounts/|g' "$file"
+    # sed -i '' 's|href="/orders/|href="/guides/orders/|g' "$file"
+    # sed -i '' 's|](orders/|](guides/orders/|g' "$file"
     
-    # Handle Card href attributes specifically
-    sed -E -i '' 's|href="/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)"|href="/guides/\1/\2"|g' "$file"
+    # Handle Card href attributes specifically - COMMENTED OUT
+    # sed -E -i '' 's|href="/([a-zA-Z0-9-]+)/([a-zA-Z0-9-]+)"|href="/guides/\1/\2"|g' "$file"
     
-    # Generic pattern for any remaining internal guide links
+    # Generic pattern for any remaining internal guide links - COMMENTED OUT
     # This catches patterns like /guide-name/page-name that weren't handled above
-    python3 -c "
-import re
+    # python3 -c "
+# import re
 
-def convert_remaining_links(content):
-    # Pattern to match internal links that start with / and have guide structure
-    # but avoid API links, images, and other non-guide links
+# def convert_remaining_links(content):
+#     # Pattern to match internal links that start with / and have guide structure
+#     # but avoid API links, images, and other non-guide links
     
-    def convert_link(match):
-        full_match = match.group(0)
-        link_part = match.group(1)
+#     def convert_link(match):
+#         full_match = match.group(0)
+#         link_part = match.group(1)
         
-        # Skip if it's already converted, an API link, image, or other special path
-        if (link_part.startswith('guides/') or 
-            link_part.startswith('api-reference/') or 
-            link_part.startswith('images/') or 
-            link_part.startswith('img/') or
-            link_part.startswith('api/') or
-            '.' in link_part.split('/')[-1]):  # Has file extension
-            return full_match
+#         # Skip if it's already converted, an API link, image, or other special path
+#         if (link_part.startswith('guides/') or 
+#             link_part.startswith('api-reference/') or 
+#             link_part.startswith('images/') or 
+#             link_part.startswith('img/') or
+#             link_part.startswith('api/') or
+#             '.' in link_part.split('/')[-1]):  # Has file extension
+#             return full_match
         
-        # Check if it looks like a guide link (has at least guide/page structure)
-        parts = link_part.split('/')
-        if len(parts) >= 2 and parts[0] and parts[1]:
-            # Convert to /guides/ structure (preserve leading slash)
-            return full_match.replace(f'/{link_part}', f'/guides/{link_part}')
+#         # Check if it looks like a guide link (has at least guide/page structure)
+#         parts = link_part.split('/')
+#         if len(parts) >= 2 and parts[0] and parts[1]:
+#             # Convert to /guides/ structure (preserve leading slash)
+#             return full_match.replace(f'/{link_part}', f'/guides/{link_part}')
         
-        return full_match
+#         return full_match
     
-    # Match both href and markdown link patterns
-    content = re.sub(r'href=\"(/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\"', convert_link, content)
-    content = re.sub(r'\]\((/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\)', convert_link, content)
+#     # Match both href and markdown link patterns
+#     content = re.sub(r'href=\"(/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\"', convert_link, content)
+#     content = re.sub(r'\]\((/[a-zA-Z0-9][a-zA-Z0-9-]*(?:/[a-zA-Z0-9][a-zA-Z0-9-]*)*)\)', convert_link, content)
     
-    return content
+#     return content
 
-with open('$file', 'r') as f:
-    content = f.read()
+# with open('$file', 'r') as f:
+#     content = f.read()
 
-content = convert_remaining_links(content)
+# content = convert_remaining_links(content)
 
-with open('$file', 'w') as f:
-    f.write(content)
-"
+# with open('$file', 'w') as f:
+#     f.write(content)
+# "
+
+    echo "    🔗 Preserving original link format for backwards compatibility"
 }
 
 # Function to fix shell variable expressions and other parsing issues
@@ -710,20 +718,31 @@ if [ "$IS_FILE_MIGRATION" = "true" ]; then
         echo "  ✅ Converted: $filename"
     done
 else
-    # Process all files in directory
-    echo "📁 Processing files from $SOURCE_DIR"
-    for file in "$SOURCE_DIR"/*.mdx; do
+    # Process all files in directory recursively
+    echo "📁 Processing files recursively from $SOURCE_DIR"
+    
+    # Use find to recursively locate all .mdx files
+    find "$SOURCE_DIR" -name "*.mdx" -type f | while read -r file; do
         if [ -f "$file" ]; then
+            # Get relative path from source directory
+            relative_path="${file#$SOURCE_DIR/}"
             filename=$(basename "$file")
             
-            if [ "$IS_ROOT_MIGRATION" = "root" ]; then
-                target_filename=$(get_target_filename "$filename")
-                target_file="$TARGET_DIR/$target_filename"
+            # Create target directory structure if needed
+            target_subdir=$(dirname "$relative_path")
+            if [ "$target_subdir" != "." ]; then
+                mkdir -p "$TARGET_DIR/$target_subdir"
+                target_file="$TARGET_DIR/$relative_path"
             else
                 target_file="$TARGET_DIR/$filename"
             fi
             
-            echo "  📄 Processing: $filename -> $(basename "$target_file")"
+            if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+                target_filename=$(get_target_filename "$filename")
+                target_file="$TARGET_DIR/$target_filename"
+            fi
+            
+            echo "  📄 Processing: $relative_path -> ${target_file#$TARGET_DIR/}"
             
             # Copy file to target
             cp "$file" "$target_file"
@@ -746,7 +765,7 @@ else
             # Convert internal guide links
             convert_internal_links "$target_file"
             
-            echo "  ✅ Converted: $filename"
+            echo "  ✅ Converted: $relative_path"
         fi
     done
 fi
@@ -778,16 +797,18 @@ if is_root:
     # For root migration, only process .mdx files in the root directory
     file_pattern = f"{target_dir}/*.mdx"
 else:
-    file_pattern = f"{target_dir}/*.mdx"
+    # For nested migration, process all .mdx files recursively
+    file_pattern = f"{target_dir}/**/*.mdx"
 
-for file_path in glob.glob(file_pattern):
-    with open(file_path, 'r') as f:
-        content = f.read()
-    
-    fixed_content = fix_json_patterns(content)
-    
-    with open(file_path, 'w') as f:
-        f.write(fixed_content)
+for file_path in glob.glob(file_pattern, recursive=True):
+    if os.path.isfile(file_path):
+        with open(file_path, 'r') as f:
+            content = f.read()
+        
+        fixed_content = fix_json_patterns(content)
+        
+        with open(file_path, 'w') as f:
+            f.write(fixed_content)
 EOF
 
 # Fix backticks to proper quotes in JSON
@@ -856,14 +877,17 @@ else
     echo "  \"group\": \"$(echo $TARGET_GUIDE | sed 's/.*/\u&/')\","
     echo "  \"pages\": ["
 
-    # Generate page list for docs.json
-    for file in "$TARGET_DIR"/*.mdx; do
+    # Generate page list for docs.json recursively
+    find "$TARGET_DIR" -name "*.mdx" -type f | while read -r file; do
         if [ -f "$file" ]; then
-            filename=$(basename "$file" .mdx)
-            if [ "$filename" = "index" ]; then
+            # Get relative path from target directory
+            relative_path="${file#$TARGET_DIR/}"
+            filename_no_ext="${relative_path%.mdx}"
+            
+            if [ "$filename_no_ext" = "index" ]; then
                 echo "    \"guides/$TARGET_GUIDE/overview\","
             else
-                echo "    \"guides/$TARGET_GUIDE/$filename\","
+                echo "    \"guides/$TARGET_GUIDE/$filename_no_ext\","
             fi
         fi
     done | sed '$ s/,$//'

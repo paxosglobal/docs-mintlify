@@ -1,0 +1,923 @@
+---
+title: 'Fiat Transfers Quickstart'
+description: Set up fiat funding and withdraw flows in the Sandbox environment.
+---
+
+
+
+[authenticate]: developer/authenticate.mdx
+[credentials]: developer/credentials.mdx
+[api-management]: https://dashboard.sandbox.paxos.com/admin/api
+[sandbox-account]: https://dashboard.sandbox.paxos.com
+[get-transfer]: /api-reference/transfers/get-transfer
+[list-transfers]: /api-reference/transfers/list-transfers
+[create-fiat-deposit-instructions]: /api-reference/fiat-transfers/create-fiat-deposit-instructions
+[get-profile-balance]: /api-reference/profiles/get-profileBalance
+[create-fiat-account]: /api-reference/fiat-transfers/operation/CreateFiatAccount
+[get-fiat-account]: /api-reference/fiat-transfers/operation/GetFiatAccount
+[list-fiat-accounts]: /api-reference/fiat-transfers/operation/ListFiatAccounts
+[initiate-sandbox-fiat-deposit]: /api-reference/sandbox-fiat-transfersInitiateSandboxFiatDeposit
+[create-fiat-withdrawal]: /api-reference/fiat-transfers/operation/CreateFiatWithdrawal
+[update-fiat-account]: /api-reference/fiat-transfers/operation/UpdateFiatAccount
+[jws-request-signing]: https://cryptobrokerage.paxos.com/hc/en-us/articles/6716212970516-How-to-Use-Request-Signing
+[fiat-transfers]: /api-reference/fiat-transfers
+[transfers]: /api-reference/transfers
+[profiles]: /api-reference/profiles
+[Support]: https://support.paxos.com
+
+
+
+This guides walks you through the steps to [send fiat to the Paxos Platform](#funding) as well as [move money to an external bank account](#withdrawal) using the [Fiat Transfers][fiat-transfers], [Transfers][transfers] and [Profiles][profiles] APIs.
+Once completed, similar workflows can be implemented in Production.
+If you already have a [Sandbox Account][sandbox-account], this guide should take less than one hour to complete.
+
+## Authenticate in Sandbox
+
+Both the [funding](#funding) and [withdrawal](#withdrawal) flows require the same scopes, so for simplicity one authentication call should be all you need to complete both flows.
+
+> When [creating API credentials][credentials] via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
+> Including the scope when [authenticating][authenticate] may result in an `invalid_scope` error.
+> Contact [Support] if you run into any issues using this scope.
+
+Add the `transfer:read_fiat_account`, `transfer:write_fiat_account`, `transfer:read_fiat_deposit_instructions`, `transfer:write_fiat_deposit_instructions`, `transfer:write_fiat_withdrawal`, `transfer:write_sandbox_fiat_deposit`, `transfer:read_transfer` and `funding:read_profile` scopes to your [Sandbox Account][sandbox-account] 
+under the [API Management][api-management] setting and then authenticate in Sandbox using the scopes.
+
+
+```shell
+curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
+--form grant_type=client_credentials \
+--form client_id={paxos_client_id} \
+--form client_secret={paxos_secret} \
+{/* highlight-next-line */}
+--form scope='transfer:read_fiat_account transfer:write_fiat_account transfer:read_fiat_deposit_instructions transfer:write_fiat_deposit_instructions transfer:write_fiat_withdrawal transfer:write_sandbox_fiat_deposit transfer:read_transfer funding:read_profile'
+```
+
+
+Confirm the response includes requisite scopes and save the `access_token` to use in the request authorization header 
+throughout this guide.
+
+```json
+{
+ "access_token": "{access_token}",
+ {/* highlight-next-line */}
+ "expires_in": 3599, // Seconds (59 Minutes and 59 Seconds)
+ {/* highlight-next-line */}
+ "scope": "transfer:read_fiat_account transfer:write_fiat_account transfer:read_fiat_deposit_instructions transfer:write_fiat_deposit_instructions transfer:write_fiat_withdrawal transfer:write_sandbox_fiat_deposit transfer:read_transfer funding:read_profile",
+ "token_type": "bearer"
+}
+```
+<Tip>
+
+You must include the Authorization header with your bearer token on all API requests `-H "Authorization: Bearer $TOKEN"`.
+
+</Tip>
+
+## Funding Flow
+
+<FiatTransfersFund />
+
+We'll be following the recommended fiat deposit workflow:
+
+- [Authenticate in Sandbox](#authenticate).
+- Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions][create-fiat-deposit-instructions].
+- Send a wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, referencing the `memo_id` provided in the deposit instructions.
+- Check the status of the deposit using [List Transfers][list-transfers].
+- View updated balances using [Get Profile Balance][get-profile-balance].
+
+
+### ➊ Create Fiat Deposit Instructions
+
+Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions][create-fiat-deposit-instructions].
+
+<Info>
+- For wires, use `fiat_network` “WIRE”. Specify international (SWIFT) or US (Fedwire) by setting `routing_number_type` 
+to “ABA” (for Fedwire) or “SWIFT” (for SWIFT).
+- For CUBIX, use `fiat_network` CUBIX. Do not use `routing_number_type`.
+</Info>
+
+
+### Corporate Funding
+
+
+
+Retrieve the `profile_id` and `identity_id` (optioinal) from your records. Use your omnibus `profile_id` and optionally your corporate `identity_id` created for you by Paxos. 
+
+Create deposit instructions for international wires. Include the following body parameters in the request:
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-deposit-instructions' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  //highlight-next-line
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "fiat_network": "WIRE",
+  //highlight-next-line
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+  "ref_id": "idempotence_id",
+  "routing_number_type": "SWIFT",
+  "metadata": {
+    "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+  }
+}'
+```
+
+Upon successful request, the acknowledgment response confirms your request has been received.
+
+```json
+{
+  "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+  "created_at": "2024-01-28T04:23:11.738801Z",
+  "ref_id": "idempotence_id",
+  "status": "VALID",
+  {/* highlight-next-line */}
+  "memo_id": "9CFXQSCMSPLFHXLZ",
+  "fiat_network_instructions": {
+    "wire": {
+      "account_number": "7339119",
+      "fiat_account_owner_address": {
+        "country": "US",
+        "address1": "450 Lexington Ave. #3952",
+        "city": "New York",
+        "province": "NY",
+        "zip_code": "10163"
+      },
+      "routing_details": {
+        "routing_number_type": "SWIFT",
+        "routing_number": "031302971",
+        "bank_name": "Customers Bank",
+        "bank_address": {
+          "country": "USA",
+          "address1": "701 Reading Avenue",
+          "city": "West Reading",
+          "province": "PA",
+          "zip_code": "19611"
+        }
+      }
+    },
+    "fiat_account_owner": {
+      "institution_details": {
+        "name": "Paxos Trust Company, LLC"
+      }
+    },
+    "metadata": {
+      "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+    }
+  }
+}
+
+```
+You will need the `memo_id` from the response on the next step in order to fund the Profile.
+
+
+### End User Funding
+
+
+
+Retrieve the user’s `profile_id`, `identity_id` and `account_id` from your records.
+Create deposit instructions for international wires (SWIFT) for end user funding. 
+Include the following body parameters in the request:
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-deposit-instructions' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+    "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+    "fiat_network": "WIRE",
+    "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+    "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+    "ref_id": "idempotence_id",
+    "routing_number_type": "SWIFT",
+    "metadata":
+    {
+      "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+    }
+}'
+```
+Upon successful request, the acknowledgment response confirms your request has been received.
+
+```json
+{
+  "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+  "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+  "created_at": "2024-01-28T04:23:11.738801Z",
+  "ref_id": "idempotence_id",
+  "status": "VALID",
+  "memo_id": "9CFXQSCMSPLFHXLY",
+  "fiat_network_instructions": {
+    "wire": {
+      "account_number": "7339119",
+      "fiat_account_owner_address": {
+        "country": "US",
+        "address1": "450 Lexington Ave. #3952",
+        "city": "New York",
+        "province": "NY",
+        "zip_code": "10163"
+      },
+      "routing_details": {
+        "routing_number_type": "SWIFT",
+        "routing_number": "031302971",
+        "bank_name": "Customers Bank",
+        "bank_address": {
+          "country": "USA",
+          "address1": "701 Reading Avenue",
+          "city": "West Reading",
+          "province": "PA",
+          "zip_code": "19611"
+        }
+      }
+    },
+    "fiat_account_owner": {
+      "institution_details": {
+        "name": "Paxos Trust Company, LLC"
+      }
+    },
+    "metadata": {
+      "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+    }
+  }
+}
+```
+
+You will need the `memo_id` from the response to fund the Profile.
+
+
+
+
+### ➋ Send Fiat to Paxos
+
+Send a wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, referencing the `memo_id` to fund your Profile.
+
+For Sandbox environment emulate the wire deposit using [Initiate Sandbox Fiat Deposit][initiate-sandbox-fiat-deposit].
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/sandbox/fiat-deposits' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "amount": "150.33",
+  "asset": "USD",
+  "memo_id": "9CFXQSCMSPLFHXLZ",
+  "fiat_network_instructions": {
+    "wire": {
+      "account_number": "1234567",
+      "fiat_account_owner_address": {
+        "country": "US",
+        "address1": "456 Main Street",
+        "city": "New York",
+        "province": "NY",
+        "zip_code": "10101"
+      },
+      "routing_details": {
+        "routing_number_type": "SWIFT",
+        "routing_number": "031302971",
+        "bank_name": "Customers Bank",
+        "bank_address": {
+          "country": "USA",
+          "address1": "123 Bank Street",
+          "city": "New York",
+          "province": "NY",
+          "zip_code": "10101"
+        }
+      }
+    }
+  },
+  "fiat_account_owner": {
+    "institution_details": {
+      "name": "Paxos Trust Company, LLC"
+    }
+  }
+}'
+```
+You should get an empty response with `200` status code.
+
+It can take a minute to process the deposit on the backend. 
+
+<Tip>
+
+ 
+
+In production, send a real wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, referencing the production `memo_id` (not sandbox) to fund your Profile.
+
+</Tip>
+
+### ➌ Check Status of Deposit
+
+Find the deposit using [List Transfers][list-transfers].
+
+
+### Via Profile ID
+
+
+
+Include the `profile_id` query parameter to filter out transfers to all other Profiles.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?order=DESC&type=WIRE_DEPOSIT&limit=2&profile_ids=5fc6d191-193c-4e28-94fa-656bbdbdfaad&limit=1' \
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response:
+```json
+{   "items": [
+ {   "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+     "amount": "150.33",
+     "asset": "USD",
+     "auto_conversion": {},
+     "balance_asset": "USD",
+     "created_at": "2024-01-28T00:48:00.222744Z",
+     "customer_id": "4eaffe58-df0e-4559-8dec-fdae231684e9",
+     "direction": "CREDIT",
+     "fee": "30",
+     "id": "cca46bf3-2dab-4ab5-a4f1-7b1b75956a29",
+     "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+     "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+     "status": "COMPLETED",
+     "total": "120.33",
+     "type": "WIRE_DEPOSIT",
+     "updated_at": "2024-01-28T00:48:00.332602Z"
+ }
+ ], 
+  "next_page_cursor": "TAISDAiA-9qtBhCQtcyeARjCwa8M"
+}
+```
+
+
+### Via Identity ID
+
+
+
+Include the `identity_id` query parameter to filter out transfers to all other Identities.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?order=DESC&type=WIRE_DEPOSIT&identity_ids=8a398cb6-4e3b-4868-9cea-a1c567856e68&limit=1' \
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response:
+```json
+{   "items": [
+ {   "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+     "amount": "150.33",
+     "asset": "USD",
+     "auto_conversion": {},
+     "balance_asset": "USD",
+     "created_at": "2024-01-28T00:48:00.222744Z",
+     "customer_id": "4eaffe58-df0e-4559-8dec-fdae231684e9",
+     "direction": "CREDIT",
+     "fee": "30",
+     "id": "cca46bf3-2dab-4ab5-a4f1-7b1b75956a29",
+     "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+     "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+     "status": "COMPLETED",
+     "total": "120.33",
+     "type": "WIRE_DEPOSIT",
+     "updated_at": "2024-01-28T00:48:00.332602Z"
+ }
+ ], 
+  "next_page_cursor": "TAISDAiA-9qtBhCQtcyeARjCwa8Q"
+}
+```
+
+
+
+### ➍ View Updated Balances
+
+View updated balances using [Get Profile Balance][get-profile-balance].
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD' \
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response: 
+```json
+{
+  "asset": "USD", 
+  "available": "120.33", 
+  "trading": "0"
+}
+```
+
+## Withdrawal Flow
+
+<FiatTransfersWithdraw />
+
+We'll be following the recommended fiat withdrawal workflow:
+
+- [Authenticate in Sandbox](#authenticate).
+- Save your external bank account information on Paxos using [Create Fiat Account][create-fiat-account]. If needed, you can update bank account information using [Update Fiat Account][update-fiat-account].
+- Confirm sufficient funds in the associated Profile to process the withdrawal using [Get Profile Balance][get-profile-balance].
+- Retrieve the ID for your external bank account using [List Fiat Accounts][list-fiat-accounts].
+- Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal][create-fiat-withdrawal].
+- Check the status of the withdrawal using [List Transfers][list-transfers].
+- View updated balances using [Get Profile Balance][get-profile-balance].
+
+### ➊ Create Fiat Account
+
+Save your external bank account information on Paxos using [Create Fiat Account][create-fiat-account].
+
+<Tip>
+For CUBIX, the `wallet_address` on `fiat_network_instructions` is not a crypto wallet address, it is a Customers Bank 
+account wallet address.
+</Tip>
+
+
+### Corporate Funding
+
+
+
+Include the following body parameters in your request to create fiat accounts for US domestic wires:
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-accounts' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+    "ref_id": "idempotence_id",
+    "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+    "fiat_account_owner": {
+        "institution_details": {
+            "name": "Company"
+        }
+    },
+    "fiat_network_instructions": {
+        "wire": {
+            "account_number": "74600021314512",
+            "fiat_account_owner_address": {
+                    "country": "USA",
+                    "address1": "456 Main Street, NY",
+                    "city": "New York",
+                    "province": "NY",
+                    "zip_code": "10101"
+            },
+            "routing_details": {
+                "routing_number_type": "ABA",
+                "routing_number": "031302971",
+                "bank_name": "Customers Bank",
+                "bank_address": {
+                        "country": "USA",
+                        "address1": "123 Bank Street",
+                        "city": "New York",
+                        "province": "NY",
+                        "zip_code": "10101"
+                }
+            }
+        }
+    },
+    "metadata": {
+       "test_ref_id": "47aa7538-e2d2-47b3-8600-44a7965dd357",  
+       "key_2": "2"
+    }
+}'
+```
+
+Upon successful request, the acknowledgment response confirms your request has been received.
+
+```json
+{
+  {/* highlight-next-line */}
+  "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+  "ref_id": "idempotence_id",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+  "fiat_account_owner": {
+    "person_details": {
+      "name": "Company"
+    },
+    "fiat_network_instructions": {
+      "wire": {
+        "account_number": "74600021314512",
+        "fiat_account_owner_address": {
+          "country": "USA",
+          "address1": "456 Main Street, NY",
+          "city": "New York",
+          "province": "NY",
+          "zip_code": "10101"
+        },
+        "routing_details": {
+          "routing_number_type": "ABA",
+          "routing_number": "031302971",
+          "bank_name": "Customers Bank",
+          "bank_address": {
+            "country": "USA",
+            "address1": "123 Bank Street",
+            "city": "New York",
+            "province": "NY",
+            "zip_code": "10101"
+          }
+        }
+      }
+    }
+  },
+  {/* highlight-next-line */}
+  "status": "PENDING",
+  "metadata": {
+    "test_ref_id": "47aa7538-e2d2-47b3-8600-44a7965dd357",
+    "key_2": "2"
+  },
+  "created_at": "2024-01-28T22:14:25.731494Z"
+}
+```
+
+Note the `id` in the response, it will be required to check the Account status in the next steps.
+
+
+
+### End User Funding
+
+
+
+Include the following body parameters in your request to create fiat accounts for SWIFT (international) wires:
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-accounts' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+    "ref_id": "idempotence_id",
+    "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+    "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+    "fiat_account_owner": {
+        "person_details": {
+            "first_name": "Megan",
+            "last_name": "Snow"
+        }
+    },
+    "fiat_network_instructions": {
+        "wire": {
+            "account_number": "74600021314512",
+            "fiat_account_owner_address": {
+                    "country": "USA",
+                    "address1": "2600 Tully St",
+                    "city": "Washington",
+                    "province": "DC",
+                    "zip_code": "10010"
+            },
+            "routing_details": {
+                "routing_number_type": "SWIFT",
+                "routing_number": "JINABVU1773",
+                "bank_name": "First Bank",
+                "bank_address": {
+                        "country": "Brazil",
+                        "address1": "Awesome ct",
+                        "city": "Sao Paulo",
+                        "province": "Sao Paulo",
+                        "zip_code": "33445"
+                }
+            },
+            "intermediary_routing_details": {
+                "routing_number_type": "ABA",
+                "routing_number": "123456789",
+                "bank_name": "Ubium Bank",
+                "bank_address": {
+                    "country": "USA",
+                    "address1": "Great str",
+                    "city": "Walnut Creek",
+                    "province": "CA",
+                    "zip_code": "59610"
+                }
+            }
+        }
+    },
+    "metadata": {
+        "key_1": "1",
+        "key_2": "two"
+    }
+}'
+```
+
+Upon successful request, the acknowledgment response confirms your request has been received.
+
+```json
+{
+    {/* highlight-next-line */}  
+    "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+    "ref_id": "idempotence_id",
+    "identity_id": "8f22e593-5f51-40cc-8bb0-5245d051c1da",
+    "account_id": "38fc5a41-12a5-43f4-a2de-4733dcd1dee6",
+    "fiat_account_owner": {
+        "person_details": {
+            "first_name": "Megan",
+            "last_name": "Snow"
+        }
+    },
+    "fiat_network_instructions": {
+        "wire": {
+            "account_number": "XXXXXXXXXX4512",
+            "fiat_account_owner_address": {
+                "country": "USA",
+                "address1": "2600 Tully St",
+                "city": "Washington",
+                "province": "DC",
+                "zip_code": "10010"
+            },
+            "routing_details": {
+                "routing_number_type": "SWIFT",
+                "routing_number": "JINABVU1773",
+                "bank_name": "First Bank",
+                "bank_address": {
+                    "country": "Brazil",
+                    "address1": "Awesome ct",
+                    "city": "Sao Paulo",
+                    "province": "Sao Paulo",
+                    "zip_code": "33445"
+                }
+            },
+            "intermediary_routing_details": {
+                "routing_number_type": "ABA",
+                "routing_number": "123456789",
+                "bank_name": "Ubium Bank",
+                "bank_address": {
+                    "country": "USA",
+                    "address1": "Great str",
+                    "city": "Walnut Creek",
+                    "province": "CA",
+                    "zip_code": "59610"
+                }
+            }
+        }
+    },
+    {/* highlight-next-line */}
+    "status": "PENDING",
+    "metadata": {
+        "key_1": "1",
+        "key_2": "two"
+    },
+    "created_at": "2024-03-13T00:50:08.902618Z"
+}
+```
+
+Note the `id` in the response, it will be required to check the Account status in the next steps. 
+
+
+
+
+
+### ➋ Confirm Sufficient Funds
+
+Confirm sufficient funds in the profile to process the withdrawal using [Get Profile Balance][get-profile-balance].
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD' \
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response: 
+```json
+{
+  "asset": "USD", 
+  "available": "120.33", 
+  "trading": "0"
+}
+```
+
+### ➌ Retrieve Bank Account Status
+
+Retrieve the status of your external bank account using [Get Fiat Account][get-fiat-account] and providing the `id` 
+from the [Create Fiat Account][create-fiat-account] response. 
+
+<Info>
+There are three statuses for Fiat Accounts: \"PENDING"`, \"APPROVED"`, \"REJECTED"`. While on \"PENDING"`, Paxos is 
+processing your fiat account. Fiat Account status needs to be \"APPROVED"` before Fiat Account can be used for withdrawals.
+</Info>
+
+Request: 
+```shell
+curl --request 'GET' --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-accounts/cc1b6606-a8a3-4a8f-8b9b-5456d96448bf'
+```
+
+Response: 
+
+```json
+{   
+   "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+   "created_at": "2024-01-28T22:14:25.731494Z",
+   "fiat_account_owner": {
+     "person_details": {
+       "name": "Company"
+     }
+   },
+   "fiat_network_instructions": {   
+     "wire": {
+       "account_number": "74600021314512",
+       "fiat_account_owner_address": {
+         "country": "USA",
+         "address1": "456 Main Street, NY",
+         "city": "New York",
+         "province": "NY",
+         "address2": "",
+         "zip_code": "10101"
+       },
+       "routing_details": {
+          "routing_number_type": "ABA",
+          "routing_number": "031302971",
+          "bank_name": "Customers Bank",
+          "bank_address": {
+            "country": "USA",
+            "address1": "123 Bank Street",
+            "city": "New York",
+            "province": "NY",
+            "zip_code": "10101"
+          }
+        }
+      }
+   },
+   "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+   "ref_id": "idempotence_id",
+    {/* highlight-next-line */}
+   "status": "APPROVED",
+   "metadata": {
+     "test_ref_id": "47aa7538-e2d2-47b3-8600-44a7965dd357",  
+     "key_2": "2"
+   }
+}
+```
+From the response find the `id` of the bank record for the user. It must be in `APPROVED` status. 
+
+
+### ➍ Create Fiat Withdrawal
+
+Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal][create-fiat-withdrawal].
+
+
+
+### Corporate Funding
+
+
+
+Initiate a CUBIX withdrawal. Specify the `fiat_account_id` of the Fiat Account from the [Create Fiat Account][create-fiat-account] response.
+
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "ref_id": "idempotence_id",
+  "amount": "120",
+  "asset": "USD",
+  {/* highlight-next-line */}
+  "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+  "metadata": {
+    "custom_key": "custom_value"
+  }
+}'
+```
+
+Response:
+```json
+{
+  "amount": "100",
+  "asset": "USD",
+  "auto_conversion": {},
+  "balance_asset": "USD",
+  "created_at": "2024-01-28T22:39:02.279268Z",
+  "customer_id": "4eaffe58-df0e-4559-8dec-fdae231684e1",
+  "direction": "DEBIT",
+  "fee": "20",
+  "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+  "id": "11a6f6e9-4219-4698-9d79-abfc1e346246",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
+  "metadata": {
+    "custom_key": "custom_value"
+  }, 
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "ref_id": "idempotence_id",
+  "status": "PENDING",
+  "total": "120",
+  "type": "CUBIX_WITHDRAWAL",
+  "updated_at": "2024-01-28T22:39:02.279268Z"
+}
+```
+
+
+
+### End User Funding
+
+
+
+Initiate an international wire withdrawal (SWIFT). Specify the `fiat_account_id` from the [Create Fiat Account][create-fiat-account] response.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
+--request 'POST' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "ref_id": "idempotence_id",
+  "amount": "120",
+  "asset": "USD",
+  {/* highlight-next-line */}
+  "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+  "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+  "metadata": {
+    "custom_key": "custom_value"
+  }
+}'
+```
+
+Response:
+```json
+{
+  "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+  "amount": "100",
+  "asset": "USD",
+  "auto_conversion": {},
+  "balance_asset": "USD",
+  "created_at": "2024-01-28T22:39:02.279268Z",
+  "customer_id": "4eaffe58-df0e-4559-8dec-fdae231684e1",
+  "direction": "DEBIT",
+  "fee": "20",
+  "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+  "id": "11a6f6e9-4219-4698-9d79-abfc1e346246",
+  "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+  "metadata": {
+    "custom_key": "custom_value"
+  }, 
+  "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+  "ref_id": "idempotence_id",
+  "status": "PENDING",
+  "total": "120",
+  "type": "WIRE_WITHDRAWAL",
+  "updated_at": "2024-01-28T22:39:02.279268Z"
+}
+```
+
+
+
+
+<Tip>
+It is recommended to have [JWS request signing][jws-request-signing] for Fiat Withdrawals. 
+JWS request signing uses a public-key cryptography with a client-controlled private key. 
+It adds an additional layer of security to withdrawals. 
+It can prevent malicious withdrawals even if the API key is compromised. 
+When used, all API calls with this key will require a JWS signature.
+</Tip>
+
+
+### ➎ Check Status of Withdrawal
+
+Check the status of the withdrawal using [Get Transfer][get-transfer] with the `id` from the previous step. 
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers/11a6f6e9-4219-4698-9d79-abfc1e346246' \
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response:
+```json
+{  "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
+   "amount": "100",
+   "asset": "USD",
+   "auto_conversion": {},
+   "balance_asset": "USD",
+   "created_at": "2024-01-28T22:39:02.279268Z",
+   "customer_id": "4eaffe58-df0e-4559-8dec-fdae231684e1",
+   "direction": "DEBIT",
+   "fee": "20",
+   "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
+   "id": "11a6f6e9-4219-4698-9d79-abfc1e346246",
+   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
+   "metadata": {
+     "custom_key": "custom_value"
+   },
+   "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+   "ref_id": "idempotence_id",
+   {/* highlight-next-line */}
+   "status": "COMPLETE",
+   "total": "120",
+   "type": "WIRE_WITHDRAWAL",
+   "updated_at": "2024-01-28T22:39:05.613881Z"}
+```
+
+### ➏ View Updated Balances
+
+View updated balances using [Get Profile Balance][get-profile-balance] and passing the `profile_id` and `USD` asset in the endpoint's path.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD \'
+--request 'GET' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+Response:
+```json
+{
+  "asset": "USD",
+  "available": "0.33",
+  "trading": "0"
+}
+```
