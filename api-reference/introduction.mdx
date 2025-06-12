@@ -1,33 +1,40 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API Introduction"
+description: "Welcome to the Paxos API documentation. Learn how to integrate with Paxos services for crypto brokerage, trading, and financial infrastructure."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# Paxos API Documentation
 
-## Welcome
+Welcome to Paxos APIs. At Paxos, the mission is to enable the movement of any asset, any time, in a trustworthy way. These APIs serve that mission by making it easier than ever for you to directly integrate Paxos product capabilities into your application, leveraging the speed, stability, and security of the Paxos platform.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Getting Started
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+The documentation that follows gives you access to Paxos Crypto Brokerage, Trading, and Exchange products. It includes APIs for market data, orders, and the held rate quote flow.
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="https://docs.paxos.com/developer/credentials">
+    Learn how to authenticate with Paxos APIs using OAuth 2.0
+  </Card>
+  <Card title="Sandbox Environment" icon="flask" href="https://account.sandbox.paxos.com">
+    Test Paxos APIs in the sandbox environment
+  </Card>
+</CardGroup>
+
+## API Environments
+
+Paxos provides two environments for API integration:
+
+- **Production**: `https://api.paxos.com/v2`
+- **Sandbox**: `https://api.sandbox.paxos.com/v2`
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Paxos APIs use OAuth 2 with the client credentials grant flow. Learn more in the [API credentials guide](https://docs.paxos.com/developer/credentials).
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+## Rate Limits
+
+API endpoints have rate limits to ensure system stability. Rate limit information is provided in response headers.
+
+## Support
+
+For more information about Paxos and the APIs, visit [Paxos.com](https://www.paxos.com/) or contact Paxos support for assistance. 
