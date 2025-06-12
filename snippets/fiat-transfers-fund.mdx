@@ -1,0 +1,5 @@
+[fiat-deposit-instructions]: /api-reference/fiat-transfers/create-fiat-deposit-instructions
+[profiles]: /api-reference/profiles
+
+To move USD onto the platform, first use [Create Fiat Deposit Instructions][fiat-deposit-instructions] to retrieve the Paxos banking information and specify which [Profile][profiles] balance to credit.
+Then, use the returned banking information, found in `fiat_network_instructions` object, along with the `memo_id`, to transfer funds to Paxos.

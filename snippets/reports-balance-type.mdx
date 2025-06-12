@@ -1,0 +1,9 @@
+The BalanceType field indicates which specific balance the row is referring to.
+It provides a way to precisely follow movement of funds as transactions complete in the [Profile Transaction Report](#ProfileTransactionReport), and identify the volume of funds held in reserve or in pending transactions at the end of each day in the [Profile Balances Report](#ProfileBalancesReport).
+
+| BalanceType Enum Value | Description |
+| --- | --- |
+| AVAILABLE | Balance that is currently available to trade or transfer. |
+| PENDING_DEBIT | Balance that is currently reserved for pending debits. For example, an outgoing transfer has been requested but not completed. |
+| TRADING | Balance that is currently reserved for trading. For example, a limit order has been placed but not filled. |
+| PENDING_CREDIT | Balance that is currently reserved for pending credits. For example, an incoming transfer has been requested but not completed. |

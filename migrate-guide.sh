@@ -4,10 +4,12 @@
 # Usage: 
 # - Migrate a directory: ./migrate-guide.sh <source_guide_name> <target_guide_name> [root]
 # - Migrate specific files: ./migrate-guide.sh --files <source_file1,source_file2,...> <target_guide_name>
+# - Migrate partials: ./migrate-guide.sh --partials
 # Examples:
 # ./migrate-guide.sh identity identity
 # ./migrate-guide.sh developer developer root (for root-level migration)
 # ./migrate-guide.sh --files developer/mint.mdx,developer/convert.mdx,developer/redeem.mdx stablecoin-operations
+# ./migrate-guide.sh --partials
 
 set -e
 
@@ -18,8 +20,25 @@ DOCS_JSON="/Users/cameronfleet/dev/new-docs/docs.json"
 SOURCE_IMAGES="/Users/cameronfleet/dev/docs/static/img"
 TARGET_IMAGES="/Users/cameronfleet/dev/new-docs/images"
 
+# Partials configuration
+SOURCE_PARTIALS="/Users/cameronfleet/dev/docs/_partials"
+TARGET_SNIPPETS="/Users/cameronfleet/dev/new-docs/snippets"
+
 # Parse arguments
-if [ "$1" = "--files" ]; then
+if [ "$1" = "--partials" ]; then
+    # Partials migration mode
+    if [ $# -ne 1 ]; then
+        echo "Usage for partials migration: $0 --partials"
+        echo "This will migrate the _partials directory to snippets"
+        exit 1
+    fi
+    
+    IS_PARTIALS_MIGRATION="true"
+    IS_FILE_MIGRATION="false"
+    IS_ROOT_MIGRATION="false"
+    
+    echo "🚀 Starting partials migration to snippets"
+elif [ "$1" = "--files" ]; then
     # File-specific migration mode
     if [ $# -ne 3 ]; then
         echo "Usage for file migration: $0 --files <source_file1,source_file2,...> <target_guide_name>"
@@ -31,6 +50,7 @@ if [ "$1" = "--files" ]; then
     TARGET_GUIDE="$3"
     IS_FILE_MIGRATION="true"
     IS_ROOT_MIGRATION="false"
+    IS_PARTIALS_MIGRATION="false"
     
     echo "🚀 Starting file-specific migration to $TARGET_GUIDE"
 else
@@ -46,6 +66,7 @@ else
     TARGET_GUIDE="$2"
     IS_ROOT_MIGRATION="${3:-}"
     IS_FILE_MIGRATION="false"
+    IS_PARTIALS_MIGRATION="false"
     
     SOURCE_DIR="$SOURCE_BASE/$SOURCE_GUIDE"
     
@@ -62,8 +83,11 @@ else
     fi
 fi
 
-# Set target directory based on whether it's a root migration
-if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+# Set target directory based on migration type
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    TARGET_DIR="$TARGET_SNIPPETS"
+    mkdir -p "$TARGET_DIR"
+elif [ "$IS_ROOT_MIGRATION" = "root" ]; then
     TARGET_DIR="$TARGET_BASE"
 else
     TARGET_DIR="$TARGET_BASE/guides/$TARGET_GUIDE"
@@ -75,23 +99,29 @@ convert_frontmatter() {
     local file="$1"
     local temp_file="/tmp/migrate_temp.mdx"
     
-    # Extract original frontmatter
-    local title=$(grep "^title:" "$file" | sed 's/title: *//' | sed 's/^"//' | sed 's/"$//')
-    local description=$(grep "^description:" "$file" | sed 's/description: *//')
-    
-    # Generate new frontmatter
-    echo "---" > "$temp_file"
-    echo "title: '$title'" >> "$temp_file"
-    if [ -n "$description" ]; then
-        echo "description: $description" >> "$temp_file"
+    # Check if file starts with frontmatter
+    if head -1 "$file" | grep -q "^---$"; then
+        # Extract original frontmatter
+        local title=$(grep "^title:" "$file" | sed 's/title: *//' | sed 's/^"//' | sed 's/"$//')
+        local description=$(grep "^description:" "$file" | sed 's/description: *//')
+        
+        # Generate new frontmatter
+        echo "---" > "$temp_file"
+        echo "title: '$title'" >> "$temp_file"
+        if [ -n "$description" ]; then
+            echo "description: $description" >> "$temp_file"
+        fi
+        echo "---" >> "$temp_file"
+        echo "" >> "$temp_file"
+        
+        # Extract content after frontmatter (skip lines between --- markers)
+        awk '/^---$/{p++} p>=2' "$file" | tail -n +2 >> "$temp_file"
+        
+        mv "$temp_file" "$file"
+    else
+        # File has no frontmatter, keep it as-is (no frontmatter needed for snippets)
+        echo "    📝 No frontmatter found, keeping file as-is (suitable for snippets)"
     fi
-    echo "---" >> "$temp_file"
-    echo "" >> "$temp_file"
-    
-    # Extract content after frontmatter (skip lines between --- markers)
-    awk '/^---$/{p++} p>=2' "$file" | tail -n +2 >> "$temp_file"
-    
-    mv "$temp_file" "$file"
 }
 
 # Function to clean up Docusaurus-specific content
@@ -341,6 +371,123 @@ convert_internal_links() {
     echo "    🔗 Preserving original link format for backwards compatibility"
 }
 
+# Function to convert partial references to snippet syntax
+convert_partial_references() {
+    local file="$1"
+    
+    echo "    🧩 Converting partial references to snippets"
+    
+    # Use Python to handle the complex conversion of imports and component usage
+    python3 -c "
+import re
+import os
+
+def convert_partials_to_snippets(content):
+    # Dictionary to track imported partials and their component names
+    imported_partials = {}
+    
+    # Pattern to match import statements for partials
+    # Examples:
+    # import SomePartial from '../_partials/some-partial.mdx';
+    # import SomePartial from '@site/content/_partials/some-partial.mdx';
+    # import { SomePartial } from '../_partials/some-partial.mdx';
+    
+    import_patterns = [
+        # Default import: import SomePartial from '../_partials/file.mdx'
+        r'import\s+(\w+)\s+from\s+[\'\"](\.\.\/)*_partials\/([^\'\"]+)\.mdx[\'\"]\s*;?',
+        # Default import: import SomePartial from '@site/content/_partials/file.mdx'
+        r'import\s+(\w+)\s+from\s+[\'\"]\@site\/content\/_partials\/([^\'\"]+)\.mdx[\'\"]\s*;?',
+        # Named import: import { SomePartial } from '../_partials/file.mdx'
+        r'import\s*\{\s*(\w+)\s*\}\s*from\s+[\'\"](\.\.\/)*_partials\/([^\'\"]+)\.mdx[\'\"]\s*;?',
+        # Named import: import { SomePartial } from '@site/content/_partials/file.mdx'
+        r'import\s*\{\s*(\w+)\s*\}\s*from\s+[\'\"]\@site\/content\/_partials\/([^\'\"]+)\.mdx[\'\"]\s*;?',
+    ]
+    
+    lines = content.split('\n')
+    new_lines = []
+    
+    for line in lines:
+        line_modified = False
+        
+        # Check each import pattern
+        for pattern in import_patterns:
+            match = re.search(pattern, line)
+            if match:
+                component_name = match.group(1)
+                if len(match.groups()) == 3:
+                    # Pattern with relative path (group 2 is path prefix, group 3 is filename)
+                    filename = match.group(3)
+                else:
+                    # Pattern with @site path (group 2 is filename)
+                    filename = match.group(2)
+                
+                # Store the mapping
+                imported_partials[component_name] = filename
+                
+                # Remove the import line
+                line_modified = True
+                break
+        
+        if not line_modified:
+            new_lines.append(line)
+    
+    # Now convert component usage to snippet syntax
+    content = '\n'.join(new_lines)
+    
+    for component_name, filename in imported_partials.items():
+        # Convert component usage to snippet syntax
+        # <ComponentName /> -> <Snippet file=\"filename\" />
+        # <ComponentName> -> <Snippet file=\"filename\">
+        # Handle both self-closing and opening tags
+        
+        # Self-closing tags
+        content = re.sub(
+            f'<{component_name}\\s*\/>',
+            f'<Snippet file=\"{filename}\" />',
+            content
+        )
+        
+        # Opening tags (rare for partials, but just in case)
+        content = re.sub(
+            f'<{component_name}\\s*>',
+            f'<Snippet file=\"{filename}\">',
+            content
+        )
+        
+        # Closing tags
+        content = re.sub(
+            f'<\/{component_name}>',
+            f'</Snippet>',
+            content
+        )
+        
+        # Handle cases with props (attributes)
+        # <ComponentName prop=\"value\" /> -> <Snippet file=\"filename\" />
+        content = re.sub(
+            f'<{component_name}\\s+[^>]*\/>',
+            f'<Snippet file=\"{filename}\" />',
+            content
+        )
+    
+    return content
+
+with open('$file', 'r') as f:
+    content = f.read()
+
+converted_content = convert_partials_to_snippets(content)
+
+with open('$file', 'w') as f:
+    f.write(converted_content)
+"
+
+    # Also handle any remaining generic partial imports that might not match the patterns above
+    # Remove any remaining import lines that reference _partials
+    sed -i '' '/^import.*_partials.*\.mdx/d' "$file"
+    
+    # Clean up any empty lines left by removed imports
+    sed -i '' '/^$/N;/^\n$/d' "$file"
+}
+
 # Function to fix shell variable expressions and other parsing issues
 fix_parsing_issues() {
     local file="$1"
@@ -491,6 +638,7 @@ migrate_images() {
     
     # Update image references from /img/ to /images/ (Mintlify format)
     sed -i '' 's|src="/img/|src="/images/|g' "$file"
+    sed -i '' 's|](/img/|](/images/|g' "$file"
     sed -i '' 's|](img/|](images/|g' "$file"
     
     # Also handle any remaining <Image /> or <ImageNoBorder /> components
@@ -506,150 +654,174 @@ migrate_images() {
 convert_api_references() {
     local file="$1"
     
-    # Convert API reference links to new Mintlify format
+    # Convert API reference links to new Mintlify format using a comprehensive approach
+    echo "    🔗 Converting API references to Mintlify format"
     
-    # Stablecoin Conversion endpoints
-    sed -i '' 's|/api/v2#tag/Stablecoin-Conversion/operation/CreateStablecoinConversion|/api-reference/stablecoin-conversion/create-stablecoin-conversion|g' "$file"
-    sed -i '' 's|/api/v2#tag/Stablecoin-Conversion/operation/ListStablecoinConversions|/api-reference/stablecoin-conversion/list-stablecoin-conversions|g' "$file"
-    sed -i '' 's|/api/v2#tag/Stablecoin-Conversion/operation/GetStablecoinConversion|/api-reference/stablecoin-conversion/get-stablecoin-conversion|g' "$file"
-    sed -i '' 's|/api/v2#tag/Stablecoin-Conversion|/api-reference/stablecoin-conversion|g' "$file"
-    
-    # Identity endpoints
-    sed -i '' 's|/api/v2#tag/Identity/operation/CreateIdentity|/api-reference/identity/create-identity|g' "$file"
-    sed -i '' 's|/api/v2#tag/Identity/operation/GetIdentity|/api-reference/identity/get-identity|g' "$file"
-    sed -i '' 's|/api/v2#tag/Identity/operation/ListIdentities|/api-reference/identity/list-identities|g' "$file"
-    sed -i '' 's|/api/v2#tag/Identity/operation/UpdateIdentity|/api-reference/identity/update-identity|g' "$file"
-    sed -i '' 's|/api/v2#tag/Identity|/api-reference/identity|g' "$file"
-    
-    # Fiat Transfers endpoints
-    sed -i '' 's|/api/v2#tag/Fiat-Transfers/operation/CreateFiatDepositInstructions|/api-reference/fiat-transfers/create-fiat-deposit-instructions|g' "$file"
-    sed -i '' 's|/api/v2#tag/Fiat-Transfers/operation/ListFiatDepositInstructions|/api-reference/fiat-transfers/list-fiat-deposit-instructions|g' "$file"
-    sed -i '' 's|/api/v2#tag/Fiat-Transfers/operation/GetFiatDepositInstructions|/api-reference/fiat-transfers/get-fiat-deposit-instructions|g' "$file"
-    sed -i '' 's|/api/v2#tag/Fiat-Transfers|/api-reference/fiat-transfers|g' "$file"
-    
-    # Crypto Withdrawals endpoints
-    sed -i '' 's|/api/v2#tag/Crypto-Withdrawals/operation/CreateCryptoWithdrawal|/api-reference/crypto-withdrawals/create-crypto-withdrawal|g' "$file"
-    sed -i '' 's|/api/v2#tag/Crypto-Withdrawals/operation/ListCryptoWithdrawals|/api-reference/crypto-withdrawals/list-crypto-withdrawals|g' "$file"
-    sed -i '' 's|/api/v2#tag/Crypto-Withdrawals/operation/GetCryptoWithdrawal|/api-reference/crypto-withdrawals/get-crypto-withdrawal|g' "$file"
-    sed -i '' 's|/api/v2#tag/Crypto-Withdrawals|/api-reference/crypto-withdrawals|g' "$file"
-    
-    # Profiles endpoints
-    sed -i '' 's|/api/v2#tag/Profiles/operation/CreateProfile|/api-reference/profiles/create-profile|g' "$file"
-    sed -i '' 's|/api/v2#tag/Profiles/operation/ListProfiles|/api-reference/profiles/list-profiles|g' "$file"
-    sed -i '' 's|/api/v2#tag/Profiles/operation/GetProfile|/api-reference/profiles/get-profile|g' "$file"
-    sed -i '' 's|/api/v2#tag/Profiles/operation/ListProfileBalances|/api-reference/profiles/list-profile-balances|g' "$file"
-    sed -i '' 's|/api/v2#tag/Profiles|/api-reference/profiles|g' "$file"
-    
-    # Transfers endpoints
-    sed -i '' 's|/api/v2#tag/Transfers/operation/ListTransfers|/api-reference/transfers/list-transfers|g' "$file"
-    sed -i '' 's|/api/v2#tag/Transfers/operation/GetTransfer|/api-reference/transfers/get-transfer|g' "$file"
-    sed -i '' 's|/api/v2#tag/Transfers|/api-reference/transfers|g' "$file"
-    
-    # Sandbox endpoints
-    sed -i '' 's|/api/v2#tag/Sandbox-Deposits/operation/CreateSandboxDeposit|/api-reference/sandbox/create-sandbox-deposit|g' "$file"
-    sed -i '' 's|/api/v2#tag/Sandbox-Deposits|/api-reference/sandbox|g' "$file"
-    
-    # Webhooks endpoints
-    sed -i '' 's|/api/v2#tag/Webhooks/operation/CreateWebhook|/api-reference/webhooks/create-webhook|g' "$file"
-    sed -i '' 's|/api/v2#tag/Webhooks/operation/ListWebhooks|/api-reference/webhooks/list-webhooks|g' "$file"
-    sed -i '' 's|/api/v2#tag/Webhooks/operation/GetWebhook|/api-reference/webhooks/get-webhook|g' "$file"
-    sed -i '' 's|/api/v2#tag/Webhooks/operation/UpdateWebhook|/api-reference/webhooks/update-webhook|g' "$file"
-    sed -i '' 's|/api/v2#tag/Webhooks/operation/DeleteWebhook|/api-reference/webhooks/delete-webhook|g' "$file"
-    sed -i '' 's|/api/v2#tag/Webhooks|/api-reference/webhooks|g' "$file"
-    
-    # Institution Members endpoints
-    sed -i '' 's|/api/v2#tag/Institution-Members/operation/CreateInstitutionMember|/api-reference/institution-members/create-institution-member|g' "$file"
-    sed -i '' 's|/api/v2#tag/Institution-Members/operation/ListInstitutionMembers|/api-reference/institution-members/list-institution-members|g' "$file"
-    sed -i '' 's|/api/v2#tag/Institution-Members/operation/GetInstitutionMember|/api-reference/institution-members/get-institution-member|g' "$file"
-    sed -i '' 's|/api/v2#tag/Institution-Members/operation/UpdateInstitutionMember|/api-reference/institution-members/update-institution-member|g' "$file"
-    sed -i '' 's|/api/v2#tag/Institution-Members/operation/DeleteInstitutionMember|/api-reference/institution-members/delete-institution-member|g' "$file"
-    sed -i '' 's|/api/v2#tag/Institution-Members|/api-reference/institution-members|g' "$file"
-    
-    # Assets endpoints
-    sed -i '' 's|/api/v2#tag/Assets/operation/ListAssets|/api-reference/assets/list-assets|g' "$file"
-    sed -i '' 's|/api/v2#tag/Assets/operation/GetAsset|/api-reference/assets/get-asset|g' "$file"
-    sed -i '' 's|/api/v2#tag/Assets|/api-reference/assets|g' "$file"
-    
-    # Networks endpoints
-    sed -i '' 's|/api/v2#tag/Networks/operation/ListNetworks|/api-reference/networks/list-networks|g' "$file"
-    sed -i '' 's|/api/v2#tag/Networks/operation/GetNetwork|/api-reference/networks/get-network|g' "$file"
-    sed -i '' 's|/api/v2#tag/Networks|/api-reference/networks|g' "$file"
-    
-    # Accounts endpoints
-    sed -i '' 's|/api/v2#tag/Accounts/operation/CreateAccount|/api-reference/accounts/create-account|g' "$file"
-    sed -i '' 's|/api/v2#tag/Accounts/operation/ListAccounts|/api-reference/accounts/list-accounts|g' "$file"
-    sed -i '' 's|/api/v2#tag/Accounts/operation/GetAccount|/api-reference/accounts/get-account|g' "$file"
-    sed -i '' 's|/api/v2#tag/Accounts|/api-reference/accounts|g' "$file"
-    
-    # Account Members endpoints
-    sed -i '' 's|/api/v2#tag/Account-Members/operation/AddAccountMembers|/api-reference/account-members/add-account-members|g' "$file"
-    sed -i '' 's|/api/v2#tag/Account-Members/operation/DeleteAccountMember|/api-reference/account-members/delete-account-member|g' "$file"
-    sed -i '' 's|/api/v2#tag/Account-Members|/api-reference/account-members|g' "$file"
-    
-    # Orders endpoints
-    sed -i '' 's|/api/v2#tag/Orders/operation/CreateOrder|/api-reference/orders/create-order|g' "$file"
-    sed -i '' 's|/api/v2#tag/Orders/operation/ListOrders|/api-reference/orders/list-orders|g' "$file"
-    sed -i '' 's|/api/v2#tag/Orders/operation/GetOrder|/api-reference/orders/get-order|g' "$file"
-    sed -i '' 's|/api/v2#tag/Orders/operation/CancelOrder|/api-reference/orders/cancel-order|g' "$file"
-    sed -i '' 's|/api/v2#tag/Orders|/api-reference/orders|g' "$file"
-    
-    # Events endpoints
-    sed -i '' 's|/api/v2#tag/Events/operation/ListEvents|/api-reference/events/list-events|g' "$file"
-    sed -i '' 's|/api/v2#tag/Events|/api-reference/events|g' "$file"
-    
-    # Generic fallback for any remaining /api/v2 references
-    sed -i '' 's|/api/v2#tag/\([^/]*\)/operation/\([^]]*\)|/api-reference/\1/\2|g' "$file"
-    sed -i '' 's|/api/v2#tag/\([^]]*\)|/api-reference/\1|g' "$file"
-    
-    # Convert tag names to lowercase and replace hyphens appropriately
-    sed -i '' 's|/api-reference/Stablecoin-Conversion|/api-reference/stablecoin-conversion|g' "$file"
-    sed -i '' 's|/api-reference/Fiat-Transfers|/api-reference/fiat-transfers|g' "$file"
-    sed -i '' 's|/api-reference/Crypto-Withdrawals|/api-reference/crypto-withdrawals|g' "$file"
-    sed -i '' 's|/api-reference/Institution-Members|/api-reference/institution-members|g' "$file"
-    sed -i '' 's|/api-reference/Sandbox-Deposits|/api-reference/sandbox|g' "$file"
-    sed -i '' 's|/api-reference/Accounts|/api-reference/accounts|g' "$file"
-    sed -i '' 's|/api-reference/Account-Members|/api-reference/account-members|g' "$file"
-    sed -i '' 's|/api-reference/Orders|/api-reference/orders|g' "$file"
-    sed -i '' 's|/api-reference/Events|/api-reference/events|g' "$file"
-    sed -i '' 's|/api-reference/Identity|/api-reference/identity|g' "$file"
-    sed -i '' 's|/api-reference/Profiles|/api-reference/profiles|g' "$file"
-    sed -i '' 's|/api-reference/Webhooks|/api-reference/webhooks|g' "$file"
-    sed -i '' 's|/api-reference/Assets|/api-reference/assets|g' "$file"
-    sed -i '' 's|/api-reference/Networks|/api-reference/networks|g' "$file"
-    sed -i '' 's|/api-reference/Transfers|/api-reference/transfers|g' "$file"
-    
-    # Generic conversion to lowercase for any remaining capitalized API references
+    # Use Python for more robust regex handling
     python3 -c "
 import re
 import sys
 
-def convert_to_lowercase(content):
-    # Convert any remaining /api-reference/CapitalizedTag to lowercase
-    def lowercase_api_ref(match):
-        tag = match.group(1)
-        # Convert CamelCase to kebab-case and lowercase
-        tag = re.sub(r'([a-z0-9])([A-Z])', r'\1-\2', tag)
-        tag = tag.lower()
-        return f'/api-reference/{tag}'
+def convert_api_references(content):
+    # Function to convert CamelCase to kebab-case
+    def camel_to_kebab(name):
+        # First normalize any existing hyphens and underscores
+        name = name.replace('_', '-')
+        
+        # Insert hyphens before capital letters (except the first one)
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
+        # Insert hyphens before capital letters that are followed by lowercase letters
+        s2 = re.sub('([a-z0-9])([A-Z])', r'\1-\2', s1)
+        
+        # Convert to lowercase
+        result = s2.lower()
+        
+        # Clean up any double hyphens that might have been created
+        result = re.sub('-+', '-', result)
+        
+        # Remove leading/trailing hyphens
+        result = result.strip('-')
+        
+        return result
     
-    # Pattern to match /api-reference/SomeTag (without operation)
-    pattern = r'/api-reference/([A-Z][a-zA-Z0-9-]*?)(?:/|$)'
-    content = re.sub(pattern, lowercase_api_ref, content)
+    def convert_api_link(match):
+        full_url = match.group(0)
+        tag = match.group(1) if match.group(1) else ''
+        operation = match.group(2) if len(match.groups()) >= 2 and match.group(2) else ''
+        
+        # Convert tag to kebab-case and lowercase
+        if tag:
+            tag_converted = camel_to_kebab(tag)
+        else:
+            tag_converted = ''
+        
+        # Convert operation to kebab-case and lowercase
+        if operation:
+            operation_converted = camel_to_kebab(operation)
+            return f'/api-reference/{tag_converted}/{operation_converted}'
+        else:
+            return f'/api-reference/{tag_converted}'
+    
+    # Pattern 1: /api/v2#tag/TagName/operation/OperationName
+    pattern1 = r'/api/v2#tag/([^/]+)/operation/([^)\s\]]+)'
+    content = re.sub(pattern1, convert_api_link, content)
+    
+    # Pattern 2: /api/v2#tag/TagName (without operation)
+    pattern2 = r'/api/v2#tag/([^)\s\]#]+)'
+    content = re.sub(pattern2, convert_api_link, content)
+    
+    # Fix any remaining malformed /api-reference/ links
+    # Pattern: /api-reference/tag-nameOperationName -> /api-reference/tag-name/operation-name
+    def fix_malformed_links(match):
+        full_path = match.group(1)
+        
+        # Look for pattern where tag and operation are concatenated
+        # Split on first capital letter that's not at the start
+        parts = re.split(r'(?<!^)(?=[A-Z][a-z])', full_path)
+        if len(parts) >= 2:
+            tag_part = parts[0]
+            operation_part = ''.join(parts[1:])
+            
+            # Convert both to kebab-case
+            tag_converted = camel_to_kebab(tag_part)
+            operation_converted = camel_to_kebab(operation_part)
+            
+            return f'/api-reference/{tag_converted}/{operation_converted}'
+        else:
+            # Just convert to kebab-case
+            return f'/api-reference/{camel_to_kebab(full_path)}'
+    
+    # Fix malformed concatenated links like /api-reference/deposit-addressesCreateDepositAddress
+    malformed_pattern = r'/api-reference/([a-z-]+[A-Z][a-zA-Z]*)'
+    content = re.sub(malformed_pattern, fix_malformed_links, content)
+    
+    # Clean up any remaining /operation/ fragments in URLs
+    content = re.sub(r'/api-reference/([^/]+)/operation/([^)\s\]]+)', r'/api-reference/\1/\2', content)
+    
+    # Ensure all API reference URLs use lowercase and kebab-case
+    def ensure_kebab_case(match):
+        path = match.group(1)
+        # Split path and convert each segment
+        segments = path.split('/')
+        converted_segments = [camel_to_kebab(segment) for segment in segments]
+        return '/api-reference/' + '/'.join(converted_segments)
+    
+    # Apply final kebab-case conversion to any remaining mixed-case API references
+    mixed_case_pattern = r'/api-reference/([^)\s\]]*[A-Z][^)\s\]]*)'
+    content = re.sub(mixed_case_pattern, ensure_kebab_case, content)
     
     return content
 
 with open('$file', 'r') as f:
     content = f.read()
 
-content = convert_to_lowercase(content)
+converted_content = convert_api_references(content)
 
 with open('$file', 'w') as f:
-    f.write(content)
+    f.write(converted_content)
 "
 }
 
 # Process files based on migration mode
-if [ "$IS_FILE_MIGRATION" = "true" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    # Process partials from the root _partials directory
+    echo "📁 Processing partials from _partials directory"
+    
+    # Function to process partials from a directory
+    process_partials_directory() {
+        local source_partials_dir="$1"
+        local dir_name="$2"
+        
+        if [ ! -d "$source_partials_dir" ]; then
+            echo "⚠️  Partials directory does not exist: $source_partials_dir"
+            return
+        fi
+        
+        echo "  📂 Processing partials from: $source_partials_dir"
+        
+        # Find all .mdx files in the partials directory
+        find "$source_partials_dir" -name "*.mdx" -type f | while read -r file; do
+            if [ -f "$file" ]; then
+                filename=$(basename "$file")
+                
+                # Create target file path
+                target_file="$TARGET_DIR/$filename"
+                
+                echo "    📄 Processing: $filename"
+                
+                # Copy file to target
+                cp "$file" "$target_file"
+                
+                # Convert frontmatter
+                convert_frontmatter "$target_file"
+                
+                # Clean up Docusaurus content
+                clean_docusaurus_content "$target_file"
+                
+                # Migrate images
+                migrate_images "$target_file"
+                
+                # Convert API references
+                convert_api_references "$target_file"
+                
+                # Fix parsing issues
+                fix_parsing_issues "$target_file"
+                
+                # Convert internal guide links
+                convert_internal_links "$target_file"
+                
+                # Convert partial references
+                convert_partial_references "$target_file"
+                
+                echo "    ✅ Converted: $filename"
+            fi
+        done
+    }
+    
+    # Process the root partials directory
+    process_partials_directory "$SOURCE_PARTIALS" "_partials"
+    
+elif [ "$IS_FILE_MIGRATION" = "true" ]; then
     # Process specific files
     echo "📁 Processing specific files"
     
@@ -690,6 +862,9 @@ if [ "$IS_FILE_MIGRATION" = "true" ]; then
         
         # Convert internal guide links
         convert_internal_links "$target_file"
+        
+        # Convert partial references
+        convert_partial_references "$target_file"
         
         echo "  ✅ Converted: $filename"
     done
@@ -741,6 +916,9 @@ else
             # Convert internal guide links
             convert_internal_links "$target_file"
             
+            # Convert partial references
+            convert_partial_references "$target_file"
+            
             echo "  ✅ Converted: $relative_path"
         fi
     done
@@ -748,7 +926,9 @@ fi
 
 # Apply final cleanup across all files to ensure consistency
 echo "🔧 Applying final cleanup..."
-if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/\${/\\\\${/g' {} \;
+elif [ "$IS_ROOT_MIGRATION" = "root" ]; then
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/\${/\\\\${/g' {} \;
 else
     find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/\${/\\\\${/g' {} \;
@@ -768,8 +948,12 @@ def fix_json_patterns(content):
 
 target_dir = os.environ.get('TARGET_DIR')
 is_root = os.environ.get('IS_ROOT_MIGRATION') == 'root'
+is_partials = os.environ.get('IS_PARTIALS_MIGRATION') == 'true'
 
-if is_root:
+if is_partials:
+    # For partials migration, process all .mdx files in snippets directory
+    file_pattern = f"{target_dir}/*.mdx"
+elif is_root:
     # For root migration, only process .mdx files in the root directory
     file_pattern = f"{target_dir}/*.mdx"
 else:
@@ -788,7 +972,10 @@ for file_path in glob.glob(file_pattern, recursive=True):
 EOF
 
 # Fix backticks to proper quotes in JSON
-if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`\\\\\\${/\\"\\\\\\${/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`"/\\"/g' {} \;
+elif [ "$IS_ROOT_MIGRATION" = "root" ]; then
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/`\\\\\\${/\\"\\\\\\${/g' {} \;
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/`"/\\"/g' {} \;
 else
@@ -797,7 +984,12 @@ else
 fi
 
 # Additional fixes for specific parsing errors
-if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Tip>/<\/Tip>/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Warning>/<\/Warning>/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Info>/<\/Info>/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/<\/\\Note>/<\/Note>/g' {} \;
+elif [ "$IS_ROOT_MIGRATION" = "root" ]; then
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/<\/\\Tip>/<\/Tip>/g' {} \;
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/<\/\\Warning>/<\/Warning>/g' {} \;
     find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/<\/\\Info>/<\/Info>/g' {} \;
@@ -809,7 +1001,9 @@ else
     find "$TARGET_DIR" -exec sed -i '' 's/<\/\\Note>/<\/Note>/g' {} \;
 fi
 
-if [ "$IS_FILE_MIGRATION" = "true" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    echo "🎯 Partials migrated to snippets: $TARGET_DIR"
+elif [ "$IS_FILE_MIGRATION" = "true" ]; then
     echo "🎯 Specific files migrated to: $TARGET_DIR"
 elif [ "$IS_ROOT_MIGRATION" = "root" ]; then
     echo "🎯 Files migrated to root directory: $TARGET_DIR"
@@ -819,17 +1013,31 @@ fi
 
 echo ""
 echo "📋 Next Steps:"
-echo "1. Update docs.json navigation"
-echo "2. Review converted files for:"
-echo "   - Link references that need manual fixing"
-echo "   - Component conversions that need adjustment"
-echo "   - Formatting issues"
-echo "   - Image references (now using @images/)"
-echo "   - API references (now using /api-reference/)"
-echo "3. Test the migrated content"
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    echo "1. Review converted snippets for:"
+    echo "   - Content that should be reusable across pages"
+    echo "   - Component conversions that need adjustment"
+    echo "   - Formatting issues"
+    echo "   - Link references that need manual fixing"
+    echo "2. Update pages to reference snippets using <Snippet file=\"filename\" />"
+    echo "3. Test snippet usage in documentation"
+else
+    echo "1. Update docs.json navigation"
+    echo "2. Review converted files for:"
+    echo "   - Link references that need manual fixing"
+    echo "   - Component conversions that need adjustment"
+    echo "   - Formatting issues"
+    echo "   - Image references (now using @images/)"
+    echo "   - API references (now using /api-reference/)"
+    echo "3. Test the migrated content"
+fi
 echo ""
 
-if [ "$IS_FILE_MIGRATION" = "true" ]; then
+if [ "$IS_PARTIALS_MIGRATION" = "true" ]; then
+    echo "📝 Snippets migrated successfully!"
+    echo "All .mdx files from the _partials directory have been converted to snippets."
+    echo "Use <Snippet file=\"filename\" /> to include them in your documentation."
+elif [ "$IS_FILE_MIGRATION" = "true" ]; then
     echo "📝 Specific files migrated. Update the '$TARGET_GUIDE' section in docs.json with:"
     echo "{"
     echo "  \"group\": \"$(echo $TARGET_GUIDE | sed 's/.*/\u&/')\","

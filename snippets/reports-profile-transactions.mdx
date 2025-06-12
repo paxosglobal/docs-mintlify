@@ -1,0 +1,31 @@
+The following fields are provided on each row of the Profile Transactions report.
+
+| Field | Data Type | Always Returns Data | Example/Description |
+| --- | :-: | :-: | --- |
+| AccountID | UUID | No | 1ab15e4f-6389-4a52-b908-62c3525b0da2 |
+| Amount | String | Yes | 90.12345678 |
+| Assets | String | Yes | USD, ETH, BTC, PAXG, BCH, LTC |
+| BalanceType | Enum | Yes | See [BalanceType Values and Definitions](#BalanceTypeValuesDefinitions). |
+| BaseAmount | String | No | `10.017`<br/>The amount in the base asset for this trade, currently only supported for QuoteExecutions. |
+| Direction | String | Yes | CREDIT, DEBIT |
+| ExternalID | String | No | Contains the transaction hash for a crypto deposit. Returns empty when no data is available. |
+| Fee | String | No | `0.017`<br/>The fee for this interaction. Currently only supported for Transfers. |
+| GroupID | UUID | No | Link for the debit and credit legs of an Internal Transfer. |
+| IdentityID | UUID | No | 1ab15e4f-6389-4a52-b908-62c3525b0da2 |
+| Market | String | No | ETHUSD, XBTUSD, PAXGUSD, BCHUSD, LTCUSD |
+| Metadata | String | No | \"{""key_1"":""value_11"",""key_2"":""value_23"" }"` <br/> Contains the customer specified metadata during a transaction on platform (withdrawal, transfer, quote execution) in json-string format. Returns empty when no data is available. |
+| OrchestrationID | UUID | No | 7f716105-d501-40e8-a82f-309fffacd6d8<br/>A unique identifier that links all related transactions within a single logical flow. For example, all balance updates during a deposit process. |
+| OrchestrationRuleID | UUID | No | 9e124f3d-7c88-4b36-b54a-e389f6c398b2<br/>The unique identifier of the automation rule that triggered this transaction set. |
+| OrderType | String | No | LIMIT, MARKET, POSTONLYLIMIT, STOPMARKET, STOPLIMIT, HRQ |
+| Price | String | No | 100.23 |
+| ProfileID | UUID | Yes | 7927d51a-a465-49b9-ab0e-1ca17b3a7c5b |
+| QuoteAmount | String | No | `10.50`<br/>The amount in the quote asset for this trade, currently only supported for QuoteExecutions. |
+| Resource | Enum | Yes | See [Resource Values and Definitions](#ResourceValuesDefinitions). |
+| ResourceID | UUID | Yes | ID of the Resource in question. For example, Order ID, Execution ID, Transfer ID. |
+| ResourceRefID | String | No | Custom string specified in Create Order request as `ref_id`. |
+| ResourceTimestamp | Datetime | No | The timestamp when the Resource was generated. For example, the time for an Order or an Execution. |
+| RecourceTransferType | Enum | No | See [ResourceTransferType Values and Definitions](#ResourceTransferTypeValuesDefinitions). |
+| Side | String | No | SELL, BUY |
+| Timestamp | `Datetime | Yes | The record timestamp. For example: 2024-01-17T18:36:31.345Z  |
+| TransactionType | Enum | Yes | See [TransactionType Values and Definitions](#TransactionTypeValuesDefinitions). |
+| UniqueTxID | String | Yes | Unique identifier for a Profile transaction. Use with direction to guarantee unique line-item. |

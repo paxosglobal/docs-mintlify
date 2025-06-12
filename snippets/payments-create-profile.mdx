@@ -1,0 +1,32 @@
+[List Profiles]: /api-reference/profiles/list-profiles
+[Create Profile]: /api-reference/profiles/create-profile
+
+<details>
+<summary id="create-profile">Example: Seller Profile</summary>
+
+Use [Create Profile] to represent the seller.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "nickname": "Seller A",
+  "description": "Stablecoin Pay-in and Refunds."
+}'
+```
+Save the `id` (`profile_id`) from the response, it will be used throughout this guide.
+
+```json
+{
+    //highlight-next-line
+    "id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
+    "nickname": "Seller A",
+    "type": "NORMAL"
+}
+```
+
+Use [List Profiles] to retrieve the Profile ID when needed.
+
+</details>

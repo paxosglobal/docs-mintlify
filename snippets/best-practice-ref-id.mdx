@@ -1,0 +1,9 @@
+<Tip>
+
+ Best Practice
+
+Whenever possible, include your own unique identifier in the request using `ref_id`.
+Doing so helps to protect against submitting the same request twice, as the second request with the same `ref_id` will be rejected with `409 already exists`.
+The `ref_id` can also be used in many query parameters.
+
+</Tip>

@@ -1,0 +1,13 @@
+The [Profile Transactions Report](#ProfileTransactionReport) lists every transaction during a 24 hour period, including the full list and definition of transaction types and transaction metadata.
+The [Profile Balances Report](#ProfileBalancesReport) provides the asset start and ending balances for every Profile during a 24 hour period.
+
+> Migrating to the Dashboard? Existing legacy reconciliation reports are available in the Dashboard.
+> The historical reconciliation reports match the files on the SFTP server, where they continue to be available.
+
+In the reports, the Profile's starting balance is impacted by any associated Profile Transaction, and results in the corresponding Profile end balance.
+
+- If a Profile has ever held a given asset at any point in the past, zero balances will be explicitly printed. For example, if Profile 1 held Bitcoin in the past, but not today, Profile Balances will appear as “BTC: 0”.
+- If a Profile has never held an asset at any point in the past, zero balances will not be explicitly printed. For example, if Profile 1 has never held Bitcoin in the past, Profile Balances will not appear for the BTC asset at all.
+
+Reports are in UTC 0 time, and have an exact hour cutoff for the UTC timezone indicated when [activating reporting](#activate).
+Paxos delivers reports one time per day and does not support multiple cutoff times or changes to the pre-configured cutoff time.

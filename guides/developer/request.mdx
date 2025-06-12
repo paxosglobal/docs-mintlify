@@ -3,8 +3,6 @@ title: 'Make First API Request'
 description: Use the access token to retrieve a list of Profiles.
 ---
 
-
-
 [access token]: /developer/authenticate.mdx#token
 [adding scopes]: /developer/authenticate.mdx#scopes
 [Profile]: /api-reference/profiles
@@ -13,15 +11,9 @@ description: Use the access token to retrieve a list of Profiles.
 [authentication]: /developer/authenticate.mdx
 [Support]: https://support.paxos.com
 
-
-
 Since every account has a `DEFAULT` [Profile], sending a request using [List Profiles] will always return a result, assuming the `funding:read_profile` scope was included when [adding scopes] to the client.
 Include the [access token] from the authentication request in the authorization header.
-
-
 ### Sandbox
-
-
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
@@ -29,11 +21,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles?order=ASC&order_by=CR
 {/* highlight-next-line */}
 --header 'Authorization: Bearer {access_token}'
 ```
-
-
 ### Production
-
-
 
 ```shell
 curl --location 'https://api.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
@@ -41,10 +29,6 @@ curl --location 'https://api.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT
 {/* highlight-next-line */}
 --header 'Authorization: Bearer {access_token}'
 ```
-
-
-
-
 A successful response includes all Profiles the client has access to.
 Using the `?order=ASC&order_by=CREATED_AT` parameters ensures the `DEFAULT` Profile is first in the list.
 

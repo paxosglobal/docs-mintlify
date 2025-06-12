@@ -3,8 +3,6 @@ title: 'Convert'
 description: Implement guaranteed 1:1 conversions between USD and Paxos-issued stablecoins.
 ---
 
-
-
 [asset]: developer/convert.mdx#assets
 [convert]: /api-reference/stablecoin-conversion/create-stablecoin-conversion
 [list]: /api-reference/stablecoin-conversion/list-stablecoin-conversions
@@ -12,19 +10,17 @@ description: Implement guaranteed 1:1 conversions between USD and Paxos-issued s
 [usdg]: stablecoin/usdg/index.mdx
 [usdp]: stablecoin/usdp/index.mdx
 [pyusd]: stablecoin/pyusd/index.mdx
-[cancel]: /api-reference/stablecoin-conversion/operation/CancelStablecoinConversion
+[cancel]: /api-reference/stablecoin-conversion/cancel-stablecoin-conversion
 [support]: https://support.paxos.com
 [client]: developer/credentials.mdx
 [token]: developer/authenticate.mdx
 [conversion-list-conversion]: /api-reference/stablecoin-conversion/list-stablecoin-conversions
-[create-sandbox-deposit]: /api-reference/sandbox/create-sandbox-deposit
+[create-sandbox-deposit]: /api-reference/sandbox-deposits/create-sandbox-deposit
 [First API Request]: developer/request.mdx
 [conversion-create-conversion]: /api-reference/stablecoin-conversion/create-stablecoin-conversion
 [3p-integrations]: /crypto-brokerage/ledger-type.mdx#fiat-and-crypto-subledger
 [conversion status]: developer/convert.mdx#statuses
 [fiat-transfers]: developer/fiat-transfers/quickstart.mdx#funding
-
-
 
 Next, use the [Stablecoin Conversion API][convert] to easily convert USD to any [supported asset][asset], and vice verse, without any fees.
 Keep track of all your conversions with [List Stablecoin Conversions][list] or [lookup a single conversion][get].
@@ -45,11 +41,7 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 Use [Create Sandbox Deposit][create-sandbox-deposit] to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request] guide for help retrieving Profile IDs.
 This guide also includes examples for the USDG → USD conversion, so if you are following along make sure you add some USDG to the Profile.
 You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
-
-
 ### USD
-
-
 
 ```shell
 curl --request POST \
@@ -61,11 +53,7 @@ curl --request POST \
   "amount": "1000"
 }'
 ```
-
-
 ### USDG
-
-
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
@@ -78,20 +66,12 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
     "crypto_network": "ETHEREUM"
 }'
 ```
-
-
-
-
 ## ➌ Request Conversion
 
 Request a conversion using [Create Stablecoin Conversion][conversion-create-conversion].
 Include the following body parameters in your request to convert the `source_asset` of $100 USD into the `target_asset`.
 For [Third-party integrations][3p-integrations], you must also specify `identity_id` and `account_id`.
-
-
 ### USDG → USD
-
-
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
@@ -121,11 +101,7 @@ The `target_asset` will not be credited until the [conversion status] is \"statu
     ...
 }
 ```
-
-
 ### USD → PYUSD
-
-
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
@@ -156,10 +132,6 @@ The `target_asset` will not be credited until the [conversion status] is \"statu
     ...
 }
 ```
-
-
-
-
 ## ➍ Confirm the Conversion
 
 Use [List Stablecoin Conversions][conversion-list-conversion] to check the conversion status.

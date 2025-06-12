@@ -1,0 +1,29 @@
+## 1. Get Market Data (Optional)
+
+<Tip>
+
+Functionality not implemented. Use existing [v2 Market Date][v2-market-date] instead.
+
+</Tip>
+
+Access the [Market Data][market-data] service to get the latest available prices for the assets you want to buy or sell.
+The default markets include:
+
+| Query Parameter | Possible Values | Description |
+| ---- | ---- | ---- |
+| `market` | `ETHUSD` `BTCUSD` `BCHUSD` `LTCUSD` `LINKUSD` `MATICUSD` `AAVEUSD` `UNIUSD` | Available markets. |
+| `level` | `L1` `L2` `L3` | Specify how the order should be treated.<br/>`L1` = The best Bid and Ask prices for the Market.<br/>`L2` = Bid and Ask prices at all levels.<br/>`L3` = Bid and Ask prices at all levels broken out by order. |
+| `venues` | `all` | Check all available venues for the best price. Support for venue selection not enabled. |
+
+<Warning>
+
+Market orders are executed at the best available price and may get executed at a less or more favorable price than originally intended.
+
+</Warning>
+
+To get the latest pricing data for a market, use the `order_book` endpoint and pass in the appropriate values for `market`, `level` and `venues`. To check the order book for `BTCUSD`, use the following:
+
+```shell
+curl --location "https://api.sandbox.paxos.com/v2/trading/order_book?market=BTCUSD&level=L1&venues=all" \
+--header "Authorization: Bearer $ACCESS_TOKEN"
+```
