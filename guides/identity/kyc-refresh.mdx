@@ -5,18 +5,18 @@ description: Manage the periodic KYC refresh of an Identity on the Paxos Platfor
 
 
 
-[create-identity]: /api/v2#tag/Identity/operation/CreateIdentity
-[update-identity]: /api/v2#tag/Identity/operation/UpdateIdentity
-[get-identity]: /api/v2#tag/Identity/operation/GetIdentity
+[create-identity]: /api-reference/identity/create-identity
+[update-identity]: /api-reference/identity/update-identity
+[get-identity]: /api-reference/identity/get-identity
 [webhooks]: /webhooks/quickstart.mdx
-[reference]: /api/v2#tag/Events
+[reference]: /api-reference/Events
 [Support]: https://support.paxos.com
-[events]: /api/v2#tag/Events
+[events]: /api-reference/Events
 [consumer]: /webhooks/quickstart.mdx#consumer
-[Get Event]: /api/v2#tag/Events/operation/GetEvent
-[upload]: /api/v2#tag/Identity-Documents/operation/DocumentUpload
-[List Events]: /api/v2#tag/Events/operation/ListEvents
-[identity]: /api/v2#tag/Identity
+[Get Event]: /api-reference/Events/events
+[upload]: /api-reference/identity-Documents/operation/DocumentUpload
+[List Events]: /api-reference/Events/events
+[identity]: /api-reference/identity
 
 
 
@@ -29,7 +29,7 @@ Paxos streamlines KYC Refresh using a webhook-based or polling-based approach, w
 
 ## Webhook-based Approach
 
-<Image src="/img/kycrefresh.png" align="center" width="80%" alt="Sequence Diagram for KYC Refresh"/>
+![Sequence Diagram for KYC Refresh](/images/kycrefresh.png)
 
 ### ➊ Consume KYC Refresh Events
 

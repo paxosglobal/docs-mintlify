@@ -39,13 +39,36 @@
             "group": "Identity",
             "pages": [
               "guides/identity/overview",
-              "guides/identity/person-crypto-brokerage",
-              "guides/identity/institution-crypto-brokerage",
-              "guides/identity/required-details",
-              "guides/identity/statuses",
-              "guides/identity/edd",
-              "guides/identity/kyc-refresh",
-              "guides/identity/institution-types"
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "guides/identity/person-crypto-brokerage",
+                  "guides/identity/institution-crypto-brokerage"
+                ]
+              },
+              {
+                "group": "Manage Lifecycle",
+                "pages": [
+                  "guides/identity/edd",
+                  "guides/identity/kyc-refresh"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "guides/identity/statuses",
+                  "guides/identity/required-details",
+                  "guides/identity/institution-types"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Stablecoin Operations",
+            "pages": [
+              "guides/stablecoin-operations/mint",
+              "guides/stablecoin-operations/convert",
+              "guides/stablecoin-operations/redeem"
             ]
           }
         ]
@@ -93,18 +116,28 @@
       "anchors": [
         {
           "anchor": "Changelog",
-          "href": "https://mintlify.com/docs",
+          "href": "https://docs.paxos.com/changelog/",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Support",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
+          "anchor": "Status",
+          "href": "https://status.paxos.com/",
+          "icon": "signal-bars"
         },
         {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://www.paxos.com/blog",
           "icon": "newspaper"
+        },
+        {
+          "anchor": "Faucet",
+          "href": "https://faucet.paxos.com/",
+          "icon": "faucet"
+        },
+        {
+          "anchor": "Regulation and Transparency",
+          "href": "https://www.paxos.com/regulation-and-transparency/",
+          "icon": "building-columns"
         }
       ]
     }

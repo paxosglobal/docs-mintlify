@@ -1,0 +1,266 @@
+---
+title: 'Mint'
+description: Deposit USD. Convert or convert-and-transfer in one API call.
+---
+
+
+
+
+
+
+![Mint Workflow](/images/mint.png)
+
+[stablecoins]: blockchains.mdx#stablecoins
+[CreateFiatDepositInstructions]: /api-reference/fiat-transfers/create-fiat-deposit-instructions
+[fiat-transfers]: /api-reference/fiat-transfers
+[conversion]: /api-reference/stablecoin-conversion/create-stablecoin-conversion
+[withdrawal]: /api-reference/crypto-withdrawals/create-crypto-withdrawal
+[token]: developer/authenticate.mdx
+[create-sandbox-deposit]: /api-reference/sandbox/create-sandbox-deposit
+[First API Request]: developer/request.mdx
+[convert stablecoin]: developer/convert.mdx
+[List Profile Balances]: /api-reference/profiles/list-profile-balances
+[`SETTLED`]: developer/convert.mdx#stablecoin-conversion-statuses
+[list-transfers]: /api-reference/transfers/list-transfers
+
+Minting a [Paxos-issued stablecoin][stablecoins] starts by depositing USD on the Paxos platform using the [Fiat Transfers APIs][fiat-transfers] (**A** in the diagram).
+Depending on the use case, you can either convert USD to a stablecoin and keep the asset on the Paxos platform using [Create Stablecoin Conversion][conversion] (option **B**) or use [Create Crypto Withdrawal][withdrawal] to convert and transfer with the same API request (**C**).
+
+
+> If you've already authenticated and have a USD balances in a Profile, skip ahead to the [convert](#mint-hold) or [convert and transfer](#mint-transfer) step.
+
+## ➊ Authenticate
+
+Include the following scopes when [authenticating][token]:
+
+```shell
+conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin funding:read_profile transfer:write_crypto_withdrawal
+```
+
+> If you don't see all the scopes when [creating or editing API credentials](/developer/credentials), contact [Support](https://support.paxos.com).
+
+## ➋ Deposit USD
+
+Use [Create Sandbox Deposit][create-sandbox-deposit] to add USD to the Profile (`profile_id`) you want the minting process to be associated with.
+See the [First API Request] guide for help retrieving Profile IDs.
+You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
+
+```shell
+curl --request POST \
+{/* highlight-next-line */}
+--location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "asset": "USD",
+  "amount": "1000"
+}'
+```
+
+## ➌ Convert USD to Stablecoin
+
+See the [convert stablecoin] guide for details on using [Create Stablecoin Conversion][conversion] to mint a [Paxos-issued stablecoin][stablecoins].
+Once the conversion is [`SETTLED`], use [List Profile Balances] to check updated balances.
+To check balances of the assets you are interested in, include the `assets` query parameter in the request.
+
+```shell
+{/* highlight-next-line */}
+curl --location 'https://api.sandbox.paxos.com/v2/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/balances?assets=USD&assets=PYUSD&assets=USDG' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+The response includes the updated USD and Paxos-issued stablecoin balances.
+
+
+```json
+{
+    "items": [
+        {
+            "asset": "USD",
+            "available": "600",
+            "trading": "0"
+        },
+        {
+            "asset": "PYUSD",
+            "available": "100",
+            "trading": "0"
+        },
+        {
+            "asset": "USDG",
+            "available": "100",
+            "trading": "0"
+        }
+    ]
+}
+```
+
+## ➍ Convert and Transfer
+
+Use [Create Crypto Withdrawal][withdrawal] to transfer the Paxos-issued stablecoin to an address off the Paxos platform with a single request.
+To automatically convert fiat (USD) to stablecoin and transfer to an external address with a single request, set the `asset` to the stablecoin you want to mint, the `balance_asset` to `USD`, and the `crypto_network` to the desired network.
+
+
+### USDG on Ethereum
+
+
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/crypto-withdrawals' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+    "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+    "asset": "USDG",
+    "destination_address": "0x9acb61E5fcE9B5BdA7B44635d86be19d2790D9a9",
+    "crypto_network": "ETHEREUM",
+    "ref_id": "cw_usdg_eth_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+    "balance_asset": "USD",
+    "amount": "100"
+}'
+```
+
+
+### PYUSD on Solana
+
+
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/crypto-withdrawals' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+    "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+    "asset": "PYUSD",
+    "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",
+    "crypto_network": "SOLANA",
+    "ref_id": "cw_pyusd_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+    "balance_asset": "USD",
+    "amount": "100"
+}'
+```
+
+
+
+
+The request confirmation response has a `status` of `PENDING`, since the on-chain transaction has not yet been confirmed.
+
+
+
+### USDG on Ethereum
+
+
+
+```json
+{
+    "id": "7c223577-832b-4235-a77e-ebf36dfe9860",
+    "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
+    "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+    "ref_id": "cw_usdg_eth_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+    "amount": "100",
+    "total": "126.96",
+    "fee": "26.96",
+    "asset": "USDG",
+    "balance_asset": "USD",
+    "direction": "DEBIT",
+    "type": "CRYPTO_WITHDRAWAL",
+    {/* highlight-next-line */}
+    "status": "PENDING",
+    ...
+    "destination_address": "0x9acb61E5fcE9B5BdA7B44635d86be19d2790D9a9",
+    "crypto_network": "ETHEREUM",
+    "auto_conversion": {}
+}
+```
+
+
+### PYUSD on Solana
+
+
+
+```json
+{
+    "id": "e655c587-e057-4cf2-88d9-7e19ae13f2ee",
+    "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
+    "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+    "ref_id": "cw_pyusd_sol_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+    "amount": "100",
+    "total": "100",
+    "fee": "0",
+    "asset": "PYUSD",
+    "balance_asset": "USD",
+    "direction": "DEBIT",
+    "type": "CRYPTO_WITHDRAWAL",
+    {/* highlight-next-line */}
+    "status": "PENDING",
+    ...
+    "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",
+    "crypto_network": "SOLANA",
+    "auto_conversion": {}
+}
+```
+
+
+
+
+To check the transaction status on the Paxos platform, use [List Transfers][list-transfers].
+You can create a recurring request that look for completed transactions in the Profile.
+For example, filter on `type=CRYPTO_WITHDRAWAL` and `status=COMPLETED` parameters to find all the completed transactions.
+
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?type=CRYPTO_WITHDRAWAL&status=COMPLETED' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+By default, the response includes transactions from newest to oldest. 
+
+```json
+{
+    "items": [
+                {
+            "id": "7c223577-832b-4235-a77e-ebf36dfe9860",
+            "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
+            "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+            "ref_id": "cw_usdg_eth_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+            "amount": "100",
+            "total": "126.96",
+            "fee": "26.96",
+            "asset": "USDG",
+            "balance_asset": "USD",
+            "direction": "DEBIT",
+            "type": "CRYPTO_WITHDRAWAL",
+            {/* highlight-next-line */}
+            "status": "COMPLETED",
+            ...
+            "destination_address": "0x9acb61E5fcE9B5BdA7B44635d86be19d2790D9a9",
+            "crypto_network": "ETHEREUM",
+            "crypto_tx_hash": "0x2a0bac30de037b62502540c18ac22b6d75312cd1508c1df3eb6e38f8b7503f1a",
+            "auto_conversion": {}
+        },{
+            "id": "e655c587-e057-4cf2-88d9-7e19ae13f2ee",
+            "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
+            "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+            "ref_id": "cw_pyusd_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
+            "amount": "100",
+            "total": "100",
+            "fee": "0",
+            "asset": "PYUSD",
+            "balance_asset": "USD",
+            "direction": "DEBIT",
+            "type": "CRYPTO_WITHDRAWAL",
+            {/* highlight-next-line */}
+            "status": "COMPLETED",
+            ...
+            "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",
+            "crypto_network": "SOLANA",
+            "crypto_tx_hash": "3ShgmRdcuj2usV3tmLvb3BUrEvhAXNWbUseYgRt24Muyv1tiPkohn8ZQAAdS5KeYNLKR6PhmwUta6CW2ZCAuxHt5",
+            "crypto_tx_index": "0",
+            "auto_conversion": {}
+        },
+    ],
+    "next_page_cursor": "CAESCwiP-OazBhDgzZYyGLSOkw0"
+}
+```
