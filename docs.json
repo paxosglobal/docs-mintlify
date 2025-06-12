@@ -11,14 +11,28 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Welcome",
+        "groups": [
+          {
+            "group": "Welcome",
+            "pages": [
+              "welcome"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Guide",
         "groups": [
           {
             "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "getting-started/account",
+              "getting-started/authenticate",
+              "getting-started/sandbox",
+              "getting-started/credentials",
+              "getting-started/request-signing",
+              "getting-started/request"
             ]
           },
           {

@@ -1,29 +1,39 @@
 #!/bin/bash
 
 # Docusaurus to Mintlify Migration Script
-# Usage: ./migrate-guide.sh <source_guide_name> <target_guide_name>
+# Usage: ./migrate-guide.sh <source_guide_name> <target_guide_name> [root]
 # Example: ./migrate-guide.sh identity identity
+# Example: ./migrate-guide.sh developer developer root (for root-level migration)
 
 set -e
 
 # Configuration
 SOURCE_BASE="/Users/cameronfleet/dev/docs/content"
-TARGET_BASE="/Users/cameronfleet/dev/new-docs/guides"
+TARGET_BASE="/Users/cameronfleet/dev/new-docs"
 DOCS_JSON="/Users/cameronfleet/dev/new-docs/docs.json"
 
 # Input validation
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <source_guide_name> <target_guide_name>"
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
+    echo "Usage: $0 <source_guide_name> <target_guide_name> [root]"
     echo "Example: $0 identity identity"
+    echo "Example: $0 developer developer root (for root-level migration)"
     exit 1
 fi
 
 SOURCE_GUIDE="$1"
 TARGET_GUIDE="$2"
-SOURCE_DIR="$SOURCE_BASE/$SOURCE_GUIDE"
-TARGET_DIR="$TARGET_BASE/$TARGET_GUIDE"
+IS_ROOT_MIGRATION="${3:-}"
 
-echo "🚀 Starting migration: $SOURCE_GUIDE -> $TARGET_GUIDE"
+SOURCE_DIR="$SOURCE_BASE/$SOURCE_GUIDE"
+
+# Set target directory based on whether it's a root migration
+if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+    TARGET_DIR="$TARGET_BASE"
+    echo "🚀 Starting root-level migration: $SOURCE_GUIDE -> root directory"
+else
+    TARGET_DIR="$TARGET_BASE/guides/$TARGET_GUIDE"
+    echo "🚀 Starting migration: $SOURCE_GUIDE -> $TARGET_GUIDE"
+fi
 
 # Check if source directory exists
 if [ ! -d "$SOURCE_DIR" ]; then
@@ -31,8 +41,10 @@ if [ ! -d "$SOURCE_DIR" ]; then
     exit 1
 fi
 
-# Create target directory
-mkdir -p "$TARGET_DIR"
+# Create target directory if not root migration
+if [ "$IS_ROOT_MIGRATION" != "root" ]; then
+    mkdir -p "$TARGET_DIR"
+fi
 
 # Function to convert frontmatter
 convert_frontmatter() {
@@ -219,14 +231,45 @@ with open('$file', 'w') as f:
 "
 }
 
+# Function to determine target filename for root migration
+get_target_filename() {
+    local source_filename="$1"
+    
+    # Map common developer files to appropriate names for Get Started section
+    case "$source_filename" in
+        "authenticate.mdx")
+            echo "authenticate.mdx"
+            ;;
+        "sandbox.mdx")
+            echo "sandbox.mdx"
+            ;;
+        "request-signing.mdx")
+            echo "request-signing.mdx"
+            ;;
+        "credentials.mdx")
+            echo "credentials.mdx"
+            ;;
+        *)
+            # For other files, keep original name but consider if they belong in developer section
+            echo "$source_filename"
+            ;;
+    esac
+}
+
 # Process each .mdx file in source directory
 echo "📁 Processing files from $SOURCE_DIR"
 for file in "$SOURCE_DIR"/*.mdx; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        target_file="$TARGET_DIR/$filename"
         
-        echo "  📄 Processing: $filename"
+        if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+            target_filename=$(get_target_filename "$filename")
+            target_file="$TARGET_DIR/$target_filename"
+        else
+            target_file="$TARGET_DIR/$filename"
+        fi
+        
+        echo "  📄 Processing: $filename -> $(basename "$target_file")"
         
         # Copy file to target
         cp "$file" "$target_file"
@@ -246,7 +289,11 @@ done
 
 # Apply final cleanup across all files to ensure consistency
 echo "🔧 Applying final cleanup..."
-find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/\${/\\${/g' {} \;
+if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+    find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/\${/\\${/g' {} \;
+else
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/\${/\\${/g' {} \;
+fi
 
 # Fix the specific JSON pattern that causes acorn errors
 # Replace "'"${var}"'" with "`${var}`" then fix the backticks to quotes
@@ -260,8 +307,16 @@ def fix_json_patterns(content):
     content = re.sub(r'"\'"([^"]*)"\'', r'`\1`', content)
     return content
 
-target_dir = os.environ.get('TARGET_DIR', '/Users/cameronfleet/dev/new-docs/guides/identity')
-for file_path in glob.glob(f"{target_dir}/*.mdx"):
+target_dir = os.environ.get('TARGET_DIR')
+is_root = os.environ.get('IS_ROOT_MIGRATION') == 'root'
+
+if is_root:
+    # For root migration, only process .mdx files in the root directory
+    file_pattern = f"{target_dir}/*.mdx"
+else:
+    file_pattern = f"{target_dir}/*.mdx"
+
+for file_path in glob.glob(file_pattern):
     with open(file_path, 'r') as f:
         content = f.read()
     
@@ -272,10 +327,20 @@ for file_path in glob.glob(f"{target_dir}/*.mdx"):
 EOF
 
 # Fix backticks to proper quotes in JSON
-find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`\\\\\\${/\\"\\\\\\${/g' {} \;
-find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`"/\\"/g' {} \;
+if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+    find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/`\\\\\\${/\\"\\\\\\${/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -maxdepth 1 -exec sed -i '' 's/`"/\\"/g' {} \;
+else
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`\\\\\\${/\\"\\\\\\${/g' {} \;
+    find "$TARGET_DIR" -name "*.mdx" -exec sed -i '' 's/`"/\\"/g' {} \;
+fi
 
-echo "🎯 Files migrated to: $TARGET_DIR"
+if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+    echo "🎯 Files migrated to root directory: $TARGET_DIR"
+else
+    echo "🎯 Files migrated to: $TARGET_DIR"
+fi
+
 echo ""
 echo "📋 Next Steps:"
 echo "1. Update docs.json navigation"
@@ -285,22 +350,29 @@ echo "   - Component conversions that need adjustment"
 echo "   - Formatting issues"
 echo "3. Test the migrated content"
 echo ""
-echo "📝 Suggested docs.json entry:"
-echo "{"
-echo "  \"group\": \"$(echo $TARGET_GUIDE | sed 's/.*/\u&/')\","
-echo "  \"pages\": ["
 
-# Generate page list for docs.json
-for file in "$TARGET_DIR"/*.mdx; do
-    if [ -f "$file" ]; then
-        filename=$(basename "$file" .mdx)
-        if [ "$filename" = "index" ]; then
-            echo "    \"guides/$TARGET_GUIDE/overview\","
-        else
-            echo "    \"guides/$TARGET_GUIDE/$filename\","
+if [ "$IS_ROOT_MIGRATION" = "root" ]; then
+    echo "📝 Root migration completed. Update the 'Get Started' section in docs.json with:"
+    echo "Developer files have been added to the root directory."
+    echo "Consider which files should be included in the 'Get Started' navigation."
+else
+    echo "📝 Suggested docs.json entry:"
+    echo "{"
+    echo "  \"group\": \"$(echo $TARGET_GUIDE | sed 's/.*/\u&/')\","
+    echo "  \"pages\": ["
+
+    # Generate page list for docs.json
+    for file in "$TARGET_DIR"/*.mdx; do
+        if [ -f "$file" ]; then
+            filename=$(basename "$file" .mdx)
+            if [ "$filename" = "index" ]; then
+                echo "    \"guides/$TARGET_GUIDE/overview\","
+            else
+                echo "    \"guides/$TARGET_GUIDE/$filename\","
+            fi
         fi
-    fi
-done | sed '$ s/,$//'
+    done | sed '$ s/,$//'
 
-echo "  ]"
-echo "}" 
+    echo "  ]"
+    echo "}"
+fi 

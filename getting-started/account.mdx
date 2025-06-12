@@ -1,0 +1,78 @@
+---
+title: 'Create Developer Account'
+description: Sign Up for access to the Sandbox environment.
+---
+
+To create an account you will need an email address, the business name and country of incorporation, as well as a way to create a [passkey](https://www.passkeys.com/what-are-passkeys) using a [compatible device](https://www.passkeys.io/compatible-devices).
+
+> Sandbox developer accounts are usually approved in less than one business day and take under an hour to create and onboard.
+
+## ➊ Sign Up in Sandbox
+
+Before you begin, ensure you are able to create and store a [passkey](https://www.passkeys.com/what-are-passkeys) on your device.
+All modern [operating systems and browsers](https://www.passkeys.io/compatible-devices) support passkeys.
+
+<Note>
+**Passkey Required**: Passkeys are required to access the Paxos Dashboard. You'll need a compatible device to create and store your passkey securely.
+</Note>
+
+1. Go to https://dashboard.sandbox.paxos.com, select **Sign Up** and provide a name and email address to create an _Institutional (Business) account_. Individual account holders are not eligible for API access via the Dashboard.
+1. Retrieve the verification code from the welcome email from Paxos and enter the code in the browser. If you don't get an email within a few minutes, check email filters and Spam/Junk folders for an email from `@paxos.com`. Contact [Support](https://support.paxos.com) if the email never arrives.
+1. Create a passkey.
+1. Provide basic business information. The **Country of Incorporation** and **What do you plan to use your account for?** fields determine which assets you will have access to.
+
+## ➋ Onboard Developer Account
+
+You have a choice:
+1. **skip onboarding** which takes you directly to an approved account, or
+1. experience the entire onboarding process, which you'd have to undergo in production
+
+### Skip Onboarding
+If you choose to **skip onboarding** then click the "Bypass Onboarding" button which appears on the overall progress page next to the "Get Started" button.
+Then proceed to the ➍ **Enable Developer Access** instructions on this page.
+
+<img src="/img/bypass-onboarding.png" alt="Skip Onboarding" style={{width: '100%', textAlign: 'center'}} />
+
+### Experience the Onboarding Process
+Otherwise, click the "Get Started" button and complete the first six onboarding steps.
+
+<Tip>
+Use stubbed (fake) text when entering data.
+The information provided will not be used when creating the production account.
+</Tip>
+
+1. **Business Details**. Selecting **Corporation** as the institution type provides the quickest experience. The country field is pre-populated with the information you provided when creating the account.
+1. **Funding Details**. Select **No** for the trust structure and nominee shareholder options.
+1. Some account types will require you to fill out the **Suitability Assessment**. If you are not presented with this option, go to the next step. If you see the assessment: Select **Yes** and **Advanced** for the first two options.
+1. **Business Members**. Open the edit dialog for the name you gave during account creation and provide the required fields. <mark style={{ background: "yellow" }}>You can use fake (dummy) text</mark>.
+    - **Beneficial Owner Designation**. Ensure **Yes** is selected. Give information. The **% ot Ownership** should be `100`.
+    - For **Authorized User Designation**, **Persons with Management Control Designation** and **Director Designation**, select **Yes**.
+1.  Accept the **Terms & Conditions** and **Pricing & Fees** then complete **Review & Verify**.
+
+<Tip>
+Stop the onboarding process. Do not upload documents and go through ID verification.
+</Tip>
+
+## ➌ Contact Support
+
+[Support](https://support.paxos.com) must activate your Developer account before you can use it.
+To ensure a smooth process, include your email address and business (organization) name when [submitting a request](https://support.paxos.com/hc/en-us/requests/new).
+
+You will receive an email from support confirming your Developer Sandbox account is good to go.
+
+> Occasionally, [Support](https://support.paxos.com/hc/en-us) may reach out to you via email requesting additional information or if there is an issue creating the account.
+
+## ➍ Enable Developer Access
+
+<img src="/img/edit-roles.gif" alt="Edit Roles" style={{width: '40%', float: 'right'}} />
+
+Once the account is activated, you are assigned the [Entity Manager](/dashboard/roles#entity-manager) role by default.
+However, this role does not have write access to [Admin > API](https://dashboard.sandbox.paxos.com/admin/api), where credentials are configured.
+You will need to add the [Developer](/dashboard/roles#developer) role to your user.
+
+1. Go to [**Admin > Team Management > Users**](https://dashboard.sandbox.paxos.com/admin/team-management/users).
+1. Under the **Actions** column, open the **Edit Status** dropdown and select **Edit Roles**.
+1. Click in the **Edit Roles** form and select **Developer**.
+1. Log out and sign in to start a new session.
+
+> Once your user has the **Developer** role, you can [create API credentials](/getting-started/credentials).
