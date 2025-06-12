@@ -7,7 +7,7 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "navigation": {
     "tabs": [
       {
@@ -51,6 +51,10 @@
         ]
       },
       {
+        "tab": "Dashboard Guide",
+        "groups": []
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
@@ -66,17 +70,34 @@
             }
           }
         ]
+      },
+      {
+        "tab": "Cookbook",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "cookbook/overview"
+            ]
+          },
+          {
+            "group": "Identity & Onboarding",
+            "pages": [
+              "cookbook/create-identity-brokerage"
+            ]
+          }
+        ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
+          "anchor": "Changelog",
           "href": "https://mintlify.com/docs",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Community",
+          "anchor": "Support",
           "href": "https://mintlify.com/community",
           "icon": "slack"
         },
