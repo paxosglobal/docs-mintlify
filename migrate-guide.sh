@@ -169,30 +169,6 @@ with open('$file', 'w') as f:
     # Fallback when alt is missing: <Image src="SRC" ... /> -> ![](SRC)
     sed -E -i '' 's/<Image[^>]*src="([^"]*)"[^>]*\/>/![](\1)/g' "$file"
     
-    # Convert link reference definitions to new guide structure
-    # Pattern: [name]: /guide/page -> [name]: /guides/guide/page
-    # COMMENTED OUT TO PRESERVE ORIGINAL DOCUSAURUS LINKS
-    # sed -i '' 's|\]: /identity/|\]: /guides/identity/|g' "$file"
-    # sed -i '' 's|\]: /developer/|\]: /guides/developer/|g' "$file"
-    # sed -i '' 's|\]: /stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
-    # sed -i '' 's|\]: /webhooks/|\]: /guides/webhooks/|g' "$file"
-    # sed -i '' 's|\]: /transfers/|\]: /guides/transfers/|g' "$file"
-    # sed -i '' 's|\]: /profiles/|\]: /guides/profiles/|g' "$file"
-    # sed -i '' 's|\]: /accounts/|\]: /guides/accounts/|g' "$file"
-    # sed -i '' 's|\]: /orders/|\]: /guides/orders/|g' "$file"
-    
-    # Also handle link reference definitions without leading slash
-    # Pattern: [name]: guide/page -> [name]: /guides/guide/page
-    # COMMENTED OUT TO PRESERVE ORIGINAL DOCUSAURUS LINKS
-    # sed -i '' 's|\]: identity/|\]: /guides/identity/|g' "$file"
-    # sed -i '' 's|\]: developer/|\]: /guides/developer/|g' "$file"
-    # sed -i '' 's|\]: stablecoin-operations/|\]: /guides/stablecoin-operations/|g' "$file"
-    # sed -i '' 's|\]: webhooks/|\]: /guides/webhooks/|g' "$file"
-    # sed -i '' 's|\]: transfers/|\]: /guides/transfers/|g' "$file"
-    # sed -i '' 's|\]: profiles/|\]: /guides/profiles/|g' "$file"
-    # sed -i '' 's|\]: accounts/|\]: /guides/accounts/|g' "$file"
-    # sed -i '' 's|\]: orders/|\]: /guides/orders/|g' "$file"
-    
     # Convert Docusaurus admonitions to Mintlify format with proper matching
     # Handle specific admonition types with their proper closing tags
     sed -i '' 's/:::note/<Tip>/g' "$file"
