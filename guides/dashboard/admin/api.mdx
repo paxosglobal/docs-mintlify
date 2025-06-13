@@ -1,0 +1,36 @@
+---
+title: 'Configure API Credentials'
+description: Create and update an OAuth2 client.
+---
+
+import { ApiCredentialsIntro } from '/snippets/api-credentials-intro.mdx';
+import Scopes from '/snippets/scopes.mdx';
+
+[api-management]: https://dashboard.paxos.com/admin/api
+[Entity Manager]: dashboard/roles.mdx#entity-manager
+[Developer]: dashboard/roles.mdx#developer
+[convert]: developer/convert.mdx
+[mint]: developer/mint.mdx
+[redeem]: developer/redeem.mdx
+[oauth2]: https://oauth.net/code
+
+<ApiCredentialsIntro />
+
+Once the credentials are activated, most users find success using one of the libraries on the [OAuth2 website][oauth2] for authentication.
+
+> To add or modify API Credentials, you'll need a [Developer] or other role with appropriate permissions. Contact your [Entity Manager] for help.
+
+## Add API Credentials
+
+1. Log in to your Dashboard account and go to [API Management][api-management].
+1. Click **API Credentials**.
+1. Create a **Label** for your API credentials.
+1. Select the **Scopes** for your **Client ID**. For example, the following scopes (space delimited) should be adequate to [mint], [redeem] and [convert] Paxos-issued stablecoins:<br/><br/><Scopes />
+1. Optional: Add **Allowable IP** addresses. If you have a single IP address, you can configure a CIDR entry to specify a single IP with 32 fixed bits by appending `/32` to the address. For example, using `000.000.0.000/32` will allow only the IP address `000.000.0.000`.
+1. Optional: Enable **Request Signing**.
+1. Click **Create Credentials**.
+1. Copy the **Client ID** and **Client Secret** and store them in a safe place. The secret will not be displayed in the UI again, and it will have to be reset if forgotten.
+
+## Update or Delete Credentials
+
+To make changes to an existing client, select it from **API Credentials** and click either **Edit API Credentials** or **Delete API Credentials**.

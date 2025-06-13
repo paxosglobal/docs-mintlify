@@ -1,0 +1,50 @@
+---
+title: 'Travel Rule Compliance'
+description: Learn more about Travel Rule requirements and the blockchain.
+---
+
+[Support]: https://support.paxos.com
+[vasps]: https://app.notabene.id/network/search
+[Entities]: dashboard/organization.mdx#entity
+[travel-rule]: https://notabene.id/crypto-travel-rule-101/what-is-the-crypto-travel-rule
+[saved addresses]: dashboard/addresses.mdx
+[transactions]: dashboard/transactions.mdx
+
+The Paxos platform supports [Travel Rule][travel-rule] as part of our Crypto Transfers product to ensure compliance with our regulators in certain geographies.
+The Crypto Travel Rule requires virtual asset service providers (VASPs) like banks, exchanges, custodial solutions, and financial services providers to identify and share details of the origin and destination of crypto transactions above a specific threshold, similar to how these details are shared between banks when making fiat wire transfers.
+[Entities] onboarded to certain geographies must adhere to Travel Rule checks when depositing and withdrawing crypto to and from the Paxos platform.
+
+> Reach out to [Support] with questions or problems.
+
+## Crypto Deposit Travel Rule Requirements
+
+Incoming deposits from a new or unrecognized crypto address might need to be [explicitly resolved][transactions].
+
+- For deposits from individuals, the sender's first and last name must be provided.
+- For deposits from institutions, the institution name must be provided.
+
+Deposits that we do not already have this information for will be held in a Pending state until it is provided.
+Once provided, we will credit the funds to your account. 
+
+## Crypto Withdrawal Travel Rule Requirements
+
+Crypto withdrawals can only be made to [saved addresses] that include beneficiary details.
+
+<Accordion title="Beneficiary details" id="beneficiary-details">
+
+- Beneficiary Type
+  - Indicate whether the address belongs to an Individual or an Institution  
+- Beneficiary Name
+  - Provide the name of the beneficiary who will be receiving the funds
+- Address Type (Private / Non-Custodial or Exchange Hosted / Custodial)
+  - A Private wallet address is one which you control the keys / seed phrase (e.g. Metamask)
+  - A Custodial wallet address is one where a centralized wallet provider manages the keys for you (e.g. a wallet on a trading platform like Robinhood) 
+    - Note: if the provider you are looking for is not listed, unfortunately it's not supported yet. Please select 'Other' and reach out to our [Support] team to let us know who you would like to see.
+
+</Accordion>
+    
+For customers onboarded to Paxos Global (PTE), to transfer crypto off the Paxos platform, the recipient address must be hosted by one of the hosting providers displayed in the drop-down. If the provider you are looking for is not listed, it is not supported yet. Please select "Other" as the option and reach out to our Support team to inform us of the provider you were looking for.
+
+### Failed Withdrawals due to Travel Rule
+
+If a transaction has a status of Failed, and it is due to Travel Rule, you will see this indicated in the Transfer Details panel, which can be accessed by clicking **View** in the [transactions] list.

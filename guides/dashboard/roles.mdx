@@ -1,0 +1,56 @@
+---
+title: 'Roles and Responsibilities'
+description: Learn more about the default roles for your Entity.
+---
+
+[entity-settings]: https://dashboard.paxos.com/admin
+[Support]: https://support.paxos.com
+[api]: https://dashboard.paxos.com/admin/api
+[approvals]: https://docs.paxos.com/dashboard/admin/approvals
+
+The Dashboard includes a default set or associated roles and permissions that the [Entity Manager](#entity-manager) provisions before using the Dashboard.
+These roles and associated permissions are bound to the Entity, so it is possible to have different roles depending on an individual's Entity-specific responsibilities.
+
+![Mint Workflow](/images/organizations-entities.png)
+<Tip>
+
+ Have questions about your role and access?
+
+Contact your [Entity Manager](#entity-manager) for help.
+
+</Tip>
+
+## Organization Administrator
+
+All Organizations have at least one Organization Administrator with permission to onboard Entities.
+Organization Administrators who complete the onboarding for an Entity automatically become the [Entity Manager](#entity-manager) for that Entity.
+
+## Entity Manager
+
+Entity Managers assign roles, add users, map identity provider groups to roles, etc.
+Entity Managers can [review Entity specific settings][entity-settings].
+Entity Managers can be reassigned once an Entity has been created.
+Entity Managers have view permissions across the Dashboard, but cannot perform treasury focused actions.
+
+> Use the Entity ID on the [ Admin > Entity Settings][entity-settings] when contacting [Support].
+
+## Treasurer
+
+The Treasurer role enables users to:
+
+- Create Profiles and update balances.
+- Deposit, transfer and withdrawal supported assets.
+- Mint, convert and redeem Paxos-issued stablecoins.
+- View reports.
+
+## Approver
+
+The Approver can approve or reject any submitted action that requires [Approvals][approvals]. 
+
+## Developer
+
+The Developer can view, create, update and delete [API credentials][api].
+
+## Viewer
+
+A Viewer has read-only access to view user roles and permissions, cash and crypto balances, deposit and transfer details, API keys, reports as well as conversion information.

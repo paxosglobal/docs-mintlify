@@ -1,0 +1,71 @@
+---
+title: 'Overview'
+description: Manage USDG rewards via the Paxos Dashboard.
+---
+[addresses]: dashboard/addresses.mdx
+[fiat]: dashboard/fiat.mdx
+
+<Info>
+
+ Demo
+**[Watch a Demo →](https://www.youtube.com/watch?v=jPUvOSNMyMc)**  
+</Info>
+
+Global Dollar Network partners can now manage USDG rewards via our self-serve rewards tools. Once onboarded to Paxos, you can manage everything directly from the Paxos Dashboard, or via our Rewards API endpoints.
+
+To start earning, simply:
+
+1. Add **monitoring addresses** to track eligible wallet activity
+2. Set your **payout address** for receiving USDG rewards
+3. View your **monthly rewards statements** and track your payouts
+
+<Tip>
+
+ Don’t see the Rewards tab?
+[Contact the Growth Team](https://globaldollar.com/#contact) to request access.
+</Tip>
+
+## How it works
+
+USDG rewards are based on the on-chain activity attributed to the monitoring addresses attributed to your organization. Paxos calculates rewards based on daily snapshots (taken at 23:59 +0 UTC), and distributes payouts once per month.
+With our self-serve rewards product, you can:
+
+- Add or update monitoring addresses at any time
+- Set and update payout address
+- View your rewards payouts
+
+## Key Rewards Concepts
+
+### Monitoring Address
+
+A blockchain address that Paxos monitors on a daily basis to calculate your stablecoin rewards based on eligible on-chain activity. In order to receive rewards for using USDG, you must [register at least one monitoring address](.) that will hold, mint, or accept USDG on-chain. Examples of types of monitoring addresses you may want to add include:
+
+- Omnibus wallet addresses for your exchange
+- Dedicated wallets for your institutional custody business
+- Payment addresses your organization uses to accept payments for goods/services
+
+<Warning>
+End user self-custodial wallets are not yet supported. If you need to add self-custodial wallets for your end users, please reach out to your account contact or support@paxos.com. 
+</Warning>
+
+### Payout Address
+
+A blockchain address that Paxos will send your monthly USDG rewards to on-chain. You can select a payout address from any withdrawal address added to your Paxos organization. 
+[Learn how to set and configure payout addresses](.).
+
+### Statements & Payouts
+
+Monthly rewards statements are shared by email. Payouts occur on a fixed schedule, one time per month.
+
+#### Reward Payout Timeline
+
+| Time | Example Date | Event |
+| --- | --- | -- |
+| T  | May 31, 2025 | Last day to add monitoring addresses for current month |
+| T+20 | June 20, 2025  | Rewards statement emailed to your team (will be available in the Dashboard and via API soon) |
+| T+25 | June 25, 2025  | Deadline to report any issues with your rewards statement |
+| T+30 | June 30, 2025  | USDG rewards paid to your configured payout address |
+
+<Warning>
+Monitoring addresses must be added by month end (23:59 UTC+0) in order to earn rewards for that month. Addresses added after month end will start earning rewards for the following month.
+</Warning>

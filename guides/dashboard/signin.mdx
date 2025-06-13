@@ -1,0 +1,81 @@
+---
+title: 'Sign In'
+description: Access the Dashboard using a passkey or SSO.
+---
+
+import { PasskeyNote } from '/snippets/passkey-note.mdx';
+
+[Entity Manager]: dashboard/roles.mdx#entity-manager
+[Entity]: dashboard/organization.mdx#entity
+[Support]: https://support.paxos.com
+[passkeys guide]: dashboard/passkeys.mdx
+
+To access the Dashboard, your [Entity Manager] will either email you an invite to register for a [passkey-based sign in](#passkey) or integrate the Dashboard into your company's [Single Sign-On (SSO)](#sso) solution.
+
+<Tip>
+
+ Having trouble signing in? Don't know what method to use?
+
+Contact your [Entity Manager] or IT organization for help.
+
+</Tip>
+
+## First Time Sign In with Passkey
+
+If you have been invited to join an Organization by an [Entity Manager] for an existing [Entity], use the link provided in your invite email to join your Organization's Dashboard account.
+Learn more in the [passkeys guide].
+
+<PasskeyNote />
+
+Provide your name, email address and the verification code from the email we sent you.
+Click **Next** then **Create a Passkey**.
+
+Save the passkey for [subsequent sign ins](#passkey).
+
+### Set Up Account Recovery
+
+![Security Questions](/images/preferences-questions.png)
+
+Add a secondary method of login in case you lose access to your account or change device.
+Once set, the security question will be used if you need to [recover your account](#recover).
+
+1. Go to your account preferences in the top right corner and select the security questions manager.
+1. Select a question and provide a memorable answer. The answer must not include any identifying information, such as your name, nor match commonly used passwords such as 123456.
+1. Write down your answer and store it in a secure place before submitting. The answer cannot be retrieved once it is set.
+
+To change your security question, follow the steps above.
+
+## Sign In with Passkey
+
+Make sure you have completed [first time sign in](#passkey-first) before signing in.
+If you saved the passkey locally, make sure you use the same device to sign in.
+Learn more in the [passkeys guide].
+
+Go to https://dashboard.paxos.com/, select **Sign In**, click the email input field then select your passkey.
+If your browser does not support passkey autofill, enter your email address and click **Next**.
+If required, select the appropriate passkey.
+
+<PasskeyNote />
+
+### Add or Remove a Passkey
+
+![Manage Passkeys](/images/preferences-manage-passkey.png)
+
+Go to your account preferences in the top right corner and use the passkey manager to add or delete a passkey.
+
+The Dashboard supports multiple passkeys for each individual user.
+However, availability of this feature depends on the technology used to create your first passkey.
+If you get an error message when trying to create a new passkey, the functionality is not available for your setup.
+
+The passkey labeled **Accessed from this browser** is the one used to log in during the current session.
+You must have at least two passkeys associated with your account to enable deletion.
+### Recover Account (Passkey)
+
+1. Go to https://dashboard.paxos.com/, select **Recover Account** and follow the on-screen instructions. **Keep the window open and do not navigate away from the screen**.
+1. Retrieve the security code from your email to verify it is you.
+1. Answer your security question.
+> If you forgot your answer or never set up [account recovery](#set-up-recovery), contact [Support] for assistance.
+1. Create a new passkey.<PasskeyNote />
+## Sign In with SSO
+
+Go to https://dashboard.paxos.com/, select **Sign In**, enter your work email address then click **Sign in with SSO**.

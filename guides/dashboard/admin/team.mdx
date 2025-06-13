@@ -1,0 +1,62 @@
+---
+title: 'Manage Team'
+description: Configure Passkeys or SSO for user authentication.
+---
+
+[users]: https://dashboard.paxos.com/admin/team-management/users
+[Roles]: https://dashboard.paxos.com/admin/team-management/roles
+[role-desc]: dashboard/roles.mdx
+[Entity]: dashboard/organization.mdx#entity
+[Entity Managers]: dashboard/roles.mdx#entity-manager
+[Support]: https://support.paxos.com
+[sso-mapping]: https://dashboard.paxos.com/admin/team-management/mapping
+[sso-login]: dashboard/signin.mdx#sso
+[passkey]: https://www.passkeys.com/what-are-passkeys
+[pass-login]: dashboard/signin.mdx#passkey
+[passkey-first]: dashboard/signin.mdx#passkey-first
+
+[Entity Managers] view, search and manage user access at [Admin > Team Management > Users][users] and use [Admin > Team Management > Roles][Roles] to audit the list of permissions associated with a Role.
+
+<Tip>
+
+ Interested in using [SSO](#sso)?
+
+Contact [Support] to get started.
+
+</Tip>
+
+## Edit User Access and Roles
+
+Users are marked as Active once they log into the Dashboard.
+To disable user access or change Roles, use the Edit Status dropdown in the User Actions menu at [Admin > Team Management > Users][users].
+
+## Use Passkey-based Login
+
+Use **Invite Users** on [Admin > Team Management > Users][users] to assign Roles as part of inviting a new user to the Entity.
+These roles can be manually changed later. 
+Users can have different [roles][role-desc] across different [Entities][Entity].
+When inviting users, it is recommended to provide organization-specific instruction on the proper use and storage of [passkeys][passkey].
+
+<PasskeyNote />
+
+Once invited, the user receives an invitation email that includes a link to [register and create a passkey][passkey-first].
+Upon generating the passkey, users can then [sign in via passkey][pass-login].
+
+## Set Up Single-Sign-On
+
+An Entity Manager uses the [Role Mapping interface][sso-mapping] to map Roles to user groups within your organization's Identity Provider.
+These groups are typically set up as by IT teams who configure Identity Provider setups (for example, Okta group attribute).
+A user's Roles are refreshed & validated on every login. 
+Paxos supports SAML and OIDC supported Identity Providers for SSO (for example, Okta or Azure AD).
+
+<Tip>
+
+ Interested in using [SSO](#sso)?
+
+Contact [Support] to get started.
+
+</Tip>
+
+When adding a new mapping, enter the **Group Name** from your Identity Provider.
+Typically, you work with your IT group to leverage existing groups; however, you may need to add new Identity Provider groups to match your expected Dashboard workflows.
+Once you map the group to an existing Dashboard **Role**, the next time users [sign in with SSO][sso-login] their permissions will update.

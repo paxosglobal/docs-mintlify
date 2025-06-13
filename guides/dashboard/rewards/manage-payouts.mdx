@@ -1,0 +1,40 @@
+---
+title: 'Manage Payouts'
+description: Set or update a payout address.
+---
+[addresses]: dashboard/addresses.mdx
+[fiat]: dashboard/fiat.mdx
+
+### What is a payout address?
+
+Your **payout address** is the address where Paxos will send your monthly USDG rewards. You must select one existing [withdrawal address](https://docs.paxos.com/dashboard/addresses) to designate as a payout address. Ethereum and Solana networks are currently the only networks supported for payouts. 
+
+<Warning>
+You must set a payout address by month end in order to receive rewards. If you do not set a payout address before month end, your rewards will be deferred until the following month. 
+</Warning>
+
+### Set or update your payout address
+<Warning>
+
+ Required permissions
+
+- To set a payout address, you need a role with the **update payout address** permission (i.e. Treasurer) to perform this action.
+
+- To view a payout address or statement, you only need a role with the **view payout address** permission and “view statement” permission (i.e. Entity Manager and Viewer roles).
+
+</Warning>
+
+1. Go to the **Rewards** tab in the Paxos Dashboard
+2. In the **Payout Address** section, click the dropdown on the right
+3. Choose an existing withdrawal address, or click **Add new address**
+4. Click **Submit**
+
+![Updating payout address](/images/rewards-payout-change.png)
+![Adding a new payout address](/images/rewards-payout-add-address.png)
+![Saving payout address](/images/rewards-payout-save-address.png)
+
+## View your active payout address
+
+See your configured address, network, and last update timestamp.
+
+![Saving payout address](/images/rewards-view-active-payouts.png)

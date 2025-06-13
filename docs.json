@@ -60,6 +60,10 @@
     {
       "source": "/payments/:slug*",
       "destination": "/guides/payments/:slug*"
+    },
+    {
+      "source": "/dashboard/:slug*",
+      "destination": "/guides/dashboard/:slug*"
     }
   ],
   "navigation": {
@@ -211,7 +215,77 @@
       },
       {
         "tab": "Dashboard Guide",
-        "groups": []
+        "groups": [
+          {
+            "group": "Paxos Dashboard",
+            "pages": [
+              "guides/dashboard/index",
+              {
+                "group": "About the Paxos Dashboard",
+                "pages": [
+                  "guides/dashboard/transactions",
+                  "guides/dashboard/instructions",
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/fiat",
+                  "guides/dashboard/organization",
+                  "guides/dashboard/roles",
+                  "guides/dashboard/fees"
+                ]
+              },
+              {
+                "group": "Account",
+                "pages": [
+                  "guides/dashboard/signin",
+                  "guides/dashboard/account",
+                  "guides/dashboard/onboard"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Asset Movement",
+            "pages": [
+              "guides/dashboard/deposit",
+              "guides/dashboard/convert",
+              "guides/dashboard/transfer"
+            ]
+          },
+          {
+            "group": "Stablecoin Operations",
+            "pages": [
+              "guides/dashboard/mint",
+              "guides/dashboard/redeem"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "guides/dashboard/admin/entity",
+              "guides/dashboard/admin/team",
+              "guides/dashboard/admin/api",
+              "guides/dashboard/admin/reports",
+              "guides/dashboard/travel-rule",
+              "guides/dashboard/admin/roles",
+              "guides/dashboard/admin/approvals"
+            ]
+          },
+          {
+            "group": "Rewards",
+            "pages": [
+              "guides/dashboard/rewards/overview",
+              "guides/dashboard/rewards/monitor-addresses",
+              "guides/dashboard/rewards/manage-payouts",
+              "guides/dashboard/rewards/timeline-and-disputes"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "guides/dashboard/passkeys",
+              "guides/dashboard/migrate-to-dashboard"
+            ]
+          }
+        ]
       },
       {
         "tab": "API Reference",
