@@ -1,12 +1,11 @@
 export const PaymentsPhantomWallet = () => (
-  <details>
-    <summary id="buyer-wallet">Example: Buyer's Wallet</summary>
+  <Accordion title="Example: Buyer's Wallet" id="buyer-wallet">
 
     <p>We <a href="https://faucet.solana.com/">airdropped Solana Devnet</a> to a self-custody wallet.
     We also used the <a href="https://faucet.paxos.com/">Paxos Testnet Faucet</a> to transfer some <a href="/stablecoin/pyusd">PYUSD on Solana Devnet</a> to the Buyer's wallet.
     The same Buyer wallet is used to simulate a purchase as well as a refund.</p>
 
-  </details>
+  </Accordion>
 );
 
 export default PaymentsPhantomWallet;

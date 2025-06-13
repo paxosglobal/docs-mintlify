@@ -1,6 +1,5 @@
 export const PaymentsGetKeys = () => (
-  <details>
-    <summary id="generate-keys">Example: Sandbox Credentials</summary>
+  <Accordion title="Example: Sandbox Credentials" id="generate-keys">
 
     <p><a href="https://dashboard.sandbox.paxos.com">Log in</a> to your sandbox account and go to <a href="https://dashboard.sandbox.paxos.com/admin/api"><strong>Settings</strong> &gt; <strong>API Management</strong></a>.
     Either select an existing <strong>Client ID</strong> or create a new one.</p>
@@ -40,7 +39,7 @@ transfer:write_deposit_address`}
  "token_type": "bearer"
 }`}
     </code></pre>
-  </details>
+  </Accordion>
 );
 
 export default PaymentsGetKeys;

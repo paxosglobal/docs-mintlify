@@ -138,6 +138,116 @@ clean_docusaurus_content() {
     # Replace Description component with simple text
     sed -i '' 's/<Description description={frontMatter\.description} \/>//' "$file"
     
+    # Convert HTML details elements to Mintlify Accordions
+    echo "    🎯 Converting <details> elements to Mintlify Accordions"
+    python3 -c "
+import re
+import sys
+
+def convert_details_to_accordions(content):
+    # Pattern to match details elements with summary/h3 structure
+    # Handles both single and multiple details in a file
+    
+    # First, let's identify all details blocks and convert them
+    details_pattern = r'<details>\s*<summary>\s*<h3[^>]*id=\"([^\"]*)\">([^<]*)</h3>\s*</summary>\s*<div>(.*?)</div>\s*</details>'
+    
+    matches = list(re.finditer(details_pattern, content, re.DOTALL))
+    
+    if not matches:
+        return content
+    
+    # If we have multiple details elements, we should group them
+    if len(matches) > 1:
+        # Check if they are consecutive (part of a FAQ section)
+        consecutive_groups = []
+        current_group = [matches[0]]
+        
+        for i in range(1, len(matches)):
+            # Calculate the gap between end of previous match and start of current
+            prev_end = matches[i-1].end()
+            curr_start = matches[i].start()
+            gap_content = content[prev_end:curr_start].strip()
+            
+            # If there's minimal content between them (just whitespace), consider them consecutive
+            if len(gap_content) <= 10:  # Allow for some whitespace/newlines
+                current_group.append(matches[i])
+            else:
+                # End current group, start new one
+                consecutive_groups.append(current_group)
+                current_group = [matches[i]]
+        
+        # Add the last group
+        consecutive_groups.append(current_group)
+        
+        # Process each group
+        new_content = content
+        offset = 0  # Track position changes as we modify content
+        
+        for group in consecutive_groups:
+            if len(group) > 1:
+                # Multiple accordions - wrap in AccordionGroup
+                first_match = group[0]
+                last_match = group[-1]
+                
+                # Get the content from start of first to end of last
+                group_start = first_match.start() + offset
+                group_end = last_match.end() + offset
+                group_content = new_content[group_start:group_end]
+                
+                # Convert each details in the group to accordion
+                accordion_content = []
+                for match in group:
+                    anchor_id = match.group(1)
+                    title = match.group(2).strip()
+                    body_content = match.group(3).strip()
+                    
+                    accordion = f'<Accordion title=\"{title}\" id=\"{anchor_id}\">\n\n{body_content}\n\n</Accordion>'
+                    accordion_content.append(accordion)
+                
+                # Wrap in AccordionGroup
+                replacement = f'<AccordionGroup>\n\n' + '\n\n'.join(accordion_content) + f'\n\n</AccordionGroup>'
+                
+                # Replace the group content
+                new_content = new_content[:group_start] + replacement + new_content[group_end:]
+                
+                # Update offset
+                offset += len(replacement) - (group_end - group_start)
+            else:
+                # Single accordion - no group needed
+                match = group[0]
+                anchor_id = match.group(1)
+                title = match.group(2).strip()
+                body_content = match.group(3).strip()
+                
+                replacement = f'<Accordion title=\"{title}\" id=\"{anchor_id}\">\n\n{body_content}\n\n</Accordion>'
+                
+                match_start = match.start() + offset
+                match_end = match.end() + offset
+                
+                new_content = new_content[:match_start] + replacement + new_content[match_end:]
+                offset += len(replacement) - (match_end - match_start)
+        
+        return new_content
+    else:
+        # Single details element
+        match = matches[0]
+        anchor_id = match.group(1)
+        title = match.group(2).strip()
+        body_content = match.group(3).strip()
+        
+        replacement = f'<Accordion title=\"{title}\" id=\"{anchor_id}\">\n\n{body_content}\n\n</Accordion>'
+        
+        return content[:match.start()] + replacement + content[match.end():]
+
+with open('$file', 'r') as f:
+    content = f.read()
+
+converted_content = convert_details_to_accordions(content)
+
+with open('$file', 'w') as f:
+    f.write(converted_content)
+"
+    
     # Convert Docusaurus components to Mintlify equivalents
     # Tabs -> Accordion (approximate)
     sed -E -i '' 's/<Tabs[^>]*>//g' "$file"
