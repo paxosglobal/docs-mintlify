@@ -308,15 +308,10 @@
         "tab": "Cookbook",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Cookbook",
             "pages": [
-              "cookbook/overview"
-            ]
-          },
-          {
-            "group": "Identity & Onboarding",
-            "pages": [
-              "cookbook/create-identity-brokerage"
+              "cookbook/overview",
+              "cookbook/third-party-brokerage-enrollment"
             ]
           }
         ]

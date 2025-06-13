@@ -1,34 +1,289 @@
 ---
-title: 'Cookbook Overview'
+title: 'Overview'
 description: 'Ready-to-use recipes for common Paxos integration patterns'
+mode: 'custom'
 ---
 
-Welcome to the Paxos Cookbook! This section provides step-by-step recipes for common integration patterns. Each recipe is designed to be concise, actionable, and easy to follow.
+<div style={{
+  textAlign: 'center',
+  padding: '40px 20px',
+  maxWidth: '1200px',
+  margin: '0 auto'
+}}>
+  <h1 style={{
+    fontSize: '3rem',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    lineHeight: '1.1'
+  }}>
+    <span className="text-gray-900 dark:text-white">
+      Paxos Cookbook
+    </span>
+  </h1>
+  
+  <p style={{
+    fontSize: '1.25rem',
+    color: '#6B7280',
+    marginBottom: '60px',
+    maxWidth: '600px',
+    margin: '0 auto 60px'
+  }}>
+    Step-by-step recipes for common integrations.
+  </p>
 
-## What are Recipes?
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '40px'
+  }}>
+    <a 
+      href="https://github.com/paxosglobal/example-crypto-brokerage-integration" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '10px 16px',
+        backgroundColor: '#F3F4F6',
+        borderRadius: '8px',
+        textDecoration: 'none',
+        color: '#374151',
+        fontSize: '0.875rem',
+        fontWeight: '500',
+        transition: 'all 0.2s ease',
+        border: '1px solid #E5E7EB'
+      }}
+    >
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+      Cookbook Examples
+    </a>
+  </div>
 
-Recipes are focused, practical guides that walk you through completing specific tasks with the Paxos platform. Unlike comprehensive guides, recipes:
+  <div className="recipe-grid" style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: '24px',
+    marginBottom: '40px',
+    textAlign: 'left'
+  }}>
+    
+    <a href="/cookbook/third-party-brokerage-enrollment" className="recipe-card-link" style={{ textDecoration: 'none' }}>
+      <div className="recipe-card" style={{
+        border: '1px solid #E5E7EB',
+        borderRadius: '12px',
+        padding: '24px',
+        backgroundColor: '#FFFFFF',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '16px'
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            backgroundColor: '#00845E',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '12px',
+            flexShrink: 0
+          }}>
+            <svg width="20" height="20" fill="white" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            color: '#111827',
+            margin: 0,
+            lineHeight: '1.3'
+          }}>
+            Third Party Brokerage Enrollment
+          </h3>
+        </div>
+        
+        <p style={{
+          color: '#6B7280',
+          fontSize: '0.875rem',
+          lineHeight: '1.5',
+          margin: '0 0 16px 0',
+          flex: 1
+        }}>
+          Create a Person Identity, Account, and Profile for third-party crypto brokerage services using passthrough verification.
+        </p>
+        
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '0.75rem',
+          color: '#9CA3AF',
+          marginTop: 'auto'
+        }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <span>🛠️ 6 Steps</span>
+            <span>⏱️ 30 min</span>
+          </div>
+          <div style={{
+            color: '#00845E',
+            fontSize: '0.875rem',
+            fontWeight: '500'
+          }}>
+            Start Recipe →
+          </div>
+        </div>
+      </div>
+    </a>
 
-- Focus on a single, well-defined outcome
-- Provide clear, sequential steps
-- Include all necessary code snippets
-- Minimize background explanation in favor of action
+    {/* Placeholder for future recipes */}
+    <div className="recipe-card coming-soon" style={{
+      border: '1px dashed #D1D5DB',
+      borderRadius: '12px',
+      padding: '24px',
+      backgroundColor: '#F9FAFB',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center'
+    }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        borderRadius: '8px',
+        backgroundColor: '#E5E7EB',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '16px'
+      }}>
+        <svg width="20" height="20" fill="#9CA3AF" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+        </svg>
+      </div>
+      <h3 style={{
+        fontSize: '1.125rem',
+        fontWeight: '600',
+        color: '#9CA3AF',
+        margin: '0 0 8px 0'
+      }}>
+        More Recipes Coming Soon
+      </h3>
+      <p style={{
+        color: '#6B7280',
+        fontSize: '0.875rem',
+        margin: 0
+      }}>
+        Additional integration patterns and use cases
+      </p>
+    </div>
 
-## Available Recipes
+  </div>
 
-### Identity & Onboarding
-- [Create Identity for Brokerage Enrollment](/cookbook/create-identity-brokerage) - Set up a Person Identity, Account, and Profile for crypto brokerage services
+  <div style={{
+    textAlign: 'center',
+    padding: '40px 20px',
+    backgroundColor: '#F9FAFB',
+    borderRadius: '12px',
+    border: '1px solid #E5E7EB'
+  }}>
+    <h2 style={{
+      fontSize: '1.5rem',
+      fontWeight: '600',
+      color: '#111827',
+      marginBottom: '12px'
+    }}>
+      Need Help?
+    </h2>
+    <p style={{
+      color: '#6B7280',
+      marginBottom: '20px',
+      fontSize: '1rem'
+    }}>
+      Can't find what you're looking for? Our support team is here to help.
+    </p>
+    <a href="https://support.paxos.com/" style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '10px 20px',
+      backgroundColor: '#00845E',
+      color: 'white',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '500',
+      transition: 'background-color 0.2s ease'
+    }}>
+      Contact Support
+    </a>
+  </div>
+</div>
 
-## Recipe Structure
+<style dangerouslySetInnerHTML={{
+  __html: `
+.recipe-card-link {
+  display: block;
+  text-decoration: none !important;
+  color: inherit;
+}
 
-Each recipe follows a consistent structure:
+.recipe-card {
+  transition: all 0.2s ease;
+}
 
-1. **Prerequisites** - What you need before starting
-2. **Step-by-step instructions** - Clear, sequential actions
-3. **Code examples** - Copy-paste ready snippets
-4. **Result verification** - How to confirm success
-5. **Next steps** - Logical follow-up actions
+.recipe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: #00845E !important;
+}
 
-## Contributing
+.recipe-card:hover h3 {
+  color: #00845E !important;
+}
 
-Have an idea for a new recipe? Reach out to our [Support team](https://support.paxos.com/) with your suggestion. 
+.dark .recipe-card {
+  background-color: #1F2937 !important;
+  border-color: #374151 !important;
+}
+
+.dark .recipe-card h3 {
+  color: #F9FAFB !important;
+}
+
+.dark .recipe-card p {
+  color: #D1D5DB !important;
+}
+
+.dark .coming-soon {
+  background-color: #374151 !important;
+  border-color: #4B5563 !important;
+}
+
+.dark .coming-soon h3 {
+  color: #9CA3AF !important;
+}
+
+.dark .coming-soon p {
+  color: #6B7280 !important;
+}
+
+@media (max-width: 768px) {
+  .recipe-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+`
+}} /> 

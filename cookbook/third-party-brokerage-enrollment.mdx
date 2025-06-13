@@ -1,0 +1,819 @@
+---
+title: 'Third Party Brokerage Enrollment'
+description: 'Step-by-step recipe to create a Person Identity, Account, and Profile for third-party crypto brokerage services'
+---
+
+<div className="recipe-header">
+
+
+  <div style={{
+    display: 'flex',
+    gap: '16px',
+    padding: '16px',
+    backgroundColor: '#F9FAFB',
+    borderRadius: '8px',
+    border: '1px solid #E5E7EB',
+    marginBottom: '32px',
+    flexWrap: 'wrap',
+    alignItems: 'center'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <span>🛠️</span>
+      <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>6 Steps</span>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <span>⏱️</span>
+      <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>~30 minutes</span>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <span>📚</span>
+      <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Intermediate</span>
+    </div>
+  </div>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '40px'
+  }}>
+    <a 
+      href="https://github.com/paxosglobal/example-crypto-brokerage-integration" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '10px 16px',
+        backgroundColor: '#F3F4F6',
+        borderRadius: '8px',
+        textDecoration: 'none',
+        color: '#374151',
+        fontSize: '0.875rem',
+        fontWeight: '500',
+        transition: 'all 0.2s ease',
+        border: '1px solid #E5E7EB'
+      }}
+    >
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+      <p style={{margin: 0}}>Example Code</p>
+      
+    </a>
+  </div>
+</div>
+
+
+
+<AccordionGroup>
+  <Accordion title="Prerequisites" icon="list-check" defaultOpen>
+    Before you start, make sure you have:
+
+    - **Paxos Dashboard access** in Sandbox environment
+    - **Support approval** for Identity API access
+    - **API Key** with the following scopes:
+      - `identity:read_identity`
+      - `identity:read_account` 
+      - `identity:write_identity`
+      - `identity:write_account`
+      - `funding:read_profile`
+      - `funding:write_profile`
+      - `exchange:read_order`
+      - `exchange:write_order`
+
+    <Note>
+    If you don't have an API key yet, follow our [Authentication Guide](/guides/developer/authentication) to create one. Contact [Support](https://support.paxos.com/) to provision access to the Identity API.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Step 1: Get Access Token" icon="key">
+    First, authenticate with the Paxos OAuth service to get an access token:
+
+    <CodeGroup>
+
+    ```go Go
+    package main
+
+    import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "net/http"
+        "net/url"
+        "strings"
+    )
+
+    type TokenResponse struct {
+        AccessToken string `json:"access_token"`
+        ExpiresIn   int    `json:"expires_in"`
+        Scope       string `json:"scope"`
+        TokenType   string `json:"token_type"`
+    }
+
+    func getAccessToken(clientID, clientSecret string) (*TokenResponse, error) {
+        data := url.Values{}
+        data.Set("grant_type", "client_credentials")
+        data.Set("client_id", clientID)
+        data.Set("client_secret", clientSecret)
+        data.Set("scope", "identity:read_identity identity:read_account identity:write_identity identity:write_account funding:read_profile funding:write_profile exchange:read_order exchange:write_order")
+
+        req, err := http.NewRequest("POST", "https://oauth.sandbox.paxos.com/oauth2/token", strings.NewReader(data.Encode()))
+        if err != nil {
+            return nil, err
+        }
+        
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+        
+        client := &http.Client{}
+        resp, err := client.Do(req)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+        
+        body, err := io.ReadAll(resp.Body)
+        if err != nil {
+            return nil, err
+        }
+        
+        var tokenResp TokenResponse
+        err = json.Unmarshal(body, &tokenResp)
+        if err != nil {
+            return nil, err
+        }
+        
+        return &tokenResp, nil
+    }
+    ```
+
+    ```python Python
+    import requests
+
+    def get_access_token(client_id, client_secret):
+        """Get OAuth access token from Paxos"""
+        
+        url = "https://oauth.sandbox.paxos.com/oauth2/token"
+        
+        data = {
+            'grant_type': 'client_credentials',
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'scope': 'identity:read_identity identity:read_account identity:write_identity identity:write_account funding:read_profile funding:write_profile exchange:read_order exchange:write_order'
+        }
+        
+        response = requests.post(url, data=data)
+        response.raise_for_status()
+        
+        token_data = response.json()
+        return token_data['access_token']
+
+    # Usage
+    client_id = "your_client_id"
+    client_secret = "your_client_secret"
+    access_token = get_access_token(client_id, client_secret)
+    ```
+
+    ```javascript JavaScript
+    const axios = require('axios');
+    const qs = require('querystring');
+
+    async function getAccessToken(clientId, clientSecret) {
+      try {
+        const data = qs.stringify({
+          'grant_type': 'client_credentials',
+          'client_id': clientId,
+          'client_secret': clientSecret,
+          'scope': 'identity:read_identity identity:read_account identity:write_identity identity:write_account funding:read_profile funding:write_profile exchange:read_order exchange:write_order'
+        });
+
+        const response = await axios.post(
+          'https://oauth.sandbox.paxos.com/oauth2/token',
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        );
+
+        return response.data.access_token;
+      } catch (error) {
+        console.error('Error getting access token:', error.response?.data || error.message);
+        throw error;
+      }
+    }
+
+    // Usage
+    const clientId = 'your_client_id';
+    const clientSecret = 'your_client_secret';
+    const accessToken = await getAccessToken(clientId, clientSecret);
+    ```
+
+    </CodeGroup>
+
+    <Tip>
+    Save the `access_token` from the response for use in subsequent requests. Access tokens expire, so you may need to refresh them periodically.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Step 2: Create Person Identity with Passthrough Verification" icon="user">
+    Create an Identity with passthrough verification indicating that IDV was completed by a third-party provider:
+
+    <CodeGroup>
+
+    ```go Go
+    type PersonDetails struct {
+        VerifierType                   string   `json:"verifier_type"`
+        PassthroughVerifierType        string   `json:"passthrough_verifier_type"`
+        PassthroughVerifiedAt         string   `json:"passthrough_verified_at"`
+        PassthroughVerificationID     string   `json:"passthrough_verification_id"`
+        PassthroughVerificationStatus string   `json:"passthrough_verification_status"`
+        PassthroughVerificationFields []string `json:"passthrough_verification_fields"`
+        FirstName                     string   `json:"first_name"`
+        LastName                      string   `json:"last_name"`
+        DateOfBirth                   string   `json:"date_of_birth"`
+        Address                       Address  `json:"address"`
+        Nationality                   string   `json:"nationality"`
+        CipID                        string   `json:"cip_id"`
+        CipIDType                    string   `json:"cip_id_type"`
+        CipIDCountry                 string   `json:"cip_id_country"`
+        PhoneNumber                  string   `json:"phone_number"`
+        Email                        string   `json:"email"`
+    }
+
+    type Address struct {
+        Address1 string `json:"address1"`
+        City     string `json:"city"`
+        Province string `json:"province"`
+        Country  string `json:"country"`
+        ZipCode  string `json:"zip_code"`
+    }
+
+    type CustomerDueDiligence struct {
+        EstimatedYearlyIncome      string `json:"estimated_yearly_income"`
+        ExpectedTransferValue      string `json:"expected_transfer_value"`
+        SourceOfWealth            string `json:"source_of_wealth"`
+        EmploymentStatus          string `json:"employment_status"`
+        EmploymentIndustrySector  string `json:"employment_industry_sector"`
+    }
+
+    type CreateIdentityRequest struct {
+        RefID                    string               `json:"ref_id"`
+        PersonDetails            PersonDetails        `json:"person_details"`
+        CustomerDueDiligence     CustomerDueDiligence `json:"customer_due_diligence"`
+    }
+
+    func createPersonIdentity(accessToken string) (map[string]interface{}, error) {
+        url := "https://api.sandbox.paxos.com/v2/identity/identities"
+        
+        payload := CreateIdentityRequest{
+            RefID: "your_end_user_ref_id",
+            PersonDetails: PersonDetails{
+                VerifierType:                   "PASSTHROUGH",
+                PassthroughVerifierType:        "JUMIO",
+                PassthroughVerifiedAt:         "2021-06-16T09:28:14Z",
+                PassthroughVerificationID:     "775300ef-4edb-47b9-8ec4-f45fe3cbf41f",
+                PassthroughVerificationStatus: "APPROVED",
+                PassthroughVerificationFields: []string{"FULL_LEGAL_NAME", "DATE_OF_BIRTH"},
+                FirstName:                     "Billy",
+                LastName:                      "Duncan",
+                DateOfBirth:                   "1960-01-01",
+                Address: Address{
+                    Address1: "123 Main St",
+                    City:     "New York",
+                    Province: "NY",
+                    Country:  "USA",
+                    ZipCode:  "10001",
+                },
+                Nationality:  "USA",
+                CipID:       "073-05-1120",
+                CipIDType:   "SSN",
+                CipIDCountry: "USA",
+                PhoneNumber: "+1 555 678 1234",
+                Email:       "example@somemail.org",
+            },
+            CustomerDueDiligence: CustomerDueDiligence{
+                EstimatedYearlyIncome:     "INCOME_50K_TO_100K",
+                ExpectedTransferValue:     "TRANSFER_VALUE_25K_TO_50K",
+                SourceOfWealth:           "EMPLOYMENT_INCOME",
+                EmploymentStatus:         "FULL_TIME",
+                EmploymentIndustrySector: "ARTS_ENTERTAINMENT_RECREATION",
+            },
+        }
+        
+        jsonPayload, err := json.Marshal(payload)
+        if err != nil {
+            return nil, err
+        }
+        
+        req, err := http.NewRequest("POST", url, strings.NewReader(string(jsonPayload)))
+        if err != nil {
+            return nil, err
+        }
+        
+        req.Header.Set("Authorization", "Bearer "+accessToken)
+        req.Header.Set("Content-Type", "application/json")
+        
+        client := &http.Client{}
+        resp, err := client.Do(req)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+        
+        var result map[string]interface{}
+        err = json.NewDecoder(resp.Body).Decode(&result)
+        if err != nil {
+            return nil, err
+        }
+        
+        return result, nil
+    }
+    ```
+
+    ```python Python
+    def create_person_identity(access_token):
+        """Create a Person Identity with passthrough verification"""
+        
+        url = "https://api.sandbox.paxos.com/v2/identity/identities"
+        
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            "ref_id": "your_end_user_ref_id",
+            "person_details": {
+                "verifier_type": "PASSTHROUGH",
+                "passthrough_verifier_type": "JUMIO",
+                "passthrough_verified_at": "2021-06-16T09:28:14Z",
+                "passthrough_verification_id": "775300ef-4edb-47b9-8ec4-f45fe3cbf41f",
+                "passthrough_verification_status": "APPROVED",
+                "passthrough_verification_fields": ["FULL_LEGAL_NAME", "DATE_OF_BIRTH"],
+                "first_name": "Billy",
+                "last_name": "Duncan",
+                "date_of_birth": "1960-01-01",
+                "address": {
+                    "address1": "123 Main St",
+                    "city": "New York",
+                    "province": "NY",
+                    "country": "USA",
+                    "zip_code": "10001"
+                },
+                "nationality": "USA",
+                "cip_id": "073-05-1120",
+                "cip_id_type": "SSN",
+                "cip_id_country": "USA",
+                "phone_number": "+1 555 678 1234",
+                "email": "example@somemail.org"
+            },
+            "customer_due_diligence": {
+                "estimated_yearly_income": "INCOME_50K_TO_100K",
+                "expected_transfer_value": "TRANSFER_VALUE_25K_TO_50K",
+                "source_of_wealth": "EMPLOYMENT_INCOME",
+                "employment_status": "FULL_TIME",
+                "employment_industry_sector": "ARTS_ENTERTAINMENT_RECREATION"
+            }
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        
+        return response.json()
+
+    # Usage
+    identity = create_person_identity(access_token)
+    identity_id = identity['id']
+    print(f"Created Identity: {identity_id}")
+    ```
+
+    ```javascript JavaScript
+    async function createPersonIdentity(accessToken) {
+      const url = 'https://api.sandbox.paxos.com/v2/identity/identities';
+      
+      const payload = {
+        ref_id: 'your_end_user_ref_id',
+        person_details: {
+          verifier_type: 'PASSTHROUGH',
+          passthrough_verifier_type: 'JUMIO',
+          passthrough_verified_at: '2021-06-16T09:28:14Z',
+          passthrough_verification_id: '775300ef-4edb-47b9-8ec4-f45fe3cbf41f',
+          passthrough_verification_status: 'APPROVED',
+          passthrough_verification_fields: ['FULL_LEGAL_NAME', 'DATE_OF_BIRTH'],
+          first_name: 'Billy',
+          last_name: 'Duncan',
+          date_of_birth: '1960-01-01',
+          address: {
+            address1: '123 Main St',
+            city: 'New York',
+            province: 'NY',
+            country: 'USA',
+            zip_code: '10001'
+          },
+          nationality: 'USA',
+          cip_id: '073-05-1120',
+          cip_id_type: 'SSN',
+          cip_id_country: 'USA',
+          phone_number: '+1 555 678 1234',
+          email: 'example@somemail.org'
+        },
+        customer_due_diligence: {
+          estimated_yearly_income: 'INCOME_50K_TO_100K',
+          expected_transfer_value: 'TRANSFER_VALUE_25K_TO_50K',
+          source_of_wealth: 'EMPLOYMENT_INCOME',
+          employment_status: 'FULL_TIME',
+          employment_industry_sector: 'ARTS_ENTERTAINMENT_RECREATION'
+        }
+      };
+      
+      const response = await axios.post(url, payload, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      return response.data;
+    }
+
+    // Usage
+    const identity = await createPersonIdentity(accessToken);
+    const identityId = identity.id;
+    console.log(`Created Identity: ${identityId}`);
+    ```
+
+    </CodeGroup>
+
+    <Warning>
+    The `cip_id` of an Identity is required to be unique. If a `409 duplicate cip_id` error occurs, handle it by either refusing to support crypto brokerage services for customers who have a duplicate `cip_id`, or if they are confirmed to be the same Identity, create a new Account to represent each user account.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Step 3: Wait for Identity Approval" icon="clock">
+    Check the Identity status and wait for approval:
+
+    <CodeGroup>
+
+    ```go Go
+    func getIdentityStatus(accessToken, identityID string) (map[string]interface{}, error) {
+        url := fmt.Sprintf("https://api.sandbox.paxos.com/v2/identity/identities/%s", identityID)
+        
+        req, err := http.NewRequest("GET", url, nil)
+        if err != nil {
+            return nil, err
+        }
+        
+        req.Header.Set("Authorization", "Bearer "+accessToken)
+        
+        client := &http.Client{}
+        resp, err := client.Do(req)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+        
+        var result map[string]interface{}
+        err = json.NewDecoder(resp.Body).Decode(&result)
+        if err != nil {
+            return nil, err
+        }
+        
+        return result, nil
+    }
+    ```
+
+    ```python Python
+    def get_identity_status(access_token, identity_id):
+        """Get Identity status"""
+        
+        url = f"https://api.sandbox.paxos.com/v2/identity/identities/{identity_id}"
+        
+        headers = {
+            'Authorization': f'Bearer {access_token}'
+        }
+        
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        
+        return response.json()
+
+    # Usage
+    identity_status = get_identity_status(access_token, identity_id)
+    print(f"Identity Status: {identity_status.get('summary_status')}")
+    ```
+
+    ```javascript JavaScript
+    async function getIdentityStatus(accessToken, identityId) {
+      const url = `https://api.sandbox.paxos.com/v2/identity/identities/${identityId}`;
+      
+      const response = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      return response.data;
+    }
+
+    // Usage
+    const identityStatus = await getIdentityStatus(accessToken, identityId);
+    console.log(`Identity Status: ${identityStatus.summary_status}`);
+    ```
+
+    </CodeGroup>
+
+    <Info>
+    An Identity might stay in `PENDING` due to being deemed high risk by Paxos. This Identity will be required to undergo Enhanced Due Diligence. Use webhook integration to asynchronously process `identity.approved` and `identity.denied` events.
+    </Info>
+  </Accordion>
+
+  <Accordion title="Step 4: Create Account and Profile" icon="building">
+    Create a Brokerage Account with Profile for the approved Identity:
+
+    <CodeGroup>
+
+    ```go Go
+    type Account struct {
+        IdentityID  string `json:"identity_id"`
+        RefID       string `json:"ref_id"`
+        Type        string `json:"type"`
+        Description string `json:"description"`
+    }
+
+    type CreateAccountRequest struct {
+        CreateProfile bool    `json:"create_profile"`
+        Account       Account `json:"account"`
+    }
+
+    func createAccountWithProfile(accessToken, identityID string) (map[string]interface{}, error) {
+        url := "https://api.sandbox.paxos.com/v2/identity/accounts"
+        
+        payload := CreateAccountRequest{
+            CreateProfile: true,
+            Account: Account{
+                IdentityID:  identityID,
+                RefID:       "your_account_ref",
+                Type:        "BROKERAGE",
+                Description: "Brokerage account for Billy Duncan",
+            },
+        }
+        
+        jsonPayload, err := json.Marshal(payload)
+        if err != nil {
+            return nil, err
+        }
+        
+        req, err := http.NewRequest("POST", url, strings.NewReader(string(jsonPayload)))
+        if err != nil {
+            return nil, err
+        }
+        
+        req.Header.Set("Authorization", "Bearer "+accessToken)
+        req.Header.Set("Content-Type", "application/json")
+        
+        client := &http.Client{}
+        resp, err := client.Do(req)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+        
+        var result map[string]interface{}
+        err = json.NewDecoder(resp.Body).Decode(&result)
+        if err != nil {
+            return nil, err
+        }
+        
+        return result, nil
+    }
+    ```
+
+    ```python Python
+    def create_account_with_profile(access_token, identity_id):
+        """Create a Brokerage Account with Profile"""
+        
+        url = "https://api.sandbox.paxos.com/v2/identity/accounts"
+        
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            "create_profile": True,
+            "account": {
+                "identity_id": identity_id,
+                "ref_id": "your_account_ref",
+                "type": "BROKERAGE",
+                "description": "Brokerage account for Billy Duncan"
+            }
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        
+        return response.json()
+
+    # Usage
+    account = create_account_with_profile(access_token, identity_id)
+    account_id = account['account']['id']
+    profile_id = account['profile']['id']
+    print(f"Created Account: {account_id}")
+    print(f"Created Profile: {profile_id}")
+    ```
+
+    ```javascript JavaScript
+    async function createAccountWithProfile(accessToken, identityId) {
+      const url = 'https://api.sandbox.paxos.com/v2/identity/accounts';
+      
+      const payload = {
+        create_profile: true,
+        account: {
+          identity_id: identityId,
+          ref_id: 'your_account_ref',
+          type: 'BROKERAGE',
+          description: 'Brokerage account for Billy Duncan'
+        }
+      };
+      
+      const response = await axios.post(url, payload, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      return response.data;
+    }
+
+    // Usage
+    const account = await createAccountWithProfile(accessToken, identityId);
+    const accountId = account.account.id;
+    const profileId = account.profile.id;
+    console.log(`Created Account: ${accountId}`);
+    console.log(`Created Profile: ${profileId}`);
+    ```
+
+    </CodeGroup>
+
+    <Tip>
+    The `create_profile` flag must be set to `true` to ensure a Profile is created for the Account. This is required for Fiat and Crypto Subledger integrations.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Step 5: Create Test Order" icon="chart-line">
+    Create a sample buy order to test the complete flow:
+
+    <CodeGroup>
+
+    ```go Go
+    type Order struct {
+        Side              string `json:"side"`
+        Market            string `json:"market"`
+        Type              string `json:"type"`
+        Price             string `json:"price"`
+        BaseAmount        string `json:"base_amount"`
+        IdentityID        string `json:"identity_id"`
+        IdentityAccountID string `json:"identity_account_id"`
+    }
+
+    func createBuyOrder(accessToken, profileID, identityID, accountID string) (map[string]interface{}, error) {
+        url := fmt.Sprintf("https://api.sandbox.paxos.com/v2/profiles/%s/orders", profileID)
+        
+        payload := Order{
+            Side:              "BUY",
+            Market:            "ETHUSD",
+            Type:              "LIMIT",
+            Price:             "1814.8",
+            BaseAmount:        "1",
+            IdentityID:        identityID,
+            IdentityAccountID: accountID,
+        }
+        
+        jsonPayload, err := json.Marshal(payload)
+        if err != nil {
+            return nil, err
+        }
+        
+        req, err := http.NewRequest("POST", url, strings.NewReader(string(jsonPayload)))
+        if err != nil {
+            return nil, err
+        }
+        
+        req.Header.Set("Authorization", "Bearer "+accessToken)
+        req.Header.Set("Content-Type", "application/json")
+        
+        client := &http.Client{}
+        resp, err := client.Do(req)
+        if err != nil {
+            return nil, err
+        }
+        defer resp.Body.Close()
+        
+        var result map[string]interface{}
+        err = json.NewDecoder(resp.Body).Decode(&result)
+        if err != nil {
+            return nil, err
+        }
+        
+        return result, nil
+    }
+    ```
+
+    ```python Python
+    def create_buy_order(access_token, profile_id, identity_id, account_id):
+        """Create a buy order"""
+        
+        url = f"https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders"
+        
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            "side": "BUY",
+            "market": "ETHUSD",
+            "type": "LIMIT",
+            "price": "1814.8",
+            "base_amount": "1",
+            "identity_id": identity_id,
+            "identity_account_id": account_id
+        }
+        
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        
+        return response.json()
+
+    # Usage
+    order = create_buy_order(access_token, profile_id, identity_id, account_id)
+    order_id = order['id']
+    print(f"Created Order: {order_id}")
+    ```
+
+    ```javascript JavaScript
+    async function createBuyOrder(accessToken, profileId, identityId, accountId) {
+      const url = `https://api.sandbox.paxos.com/v2/profiles/${profileId}/orders`;
+      
+      const payload = {
+        side: 'BUY',
+        market: 'ETHUSD',
+        type: 'LIMIT',
+        price: '1814.8',
+        base_amount: '1',
+        identity_id: identityId,
+        identity_account_id: accountId
+      };
+      
+      const response = await axios.post(url, payload, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      return response.data;
+    }
+
+    // Usage
+    const order = await createBuyOrder(accessToken, profileId, identityId, accountId);
+    const orderId = order.id;
+    console.log(`Created Order: ${orderId}`);
+    ```
+
+    </CodeGroup>
+
+    <Note>
+    In a complete integration, follow the Fiat Transfers Funding Flow guide to fund user assets. For testing in sandbox, you can use the Dashboard's Test Funds feature to fund the account with $10,000 USD.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Step 6: Next Steps" icon="arrow-right" defaultOpen>
+    Congratulations! You've successfully completed your first end-to-end third-party crypto brokerage integration with Paxos. Here's what you can do next:
+
+    <CardGroup cols={2}>
+      <Card title="Set up Fiat Transfers" icon="building-columns" href="/guides/developer/fiat-transfers/quickstart">
+        Implement funding flows for real USD deposits
+      </Card>
+      <Card title="Implement Webhooks" icon="webhook" href="/webhooks">
+        Set up event-driven notifications for status updates
+      </Card>
+      <Card title="Enhanced Due Diligence" icon="shield-check" href="/identity/edd">
+        Handle high-risk customers with document collection
+      </Card>
+      <Card title="Joint Accounts" icon="users" href="/guides/identity/person-crypto-brokerage">
+        Support multiple account owners
+      </Card>
+    </CardGroup>
+
+    <Info>
+    **Production Considerations:** 
+    - Implement proper error handling and retry logic
+    - Set up monitoring and alerting for critical flows
+    - Review security best practices for API key management
+    - Test with various customer profiles and edge cases
+    </Info>
+  </Accordion>
+</AccordionGroup> 
