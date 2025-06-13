@@ -13,7 +13,7 @@ The following fields are provided on each row of the Profile Transactions report
 | GroupID | UUID | No | Link for the debit and credit legs of an Internal Transfer. |
 | IdentityID | UUID | No | 1ab15e4f-6389-4a52-b908-62c3525b0da2 |
 | Market | String | No | ETHUSD, XBTUSD, PAXGUSD, BCHUSD, LTCUSD |
-| Metadata | String | No | \"{""key_1"":""value_11"",""key_2"":""value_23"" }"` <br/> Contains the customer specified metadata during a transaction on platform (withdrawal, transfer, quote execution) in json-string format. Returns empty when no data is available. |
+| Metadata | String | No | `{"key_1":"value_11","key_2":"value_23"}` <br/> Contains the customer specified metadata during a transaction on platform (withdrawal, transfer, quote execution) in json-string format. Returns empty when no data is available. |
 | OrchestrationID | UUID | No | 7f716105-d501-40e8-a82f-309fffacd6d8<br/>A unique identifier that links all related transactions within a single logical flow. For example, all balance updates during a deposit process. |
 | OrchestrationRuleID | UUID | No | 9e124f3d-7c88-4b36-b54a-e389f6c398b2<br/>The unique identifier of the automation rule that triggered this transaction set. |
 | OrderType | String | No | LIMIT, MARKET, POSTONLYLIMIT, STOPMARKET, STOPLIMIT, HRQ |

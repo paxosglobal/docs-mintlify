@@ -3,6 +3,12 @@ title: 'Stablecoin Pay-ins Quickstart'
 description: Accept stablecoin pay-ins with real-time settlement. Issue on-chain refunds.
 ---
 
+import { PaymentsGetKeys } from '/snippets/payments-get-keys.mdx';
+import { PaymentsConnectorTip } from '/snippets/payments-connector-tip.mdx';
+import { BestPracticeRefId } from '/snippets/best-practice-ref-id.mdx';
+import { PaymentsCreateProfile } from '/snippets/payments-create-profile.mdx';
+import { PaymentsPhantomWallet } from '/snippets/payments-phantom-wallet.mdx';
+
 [credentials]: https://dashboard.sandbox.paxos.com/admin/api
 [help-desk]: https://support.paxos.com
 [pay-in-add-deposit-address]: payments/quickstart.mdx#pay-in-add-deposit-address
@@ -37,7 +43,9 @@ If you already have sandbox access, this guide should take less than one hour to
 - Paxos may need to enable some API functionality described in the payments guides. Contact [Support][help-desk] with any access issues.
 - If you need a developer sandbox account, [contact us][contact-us] before continuing.
 - The API endpoints require authentication with a **Client ID** and **Secret**.
-Each **Client ID** has a specific set of allowed scopes to access API endpoints.<PaymentsGetKeys />
+Each **Client ID** has a specific set of allowed scopes to access API endpoints.
+
+<PaymentsGetKeys />
 - To follow along with this guide, [create a new Profile][Create Profile] to represent the Seller.
 However, any existing Profile can be used when setting up simple [pay-in] and [refund] workflows.
 Learn more about [user onboarding requirements][onboard].<PaymentsCreateProfile />

@@ -1,7 +1,8 @@
-<Warning>
+export const Permissions = ({ value }) => (
+  <Warning>
+    <p><strong>Required Permissions</strong></p>
+    <p>You need a role with the <code>{value}</code> permission to perform this action.</p>
+  </Warning>
+);
 
- Required Permissions
-
-<div>You need a role with the <code>{props.value}</code> permission to perform this action.</div>
-
-</Warning>
+export default Permissions;

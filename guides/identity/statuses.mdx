@@ -4,12 +4,11 @@ description: Learn more about Identity statuses and sub-statuses
 ---
 
 
-
 [create-identity]: /api-reference/identitiesCreateIdentity
 [onboarding-decision]: /identity/statuses#onboarding-decision
 [automate-enhanced-due-diligence-guide]: /identity/edd
 
-<Description description={frontMatter.description}/>
+<Snippet file="description.mdx" />
 
 ## Summary Status
 An [Identity][create-identity] has five (5) statuses:
@@ -70,14 +69,4 @@ that `passthrough_verification_status` can only ever be set to a terminal IDV st
 The onboarding decision is made based on the identities risk rating and the set of verifications (as exposed in sub-statuses above).
 Once there is sufficient information to make a decision, the [Identity][create-identity] will be `APPROVED` and able to trade or `DENIED` and rejected services.
 
-In the happy path where an [Identity][create-identity] is `LOW` or `MEDIUM` risk and all verifications automatically pass, the [Identity][create-identity] should be automatically `APPROVED` within seconds.
-
-<Tip>
-[Create Identity][create-identity] will always return an [Identity][create-identity] with a `PENDING` status as verifications are completed asynchronously. Poll until `APPROVED` or listen 
-to identity status update webhook events to get notified when the onboarding decision is made.
-</Tip>
-
-If certain verifications fail (e.g. if there is a true sanctions hit), this will lead to a manual review and a `DENIED` decision. The standard SLA to come to a decision is 24 hours, make 
-sure to plan for this when building integrations.
-
-When an [Identity][create-identity] is deemed `HIGH` risk, the [Identity][create-identity] will remain in `PENDING` until documents are provided and verified. See more on this topic in the [Automate Enhanced Due Diligence Guide][automate-enhanced-due-diligence-guide].
+In the happy path where an [Identity][create-identity] is `LOW`

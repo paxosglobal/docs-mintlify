@@ -79,22 +79,14 @@
         "tab": "Developer Guide",
         "groups": [
           {
-            "group": "Overview",
-            "pages": [
-              "guides/developer/index",
-              "guides/developer/sandbox",
-              "guides/api/migrate"
-            ]
-          },
-          {
             "group": "Get Started",
             "pages": [
-              "getting-started/account",
-              "getting-started/authenticate",
-              "getting-started/sandbox",
-              "getting-started/credentials",
-              "getting-started/request-signing",
-              "getting-started/request"
+              "guides/developer/account",
+              "guides/developer/authenticate",
+              "guides/developer/sandbox",
+              "guides/developer/credentials",
+              "guides/developer/request-signing",
+              "guides/developer/request"
             ]
           },
           {
@@ -130,15 +122,7 @@
             "pages": [
               "guides/developer/mint",
               "guides/developer/convert",
-              "guides/developer/redeem",
-              "guides/developer/usdc"
-            ]
-          },
-          {
-            "group": "Transfers",
-            "pages": [
-              "guides/developer/deposit",
-              "guides/developer/transfer"
+              "guides/developer/redeem"
             ]
           },
           {
@@ -212,7 +196,6 @@
               "guides/developer/blockchains",
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
-              "guides/developer/errors",
               "guides/developer/reports",
               "guides/developer/faq"
             ]
@@ -220,7 +203,8 @@
           {
             "group": "Versioning",
             "pages": [
-              "guides/developer/breaking-change/policy"
+              "guides/developer/breaking-change/policy",
+              "guides/developer/api-migrate"
             ]
           }
         ]
@@ -313,9 +297,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/Paxos",
+      "github": "https://github.com/paxosglobal",
+      "linkedin": "https://www.linkedin.com/company/paxos"
     }
   }
 }
