@@ -2,6 +2,16 @@
 title: 'HRQ Quickstart'
 description: Learn about Paxos's HRQ product and how to submit a quote in less than five minutes.
 ---
+
+import CodeSamplesCurlOauth from '/snippets/_code-samples/_curl/_oauth';
+import CodeSamplesPythonOauth from '/snippets/_code-samples/_python/_oauth';
+import CodeSamplesCurlV2ApiTradingQuotesGetListQuotes from '/snippets/_code-samples/_curl/_v2-api/_trading/_quotes/_GET-list-quotes';
+import CodeSamplesPythonV2ApiTradingQuotesGetListQuotes from '/snippets/_code-samples/_python/_v2-api/_trading/_quotes/_GET-list-quotes';
+import CodeSamplesCurlV2ApiTradingQuoteExecutionsPostCreateQuoteExecution from '/snippets/_code-samples/_curl/_v2-api/_trading/_quote-executions/_POST-create-quote-execution';
+import CodeSamplesPythonV2ApiTradingQuoteExecutionsPostCreateQuoteExecution from '/snippets/_code-samples/_python/_v2-api/_trading/_quote-executions/_POST-create-quote-execution';
+import CodeSamplesCurlV2ApiTradingQuoteExecutionsGetGetQuoteExecution from '/snippets/_code-samples/_curl/_v2-api/_trading/_quote-executions/_GET-get-quote-execution';
+import CodeSamplesPythonV2ApiTradingQuoteExecutionsGetGetQuoteExecution from '/snippets/_code-samples/_python/_v2-api/_trading/_quote-executions/_GET-get-quote-execution';
+
 [account-paxos]: https://dashboard.paxos.com
 [list-quotes]: ../../api-reference/quotes/list-quotes
 [list-quote-executions]: ../../api-reference/quote-executions/list-quote-executions
@@ -49,17 +59,17 @@ If Paxos is collecting a transaction fee in real time, the fee will be included 
 #### Step 1.1: Authenticate to the Paxos API.
 
 ### curl
-<Snippet file="_code-samples/_curl/_oauth" />
+<CodeSamplesCurlOauth />
 
 ### python
-<Snippet file="_code-samples/_python/_oauth" />
+<CodeSamplesPythonOauth />
 
 #### Step 1.2: List quotes for BTC and ETH.
 ### curl
-<Snippet file="_code-samples/_curl/_v2-api/_trading/_quotes/_GET-list-quotes" />
+<CodeSamplesCurlV2ApiTradingQuotesGetListQuotes />
 
 ### python
-<Snippet file="_code-samples/_python/_v2-api/_trading/_quotes/_GET-list-quotes" />
+<CodeSamplesPythonV2ApiTradingQuotesGetListQuotes />
 ## Step 2: Present the quote to end users and await confirmation
 Once quotes are retrieved, the price and expiration time can be presented to end users.
 
@@ -96,10 +106,10 @@ final step.
 #### Step 3.1: Submitting the Quote.
 Using the ID for the BTC buy Quote from step 1.2 and your omnibus `profile_id`.
 ### curl
-<Snippet file="_code-samples/_curl/_v2-api/_trading/_quote-executions/_POST-create-quote-execution" />
+<CodeSamplesCurlV2ApiTradingQuoteExecutionsPostCreateQuoteExecution />
 
 ### python
-<Snippet file="_code-samples/_python/_v2-api/_trading/_quote-executions/_POST-create-quote-execution" />
+<CodeSamplesPythonV2ApiTradingQuoteExecutionsPostCreateQuoteExecution />
 ## Step 4: Validate execution and settlement
 The final step is to confirm that the quote execution completed and settled successfully using the
 [Get Quote Execution][get-quote-execution] and [List Quote Executions][list-quote-executions] endpoints.
@@ -128,7 +138,7 @@ Subledgered End Users will be unable to sell or transfer purchased Cryptocurrenc
 #### Checking the status of the submitted quote execution
 Specify the same `profile_id` and the `id` of the quote execution in the url:
 ### curl
-<Snippet file="_code-samples/_curl/_v2-api/_trading/_quote-executions/_GET-get-quote-execution" />
+<CodeSamplesCurlV2ApiTradingQuoteExecutionsGetGetQuoteExecution />
 
 ### python
-<Snippet file="_code-samples/_python/_v2-api/_trading/_quote-executions/_GET-get-quote-execution" />
+<CodeSamplesPythonV2ApiTradingQuoteExecutionsGetGetQuoteExecution />
