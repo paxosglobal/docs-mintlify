@@ -1,46 +1,75 @@
 ---
-title: 'Welcome'
+title: 'Build with Paxos'
 description: 'Learn how to get started with the Paxos API and Platform.'
+mode: 'custom'
 ---
 
-<CardGroup cols={2}>
-<Card
-  title="Developer Guides"
-  icon="code"
-  href="/guides/developer/index"
->
-  Build and integrate with our APIs. Get started with authentication, onboarding, and platform features.
-</Card>
+<div style={{
+  textAlign: 'center',
+  padding: '80px 20px 60px',
+  maxWidth: '1200px',
+  margin: '0 auto'
+}}>
+  <h1 style={{
+    fontSize: '4rem',
+    fontWeight: 'bold',
+    marginBottom: '60px',
+    color: '#1f2937',
+    lineHeight: '1.1'
+  }}>
+    Build with{' '}
+    <span style={{
+      fontWeight: '900',
+      background: 'linear-gradient(135deg, #00845E 0%, #0094D8 50%, #8AD137 100%)',
+      backgroundClip: 'text',
+      WebkitBackgroundClip: 'text',
+      color: 'transparent',
+      WebkitTextFillColor: 'transparent',
+      display: 'inline-block'
+    }}>
+      Paxos
+    </span>
+  </h1>
 
-<Card
-  title="Dashboard Guides"
-  icon="gauge-high"
-  href="/guides/identity/index"
->
-  Learn how to use the Paxos Dashboard to manage your platform and users.
-</Card>
+  <CardGroup cols={2}>
+    <Card
+      title="Developer Guides"
+      icon="code"
+      href="/guides/developer/account"
+    >
+      Build and integrate with our APIs. Get started with authentication, onboarding, and platform features.
+    </Card>
 
-<Card
-  title="API Reference"
-  icon="brackets-curly"
-  href="/api-reference/introduction"
->
-  Integrate and scale using our API and SDKs.
-</Card>
+    <Card
+      title="Dashboard Guides"
+      icon="gauge-high"
+      href="/guides/dashboard/index"
+    >
+      Learn how to use the Paxos Dashboard to manage your platform and users.
+    </Card>
 
-<Card
-  title="Release Notes"
-  icon="star"
-  href="/guides/identity/index"
->
-  Learn about changes and new features in the Paxos API and Platform.
-</Card>
+    <Card
+      title="API Reference"
+      icon="brackets-curly"
+      href="/api-reference/introduction"
+    >
+      Integrate and scale using our API and SDKs.
+    </Card>
 
-<Card
-  title="Cookbook"
-  icon="book"
-  href="/guides/identity/index"
->
-  Ready-to-use code examples and recipes for common integration patterns.
-</Card>
-</CardGroup> 
+    <Card
+      title="Release Notes"
+      icon="star"
+      href="https://docs.paxos.com/changelog/"
+    >
+      Learn about changes and new features in the Paxos API and Platform.
+    </Card>
+
+    <Card
+      title="Cookbook"
+      icon="book"
+      href="/cookbook/overview"
+    >
+      Ready-to-use code examples and recipes for common integration patterns.
+    </Card>
+  </CardGroup>
+</div> 
