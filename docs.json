@@ -64,6 +64,10 @@
     {
       "source": "/dashboard/:slug*",
       "destination": "/guides/dashboard/:slug*"
+    },
+    {
+      "source": "/stablecoin/:slug*",
+      "destination": "/guides/stablecoin/:slug*"
     }
   ],
   "navigation": {
@@ -283,6 +287,57 @@
             "pages": [
               "guides/dashboard/passkeys",
               "guides/dashboard/migrate-to-dashboard"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Stablecoins",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "guides/stablecoin/index"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet",
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+          {
+            "group": "Global Dollar (USDG)",
+            "pages": [
+              "guides/stablecoin/usdg/index",
+              "guides/stablecoin/usdg/quickstart",
+              "guides/stablecoin/usdg/mainnet",
+              "guides/stablecoin/usdg/testnet"
+            ]
+          },
+          {
+            "group": "Pax Dollar (USDP)",
+            "pages": [
+              "guides/stablecoin/usdp/index",
+              "guides/stablecoin/usdp/mainnet",
+              "guides/stablecoin/usdp/testnet"
+            ]
+          },
+          {
+            "group": "Lift Dollar (USDL)",
+            "pages": [
+              "guides/stablecoin/usdl/index",
+              "guides/stablecoin/usdl/mainnet",
+              "guides/stablecoin/usdl/testnet"
+            ]
+          },
+          {
+            "group": "Other Stablecoins",
+            "pages": [
+              "guides/stablecoin/busd"
             ]
           }
         ]
