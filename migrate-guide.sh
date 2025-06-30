@@ -14,15 +14,15 @@
 set -e
 
 # Configuration
-SOURCE_BASE="/Users/cameronfleet/dev/docs/content"
-TARGET_BASE="/Users/cameronfleet/dev/new-docs"
-DOCS_JSON="/Users/cameronfleet/dev/new-docs/docs.json"
-SOURCE_IMAGES="/Users/cameronfleet/dev/docs/static/img"
-TARGET_IMAGES="/Users/cameronfleet/dev/new-docs/images"
+SOURCE_BASE="/Users/cameronfleet/dev/paxos-docs/docs/content"
+TARGET_BASE="/Users/cameronfleet/dev/paxos-docs/new-docs"
+DOCS_JSON="/Users/cameronfleet/dev/paxos-docs/new-docs/docs.json"
+SOURCE_IMAGES="/Users/cameronfleet/dev/paxos-docs/docs/static/img"
+TARGET_IMAGES="/Users/cameronfleet/dev/paxos-docs/new-docs/images"
 
 # Partials configuration
-SOURCE_PARTIALS="/Users/cameronfleet/dev/docs/_partials"
-TARGET_SNIPPETS="/Users/cameronfleet/dev/new-docs/snippets"
+SOURCE_PARTIALS="/Users/cameronfleet/dev/paxos-docs/docs/_partials"
+TARGET_SNIPPETS="/Users/cameronfleet/dev/paxos-docs/new-docs/snippets"
 
 # Parse arguments
 if [ "$1" = "--partials" ]; then
