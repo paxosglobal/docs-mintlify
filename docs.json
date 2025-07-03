@@ -71,6 +71,9 @@
     }
   ],
   "navigation": {
+    "pages": [
+      "changelog/test"
+    ],
     "tabs": [
       {
         "tab": "Welcome",
@@ -374,11 +377,6 @@
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "Changelog",
-          "href": "/changelog",
-          "icon": "book-open-cover"
-        },
         {
           "anchor": "Status",
           "href": "https://status.paxos.com/",
