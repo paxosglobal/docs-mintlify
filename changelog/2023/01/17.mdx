@@ -1,0 +1,10 @@
+---
+title: January 17, 2023
+tags: [v2 API]
+---
+
+- **Sandbox**: Enable parameter `group_id` for linking the debit and credit legs of an Internal Transfer on the v2 REST API. Add `group_id` to Create Internal Transfer, List Transfers and Get Transfer responses when the response includes an Internal Transfer. Add query parameter `group_ids` to List Transfers. {/* https://itbitwiki.atlassian.net/browse/TFR-566 */}
+- Add `GroupID` to the Profile Transactions Reconciliation Report. {/* https://itbitwiki.atlassian.net/browse/TFR-566 */}
+- ~~Enable statuses `TIN_VERIFICATION_VALID`, `TIN_VERIFICATION_ERROR` and `TIN_VERIFICATION_PENDING` for parameter `tin_verification_status` on all Identity v2 REST APIs. The new statuses apply to US-based users and are returned only when `tax_details` exist.~~ {/* https://itbitwiki.atlassian.net/browse/EUL-6 */}
+- ~~Provide a `snapshot_at` field in the v2 REST API List Prices response so API consumers can understand the validity of a price and validate the time at which a price was given.~~ {/* https://itbitwiki.atlassian.net/browse/ALGOS-436 */}
+

@@ -1,0 +1,9 @@
+---
+title: June 13, 2023
+tags: [v1 API]
+---
+
+- **v1 API**: `CreateBankAccount` endpoint and `CustomerBankAccount` schema have a new optional field: `IntrabankWithdrawalInstructions`. {/* https://itbitwiki.atlassian.net/browse/TFR-1301 https://github.com/paxosglobal/pax/pull/17642 */}
+    - This generalizes the existing intrabank withdrawal instructions into a single field. Clients may specify the new `IntrabankWithdrawalInstructions` (which consist of `beneficiary_name`, `account_number`, and `CustomerBankAccount.Type`) as an alternative to existing network-specific intrabank details (`account_number` can be a wallet address for networks like CBIT).
+    - `CustomerBankAccount` will fill in `IntrabankWithdrawalInstructions` IN ADDITION TO the existing intrabank withdrawal instructions in responses. Future intrabank networks will only be supported via `IntrabankWithdrawalInstructions` (as opposed to their own field). The Type field on `IntrabankWithdrawalInstructions` will differentiate the network types.
+    - Existing network-specific instructions are deprecated, but will continue to work.

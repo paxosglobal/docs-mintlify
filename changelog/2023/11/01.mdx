@@ -1,0 +1,8 @@
+---
+title: November 1, 2023
+tags: [Reconciliation]
+---
+
+- **Reconciliation Reporting**: As part of reconciliation reporting improvements, we are incrementally rolling out a few changes to the Profile Balances Report. {/* https://itbitwiki.atlassian.net/browse/LGR-610 https://itbitwiki.atlassian.net/browse/LGR-635 */}
+  - The report no longer lists assets in ordered asset order. New order will be `balance_at` time (start time then end time) first, and asset alphabetical second.
+  - The report now shows assets as long as there is one transaction that happened in history, even if no transactions in the asset were reported during the reporting period. Previously, assets with balances would show up in the report only if there was a transaction in the reporting period or if the asset was pre-configured to show up in the report regardless of transaction history.
