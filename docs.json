@@ -376,7 +376,7 @@
       "anchors": [
         {
           "anchor": "Changelog",
-          "href": "https://paxos-0ac97319.mintlify.app/changelog/",
+          "href": "/changelog",
           "icon": "book-open-cover"
         },
         {
