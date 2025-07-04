@@ -43,9 +43,8 @@ This guide also includes examples for the USDG → USD conversion, so if you are
 You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
 ### USD
 
-```shell
+```shell highlight={2}
 curl --request POST \
-{/* highlight-next-line */}
 --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{

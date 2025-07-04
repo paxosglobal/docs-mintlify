@@ -43,23 +43,20 @@ This guild also [funds][fund] the Source Profile with BTC and ETH for the `DELIV
 Add the `settlement:read_transaction` and `settlement:write_transaction` scopes to your [Sandbox Account][sandbox-account] under the [API Management][api-management] setting and then authenticate in Sandbox using the scopes.
 Also include `funding:read_profile` and `funding:write_profile` for creating and funding [Profiles][profiles].
 
-```shell
+```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
 --form client_id={paxos_client_id} \
 --form client_secret={paxos_secret} \
-{/* highlight-next-line */}
 --form scope='settlement:read_transaction settlement:write_transaction funding:read_profile funding:write_profile'
 ```
 
 Confirm the response includes requisite scopes and save the `access_token` to use in the request authorization header throughout this guide.
 
-```json
+```json highlight={3,4}
 {
   "access_token": "{access_token}",
-  {/* highlight-next-line */}
   "expires_in": 3599, // Seconds (59 Minutes and 59 Seconds)
-  {/* highlight-next-line */}
   "scope": "settlement:read_transaction settlement:write_transaction funding:read_profile funding:write_profile",
   "token_type": "bearer"
 }
@@ -71,20 +68,18 @@ Confirm the response includes requisite scopes and save the `access_token` to us
 
 ### Create Source Profile
 
-```shell
+```shell highlight={4}
 curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-  {/* highlight-next-line */}
   "nickname": "Source Profile"
 }'
 ```
 
 You will need the `id` from the response to [fund the Profile][fund] and [propose a transaction][propose].
 
-```json
+```json highlight={2}
 {
-   {/* highlight-next-line */}
     "id": "{profile_id}", // The source_profile_id in the Transaction object
     "nickname": "Source Profile",
     "type": "NORMAL"
@@ -92,20 +87,18 @@ You will need the `id` from the response to [fund the Profile][fund] and [propos
 ```
 ### Create Target Profile
 
-```shell
+```shell highlight={4}
 curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-  {/* highlight-next-line */}
   "nickname": "Target Profile"
 }'
 ```
 
 You will need the `id` from the response to [fund the Profile][fund] and [propose a transaction][propose].
 
-```json
+```json highlight={2}
 {
-   {/* highlight-next-line */}
     "id": "{profile_id}", // The target_profile_id in the Transaction object
     "nickname": "Target Profile",
     "type": "NORMAL"
@@ -157,18 +150,16 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles/{profile_id}/balances
 ```
 Confirm the Source Profile has at least 1 BTC and 5 ETH available for trading.
 
-```json
+```json highlight={5,10}
 {
     "items": [
         {
             "asset": "BTC",
-            {/* highlight-next-line */}
             "available": "2",
             "trading": "0"
         },
         {
             "asset": "ETH",
-            {/* highlight-next-line */}
             "available": "10",
             "trading": "0"
         }
@@ -197,10 +188,9 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles/{profile_id}/balances
 
 Confirm the Target Profile has at least $50,000 USD available for trading.
 
-```json
+```json highlight={3}
 {
     "asset": "USD",
-    {/* highlight-next-line */}
     "available": "100000",
     "trading": "0"
 }
@@ -209,15 +199,12 @@ Confirm the Target Profile has at least $50,000 USD available for trading.
 
 Using the Source Profile and Target Profile `profile_id` [created earlier][set-up-profiles], use [Create Transaction][create-transaction] to propose exchanging 1 BTC and 5 ETH (in the Source Profile balance) for $50,000 USD (in the Target Profile balance). The `ref_id` must be unique. The settlement window defaults apply if `settlement_window_start` and/or `settlement_window_end` are not specified.
 
-```shell
+```shell highlight={4,5,6}
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-  {/* highlight-next-line */}
   "ref_id": "required_idempotence_id",
-  {/* highlight-next-line */}
   "settlement_window_start": "YYYY-MM-DDT00:00:00Z",
-  {/* highlight-next-line */}
   "settlement_window_end": "YYYY-MM-DDT00:00:00Z",
   "source_profile_id": "{profile_id}",
   "target_profile_id": "{profile_id}",
@@ -245,9 +232,8 @@ The acknowledgement response confirms the request has been received and provides
 The unique transaction `id` is used to [approve] and [retrieve][check-status] the transaction, and the Source Profile owner can use the `id` to [cancel][cancel-transaction] the `PENDING` transaction.
 The transaction [status] can be used used by either party to [retrieve a list of filtered transactions][status-list-transactions].
 
-```json
+```json highlight={2,28}
 {
-    {/* highlight-next-line */}
     "id": "{unique_transaction_id}",
     "ref_id": "required_idempotence_id",
     "settlement_window_start": "YYYY-MM-DDT00:00:00Z", // Defaults to current time
@@ -274,7 +260,6 @@ The transaction [status] can be used used by either party to [retrieve a list of
             "amount": "50000"
         }
     ],
-    {/* highlight-next-line */}
     "status": "PENDING",
     "created_at": "YYYY-MM-DDT00:00:00Z",
     "updated_at": "YYYY-MM-DDT00:00:00Z"
@@ -301,7 +286,7 @@ curl --location --request PUT 'https://api.sandbox.paxos.com/v2/settlement/trans
 
 The acknowledgement response includes transaction information and the `AFFIRMED` [status] and `updated_at` timestamp.
 
-```json
+```json highlight={8,10}
 {
     "id": "{unique_transaction_id}",
     "ref_id": "required_idempotence_id",
@@ -309,10 +294,8 @@ The acknowledgement response includes transaction information and the `AFFIRMED`
     "settlement_window_end": "YYYY-MM-DDT00:00:00Z",
     "source_profile_id": "{profile_id}",
     "target_profile_id": "{profile_id}",
-    {/* highlight-next-line */}
     "status": "AFFIRMED",
     "created_at": "YYYY-MM-DDT00:00:00Z",
-    {/* highlight-next-line */}
     "updated_at": "YYYY-MM-DDT00:00:00Z"
 }
 ```
@@ -337,7 +320,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{trans
 The response includes the complete `Transaction` object.
 When the transaction completes, the [status][status] and `updated_at` timestamp reflect the most recent activity. 
 
-```json
+```json highlight={28,30}
 {
     "id": "{unique_transaction_id}",
     "ref_id": "required_idempotence_id",
@@ -365,10 +348,8 @@ When the transaction completes, the [status][status] and `updated_at` timestamp 
             "amount": "50000"
         }
     ],
-    {/* highlight-next-line */}
     "status": "SETTLED",
     "created_at": "YYYY-MM-DDT00:00:00Z",
-    {/* highlight-next-line */}
     "updated_at": "YYYY-MM-DDT00:00:00Z"
 }
 ```
