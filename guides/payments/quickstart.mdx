@@ -88,7 +88,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
 Capture the `address` and `compatible_crypto_networks` values for distribution to potential Buyers.
 Also store the `id` to use when [looking up pay-ins][pay-in-monitor-reconcile].
 
-```json
+```json  highlight={8,12}
 {
     "id": "2d3b2366-c432-4098-ba16-83ca418c6f00",
     "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
@@ -96,12 +96,10 @@ Also store the `id` to use when [looking up pay-ins][pay-in-monitor-reconcile].
     "crypto_network": "SOLANA",
     "identity_id": "00000000-0000-0000-0000-000000000000",
     "ref_id": "da_73bcbb08-db06-4308-b0c2-2a6398012f8b",
-    {/* highlight-next-line */}
     "address": "7iR1TfsaZ3f1PmbsoRuPYDbV7iujxZmuHaZDDU1Uv4YX",
     "account_id": "00000000-0000-0000-0000-000000000000",
     "conversion_target_asset": "USD",
     "compatible_crypto_networks": [
-        //highlight-next-line
         "SOLANA"
     ]
 }

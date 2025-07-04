@@ -41,12 +41,11 @@ with a value that follows the \"Bearer {access_token}"` schema.
 To authenticate with https://oauth.sandbox.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
 The authentication request must include  `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
 Include sufficient `{client_scopes}` (**Client Permissions**).
-```shell
+```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
 --form client_id={client_id} \
 --form client_secret={client_secret} \
-{/* highlight-next-line */}
 --form scope='{client_scopes}'
 ```
 ### Production
@@ -54,22 +53,19 @@ curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 To authenticate with https://oauth.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
 The authentication request must include the `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
 Include sufficient `{client_scopes}` (**Client Permissions**).
-```shell
+```shell highlight={5}
 curl --location 'https://oauth.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
 --form client_id={client_id} \
 --form client_secret={client_secret} \
-{/* highlight-next-line */}
 --form scope='{client_scopes}'
 ```
 Confirm the response includes the requisite scopes and save the `access_token` to use in the request authorization header (`-H "Authorization: Bearer {access_token}"`).
 
-```json
+```json highlight={2,4}
 {
  "access_token": "{access_token}",
- {/* highlight-next-line */}
  "expires_in": 3599, // Seconds (59 Minutes and 59 Seconds)
- {/* highlight-next-line */}
  "scope": "{client_scopes}",
  "token_type": "bearer"
 }

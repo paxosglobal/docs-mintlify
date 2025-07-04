@@ -15,34 +15,29 @@ Since every account has a `DEFAULT` [Profile], sending a request using [List Pro
 Include the [access token] from the authentication request in the authorization header.
 ### Sandbox
 
-```shell
+```shell  highlight={3}
 curl --location 'https://api.sandbox.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
 --header 'Accept: application/json' \
-{/* highlight-next-line */}
 --header 'Authorization: Bearer {access_token}'
 ```
 ### Production
 
-```shell
+```shell   highlight={3}
 curl --location 'https://api.paxos.com/v2/profiles?order=ASC&order_by=CREATED_AT' \
 --header 'Accept: application/json' \
-{/* highlight-next-line */}
 --header 'Authorization: Bearer {access_token}'
 ```
 A successful response includes all Profiles the client has access to.
 Using the `?order=ASC&order_by=CREATED_AT` parameters ensures the `DEFAULT` Profile is first in the list.
 
-```json
-
+```json highlight={3-7}
 {
     "items": [
-        {/* highlight-start */}
         {
             "id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
             "nickname": "default",
             "type": "DEFAULT"
         },
-        {/* highlight-end */}
         {
             "id": "7437da4d-c114-4a1f-8659-ceeaf868a1eb",
             "nickname": "Mint",

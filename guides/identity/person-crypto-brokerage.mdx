@@ -63,8 +63,8 @@ Run below to get the `access_token` from OAuth
 ```shell
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
---form client_id=\\\\${paxos_client_id} \
---form client_secret=\\\\${paxos_secret} \
+--form client_id={paxos_client_id} \
+--form client_secret={paxos_secret} \
 --form scope='identity:read_identity identity:read_account identity:write_identity identity:write_account funding:read_profile funding:write_profile exchange:read_order exchange:write_order'
 ```
 
@@ -106,7 +106,7 @@ All above attributes are required when `verifier_type` is set to `PASSTHROUGH`.
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "ref_id": "{your_end_user_ref_id}",
     "person_details": {
@@ -183,9 +183,9 @@ allow `HIGH` risk customers to onboard to Paxos.
 Using the above details should result in auto-approval of the [Identity]. You can immediately call the [Get Identity] endpoint
 and see the `summary_status` is `APPROVED`.
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/identity/identities/\\\\${identity_id}" \
+curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{identity_id}" \
 --request "GET" \
---header "Authorization: Bearer \\\\${access_token}"
+--header "Authorization: Bearer {access_token}"
 ```
 
 <Tip>
@@ -211,11 +211,11 @@ create accounts and profiles for a [Fiat and Crypto Subledger][crypto-brokerage-
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "create_profile": true,
     "account": {
-        "identity_id": "'"\\\\${identity_id}"'",
+        "identity_id": "{identity_id}",
         "ref_id": "{your_account_ref}",
         "type": "BROKERAGE",
         "description": "Brokerage account for Billy Duncan"
@@ -237,16 +237,16 @@ Platform. An [Account] and [Profile] is then created for a designated primary ac
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "create_profile": true,
     "account": {
-        "identity_id": "'"\\\\${billy_duncan_identity_id}"'",
+        "identity_id": "{billy_duncan_identity_id}",
         "ref_id": "{your_account_ref_id}",
         "type": "BROKERAGE",
         "description": "Brokerage account for Billy and Sarah Duncan",
         "members": [{
-            "identity_id": "'"\\\\${sarah_duncan_identity_id}"'",
+            "identity_id": "{sarah_duncan_identity_id}",
             "roles": ["BENEFICIAL_OWNER"]
         }]
     }
@@ -282,17 +282,17 @@ exists, else the omnibus `profile_id`)_.
 
 
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "side": "BUY",
     "market": "ETHUSD",
     "type": "LIMIT",
     "price": "1814.8",
     "base_amount": "1",
-    "identity_id": "'"\\\\${identity_id}"'",
-    "identity_account_id": "'"\\\\${account_id}"'"
+    "identity_id": "{identity_id}",
+    "identity_account_id": "{account_id}"
 }'
 ```
 
@@ -302,17 +302,17 @@ curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/ord
 
 
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "side": "SELL",
     "market": "ETHUSD",
     "type": "LIMIT",
     "price": "1804.2",
     "base_amount": "1",
-    "identity_id": "'"\\\\${identity_id}"'",
-    "identity_account_id": "'"\\\\${account_id}"'"
+    "identity_id": "{identity_id}",
+    "identity_account_id": "{account_id}"
 }'
 ```
 
@@ -321,9 +321,9 @@ curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/ord
 
 You can check the status of the order by calling
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders/\\\\${order_id}" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders/{order_id}" \
 --request "GET" \
---header "Authorization: Bearer \\\\${access_token}"
+--header "Authorization: Bearer {access_token}"
 ```
 
 And that is it, congratulations on completing your first end-to-end crypto brokerage integration with Paxos!
