@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Paxos Documentation",
+  "name": "Paxos Documentation", 
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -72,7 +72,7 @@
   ],
   "navigation": {
     "pages": [
-      "changelog/test"
+      "changelog/updates"
     ],
     "tabs": [
       {
@@ -377,6 +377,11 @@
     ],
     "global": {
       "anchors": [
+        {
+          "anchor": "Changelog",
+          "href": "/changelog/updates",
+          "icon": "book-open-cover"
+        },
         {
           "anchor": "Status",
           "href": "https://status.paxos.com/",
