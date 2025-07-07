@@ -74,21 +74,18 @@ Capture the `address` and `compatible_crypto_networks` values from the response.
 Also store the `id` to use when looking up transactions.
 ### USDG on Ethereum
 
-```json
+```json highlight={2,8,11}
 {
-    {/* highlight-next-line */}
     "id": "078eb145-1bbc-4e1d-999d-92845dc31df4",
     "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
     "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
     "crypto_network": "ETHEREUM",
     "identity_id": "00000000-0000-0000-0000-000000000000",
     "ref_id": "r_usdg_8f91a9c5-0a6e-46dc-ad68-17bc8fb4eafb",
-    {/* highlight-next-line */}
     "address": "0xdCB1481afaabf9dAc1B2A8218067252D533Ae1a7",
     "account_id": "00000000-0000-0000-0000-000000000000",
     "conversion_target_asset": "USD",
-   {/* highlight-next-line */}
-   "compatible_crypto_networks": [
+    "compatible_crypto_networks": [
         "ETHEREUM",
         "POLYGON_POS",
         "ARBITRUM_ONE"
@@ -97,20 +94,17 @@ Also store the `id` to use when looking up transactions.
 ```
 ### PYUSD on Solana
 
-```json
+```json highlight={2,8,11}
 {
-    {/* highlight-next-line */}
     "id": "8488990c-2cc0-441f-a26c-24d01c40a402",
     "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
     "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
     "crypto_network": "SOLANA",
     "identity_id": "00000000-0000-0000-0000-000000000000",
     "ref_id": "r_pyusd_8f91a9c5-0a6e-46dc-ad68-17bc8fb4eafb",
-    {/* highlight-next-line */}
     "address": "AufgJhf3DW83MUKgCKyrMyNjdCzhcy4LrcXcQsCDQRb2",
     "account_id": "00000000-0000-0000-0000-000000000000",
     "conversion_target_asset": "USD",
-    {/* highlight-next-line */}
     "compatible_crypto_networks": [
         "SOLANA"
     ]

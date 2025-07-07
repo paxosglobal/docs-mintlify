@@ -64,8 +64,8 @@ Run below to get the `access_token` from OAuth:
 ```shell
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
---form client_id=\\\\${paxos_client_id} \
---form client_secret=\\\\${paxos_secret} \
+--form client_id={paxos_client_id} \
+--form client_secret={paxos_secret} \
 --form scope='identity:read_identity identity:read_account identity:write_identity identity:write_account funding:read_profile funding:write_profile exchange:read_order exchange:write_order'
 ```
 
@@ -106,7 +106,7 @@ The required fields for each [institution member role][institution-member-roles]
 ```shell
 # Create a person identity
 curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --header "Content-Type: application/json" \
 --data '{
   "ref_id": "{your_end_user_ref_id}",
@@ -170,12 +170,12 @@ Here's an example of creating a institution (see API documentation for full requ
 ```shell
 # Example API call to create an institution identity
 curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --header "Content-Type: application/json" \
 --data '{
   "institution_members": [
     {
-      "identity_id": "'"\\\\${person_identity_id}"'",
+      "identity_id": "{person_identity_id}",
       "roles": ["BENEFICIAL_OWNER", "AUTHORIZED_USER", "MANAGEMENT_CONTROL_PERSON"]
     }
   ],
@@ -260,7 +260,7 @@ You can check the status of the institution identity by calling the [Get Identit
 ```shell
 # Check identity status
 curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{institution_identity_id}" \
---header "Authorization: Bearer \\\\${access_token}"
+--header "Authorization: Bearer {access_token}"
 ```
 
 <Tip>
@@ -276,12 +276,12 @@ an [Identity] therefore can have one or many [Accounts][account-api].
 ```shell
 # Create account and profile
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --header "Content-Type: application/json" \
 --data '{
   "create_profile": true,
   "account": {
-    "identity_id": "'"\\\\${institution_identity_id}"'",
+    "identity_id": "{institution_identity_id}",
     "name": "Institution Brokerage Account",
     "type": "CRYPTO_BROKERAGE"
   }
@@ -293,7 +293,7 @@ When you create an account, a profile is automatically created and associated wi
 ```shell
 # Get the profile ID associated with the account
 curl --location "https://api.sandbox.paxos.com/v2/profiles?account_id={account_id}" \
---header "Authorization: Bearer \\\\${access_token}"
+--header "Authorization: Bearer {access_token}"
 ```
 
 ## Booking an Order
@@ -324,17 +324,17 @@ exists, else the omnibus `profile_id`)_.
 
 
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "side": "BUY",
     "market": "ETHUSD",
     "type": "LIMIT",
     "price": "1814.8",
     "base_amount": "1",
-    "identity_id": "'"\\\\${institution_identity_id}"'",
-    "identity_account_id": "'"\\\\${account_id}"'"
+    "identity_id": "{institution_identity_id}",
+    "identity_account_id": "{account_id}"
 }'
 ```
 
@@ -344,17 +344,17 @@ curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/ord
 
 
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders" \
 --request "POST" \
---header "Authorization: Bearer \\\\${access_token}" \
+--header "Authorization: Bearer {access_token}" \
 --data '{
     "side": "SELL",
     "market": "ETHUSD",
     "type": "LIMIT",
     "price": "1804.2",
     "base_amount": "1",
-    "identity_id": "'"\\\\${institution_identity_id}"'",
-    "identity_account_id": "'"\\\\${account_id}"'"
+    "identity_id": "{institution_identity_id}",
+    "identity_account_id": "{account_id}"
 }'
 ```
 
@@ -363,9 +363,9 @@ curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/ord
 
 You can check the status of the order by calling
 ```shell
-curl --location "https://api.sandbox.paxos.com/v2/profiles/\\\\${profile_id}/orders/\\\\${order_id}" \
+curl --location "https://api.sandbox.paxos.com/v2/profiles/{profile_id}/orders/{order_id}" \
 --request "GET" \
---header "Authorization: Bearer \\\\${access_token}"
+--header "Authorization: Bearer {access_token}"
 ```
 
 And that is it, congratulations on completing your first end-to-end crypto brokerage integration for institutions with Paxos!
