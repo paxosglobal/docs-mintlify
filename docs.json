@@ -71,9 +71,6 @@
     }
   ],
   "navigation": {
-    "pages": [
-      "changelog/updates"
-    ],
     "tabs": [
       {
         "tab": "Welcome",
@@ -355,10 +352,295 @@
             ]
           },
           {
-            "group": "API Endpoints",
-            "openapi": {
-              "source": "/api-reference/openapi.json"
-            }
+            "group": "Deposits and Withdrawals",
+            "pages": [
+              {
+                "group": "Transfers",
+                "pages": [
+                  "api-reference/endpoints/transfers/list-transfers",
+                  "api-reference/endpoints/transfers/get-transfer"
+                ]
+              },
+              {
+                "group": "Fiat Transfers",
+                "pages": [
+                  "api-reference/endpoints/fiat-transfers/list-fiat-accounts",
+                  "api-reference/endpoints/fiat-transfers/create-fiat-account",
+                  "api-reference/endpoints/fiat-transfers/get-fiat-account",
+                  "api-reference/endpoints/fiat-transfers/update-fiat-account",
+                  "api-reference/endpoints/fiat-transfers/delete-fiat-account",
+                  "api-reference/endpoints/fiat-transfers/list-fiat-deposit-instructions",
+                  "api-reference/endpoints/fiat-transfers/create-fiat-deposit-instructions",
+                  "api-reference/endpoints/fiat-transfers/get-fiat-deposit-instructions",
+                  "api-reference/endpoints/fiat-transfers/create-fiat-withdrawal"
+                ]
+              },
+              {
+                "group": "Deposit Addresses",
+                "pages": [
+                  "api-reference/endpoints/deposit-addresses/list-deposit-addresses",
+                  "api-reference/endpoints/deposit-addresses/create-deposit-address"
+                ]
+              },
+              {
+                "group": "Crypto Deposits",
+                "pages": [
+                  "api-reference/endpoints/crypto-deposits/update-crypto-deposit",
+                  "api-reference/endpoints/crypto-deposits/reject-crypto-deposit"
+                ]
+              },
+              {
+                "group": "Crypto Withdrawals",
+                "pages": [
+                  "api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal"
+                ]
+              },
+              {
+                "group": "Fees",
+                "pages": [
+                  "api-reference/endpoints/fees/create-crypto-withdrawal-fee"
+                ]
+              },
+              {
+                "group": "Internal Transfers",
+                "pages": [
+                  "api-reference/endpoints/internal-transfers/create-internal-transfer"
+                ]
+              },
+              {
+                "group": "Paxos Transfers",
+                "pages": [
+                  "api-reference/endpoints/paxos-transfers/create-paxos-transfer"
+                ]
+              },
+              {
+                "group": "Limits",
+                "pages": [
+                  "api-reference/endpoints/limits/list-transfer-limits"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Identity",
+            "pages": [
+              {
+                "group": "Identity",
+                "pages": [
+                  "api-reference/endpoints/identity/list-identities",
+                  "api-reference/endpoints/identity/create-identity",
+                  "api-reference/endpoints/identity/get-identity",
+                  "api-reference/endpoints/identity/update-identity"
+                ]
+              },
+              {
+                "group": "Institution Members",
+                "pages": [
+                  "api-reference/endpoints/institution-members/add-institution-members",
+                  "api-reference/endpoints/institution-members/remove-institution-member"
+                ]
+              },
+              {
+                "group": "Accounts",
+                "pages": [
+                  "api-reference/endpoints/accounts/list-accounts",
+                  "api-reference/endpoints/accounts/create-account",
+                  "api-reference/endpoints/accounts/get-identityaccounts",
+                  "api-reference/endpoints/accounts/update-account"
+                ]
+              },
+              {
+                "group": "Account Members",
+                "pages": [
+                  "api-reference/endpoints/account-members/add-account-members",
+                  "api-reference/endpoints/account-members/remove-account-member"
+                ]
+              },
+              {
+                "group": "Identity Documents",
+                "pages": [
+                  "api-reference/endpoints/identity-documents/list-identity-documents",
+                  "api-reference/endpoints/identity-documents/document-upload"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Profiles",
+            "pages": [
+              {
+                "group": "Profiles",
+                "pages": [
+                  "api-reference/endpoints/profiles/list-profiles",
+                  "api-reference/endpoints/profiles/create-profile",
+                  "api-reference/endpoints/profiles/get-profile",
+                  "api-reference/endpoints/profiles/update-profile",
+                  "api-reference/endpoints/profiles/deactivate-profile",
+                  "api-reference/endpoints/profiles/list-profile-balances",
+                  "api-reference/endpoints/profiles/get-profile-balance"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Sandbox",
+            "pages": [
+              {
+                "group": "Sandbox Deposits",
+                "pages": [
+                  "api-reference/endpoints/sandbox-deposits/create-sandbox-deposit"
+                ]
+              },
+              {
+                "group": "Sandbox Identity",
+                "pages": [
+                  "api-reference/endpoints/sandbox-identity/sandbox-set-identity-status"
+                ]
+              },
+              {
+                "group": "Sandbox Fiat Transfers",
+                "pages": [
+                  "api-reference/endpoints/sandbox-fiat-transfers/initiate-sandbox-fiat-deposit"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Settlements",
+            "pages": [
+              {
+                "group": "Settlement",
+                "pages": [
+                  "api-reference/endpoints/settlement/list-transactions",
+                  "api-reference/endpoints/settlement/create-transaction",
+                  "api-reference/endpoints/settlement/get-transaction",
+                  "api-reference/endpoints/settlement/cancel-transaction",
+                  "api-reference/endpoints/settlement/affirm-transaction"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Stablecoin Conversion",
+            "pages": [
+              {
+                "group": "Stablecoin Conversion",
+                "pages": [
+                  "api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions",
+                  "api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion",
+                  "api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion",
+                  "api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Taxes",
+            "pages": [
+              {
+                "group": "Tax Forms",
+                "pages": [
+                  "api-reference/endpoints/tax-forms/list-tax-forms",
+                  "api-reference/endpoints/tax-forms/list-tax-form-revisions"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Trading",
+            "pages": [
+              {
+                "group": "Market Data",
+                "pages": [
+                  "api-reference/endpoints/market-data/list-markets",
+                  "api-reference/endpoints/market-data/get-order-book",
+                  "api-reference/endpoints/market-data/list-recent-executions",
+                  "api-reference/endpoints/market-data/get-ticker"
+                ]
+              },
+              {
+                "group": "Orders",
+                "pages": [
+                  "api-reference/endpoints/orders/list-orders",
+                  "api-reference/endpoints/orders/create-order",
+                  "api-reference/endpoints/orders/get-order",
+                  "api-reference/endpoints/orders/cancel-order",
+                  "api-reference/endpoints/orders/list-executions"
+                ]
+              },
+              {
+                "group": "Quotes",
+                "pages": [
+                  "api-reference/endpoints/quotes/list-quotes"
+                ]
+              },
+              {
+                "group": "Quote Executions",
+                "pages": [
+                  "api-reference/endpoints/quote-executions/list-quote-executions",
+                  "api-reference/endpoints/quote-executions/create-quote-execution",
+                  "api-reference/endpoints/quote-executions/get-quote-execution"
+                ]
+              },
+              {
+                "group": "Pricing",
+                "pages": [
+                  "api-reference/endpoints/pricing/list-prices",
+                  "api-reference/endpoints/pricing/list-tickers",
+                  "api-reference/endpoints/pricing/list-historical-prices"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Rewards",
+            "pages": [
+              {
+                "group": "Monitoring Addresses",
+                "pages": [
+                  "api-reference/endpoints/monitoring-addresses/list-monitoring-address",
+                  "api-reference/endpoints/monitoring-addresses/create-monitoring-address",
+                  "api-reference/endpoints/monitoring-addresses/get-monitoring-address",
+                  "api-reference/endpoints/monitoring-addresses/update-monitoring-address"
+                ]
+              },
+              {
+                "group": "Statements",
+                "pages": [
+                  "api-reference/endpoints/statements/list-statements"
+                ]
+              },
+              {
+                "group": "Payments",
+                "pages": [
+                  "api-reference/endpoints/payments/list-payments"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Events",
+            "pages": [
+              {
+                "group": "Events",
+                "pages": [
+                  "api-reference/endpoints/events/list-events",
+                  "api-reference/endpoints/events/get-event"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Websockets",
+            "pages": [
+              "api-reference/websockets/overview",
+              "api-reference/websockets/execution-data",
+              "api-reference/websockets/execution-data-market",
+              "api-reference/websockets/market-data",
+              "api-reference/websockets/market-data-market",
+              "api-reference/websockets/market-data-stablecoin",
+              "api-reference/websockets/market-data-stablecoin-market"
+            ]
           },
           {
             "group": "Webhooks",
@@ -437,7 +719,7 @@
       "anchors": [
         {
           "anchor": "Changelog",
-          "href": "/changelog/updates",
+          "href": "https://docs.paxos.com/changelog",
           "icon": "book-open-cover"
         },
         {

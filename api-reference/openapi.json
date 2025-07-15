@@ -3138,6 +3138,7 @@
     },
     "/profiles/{profile_id}/executions": {
       "get": {
+        "x-excluded": true,
         "summary": "List Executions",
         "description": "Retrieves full details of underlying executions for a profile id with optional filters.\nIf pagination details are not set the response will default to 20 items. Additionally, this endpoint will return a maximum of 500 items per page.",
         "operationId": "ListProfileExecutions",
@@ -3270,6 +3271,7 @@
     },
     "/profiles/{profile_id}/orders": {
       "get": {
+        "x-excluded": true,
         "summary": "List Orders",
         "description": "Retrieves full details of orders associated with a profile id with optional filters.\n\nNotes:\n- Pagination Limit has a max of 1000 and Pagination Offset a max of 10000. If a larger Offset is needed, please contact support.",
         "operationId": "ListProfileOrders",

@@ -1,0 +1,103 @@
+---
+title: Overview
+description: Event-driven connectivity for payments and trading.
+tags:
+  - Crypto Brokerage
+  - Trading
+  - WebSocket
+---
+
+import Description from "@site/_partials/description.mdx";
+
+[quickstart]: /crypto-brokerage/websocket
+[market-data]: #market-data-feed
+[execution-data]: #execution-data-feed
+[market-data-path-parameter]: #market-data-path-parameter
+[execution-data-path-parameter]: #execution-data-path-parameter
+[available-markets]: #available-markets
+[websocket]: https://websocket.spec.whatwg.org
+[get-order-book]: /api-reference/market-data/get-order-book
+[list-recent-executions]: /api-reference/market-data/list-recent-executions
+[rate-limits]: /developer/rate-limits#websocket-limits
+[v2-api]: /api-reference
+[payments-guide]: /payments/websocket
+[stablecoin-data]: #stablecoin-feed
+
+<Description description={frontMatter.description} />
+
+Paxos provides secure, real-time market and execution data feeds via public [WebSocket][websocket] connections. The WebSocket API offers three main data feeds:
+
+- **[Execution Data Feed][execution-data]** - Real-time execution data for market trades
+- **[Market Data Feed][market-data]** - Order book updates with initial snapshots and real-time updates  
+- **[Stablecoin Market Price Feed][stablecoin-data]** - Market index price updates for external stablecoins
+
+> See the Websocket [trading][quickstart] and [stablecoin payments][payments-guide] guides for a hands-on introduction.
+
+The WebSocket connections provide a number of advantages when compared to the [v2 API][v2-api], including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
+
+## API Reference
+
+For detailed technical specifications, message schemas, and interactive examples, see the **API Reference** section in the sidebar. The AsyncAPI specification provides complete documentation for all available channels, message types, and data formats.
+
+## Connection Details
+
+Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits][rate-limits].
+Both Production and Sandbox data feeds have a built-in, instantaneous failover.
+Clients should have a reconnection mechanism in case of server disconnection.
+
+### Server Endpoints
+
+**Production:** `wss://ws.paxos.com`  
+**Sandbox:** `wss://ws.sandbox.paxos.com`
+
+### Available Channels
+
+- `/executiondata` - All markets execution data
+- `/executiondata/{market}` - Single market execution data
+- `/marketdata` - All markets order book data
+- `/marketdata/{market}` - Single market order book data
+- `/marketdata/stablecoin/{market}` - Stablecoin market price data
+
+> See the **API Reference** section for detailed channel specifications and message formats.
+
+## Execution Data Feed
+
+The execution data feed provides real-time trade information for market executions. Key behavioral characteristics:
+
+- **Initial Message**: The first message corresponds to the last execution at connection time
+- **Subsequent Messages**: Each new message represents a new execution as it occurs
+- **Idle Markets**: If no executions occur for extended periods, no messages are sent until new activity
+- **Reconnection**: Upon reconnection, you receive the last execution (handle duplicates using `match_number`)
+
+The feed includes execution price, amount, timestamp, and a unique match number for deduplication.
+
+## Market Data Feed
+
+The market data feed provides real-time order book updates with two message types:
+
+### SNAPSHOT Messages
+- **Initial Response**: Shows the complete order book state with bids and asks
+- **Bids**: Prices in descending order with amounts
+- **Asks**: Prices in ascending order with amounts
+
+### UPDATE Messages
+- **Real-time Updates**: Show executed trades and order book changes
+- **Processing Rules**:
+  - When `amount=0`: Remove the price level from the order book
+  - When `amount>0`: Add or update the price level with the new amount
+  - Use `side` field to determine whether to update bids (`BUY`) or asks (`SELL`)
+
+### Available Markets
+
+Market availability varies by environment (Sandbox vs Production) and account restrictions. Use the [Get Order Book][get-order-book] and [List Recent Executions][list-recent-executions] REST endpoints to discover available markets, though these are not suitable for streaming data.
+
+## Stablecoin Market Price Feed 
+
+The stablecoin market price feed provides real-time market index price updates for external stablecoins. Key characteristics:
+
+- **Current Support**: USDCUSD market
+- **Update Frequency**: Typically ~1 message per second, varying with market volatility
+- **Message Content**: Market name, current price (4 decimals), and timestamp
+- **Real-time Updates**: Price updates are pushed as they occur
+
+This feed is particularly useful for applications requiring accurate, real-time stablecoin pricing information.
