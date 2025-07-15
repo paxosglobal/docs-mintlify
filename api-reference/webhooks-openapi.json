@@ -620,13 +620,13 @@
             "type": "string",
             "format": "uuid",
             "title": "Object ID",
-            "description": "Unique identifier for this object"
+            "description": "Unique identifier for this event object"
           },
           "identity_id": {
             "type": "string",
             "format": "uuid",
             "title": "Identity ID",
-            "description": "The ID of the identity that requires documents"
+            "description": "Identifier for the identity requiring documents"
           },
           "required_documents": {
             "type": "array",
@@ -662,13 +662,13 @@
             "type": "string",
             "format": "uuid",
             "title": "Object ID",
-            "description": "Unique identifier for this object"
+            "description": "Unique identifier for this event object"
           },
           "identity_id": {
             "type": "string",
             "format": "uuid",
             "title": "Identity ID",
-            "description": "The ID of the identity whose status changed"
+            "description": "Identifier for the affected identity"
           },
           "old_summary_status": {
             "type": "string",
@@ -700,45 +700,33 @@
             "type": "string",
             "format": "uuid",
             "title": "Object ID",
-            "description": "Unique identifier for this object"
+            "description": "Unique identifier for this event object"
           },
           "identity_id": {
             "type": "string",
             "format": "uuid",
             "title": "Identity ID",
-            "description": "The ID of the identity undergoing KYC refresh"
+            "description": "Identifier for the affected identity"
           },
-          "status": {
-            "type": "string",
-            "enum": ["STARTED", "COMPLETED", "EXPIRED"],
-            "title": "KYC Refresh Status",
-            "description": "The current status of the KYC refresh process"
-          },
-          "due_date": {
+          "last_kyc_refresh_date": {
             "type": "string",
             "format": "date-time",
-            "title": "Due Date",
-            "description": "The date by which the KYC refresh must be completed (for started events)"
+            "title": "Last KYC Refresh Date",
+            "description": "Date of the most recent completed KYC refresh (optional)"
           },
-          "completed_date": {
+          "next_kyc_refresh_date": {
             "type": "string",
             "format": "date-time",
-            "title": "Completed Date",
-            "description": "The date when the KYC refresh was completed (for completed events)"
-          },
-          "expired_date": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Expired Date",
-            "description": "The date when the KYC refresh expired (for expired events)"
+            "title": "Next KYC Refresh Date",
+            "description": "Scheduled date for the next KYC refresh (optional)"
           }
         },
-        "required": ["id", "identity_id", "status"],
+        "required": ["id", "identity_id"],
         "example": {
           "id": "d840cf31-352f-4190-a476-7522bf3eafda",
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-          "status": "STARTED",
-          "due_date": "2024-08-25T14:25:41Z"
+          "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
+          "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
         }
       },
       "TransferStatusChangeObject": {

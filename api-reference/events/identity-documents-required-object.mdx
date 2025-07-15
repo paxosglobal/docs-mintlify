@@ -8,17 +8,15 @@ This object is returned by the [Get Event API](/api-reference/events/get-event) 
 ## Object Fields
 
 <ResponseField name="id" type="string" required>
-Unique identifier for this object
+Unique identifier for this event object
 </ResponseField>
 
 <ResponseField name="identity_id" type="string" required>
-The ID of the identity that requires documents
+Identifier for the identity requiring documents
 </ResponseField>
 
 <ResponseField name="required_documents" type="array" required>
-List of document types required for verification
-
-**Available options:** `DRIVERS_LICENSE`, `PASSPORT`, `NATIONAL_ID`, `UTILITY_BILL`, `BANK_STATEMENT`, `GOVERNMENT_ID`, `PROOF_OF_ADDRESS`
+List of required document types
 </ResponseField>
 
 <ResponseExample>

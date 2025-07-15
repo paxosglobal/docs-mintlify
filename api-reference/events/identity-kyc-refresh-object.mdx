@@ -8,57 +8,29 @@ This object is returned by the [Get Event API](/api-reference/events/get-event) 
 ## Object Fields
 
 <ResponseField name="id" type="string" required>
-Unique identifier for this object
+Unique identifier for this event object
 </ResponseField>
 
 <ResponseField name="identity_id" type="string" required>
-The ID of the identity undergoing KYC refresh
+Identifier for the affected identity
 </ResponseField>
 
-<ResponseField name="status" type="string" required>
-The current status of the KYC refresh process
-
-**Available options:** `STARTED`, `COMPLETED`, `EXPIRED`
+<ResponseField name="last_kyc_refresh_date" type="string">
+Date of the most recent completed KYC refresh (optional)
 </ResponseField>
 
-<ResponseField name="due_date" type="string">
-When the KYC refresh must be completed (for started events only)
-</ResponseField>
-
-<ResponseField name="completed_date" type="string">
-When the KYC refresh was completed (for completed events only)
-</ResponseField>
-
-<ResponseField name="expired_date" type="string">
-When the KYC refresh expired (for expired events only)
+<ResponseField name="next_kyc_refresh_date" type="string">
+Scheduled date for the next KYC refresh (optional)
 </ResponseField>
 
 <ResponseExample>
 
-```json Started Event
+```json Example
 {
   "id": "d840cf31-352f-4190-a476-7522bf3eafda",
   "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-  "status": "STARTED",
-  "due_date": "2024-08-25T14:25:41Z"
-}
-```
-
-```json Completed Event
-{
-  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
-  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-  "status": "COMPLETED",
-  "completed_date": "2024-07-15T10:30:00Z"
-}
-```
-
-```json Expired Event
-{
-  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
-  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-  "status": "EXPIRED",
-  "expired_date": "2024-08-25T14:25:41Z"
+  "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
+  "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
 }
 ```
 

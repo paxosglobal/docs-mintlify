@@ -12,19 +12,19 @@ The Paxos transfer ID. You can call the GetTransfer endpoint with this ID to get
 </ResponseField>
 
 <ResponseField name="type" type="string" required>
-Type of transfer
+Type of transfer:
 
 **Available options:** `CRYPTO_DEPOSIT`, `CRYPTO_WITHDRAWAL`, `ACT_DEPOSIT`, `ACT_WITHDRAWAL`
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
-Status of transfer
+Status of transfer:
 
 **Available options:** `PENDING`, `COMPLETED`, `FAILED`
 </ResponseField>
 
 <ResponseField name="ref_id" type="string">
-The client-specified ID of the transfer for replay protection and lookup (optional)
+The client-specified ID of the transfer for replay protection and lookup. (optional)
 </ResponseField>
 
 <ResponseField name="crypto_network" type="string">
