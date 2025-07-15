@@ -1,0 +1,27 @@
+---
+title: "identity.kyc_refresh.expired"
+description: "Webhook triggered when a KYC refresh process expires without completion"
+openapi: "webhooks-openapi.json webhook identity.kyc_refresh.expired"
+---
+
+Triggered when a KYC refresh process expires without completion.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+<Warning>
+KYC refresh expiration may trigger automatic account restrictions per compliance policies.
+</Warning>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_kyc_refresh`](/api-reference/events/identity-kyc-refresh-object) object with KYC refresh details including the expiration date.
+
+## Handling this webhook
+
+1. Extract the `id` from the webhook payload
+2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
+3. **Immediately** apply required compliance restrictions
+4. Update internal records to reflect expired status
+5. Contact [Paxos Support](https://support.paxos.com) for resolution guidance

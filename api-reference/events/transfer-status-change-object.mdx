@@ -1,0 +1,70 @@
+---
+title: "transfer_status_change"
+description: "Event object returned for transfer status change events"
+---
+
+This object is returned by the [Get Event API](/api-reference/events/get-event) when the event type is related to transfer status changes.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+The Paxos transfer ID. You can call the GetTransfer endpoint with this ID to get more details about it.
+</ResponseField>
+
+<ResponseField name="type" type="string" required>
+Type of transfer
+
+**Available options:** `CRYPTO_DEPOSIT`, `CRYPTO_WITHDRAWAL`, `ACT_DEPOSIT`, `ACT_WITHDRAWAL`
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+Status of transfer
+
+**Available options:** `PENDING`, `COMPLETED`, `FAILED`
+</ResponseField>
+
+<ResponseField name="ref_id" type="string">
+The client-specified ID of the transfer for replay protection and lookup (optional)
+</ResponseField>
+
+<ResponseField name="crypto_network" type="string">
+Cryptocurrency network (e.g. ETHEREUM, BASE, SOLANA) (optional, present for crypto transfers)
+</ResponseField>
+
+<ResponseField name="crypto_tx_hash" type="string">
+On-chain transaction hash (optional, present for crypto transfers when available)
+</ResponseField>
+
+<ResponseField name="crypto_tx_index" type="string">
+The output index or output address (optional, present for crypto transfers when available)
+</ResponseField>
+
+<ResponseField name="memo" type="string">
+Memo associated with the transfer as an identifier (optional, present for fiat transfers when available)
+</ResponseField>
+
+<ResponseExample>
+
+```json Crypto Deposit Example
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "CRYPTO_DEPOSIT",
+  "status": "COMPLETED",
+  "ref_id": "my-deposit-123",
+  "crypto_network": "ETHEREUM",
+  "crypto_tx_hash": "0x1234567890abcdef...",
+  "crypto_tx_index": "0"
+}
+```
+
+```json Fiat Withdrawal Example
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "ACT_WITHDRAWAL",
+  "status": "PENDING",
+  "ref_id": "my-withdrawal-456",
+  "memo": "Payment for services"
+}
+```
+
+</ResponseExample>

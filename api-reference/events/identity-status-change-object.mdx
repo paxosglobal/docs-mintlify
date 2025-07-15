@@ -1,0 +1,41 @@
+---
+title: "identity_summary_status_change"
+description: "Event object returned for identity status change events"
+---
+
+This object is returned by the [Get Event API](/api-reference/events/get-event) when the event type is `identity.approved`, `identity.denied`, or `identity.disabled`.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+Unique identifier for this object
+</ResponseField>
+
+<ResponseField name="identity_id" type="string" required>
+The ID of the identity whose status changed
+</ResponseField>
+
+<ResponseField name="old_summary_status" type="string" required>
+The previous summary status of the identity
+
+**Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
+</ResponseField>
+
+<ResponseField name="new_summary_status" type="string" required>
+The new summary status of the identity
+
+**Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
+</ResponseField>
+
+<ResponseExample>
+
+```json Example
+{
+  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+  "old_summary_status": "PENDING",
+  "new_summary_status": "APPROVED"
+}
+```
+
+</ResponseExample>

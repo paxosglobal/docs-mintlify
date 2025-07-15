@@ -1,0 +1,23 @@
+---
+title: "identity.documents_required"
+description: "Webhook triggered when additional documents are required for identity verification"
+openapi: "webhooks-openapi.json webhook identity.documents_required"
+---
+
+Triggered when additional documents are required for identity verification.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details including required documents.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_documents_required`](/api-reference/events/identity-documents-required-object) object with details about the required documents.
+
+## Handling this webhook
+
+1. Extract the `id` from the webhook payload
+2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
+3. Extract `identity_id` and `required_documents` from the event object
+4. Notify the user and guide them through document upload
+5. Submit documents via the Identity API

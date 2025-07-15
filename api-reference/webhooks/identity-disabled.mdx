@@ -1,0 +1,27 @@
+---
+title: "identity.disabled"
+description: "Webhook triggered when an identity is disabled"
+openapi: "webhooks-openapi.json webhook identity.disabled"
+---
+
+Triggered when a previously approved identity is disabled.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+<Warning>
+Identity disabling is a critical compliance action requiring immediate response.
+</Warning>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_summary_status_change`](/api-reference/events/identity-status-change-object) object with status transition details.
+
+## Handling this webhook
+
+1. Extract the `id` from the webhook payload
+2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
+3. **Immediately** suspend all transactions and verified features
+4. Update internal records and implement security restrictions
+5. Contact [Paxos Support](https://support.paxos.com) for guidance

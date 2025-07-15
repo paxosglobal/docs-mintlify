@@ -1,0 +1,34 @@
+---
+title: "identity_documents_required"
+description: "Event object returned for identity.documents_required events"
+---
+
+This object is returned by the [Get Event API](/api-reference/events/get-event) when the event type is `identity.documents_required`.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+Unique identifier for this object
+</ResponseField>
+
+<ResponseField name="identity_id" type="string" required>
+The ID of the identity that requires documents
+</ResponseField>
+
+<ResponseField name="required_documents" type="array" required>
+List of document types required for verification
+
+**Available options:** `DRIVERS_LICENSE`, `PASSPORT`, `NATIONAL_ID`, `UTILITY_BILL`, `BANK_STATEMENT`, `GOVERNMENT_ID`, `PROOF_OF_ADDRESS`
+</ResponseField>
+
+<ResponseExample>
+
+```json Example
+{
+  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+  "required_documents": ["DRIVERS_LICENSE", "PASSPORT"]
+}
+```
+
+</ResponseExample>

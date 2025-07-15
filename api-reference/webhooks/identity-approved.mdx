@@ -1,0 +1,23 @@
+---
+title: "identity.approved"
+description: "Webhook triggered when an identity verification is approved"
+openapi: "webhooks-openapi.json webhook identity.approved"
+---
+
+Triggered when identity verification is successfully approved.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_summary_status_change`](/api-reference/events/identity-status-change-object) object with status transition details.
+
+## Handling this webhook
+
+1. Extract the `id` from the webhook payload
+2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details  
+3. Update internal records to reflect approved status
+4. Enable verified user features
+5. Notify the user of successful verification
