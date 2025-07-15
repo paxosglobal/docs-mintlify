@@ -62,180 +62,60 @@
     </div>
 
     <script>
-        // Mapping of old tag names to new endpoint paths
-        const tagMappings = {
-            'Fiat-Transfers': 'fiat-transfers',
-            'Identity': 'identity',
-            'Transfers': 'transfers',
-            'Deposit-Addresses': 'deposit-addresses',
-            'Profiles': 'profiles',
-            'Settlement': 'settlement',
-            'Stablecoin-Conversion': 'stablecoin-conversion',
-            'Orders': 'orders',
-            'Market-Data': 'market-data',
-            'Events': 'events',
-            'Crypto-Deposits': 'crypto-deposits',
-            'Crypto-Withdrawals': 'crypto-withdrawals',
-            'Sandbox-Deposits': 'sandbox-deposits',
-            'Sandbox-Identity': 'sandbox-identity',
-            'Sandbox-Fiat-Transfers': 'sandbox-fiat-transfers',
-            'Quotes': 'quotes',
-            'Quote-Executions': 'quote-executions',
-            'Pricing': 'pricing',
-            'Statements': 'statements',
-            'Payments': 'payments',
-            'Monitoring-Addresses': 'monitoring-addresses',
-            'Tax-Forms': 'tax-forms',
-            'Limits': 'limits',
-            'Fees': 'fees',
-            'Internal-Transfers': 'internal-transfers',
-            'Paxos-Transfers': 'paxos-transfers',
-            'Accounts': 'accounts',
-            'Account-Members': 'account-members',
-            'Institution-Members': 'institution-members',
-            'Identity-Documents': 'identity-documents'
-        };
+        // Transform tag names: convert to lowercase
+        function transformTag(tag) {
+            return tag.toLowerCase();
+        }
 
-        // Mapping of operation names to endpoint filenames
-        const operationMappings = {
-            // Fiat Transfers
-            'ListFiatAccounts': 'list-fiat-accounts',
-            'CreateFiatAccount': 'create-fiat-account',
-            'GetFiatAccount': 'get-fiat-account',
-            'UpdateFiatAccount': 'update-fiat-account',
-            'DeleteFiatAccount': 'delete-fiat-account',
-            'ListFiatDepositInstructions': 'list-fiat-deposit-instructions',
-            'CreateFiatDepositInstructions': 'create-fiat-deposit-instructions',
-            'GetFiatDepositInstructions': 'get-fiat-deposit-instructions',
-            'CreateFiatWithdrawal': 'create-fiat-withdrawal',
+        // Transform operation names: convert PascalCase to kebab-case
+        function transformOperation(operation) {
+            // Handle special cases that don't follow the pattern
+            const specialCases = {
+                'GetIdentityAccounts': 'get-identityaccounts'
+            };
             
-            // Identity
-            'ListIdentities': 'list-identities',
-            'CreateIdentity': 'create-identity',
-            'GetIdentity': 'get-identity',
-            'UpdateIdentity': 'update-identity',
+            if (specialCases[operation]) {
+                return specialCases[operation];
+            }
             
-            // Transfers
-            'ListTransfers': 'list-transfers',
-            'GetTransfer': 'get-transfer',
-            
-            // Deposit Addresses
-            'ListDepositAddresses': 'list-deposit-addresses',
-            'CreateDepositAddress': 'create-deposit-address',
-            
-            // Profiles
-            'ListProfiles': 'list-profiles',
-            'CreateProfile': 'create-profile',
-            'GetProfile': 'get-profile',
-            'UpdateProfile': 'update-profile',
-            'DeactivateProfile': 'deactivate-profile',
-            'ListProfileBalances': 'list-profile-balances',
-            'GetProfileBalance': 'get-profile-balance',
-            
-            // Settlement
-            'ListTransactions': 'list-transactions',
-            'CreateTransaction': 'create-transaction',
-            'GetTransaction': 'get-transaction',
-            'CancelTransaction': 'cancel-transaction',
-            'AffirmTransaction': 'affirm-transaction',
-            
-            // Stablecoin Conversion
-            'ListStablecoinConversions': 'list-stablecoin-conversions',
-            'CreateStablecoinConversion': 'create-stablecoin-conversion',
-            'GetStablecoinConversion': 'get-stablecoin-conversion',
-            'CancelStablecoinConversion': 'cancel-stablecoin-conversion',
-            
-            // Orders
-            'ListOrders': 'list-orders',
-            'CreateOrder': 'create-order',
-            'GetOrder': 'get-order',
-            'CancelOrder': 'cancel-order',
-            'ListExecutions': 'list-executions',
-            
-            // Market Data
-            'ListMarkets': 'list-markets',
-            'GetOrderBook': 'get-order-book',
-            'ListRecentExecutions': 'list-recent-executions',
-            'GetTicker': 'get-ticker',
-            
-            // Events
-            'ListEvents': 'list-events',
-            'GetEvent': 'get-event',
-            
-            // Crypto Deposits
-            'UpdateCryptoDeposit': 'update-crypto-deposit',
-            'RejectCryptoDeposit': 'reject-crypto-deposit',
-            
-            // Crypto Withdrawals
-            'CreateCryptoWithdrawal': 'create-crypto-withdrawal',
-            
-            // Sandbox
-            'CreateSandboxDeposit': 'create-sandbox-deposit',
-            'SandboxSetIdentityStatus': 'sandbox-set-identity-status',
-            'InitiateSandboxFiatDeposit': 'initiate-sandbox-fiat-deposit',
-            
-            // Quotes
-            'ListQuotes': 'list-quotes',
-            
-            // Quote Executions
-            'ListQuoteExecutions': 'list-quote-executions',
-            'CreateQuoteExecution': 'create-quote-execution',
-            'GetQuoteExecution': 'get-quote-execution',
-            
-            // Additional operations
-            'ListPrices': 'list-prices',
-            'ListTickers': 'list-tickers',
-            'ListHistoricalPrices': 'list-historical-prices',
-            'ListStatements': 'list-statements',
-            'ListPayments': 'list-payments',
-            'ListMonitoringAddress': 'list-monitoring-address',
-            'CreateMonitoringAddress': 'create-monitoring-address',
-            'GetMonitoringAddress': 'get-monitoring-address',
-            'UpdateMonitoringAddress': 'update-monitoring-address',
-            'ListTaxForms': 'list-tax-forms',
-            'ListTaxFormRevisions': 'list-tax-form-revisions',
-            'ListTransferLimits': 'list-transfer-limits',
-            'CreateCryptoWithdrawalFee': 'create-crypto-withdrawal-fee',
-            'CreateInternalTransfer': 'create-internal-transfer',
-            'CreatePaxosTransfer': 'create-paxos-transfer',
-            'ListAccounts': 'list-accounts',
-            'CreateAccount': 'create-account',
-            'GetIdentityAccounts': 'get-identityaccounts',
-            'UpdateAccount': 'update-account',
-            'AddAccountMembers': 'add-account-members',
-            'RemoveAccountMember': 'remove-account-member',
-            'AddInstitutionMembers': 'add-institution-members',
-            'RemoveInstitutionMember': 'remove-institution-member',
-            'ListIdentityDocuments': 'list-identity-documents',
-            'DocumentUpload': 'document-upload'
-        };
+            return operation
+                // Insert a hyphen before any uppercase letter that follows a lowercase letter or number
+                .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+                // Convert to lowercase
+                .toLowerCase();
+        }
 
         function parseApiUrl() {
-            const hash = window.location.hash || document.referrer;
-            const urlParams = new URLSearchParams(window.location.search);
+            // Get the fragment from the current URL
+            let hash = window.location.hash.replace('#', '');
             
-            // Check for various ways the old URL might be passed
-            let apiFragment = hash.replace('#', '') || 
-                             urlParams.get('from') || 
-                             urlParams.get('redirect') ||
-                             sessionStorage.getItem('apiRedirectFrom');
+            console.log('Current URL:', window.location.href);
+            console.log('Fragment:', hash);
 
-            console.log('Parsing API fragment:', apiFragment);
+            // If no fragment, check if we came from a referrer with fragment info
+            if (!hash) {
+                const urlParams = new URLSearchParams(window.location.search);
+                hash = urlParams.get('fragment') || '';
+            }
+
+            console.log('Processing fragment:', hash);
 
             // Handle different patterns:
             // 1. tag/Fiat-Transfers/operation/ListFiatAccounts
             // 2. tag/Fiat-Transfers
             // 3. operation/ListFiatAccounts (fallback)
             
-            if (!apiFragment || !apiFragment.includes('tag/')) {
+            if (!hash || !hash.includes('tag/')) {
+                console.log('No valid tag found, redirecting to introduction');
                 return '/api-reference/introduction';
             }
 
             // Extract tag and operation
-            const tagMatch = apiFragment.match(/tag\/([^\/]+)/);
-            const operationMatch = apiFragment.match(/operation\/([^\/\?&#]+)/);
+            const tagMatch = hash.match(/tag\/([^\/]+)/);
+            const operationMatch = hash.match(/operation\/([^\/\?&#]+)/);
             
             if (!tagMatch) {
+                console.log('No tag match found');
                 return '/api-reference/introduction';
             }
 
@@ -244,21 +124,20 @@
             
             console.log('Extracted tag:', tag, 'operation:', operation);
 
-            // Map tag to endpoint path
-            const endpointPath = tagMappings[tag];
-            if (!endpointPath) {
-                console.log('No mapping found for tag:', tag);
-                return '/api-reference/introduction';
-            }
+            // Transform tag to endpoint path
+            const endpointPath = transformTag(tag);
+            console.log('Transformed tag:', tag, '→', endpointPath);
 
             let targetUrl = `/api-reference/endpoints/${endpointPath}`;
 
-            // If we have an operation, try to map it to specific endpoint
-            if (operation && operationMappings[operation]) {
-                targetUrl += `/${operationMappings[operation]}`;
+            // If we have an operation, transform it to specific endpoint
+            if (operation) {
+                const transformedOperation = transformOperation(operation);
+                targetUrl += `/${transformedOperation}`;
+                console.log('Transformed operation:', operation, '→', transformedOperation);
             }
 
-            console.log('Redirecting to:', targetUrl);
+            console.log('Final target URL:', targetUrl);
             return targetUrl;
         }
 
@@ -296,6 +175,11 @@
                 performRedirect();
             }
         });
+
+        // Make the functions globally available for testing
+        window.parseApiFragment = parseApiUrl;
+        window.transformTag = transformTag;
+        window.transformOperation = transformOperation;
     </script>
 </body>
 </html>

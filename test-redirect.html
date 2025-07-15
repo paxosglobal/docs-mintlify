@@ -133,13 +133,41 @@
         });
 
         function testRedirect() {
-            const testFragment = 'tag/Fiat-Transfers/operation/ListFiatAccounts';
-            if (window.parseApiFragment) {
-                const result = window.parseApiFragment(testFragment);
-                document.getElementById('result').innerHTML = `<p>Fragment: <code>${testFragment}</code><br>Maps to: <code>${result}</code></p>`;
-            } else {
-                document.getElementById('result').innerHTML = '<p>Redirect interceptor not loaded</p>';
-            }
+            const tests = [
+                'tag/Fiat-Transfers/operation/ListFiatAccounts',
+                'tag/Identity/operation/CreateIdentity', 
+                'tag/Stablecoin-Conversion/operation/CreateStablecoinConversion',
+                'tag/Market-Data/operation/GetOrderBook',
+                'tag/Fiat-Transfers',
+                'tag/Identity'
+            ];
+            
+            let results = '<h4>Transformation Tests:</h4>';
+            
+            tests.forEach(test => {
+                // Simulate the transformation without actually redirecting
+                if (window.transformTag && window.transformOperation) {
+                    const tagMatch = test.match(/tag\/([^\/]+)/);
+                    const operationMatch = test.match(/operation\/([^\/\?&#]+)/);
+                    
+                    if (tagMatch) {
+                        const tag = tagMatch[1];
+                        const operation = operationMatch ? operationMatch[1] : null;
+                        
+                        const transformedTag = window.transformTag(tag);
+                        let targetUrl = `/api-reference/endpoints/${transformedTag}`;
+                        
+                        if (operation) {
+                            const transformedOperation = window.transformOperation(operation);
+                            targetUrl += `/${transformedOperation}`;
+                        }
+                        
+                        results += `<p><code>${test}</code><br>→ <code>${targetUrl}</code></p>`;
+                    }
+                }
+            });
+            
+            document.getElementById('result').innerHTML = results;
         }
     </script>
 </body>
