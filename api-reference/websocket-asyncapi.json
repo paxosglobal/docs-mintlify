@@ -1,5 +1,5 @@
 {
-  "asyncapi": "2.6.0",
+  "asyncapi": "3.0.0",
   "info": {
     "title": "Paxos WebSocket API",
     "version": "1.0.0",
@@ -11,105 +11,177 @@
   },
   "servers": {
     "production": {
-      "url": "wss://ws.paxos.com",
+      "host": "ws.paxos.com",
       "protocol": "wss",
       "description": "Production WebSocket server"
     },
     "sandbox": {
-      "url": "wss://ws.sandbox.paxos.com",
+      "host": "ws.sandbox.paxos.com",
       "protocol": "wss",
       "description": "Sandbox WebSocket server for testing"
     }
   },
   "channels": {
     "/executiondata": {
-      "description": "Execution data feed for all markets",
-      "subscribe": {
-        "summary": "Subscribe to execution data for all markets",
-        "description": "Receive real-time execution data for all available markets. The first message corresponds to the last execution at the point of connection.",
-        "message": {
+      "address": "/executiondata",
+      "messages": {
+        "subscribe.message": {
           "$ref": "#/components/messages/ExecutionData"
         }
-      }
+      },
+      "description": "Execution data feed for all markets"
     },
     "/executiondata/{market}": {
+      "address": "/executiondata/{market}",
+      "messages": {
+        "subscribe.message": {
+          "$ref": "#/components/messages/ExecutionData"
+        }
+      },
       "description": "Execution data feed for a specific market",
       "parameters": {
         "market": {
           "$ref": "#/components/parameters/market"
         }
-      },
-      "subscribe": {
-        "summary": "Subscribe to execution data for a specific market",
-        "description": "Receive real-time execution data for a single market. Filter the data stream for markets like BTCUSD.",
-        "message": {
-          "$ref": "#/components/messages/ExecutionData"
-        }
       }
     },
     "/marketdata": {
-      "description": "Market data feed for all markets",
-      "subscribe": {
-        "summary": "Subscribe to market data for all markets",
-        "description": "Receive real-time order book updates for all available markets. Initial message shows SNAPSHOT, subsequent messages show UPDATE events.",
-        "message": {
-          "oneOf": [
-            {
-              "$ref": "#/components/messages/MarketDataSnapshot"
-            },
-            {
-              "$ref": "#/components/messages/MarketDataUpdate"
-            }
-          ]
+      "address": "/marketdata",
+      "messages": {
+        "subscribe.message.0": {
+          "$ref": "#/components/messages/MarketDataSnapshot"
+        },
+        "subscribe.message.1": {
+          "$ref": "#/components/messages/MarketDataUpdate"
         }
-      }
+      },
+      "description": "Market data feed for all markets"
     },
     "/marketdata/{market}": {
+      "address": "/marketdata/{market}",
+      "messages": {
+        "subscribe.message.0": {
+          "$ref": "#/components/messages/MarketDataSnapshot"
+        },
+        "subscribe.message.1": {
+          "$ref": "#/components/messages/MarketDataUpdate"
+        }
+      },
       "description": "Market data feed for a specific market",
       "parameters": {
         "market": {
           "$ref": "#/components/parameters/market"
         }
-      },
-      "subscribe": {
-        "summary": "Subscribe to market data for a specific market",
-        "description": "Receive real-time order book updates for a single market. Filter the data stream for markets like BTCUSD.",
-        "message": {
-          "oneOf": [
-            {
-              "$ref": "#/components/messages/MarketDataSnapshot"
-            },
-            {
-              "$ref": "#/components/messages/MarketDataUpdate"
-            }
-          ]
-        }
       }
     },
     "/marketdata/stablecoin": {
-      "description": "Stablecoin market price feed for all markets",
-      "subscribe": {
-        "summary": "Subscribe to stablecoin market price for all markets",
-        "description": "Receive real-time market price updates for stablecoin markets.",
-        "message": {
+      "address": "/marketdata/stablecoin",
+      "messages": {
+        "subscribe.message": {
           "$ref": "#/components/messages/StablecoinMarketPrice"
         }
-      }
+      },
+      "description": "Stablecoin market price feed for all markets"
     },
     "/marketdata/stablecoin/{market}": {
+      "address": "/marketdata/stablecoin/{market}",
+      "messages": {
+        "subscribe.message": {
+          "$ref": "#/components/messages/StablecoinMarketPrice"
+        }
+      },
       "description": "Stablecoin market price feed for a specific market",
       "parameters": {
         "market": {
           "$ref": "#/components/parameters/market"
         }
-      },
-      "subscribe": {
-        "summary": "Subscribe to stablecoin market price for a specific market",
-        "description": "Receive real-time market price updates for a specific stablecoin market like USDCUSD.",
-        "message": {
-          "$ref": "#/components/messages/StablecoinMarketPrice"
-        }
       }
+    }
+  },
+  "operations": {
+    "/executiondata.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1executiondata"
+      },
+      "summary": "Subscribe to execution data for all markets",
+      "description": "Receive real-time execution data for all available markets. The first message corresponds to the last execution at the point of connection.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1executiondata/messages/subscribe.message"
+        }
+      ]
+    },
+    "/executiondata/{market}.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1executiondata~1{market}"
+      },
+      "summary": "Subscribe to execution data for a specific market",
+      "description": "Receive real-time execution data for a single market. Filter the data stream for markets like BTCUSD.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1executiondata~1{market}/messages/subscribe.message"
+        }
+      ]
+    },
+    "/marketdata.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1marketdata"
+      },
+      "summary": "Subscribe to market data for all markets",
+      "description": "Receive real-time order book updates for all available markets. Initial message shows SNAPSHOT, subsequent messages show UPDATE events.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1marketdata/messages/subscribe.message.0"
+        },
+        {
+          "$ref": "#/channels/~1marketdata/messages/subscribe.message.1"
+        }
+      ]
+    },
+    "/marketdata/{market}.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1marketdata~1{market}"
+      },
+      "summary": "Subscribe to market data for a specific market",
+      "description": "Receive real-time order book updates for a single market. Filter the data stream for markets like BTCUSD.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1marketdata~1{market}/messages/subscribe.message.0"
+        },
+        {
+          "$ref": "#/channels/~1marketdata~1{market}/messages/subscribe.message.1"
+        }
+      ]
+    },
+    "/marketdata/stablecoin.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1marketdata~1stablecoin"
+      },
+      "summary": "Subscribe to stablecoin market price for all markets",
+      "description": "Receive real-time market price updates for stablecoin markets.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1marketdata~1stablecoin/messages/subscribe.message"
+        }
+      ]
+    },
+    "/marketdata/stablecoin/{market}.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1marketdata~1stablecoin~1{market}"
+      },
+      "summary": "Subscribe to stablecoin market price for a specific market",
+      "description": "Receive real-time market price updates for a specific stablecoin market like USDCUSD.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1marketdata~1stablecoin~1{market}/messages/subscribe.message"
+        }
+      ]
     }
   },
   "components": {
@@ -233,7 +305,13 @@
     "schemas": {
       "ExecutionDataPayload": {
         "type": "object",
-        "required": ["market", "price", "amount", "executed_at", "match_number"],
+        "required": [
+          "market",
+          "price",
+          "amount",
+          "executed_at",
+          "match_number"
+        ],
         "properties": {
           "market": {
             "type": "string",
@@ -265,11 +343,19 @@
       },
       "MarketDataSnapshotPayload": {
         "type": "object",
-        "required": ["type", "market", "bids", "asks", "final_snapshot"],
+        "required": [
+          "type",
+          "market",
+          "bids",
+          "asks",
+          "final_snapshot"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["SNAPSHOT"],
+            "enum": [
+              "SNAPSHOT"
+            ],
             "description": "Message type indicating this is an initial snapshot"
           },
           "market": {
@@ -300,11 +386,19 @@
       },
       "MarketDataUpdatePayload": {
         "type": "object",
-        "required": ["type", "market", "side", "price", "amount"],
+        "required": [
+          "type",
+          "market",
+          "side",
+          "price",
+          "amount"
+        ],
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["UPDATE"],
+            "enum": [
+              "UPDATE"
+            ],
             "description": "Message type indicating this is an update"
           },
           "market": {
@@ -314,7 +408,10 @@
           },
           "side": {
             "type": "string",
-            "enum": ["BUY", "SELL"],
+            "enum": [
+              "BUY",
+              "SELL"
+            ],
             "description": "Specifies the activity type"
           },
           "price": {
@@ -331,7 +428,11 @@
       },
       "StablecoinMarketPricePayload": {
         "type": "object",
-        "required": ["market", "price", "timestamp"],
+        "required": [
+          "market",
+          "price",
+          "timestamp"
+        ],
         "properties": {
           "market": {
             "type": "string",
@@ -353,7 +454,10 @@
       },
       "PriceLevel": {
         "type": "object",
-        "required": ["price", "amount"],
+        "required": [
+          "price",
+          "amount"
+        ],
         "properties": {
           "price": {
             "type": "string",
@@ -370,11 +474,7 @@
     },
     "parameters": {
       "market": {
-        "description": "Filter the data stream for a single market. For example, BTCUSD or USDCUSD for stablecoin feeds.",
-        "schema": {
-          "type": "string",
-          "example": "BTCUSD"
-        }
+        "description": "Filter the data stream for a single market. For example, BTCUSD or USDCUSD for stablecoin feeds."
       }
     }
   }

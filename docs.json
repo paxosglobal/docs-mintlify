@@ -636,18 +636,13 @@
           {
             "group": "Websockets",
             "pages": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "api-reference/websocket"
-                ]
-              },
-              {
-                "group": "Channels",
-                "asyncapi": {
-                  "source": "/websocket-asyncapi.json"
-                }
-              }
+              "api-reference/websockets/overview",
+              "api-reference/websockets/execution-data",
+              "api-reference/websockets/execution-data-market",
+              "api-reference/websockets/market-data",
+              "api-reference/websockets/market-data-market",
+              "api-reference/websockets/market-data-stablecoin",
+              "api-reference/websockets/market-data-stablecoin-market"
             ]
           },
           {
