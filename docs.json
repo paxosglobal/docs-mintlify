@@ -74,36 +74,8 @@
       "destination": "/api-reference/endpoints/:slug*"
     },
     {
-      "source": "/api-reference/transfers/:slug*",
-      "destination": "/api-reference/endpoints/transfers/:slug*"
-    },
-    {
-      "source": "/api-reference/deposit-addresses/:slug*",
-      "destination": "/api-reference/endpoints/deposit-addresses/:slug*"
-    },
-    {
-      "source": "/api-reference/fiat-transfers/:slug*",
-      "destination": "/api-reference/endpoints/fiat-transfers/:slug*"
-    },
-    {
-      "source": "/api-reference/identity/:slug*",
-      "destination": "/api-reference/endpoints/identity/:slug*"
-    },
-    {
-      "source": "/api-reference/profiles/:slug*",
-      "destination": "/api-reference/endpoints/profiles/:slug*"
-    },
-    {
-      "source": "/api-reference/settlement/:slug*",
-      "destination": "/api-reference/endpoints/settlement/:slug*"
-    },
-    {
-      "source": "/api-reference/stablecoin-conversion/:slug*",
-      "destination": "/api-reference/endpoints/stablecoin-conversion/:slug*"
-    },
-    {
-      "source": "/api-reference/sandbox-deposits/:slug*",
-      "destination": "/api-reference/endpoints/sandbox-deposits/:slug*"
+      "source": "/api/v2",
+      "destination": "/api-reference/introduction"
     }
   ],
   "navigation": {
@@ -804,5 +776,16 @@
       "github": "https://github.com/paxosglobal",
       "linkedin": "https://www.linkedin.com/company/paxos"
     }
-  }
+  },
+  "analytics": {
+    "gtm": {
+      "tagId": ""
+    }
+  },
+  "scripts": [
+    {
+      "src": "/api-redirect-interceptor.js",
+      "defer": true
+    }
+  ]
 }

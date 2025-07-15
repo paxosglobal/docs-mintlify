@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e9ecef;
+            border-top: 3px solid #16A34A;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            text-align: center;
+            color: #6c757d;
+        }
+        .fallback {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            max-width: 400px;
+        }
+        .fallback a {
+            color: #16A34A;
+            text-decoration: none;
+        }
+        .fallback a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="spinner"></div>
+    <div class="message">
+        <h2>Redirecting to new documentation...</h2>
+        <p>Please wait while we redirect you to the updated API documentation.</p>
+    </div>
+    <div class="fallback" id="fallback" style="display: none;">
+        <h3>Manual Redirect</h3>
+        <p>If you're not automatically redirected, please visit:</p>
+        <a href="/api-reference/introduction" id="fallback-link">API Reference Documentation</a>
+    </div>
+
+    <script>
+        // Mapping of old tag names to new endpoint paths
+        const tagMappings = {
+            'Fiat-Transfers': 'fiat-transfers',
+            'Identity': 'identity',
+            'Transfers': 'transfers',
+            'Deposit-Addresses': 'deposit-addresses',
+            'Profiles': 'profiles',
+            'Settlement': 'settlement',
+            'Stablecoin-Conversion': 'stablecoin-conversion',
+            'Orders': 'orders',
+            'Market-Data': 'market-data',
+            'Events': 'events',
+            'Crypto-Deposits': 'crypto-deposits',
+            'Crypto-Withdrawals': 'crypto-withdrawals',
+            'Sandbox-Deposits': 'sandbox-deposits',
+            'Sandbox-Identity': 'sandbox-identity',
+            'Sandbox-Fiat-Transfers': 'sandbox-fiat-transfers',
+            'Quotes': 'quotes',
+            'Quote-Executions': 'quote-executions',
+            'Pricing': 'pricing',
+            'Statements': 'statements',
+            'Payments': 'payments',
+            'Monitoring-Addresses': 'monitoring-addresses',
+            'Tax-Forms': 'tax-forms',
+            'Limits': 'limits',
+            'Fees': 'fees',
+            'Internal-Transfers': 'internal-transfers',
+            'Paxos-Transfers': 'paxos-transfers',
+            'Accounts': 'accounts',
+            'Account-Members': 'account-members',
+            'Institution-Members': 'institution-members',
+            'Identity-Documents': 'identity-documents'
+        };
+
+        // Mapping of operation names to endpoint filenames
+        const operationMappings = {
+            // Fiat Transfers
+            'ListFiatAccounts': 'list-fiat-accounts',
+            'CreateFiatAccount': 'create-fiat-account',
+            'GetFiatAccount': 'get-fiat-account',
+            'UpdateFiatAccount': 'update-fiat-account',
+            'DeleteFiatAccount': 'delete-fiat-account',
+            'ListFiatDepositInstructions': 'list-fiat-deposit-instructions',
+            'CreateFiatDepositInstructions': 'create-fiat-deposit-instructions',
+            'GetFiatDepositInstructions': 'get-fiat-deposit-instructions',
+            'CreateFiatWithdrawal': 'create-fiat-withdrawal',
+            
+            // Identity
+            'ListIdentities': 'list-identities',
+            'CreateIdentity': 'create-identity',
+            'GetIdentity': 'get-identity',
+            'UpdateIdentity': 'update-identity',
+            
+            // Transfers
+            'ListTransfers': 'list-transfers',
+            'GetTransfer': 'get-transfer',
+            
+            // Deposit Addresses
+            'ListDepositAddresses': 'list-deposit-addresses',
+            'CreateDepositAddress': 'create-deposit-address',
+            
+            // Profiles
+            'ListProfiles': 'list-profiles',
+            'CreateProfile': 'create-profile',
+            'GetProfile': 'get-profile',
+            'UpdateProfile': 'update-profile',
+            'DeactivateProfile': 'deactivate-profile',
+            'ListProfileBalances': 'list-profile-balances',
+            'GetProfileBalance': 'get-profile-balance',
+            
+            // Settlement
+            'ListTransactions': 'list-transactions',
+            'CreateTransaction': 'create-transaction',
+            'GetTransaction': 'get-transaction',
+            'CancelTransaction': 'cancel-transaction',
+            'AffirmTransaction': 'affirm-transaction',
+            
+            // Stablecoin Conversion
+            'ListStablecoinConversions': 'list-stablecoin-conversions',
+            'CreateStablecoinConversion': 'create-stablecoin-conversion',
+            'GetStablecoinConversion': 'get-stablecoin-conversion',
+            'CancelStablecoinConversion': 'cancel-stablecoin-conversion',
+            
+            // Orders
+            'ListOrders': 'list-orders',
+            'CreateOrder': 'create-order',
+            'GetOrder': 'get-order',
+            'CancelOrder': 'cancel-order',
+            'ListExecutions': 'list-executions',
+            
+            // Market Data
+            'ListMarkets': 'list-markets',
+            'GetOrderBook': 'get-order-book',
+            'ListRecentExecutions': 'list-recent-executions',
+            'GetTicker': 'get-ticker',
+            
+            // Events
+            'ListEvents': 'list-events',
+            'GetEvent': 'get-event',
+            
+            // Crypto Deposits
+            'UpdateCryptoDeposit': 'update-crypto-deposit',
+            'RejectCryptoDeposit': 'reject-crypto-deposit',
+            
+            // Crypto Withdrawals
+            'CreateCryptoWithdrawal': 'create-crypto-withdrawal',
+            
+            // Sandbox
+            'CreateSandboxDeposit': 'create-sandbox-deposit',
+            'SandboxSetIdentityStatus': 'sandbox-set-identity-status',
+            'InitiateSandboxFiatDeposit': 'initiate-sandbox-fiat-deposit',
+            
+            // Quotes
+            'ListQuotes': 'list-quotes',
+            
+            // Quote Executions
+            'ListQuoteExecutions': 'list-quote-executions',
+            'CreateQuoteExecution': 'create-quote-execution',
+            'GetQuoteExecution': 'get-quote-execution',
+            
+            // Additional operations
+            'ListPrices': 'list-prices',
+            'ListTickers': 'list-tickers',
+            'ListHistoricalPrices': 'list-historical-prices',
+            'ListStatements': 'list-statements',
+            'ListPayments': 'list-payments',
+            'ListMonitoringAddress': 'list-monitoring-address',
+            'CreateMonitoringAddress': 'create-monitoring-address',
+            'GetMonitoringAddress': 'get-monitoring-address',
+            'UpdateMonitoringAddress': 'update-monitoring-address',
+            'ListTaxForms': 'list-tax-forms',
+            'ListTaxFormRevisions': 'list-tax-form-revisions',
+            'ListTransferLimits': 'list-transfer-limits',
+            'CreateCryptoWithdrawalFee': 'create-crypto-withdrawal-fee',
+            'CreateInternalTransfer': 'create-internal-transfer',
+            'CreatePaxosTransfer': 'create-paxos-transfer',
+            'ListAccounts': 'list-accounts',
+            'CreateAccount': 'create-account',
+            'GetIdentityAccounts': 'get-identityaccounts',
+            'UpdateAccount': 'update-account',
+            'AddAccountMembers': 'add-account-members',
+            'RemoveAccountMember': 'remove-account-member',
+            'AddInstitutionMembers': 'add-institution-members',
+            'RemoveInstitutionMember': 'remove-institution-member',
+            'ListIdentityDocuments': 'list-identity-documents',
+            'DocumentUpload': 'document-upload'
+        };
+
+        function parseApiUrl() {
+            const hash = window.location.hash || document.referrer;
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check for various ways the old URL might be passed
+            let apiFragment = hash.replace('#', '') || 
+                             urlParams.get('from') || 
+                             urlParams.get('redirect') ||
+                             sessionStorage.getItem('apiRedirectFrom');
+
+            console.log('Parsing API fragment:', apiFragment);
+
+            // Handle different patterns:
+            // 1. tag/Fiat-Transfers/operation/ListFiatAccounts
+            // 2. tag/Fiat-Transfers
+            // 3. operation/ListFiatAccounts (fallback)
+            
+            if (!apiFragment || !apiFragment.includes('tag/')) {
+                return '/api-reference/introduction';
+            }
+
+            // Extract tag and operation
+            const tagMatch = apiFragment.match(/tag\/([^\/]+)/);
+            const operationMatch = apiFragment.match(/operation\/([^\/\?&#]+)/);
+            
+            if (!tagMatch) {
+                return '/api-reference/introduction';
+            }
+
+            const tag = tagMatch[1];
+            const operation = operationMatch ? operationMatch[1] : null;
+            
+            console.log('Extracted tag:', tag, 'operation:', operation);
+
+            // Map tag to endpoint path
+            const endpointPath = tagMappings[tag];
+            if (!endpointPath) {
+                console.log('No mapping found for tag:', tag);
+                return '/api-reference/introduction';
+            }
+
+            let targetUrl = `/api-reference/endpoints/${endpointPath}`;
+
+            // If we have an operation, try to map it to specific endpoint
+            if (operation && operationMappings[operation]) {
+                targetUrl += `/${operationMappings[operation]}`;
+            }
+
+            console.log('Redirecting to:', targetUrl);
+            return targetUrl;
+        }
+
+        function performRedirect() {
+            try {
+                const targetUrl = parseApiUrl();
+                
+                // Show fallback after 3 seconds if redirect doesn't work
+                setTimeout(() => {
+                    document.getElementById('fallback').style.display = 'block';
+                    document.getElementById('fallback-link').href = targetUrl;
+                }, 3000);
+
+                // Perform the redirect
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 500);
+
+            } catch (error) {
+                console.error('Redirect error:', error);
+                // Fallback to API introduction
+                setTimeout(() => {
+                    window.location.href = '/api-reference/introduction';
+                }, 1000);
+            }
+        }
+
+        // Start the redirect process
+        performRedirect();
+
+        // Also handle cases where this page is loaded directly with URL parameters
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from')) {
+                performRedirect();
+            }
+        });
+    </script>
+</body>
+</html>
