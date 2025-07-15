@@ -3,14 +3,14 @@ title: 'Authenticate'
 description: Generate an authentication token.
 ---
 
-[credentials]: developer/credentials
+[credentials]: /guides/developer/credentials
 [login]: https://dashboard.paxos.com
 [support]: https://support.liftdollar.com
 [oauth2]: https://oauth.net/code
-[convert]: developer/convert
-[make an API call in Sandbox]: developer/request
-[mint]: developer/mint
-[redeem]: developer/redeem
+[convert]: /guides/developer/convert
+[make an API call in Sandbox]: /guides/developer/request
+[mint]: /guides/developer/mint
+[redeem]: /guides/developer/redeem
 
 The APIs use industry standard OAuth2 for authentication. 
 Most users find success with one of the libraries on the [OAuth2 website][oauth2].
@@ -26,7 +26,7 @@ The following URLs can be used when using an off-the-shelf OAuth2 library:
 When authenticating, include the scopes (**Client Permissions**) necessary for the client to complete the intended actions.
 
 > Scopes for each endpoint are listed in the **Authorizations** section in the [API Reference docs](/api-reference).
-> The [Market Data](/api-reference/market-data) and most [Pricing](/api-reference/pricing) endpoints do not require authorization.
+> The [Market Data](/api-reference/endpoints/market-data) and most [Pricing](/api-reference/endpoints/pricing) endpoints do not require authorization.
 
 For example, the following scopes (space delimited) should provide sufficient permissions to [mint], [redeem], and [convert] Paxos-isssued stablecoins:
 
