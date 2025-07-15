@@ -796,11 +796,5 @@
     "gtm": {
       "tagId": ""
     }
-  },
-  "scripts": [
-    {
-      "src": "/api-redirect-interceptor.js",
-      "defer": true
-    }
-  ]
+  }
 }
