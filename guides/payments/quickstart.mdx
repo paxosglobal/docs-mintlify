@@ -11,27 +11,27 @@ import { PaymentsPhantomWallet } from '/snippets/payments-phantom-wallet.mdx';
 
 [credentials]: https://dashboard.sandbox.paxos.com/admin/api
 [help-desk]: https://support.paxos.com
-[pay-in-add-deposit-address]: payments/quickstart#pay-in-add-deposit-address
-[create-deposit-address]: /api-reference/deposit-addresses/create-deposit-address
-[supported-stablecoins]: payments/faq#supported-assets
-[supported-tokens]: payments/faq#supported-assets
-[configuring a stablecoin pay-in workflow]: payments/quickstart#payment-workflow
-[setting up a refund workflow]: payments/quickstart#refunds
-[list-transfers]: /api-reference/transfers/list-transfers
+[pay-in-add-deposit-address]: /guides/payments/quickstart#pay-in-add-deposit-address
+[create-deposit-address]: /api-reference/endpoints/deposit-addresses/create-deposit-address
+[supported-stablecoins]: /guides/payments/faq#supported-assets
+[supported-tokens]: /guides/payments/faq#supported-assets
+[configuring a stablecoin pay-in workflow]: /guides/payments/quickstart#payment-workflow
+[setting up a refund workflow]: /guides/payments/quickstart#refunds
+[list-transfers]: /api-reference/endpoints/transfers/list-transfers
 [contact-us]: https://support.paxos.com/hc/en-us
 [login]: https://dashboard.sandbox.paxos.com/
 [pay-in]: /payments/quickstart#payment-workflow
 [refund]: /payments/quickstart#refunds
 [onboard]: /payments/faq#seller-onboarding
-[Create Profile]: /api-reference/profiles/create-profile
+[Create Profile]: /api-reference/endpoints/profiles/create-profile
 [pay-in-monitor-reconcile]: /payments/quickstart/#pay-in-monitor-reconcile
-[fiat-transfer-guide]: developer/fiat-transfers
-[create a fiat account]: /api-reference/fiat-transfers/create-fiat-account
+[fiat-transfer-guide]: /guides/developer/fiat-transfers
+[create a fiat account]: /api-reference/endpoints/fiat-transfers/create-fiat-account
 [fund-refunds]: /payments/quickstart#refund-fund-account
-[Create Crypto Withdrawal]: /api-reference/crypto-withdrawals/create-crypto-withdrawal
-[Create Sandbox Deposit]: /api-reference/sandbox-deposits/create-sandbox-deposit
+[Create Crypto Withdrawal]: /api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal
+[Create Sandbox Deposit]: /api-reference/endpoints/sandbox-deposits/create-sandbox-deposit
 [Fiat Transfers]: /api-reference/fiat-transfers
-[List Profile Balances]: /api-reference/profiles/list-profile-balances
+[List Profile Balances]: /api-reference/endpoints/profiles/list-profile-balances
 [refund-monitor-reconcile]: /payments/quickstart#refund-monitor-reconcile
 
 This guides walks you through the steps to set up a basic payments workflow using the Paxos Platform, including [configuring a stablecoin pay-in workflow] and [setting up a refund workflow].
@@ -251,7 +251,7 @@ Set `balance_asset` to `USD` to automatically convert fiat to stablecoin and iss
 
 </Tip>
 
-For this guide, the refund is issued to the Buyer's original wallet address (`destination_address`) using the same stablecoin/network pair:
+For this guide, the refund is issued to the Buyer's original wallet address (`destination_address`) using the same /guides/stablecoin/network pair:
 
 - The `asset` is `PYUSD`, the `balance_asset` is `USD`, and the `crypto_network` is `SOLANA`.
 
