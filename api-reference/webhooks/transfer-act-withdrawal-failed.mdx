@@ -10,18 +10,7 @@ Triggered when a fiat withdrawal via DBS has FAILED or been cancelled.
 Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details.
 </Note>
 
-<Warning>
-Fiat withdrawal failures require immediate attention to refund user funds and investigate the cause.
-</Warning>
-
 ## Event Object Structure
 
 The Get Event API returns a [`transfer_status_change`](/api-reference/events/transfer-status-change-object) object with transfer status details.
 
-## Handling this webhook
-
-1. Extract the `id` from the webhook payload
-2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
-3. Update internal records with failed status
-4. Refund user account with withdrawal amount
-5. Notify user of withdrawal failure with appropriate guidance

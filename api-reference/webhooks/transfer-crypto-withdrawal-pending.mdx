@@ -14,10 +14,3 @@ Webhook payloads contain only event metadata. Use the [Get Event API](/api-refer
 
 The Get Event API returns a [`transfer_status_change`](/api-reference/events/transfer-status-change-object) object with transfer status details.
 
-## Handling this webhook
-
-1. Extract the `id` from the webhook payload
-2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
-3. Update internal records with pending status
-4. Notify user that withdrawal is being processed
-5. Monitor for completion or failure events

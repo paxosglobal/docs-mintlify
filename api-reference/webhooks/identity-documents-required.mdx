@@ -14,10 +14,3 @@ Webhook payloads contain only event metadata. Use the [Get Event API](/api-refer
 
 The Get Event API returns an [`identity_documents_required`](/api-reference/events/identity-documents-required-object) object with details about the required documents.
 
-## Handling this webhook
-
-1. Extract the `id` from the webhook payload
-2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
-3. Extract `identity_id` and `required_documents` from the event object
-4. Notify the user and guide them through document upload
-5. Submit documents via the Identity API

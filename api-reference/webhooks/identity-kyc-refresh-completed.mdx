@@ -14,10 +14,3 @@ Webhook payloads contain only event metadata. Use the [Get Event API](/api-refer
 
 The Get Event API returns an [`identity_kyc_refresh`](/api-reference/events/identity-kyc-refresh-object) object with KYC refresh details including the completion date.
 
-## Handling this webhook
-
-1. Extract the `id` from the webhook payload
-2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
-3. Update internal records to reflect completed KYC refresh
-4. Clear any pending KYC refresh notifications
-5. Notify the user of successful completion

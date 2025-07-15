@@ -14,10 +14,3 @@ Webhook payloads contain only event metadata. Use the [Get Event API](/api-refer
 
 The Get Event API returns an [`identity_summary_status_change`](/api-reference/events/identity-status-change-object) object with status transition details.
 
-## Handling this webhook
-
-1. Extract the `id` from the webhook payload
-2. Call [Get Event API](/api-reference/events/get-event) to retrieve event details
-3. Update internal records to reflect denied status
-4. Implement appropriate account restrictions
-5. Notify the user and provide support options
