@@ -1,0 +1,16 @@
+---
+title: "identity.kyc_refresh.completed"
+description: "Webhook triggered when a KYC refresh process is successfully completed"
+openapi: "webhooks-openapi.json webhook identity.kyc_refresh.completed"
+---
+
+Triggered when a KYC refresh process is successfully completed.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_kyc_refresh`](/api-reference/events/identity-kyc-refresh-object) object with KYC refresh details including the completion date.
+

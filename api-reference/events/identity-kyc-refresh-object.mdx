@@ -1,0 +1,37 @@
+---
+title: "identity_kyc_refresh"
+description: "Event object returned for KYC refresh events"
+---
+
+This object is returned by the [Get Event API](/api-reference/events/get-event) when the event type is `identity.kyc_refresh.started`, `identity.kyc_refresh.completed`, or `identity.kyc_refresh.expired`.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+Unique identifier for this event object
+</ResponseField>
+
+<ResponseField name="identity_id" type="string" required>
+Identifier for the affected identity
+</ResponseField>
+
+<ResponseField name="last_kyc_refresh_date" type="string">
+Date of the most recent completed KYC refresh
+</ResponseField>
+
+<ResponseField name="next_kyc_refresh_date" type="string">
+Scheduled date for the next KYC refresh
+</ResponseField>
+
+<ResponseExample>
+
+```json Example
+{
+  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+  "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
+  "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
+}
+```
+
+</ResponseExample>

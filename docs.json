@@ -356,6 +356,64 @@
             "openapi": {
               "source": "/api-reference/openapi.json"
             }
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              {
+                "group": "Identity",
+                "pages": [
+                  {
+                    "group": "Hooks",
+                    "pages": [
+                      "api-reference/webhooks/identity-documents-required",
+                      "api-reference/webhooks/identity-approved",
+                      "api-reference/webhooks/identity-denied",
+                      "api-reference/webhooks/identity-disabled",
+                      "api-reference/webhooks/identity-kyc-refresh-started",
+                      "api-reference/webhooks/identity-kyc-refresh-completed",
+                      "api-reference/webhooks/identity-kyc-refresh-expired"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "api-reference/events/identity-documents-required-object",
+                      "api-reference/events/identity-status-change-object",
+                      "api-reference/events/identity-kyc-refresh-object"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Transfer",
+                "pages": [
+                  {
+                    "group": "Hooks",
+                    "pages": [
+                      "api-reference/webhooks/transfer-crypto-deposit-pending",
+                      "api-reference/webhooks/transfer-crypto-deposit-completed",
+                      "api-reference/webhooks/transfer-crypto-deposit-failed",
+                      "api-reference/webhooks/transfer-crypto-withdrawal-pending",
+                      "api-reference/webhooks/transfer-crypto-withdrawal-completed",
+                      "api-reference/webhooks/transfer-crypto-withdrawal-failed",
+                      "api-reference/webhooks/transfer-act-deposit-pending",
+                      "api-reference/webhooks/transfer-act-deposit-completed",
+                      "api-reference/webhooks/transfer-act-deposit-failed",
+                      "api-reference/webhooks/transfer-act-withdrawal-pending",
+                      "api-reference/webhooks/transfer-act-withdrawal-completed",
+                      "api-reference/webhooks/transfer-act-withdrawal-failed"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "api-reference/events/transfer-status-change-object"
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
