@@ -13,14 +13,14 @@ rss: true
 **v2 API**: Add `created_at` field to `DepositAddress`. It is a field used to identify the time at which `DepositAddress` was created.
 </Update>
 
- <Update label="May 28, 2025" description="v2 API">
- **v2 API**: Add optional `memo` field to `CreateCryptoWithdrawalRequest`. It is an optional field used to identify a crypto withdrawal.
+<Update label="May 28, 2025" description="v2 API">
+**v2 API**: Add optional `memo` field to `CreateCryptoWithdrawalRequest`. It is an optional field used to identify a crypto withdrawal.
 </Update>
 
 <Update label="May 14, 2025" description="v2 API">
-  **v2 API**:  Add optional `from_account_id`, `from_identity_id`, `to_account_id`, `to_identity_id` parameters to CreatePaxosTransfer.
-  
-  **v2 API**: Add field `memo` to ListTransfers and GetTransfer response. It is an optional field used to identify a transfer. Currently supported for Fiat Transfers.
+**v2 API**:  Add optional `from_account_id`, `from_identity_id`, `to_account_id`, `to_identity_id` parameters to CreatePaxosTransfer.
+
+**v2 API**: Add field `memo` to ListTransfers and GetTransfer response. It is an optional field used to identify a transfer. Currently supported for Fiat Transfers.
 </Update>
 
 <Update label="May 2, 2025" description="v2 API">
@@ -35,7 +35,7 @@ rss: true
 </Update>
 
 <Update label="April 25, 2025" description="v2 API">
- **v2 API**: Add Rewards API Documentation.
+**v2 API**: Add Rewards API Documentation.
 </Update>
 
 <Update label="April 2, 2025" description="v2 API">
@@ -61,7 +61,6 @@ rss: true
 **Breaking Change**: The Paxos v1 API has reached its end of life. Paxos no longer supports the v1 API. The v2 API fully supports all current API use cases.
 </Update>
 
-
 <Update label="January 29, 2025" description="Reconciliation">
 
 **v2 API**: Add `include_deactivated` query parameter to the Get Profile endpoint to enable retrieving a deactivated Profile.
@@ -78,7 +77,6 @@ rss: true
 **v2 API**: Add the `nickname` query parameter on [List Profiles](https://docs.paxos.com/api/v2#tag/Profiles/operation/ListProfiles). Enables searching for Profiles by the given prefix. {/* https://itbitwiki.atlassian.net/browse/LGR-2223 */}
 
 </Update>
-
 
 <Update label="December 17, 2024" description="v2 API">
 **v2 API**: Add [Paxos Transfers](https://docs.paxos.com/api/v2#tag/Paxos-Transfers/operation/CreatePaxosTransfer) to enable asset movement between two Entities belonging to the same Organization or to a different Organization on the Paxos platform. {/* https://itbitwiki.atlassian.net/browse/UI-2668 */}
@@ -97,24 +95,23 @@ rss: true
 
 </Update>
 
-<Update label="October 31, 2024" description=" Docs, v2 API">
+<Update label="October 31, 2024" description="Docs, v2 API">
 **Docs, v2 API**: Enable USDG on Ethereum. Add [USDG docs](/stablecoin/usdg). {/* https://itbitwiki.atlassian.net/browse/DOCS-1107 */}
 
 **Docs, v2 API**: Enable support for CUBIX API and update docs for [Transfers](/api/v2#tag/Transfers) and [Fiat Transfers](/api/v2#tag/Fiat-Transfers). All users of the Customers Bank integrations must start using CUBIX by November 11, 2024. See the [CUBIX API migration guide](https://support.paxos.com/hc/en-us/articles/31700769434004). {/* https://itbitwiki.atlassian.net/browse/DOCS-1164 */}
 
 </Update>
 
-<Update label="October 16, 2024" description=" v2 API">
+<Update label="October 16, 2024" description="v2 API">
 
 **v2 API**: Add `DBS_ACT` to Fiat Network Instructions. {/* https://itbitwiki.atlassian.net/browse/MM-1705 */}
 
 </Update>
 
-<Update label="October 2, 2024" description=" v2 API">
+<Update label="October 2, 2024" description="v2 API">
 **v2 API**: Add optional `crypto_tx_hashes` filter to the List Transfers endpoint. {/* https://itbitwiki.atlassian.net/browse/MM-1685 */}
 **v2 API**: Add the following document types to Identity Documents APIs: `AML_DOCUMENTS`, `FUND_STRUCTURE_CHART`, `FUND_MANAGER_REGISTRATION`, `MEMORANDUM_OF_ASSOCIATION`, `ORGANIZATIONAL_CHART`, `FOUNDATION_BY_LAWS`, `APPOINTMENT_OF_GUARDIAN_EVIDENCE`, `LEGAL_DOMICILE_OF_BENEFICIAL_OWNERS`, `GOVERNING_BODY_MEMBER_NAMES`. {/* https://itbitwiki.atlassian.net/browse/RP-2536 */}
 </Update>
-
 
 <Update label="September 25, 2024" description="v2 API">
 
@@ -136,9 +133,8 @@ rss: true
 
 </Update> 
 
-
 <Update label="August 27, 2024" description="v2 API">
-  
+
 **Docs, v2 API**: Add new [Settlement APIs](/api/v2#tag/Settlement) which allow for atomic one-way or two-way transfers across Paxos accounts. Also added Settlement integration [guide](/settlements). {/* https://itbitwiki.atlassian.net/browse/LGR-1925 */}
 
 </Update>
@@ -149,11 +145,11 @@ rss: true
   
 </Update>
 
-<Update label="June 27, 2024" description="Docs, Payments“>
+<Update label="June 27, 2024" description="Docs, Payments">
 **Docs**: Add [stablecoin payments](/payments) documentation. {/* https://itbitwiki.atlassian.net/browse/DOCS-1007 */}
 </Update>
 
-<Update label="June 27, 2024" description="v2 API“>
+<Update label="June 27, 2024" description="v2 API">
 **v2 API**:  All `metadata` specified when creating a crypto deposit address is now inherited by deposit activities. {/* https://itbitwiki.atlassian.net/browse/MM-1462 */}
 </Update>
 
@@ -168,12 +164,12 @@ rss: true
 </Update>
 
 <Update label="May 14, 2024" description="v2 API">
-  
+
 **v2 API**: Add optional `is_merchant` boolean field to the Create Identity request body and the List Identities, Create Identity, Get Identity and Update Identity responses. {/* https://itbitwiki.atlassian.net/browse/RP-1590 */}
 
 </Update>
 
-<Update label="May 4, 2024" description="Breaking Change, FIX“>
+<Update label="May 4, 2024" description="Breaking Change, FIX">
 
 **Breaking Change**: Update the FIX infrastructure to improve performance, reliability and security for FIX connections. This change enables multiple FIX connections for a single account and improves TLS certificate management, among other changes. All existing FIX users are required to migrate to the new infrastructure no later than **May 4, 2024**. ~~See the migration guide or~~ Contact [Support](https://support.paxos.com/hc/en-us) for details. {/* https://itbitwiki.atlassian.net/browse/DOCS-830 */}
 
@@ -195,11 +191,11 @@ rss: true
 **Docs, v2 API**: Add Fiat Transfers integration guide to [Paxos Documentation](/) and update reference docs. {/* https://itbitwiki.atlassian.net/browse/DOCS-634 */}
 </Update>
 
- <Update label="January 26, 2024" description="v2 API">
+<Update label="January 26, 2024" description="v2 API">
 **v2 API**: Add new Fiat Transfer APIs which allow for automatic funding and withdrawal of fiat in a Paxos account. {/* https://itbitwiki.atlassian.net/browse/TFR-2849 */}
 </Update>
 
- <Update label="January 24, 2024" description=“Docs, v2 API">
+<Update label="January 24, 2024" description="Docs, v2 API">
 
 **Docs, v2 API**: Publish Production version of Fiat Transfers reference documentation. {/* https://itbitwiki.atlassian.net/browse/TFR-2813 */}
 
@@ -222,11 +218,11 @@ rss: true
 
 </Update>
 
-<Update label="January 11, 2024" description="FIX”>
+<Update label="January 11, 2024" description="FIX">
 
 **FIX**: Add `SelfMatchPreventionID` (tag 2362) to prevent matching against an opposite side order submitted by the same Crypto Brokerage customer. If this tag is not submitted, an order that matches against another order submitted by the same customer will cancel the original resting order. {/* https://itbitwiki.atlassian.net/browse/CORX-539 */}
 
- </Update>
+</Update>
 
 <Update label="December 15, 2023" description="FIX, Sandbox, v2 API">
 
@@ -260,15 +256,16 @@ rss: true
 
   - The report now shows assets as long as there is one transaction that happened in history, even if no transactions in the asset were reported during the reporting period. Previously, assets with balances would show up in the report only if there was a transaction in the reporting period or if the asset was pre-configured to show up in the report regardless of transaction history.
 
+</Update>
+
 <Update label="October 26, 2023" description="Conversion, Docs, HRQ, Stablecoin">
 
 **Docs**: Content updates and fixes.
 
-    - Clarify **HRQ Quickstart** TIP text to state a single Quote Execution default maximum size is $50K USD. Previously the TIP stated $100K USD. {/* https://itbitwiki.atlassian.net/browse/DOCS-717 */}
-    - Update **Stablecoin Conversion** > **Assets** to reflect that a conversion uses the lowest maximum precision. {/* https://itbitwiki.atlassian.net/browse/DOCS-856 */}
+  - Clarify **HRQ Quickstart** TIP text to state a single Quote Execution default maximum size is $50K USD. Previously the TIP stated $100K USD. {/* https://itbitwiki.atlassian.net/browse/DOCS-717 */}
+  - Update **Stablecoin Conversion** > **Assets** to reflect that a conversion uses the lowest maximum precision. {/* https://itbitwiki.atlassian.net/browse/DOCS-856 */}
 
 </Update>
-
 
 <Update label="October 25, 2023" description="Conversion, Docs, Stablecoin, v2 API">
 
@@ -284,7 +281,7 @@ rss: true
 
 </Update>
 
-<Update label="August 22, 2023" description="Docs”>
+<Update label="August 22, 2023" description="Docs">
 [docs-home]: /
 
 - **Docs**: Add search functionality to [Paxos Documentation][docs-home]. {/* https://itbitwiki.atlassian.net/browse/AT-475 https://itbitwiki.atlassian.net/browse/DOCS-780 */}
@@ -304,7 +301,7 @@ rss: true
 
 </Update>
 
-<Update label="August 10, 2023" description="v2 API, Stablecoin“>
+<Update label="August 10, 2023" description="v2 API, Stablecoin">
 
 **v2 API**: Add `assets=PYUSD` query parameter to List Profile Balances. Add `asset=PYUSD` path parameter to Get Profile Balances. Add `"asset": "PYUSD"` to Create Sandbox Deposit request body schema. Add `PYUSD` to properties `base_asset`, `quote_asset`, `commission_asset` and `rebate_asset` for the List Executions, List Quotes, List Quote Executions, Create Quote Execution and Get Quote Execution endpoints. About [PYUSD][pyusd]. {/* https://itbitwiki.atlassian.net/browse/DOCS-352 | https://itbitwiki.atlassian.net/browse/DOCS-677 */}
 
@@ -313,6 +310,8 @@ rss: true
 <Update label="July 21, 2023" description="Docs, HRQ">
 
 **Docs**: Add Held Rate Quotes Quickstart guide, Ledgering Strategy and Orders & Quotes FAQ best practice guides. {/* https://itbitwiki.atlassian.net/browse/DOCS-613 */}
+
+</Update>
 
 <Update label="July 11, 2023" description="v2 API, Docs, HRQ">
 
@@ -329,9 +328,9 @@ rss: true
 <Update label="June 13, 2023" description="v1 API">
 
 **v1 API**: `CreateBankAccount` endpoint and `CustomerBankAccount` schema have a new optional field: `IntrabankWithdrawalInstructions`. {/* https://itbitwiki.atlassian.net/browse/TFR-1301 https://github.com/paxosglobal/pax/pull/17642 */}
-    - This generalizes the existing intrabank withdrawal instructions into a single field. Clients may specify the new `IntrabankWithdrawalInstructions` (which consist of `beneficiary_name`, `account_number`, and `CustomerBankAccount.Type`) as an alternative to existing network-specific intrabank details (`account_number` can be a wallet address for networks like CBIT).
-    - `CustomerBankAccount` will fill in `IntrabankWithdrawalInstructions` IN ADDITION TO the existing intrabank withdrawal instructions in responses. Future intrabank networks will only be supported via `IntrabankWithdrawalInstructions` (as opposed to their own field). The Type field on `IntrabankWithdrawalInstructions` will differentiate the network types.
-    - Existing network-specific instructions are deprecated, but will continue to work.
+  - This generalizes the existing intrabank withdrawal instructions into a single field. Clients may specify the new `IntrabankWithdrawalInstructions` (which consist of `beneficiary_name`, `account_number`, and `CustomerBankAccount.Type`) as an alternative to existing network-specific intrabank details (`account_number` can be a wallet address for networks like CBIT).
+  - `CustomerBankAccount` will fill in `IntrabankWithdrawalInstructions` IN ADDITION TO the existing intrabank withdrawal instructions in responses. Future intrabank networks will only be supported via `IntrabankWithdrawalInstructions` (as opposed to their own field). The Type field on `IntrabankWithdrawalInstructions` will differentiate the network types.
+  - Existing network-specific instructions are deprecated, but will continue to work.
 
 </Update>
 
@@ -369,23 +368,23 @@ rss: true
 
 <Update label="April 21, 2023" description="v2 API">
 
- **v2 API**: Add parameter `recipient_profile_id` to Create Quote Execution. {/* https://itbitwiki.atlassian.net/browse/ALGOS-733 */}
+**v2 API**: Add parameter `recipient_profile_id` to Create Quote Execution. {/* https://itbitwiki.atlassian.net/browse/ALGOS-733 */}
 
 </Update>
 
-<Update label="April 18, 2023" description="Docs”>
+<Update label="April 18, 2023" description="Docs">
 
 **Docs**: Add new parameter precisions to Orders, Precision and Rounding best practice guide. {/* https://itbitwiki.atlassian.net/browse/DOCS-484 */}
 
 </Update>
 
-<Update label="April 14, 2023" description="Docs”>
+<Update label="April 14, 2023" description="Docs">
 
 **Docs**: Add crypto brokerage and stablecoin and overview pages. Add Crypto Brokerage Orders, Precision and Rounding best practice guide. {/* https://itbitwiki.atlassian.net/browse/DOCS-438 */}
 
 </Update>
 
-<Update label="April 12, 2023" description=“v2 API”>
+<Update label="April 12, 2023" description="v2 API">
 
 **v2 API**: Add value `PROVE` to parameter `person_details.passthrough_verifier_type` on Create Identity and Update Identity request and response for the v2 REST API. Add value `PROVE` to parameter `person_details.passthrough_verifier_type` on List Identities and Get Identity response. {/* https://itbitwiki.atlassian.net/browse/EUL-286 */}
 
@@ -450,7 +449,7 @@ Enable statuses `TIN_VERIFICATION_VALID`, `TIN_VERIFICATION_ERROR` and `TIN_VERI
 
 <Update label="February 7, 2023" description="v2 API">
 
-*Sandbox**: Return a `500` error only when all requested `markets` fail to be retrieved for the v2 REST API List Prices service. Any single market that failed to be retrieved is excluded from the response. ~~ {/* https://itbitwiki.atlassian.net/browse/ALGOS-552 */}
+**Sandbox**: Return a `500` error only when all requested `markets` fail to be retrieved for the v2 REST API List Prices service. Any single market that failed to be retrieved is excluded from the response. ~~ {/* https://itbitwiki.atlassian.net/browse/ALGOS-552 */}
 
 Improve Request samples dropdown UI when multiple examples exist in the v2 REST API Reference Docs. {/* https://itbitwiki.atlassian.net/browse/UIPLAT-151 */}
 
@@ -458,7 +457,7 @@ Improve Request samples dropdown UI when multiple examples exist in the v2 REST 
 
 <Update label="January 20, 2023" description="v2 API">
 
-Add `metadata[“origin”] = “v1”` to Crypto Withdrawal transfers created via the CreateCryptoWithdrawal v1 REST API endpoint. This allows Crypto Withdrawals created via the v1 REST API to be distinguished from those created using the v2 REST API.  {/* TFR-837 */}
+Add `metadata["origin"] = "v1"` to Crypto Withdrawal transfers created via the CreateCryptoWithdrawal v1 REST API endpoint. This allows Crypto Withdrawals created via the v1 REST API to be distinguished from those created using the v2 REST API.  {/* TFR-837 */}
 
 </Update>
 
