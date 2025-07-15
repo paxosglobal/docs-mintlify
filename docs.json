@@ -361,6 +361,27 @@
             }
           },
           {
+            "group": "Websockets",
+            "pages": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "api-reference/websocket"
+                ]
+              },
+              {
+                "group": "Channels",
+                "pages": [
+                  "api-reference/websockets/execution-data",
+                  "api-reference/websockets/execution-data-market",
+                  "api-reference/websockets/market-data",
+                  "api-reference/websockets/market-data-market",
+                  "api-reference/websockets/stablecoin-market-data"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Webhooks",
             "pages": [
               {

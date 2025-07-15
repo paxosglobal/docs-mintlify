@@ -1,0 +1,41 @@
+---
+title: "Market Data (Single Market)"
+description: "Real-time order book data for a specific market"
+---
+
+## Channel
+
+**Endpoint:** `/marketdata/{market}`
+
+**Servers:**
+- Production: `wss://ws.paxos.com/marketdata/{market}`
+- Sandbox: `wss://ws.sandbox.paxos.com/marketdata/{market}`
+
+## Overview
+
+The single-market market data feed provides real-time order book updates filtered for a specific market. This allows you to focus on order book changes for markets you're interested in, such as BTCUSD.
+
+## Path Parameters
+
+- `market`: The market identifier to filter for (e.g., "BTCUSD", "ETHUSD")
+
+## Message Types
+
+### SNAPSHOT Messages
+- **Initial Response**: Shows the complete order book state for the specified market
+- **Bids**: Prices in descending order with amounts
+- **Asks**: Prices in ascending order with amounts
+- **final_snapshot**: Always `true` in the initial snapshot
+
+### UPDATE Messages
+- **Real-time Updates**: Show executed trades and order book changes for the specified market
+- **Processing Rules**:
+  - When `amount=0`: Remove the price level from the order book
+  - When `amount>0`: Add or update the price level with the new amount
+  - Use `side` field to determine whether to update bids (`BUY`) or asks (`SELL`)
+
+## Benefits of Single Market Feed
+
+- **Reduced Bandwidth**: Only receive updates for the market you care about
+- **Simpler Processing**: No need to filter by market field
+- **Lower Latency**: Less data to process means faster updates
