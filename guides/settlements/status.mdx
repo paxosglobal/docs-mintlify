@@ -55,7 +55,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions?status
 
 Based on the request parameters, the response contains the two most recent open transactions.
 
-```json
+```json highlight={30,61,66}
 {
     "items": [
         {
@@ -85,7 +85,6 @@ Based on the request parameters, the response contains the two most recent open 
                     "amount": "40000"
                 }
             ],
-            {/* highlight-next-line */}
             "status": "PENDING",
             "created_at": "YYYY-MM-DDT00:00:00Z",
             "updated_at": "YYYY-MM-DDT00:00:00Z"
@@ -117,21 +116,18 @@ Based on the request parameters, the response contains the two most recent open 
                     "amount": "40000"
                 }
             ],
-            //highlight-next-line
             "status": "AFFIRMED",
             "created_at": "YYYY-MM-DDT00:00:00Z",
             "updated_at": "YYYY-MM-DDT00:00:00Z"
         }
     ],
-    //highlight-next-line
     "next_page_cursor": "{page_cursor_value}"
 }
 ```
 
 To view more items, add the `page_cursor` query parameter to the request.
 
-```shell
-{/* highlight-next-line */}
+```shell highlight={1}
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions?limit=2&page_cursor={page_cursor_value}' \
 --header 'Authorization: Bearer {access_token}'
 ```

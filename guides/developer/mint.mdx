@@ -37,9 +37,8 @@ Use [Create Sandbox Deposit][create-sandbox-deposit] to add USD to the Profile (
 See the [First API Request] guide for help retrieving Profile IDs.
 You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
 
-```shell
+```shell highlight={2}
 curl --request POST \
-{/* highlight-next-line */}
 --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
@@ -54,8 +53,7 @@ See the [convert stablecoin] guide for details on using [Create Stablecoin Conve
 Once the conversion is [`SETTLED`], use [List Profile Balances] to check updated balances.
 To check balances of the assets you are interested in, include the `assets` query parameter in the request.
 
-```shell
-{/* highlight-next-line */}
+```shell highlight={1}
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/balances?assets=USD&assets=PYUSD&assets=USDG' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer {access_token}'
@@ -126,7 +124,7 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
 
 ### USDG on Ethereum
 
-```json
+```json highlight={13}
 {
     "id": "7c223577-832b-4235-a77e-ebf36dfe9860",
     "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
@@ -139,7 +137,6 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
     "balance_asset": "USD",
     "direction": "DEBIT",
     "type": "CRYPTO_WITHDRAWAL",
-    {/* highlight-next-line */}
     "status": "PENDING",
     ...
     "destination_address": "0x9acb61E5fcE9B5BdA7B44635d86be19d2790D9a9",
@@ -149,7 +146,7 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
 ```
 ### PYUSD on Solana
 
-```json
+```json highlight={13}
 {
     "id": "e655c587-e057-4cf2-88d9-7e19ae13f2ee",
     "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
@@ -162,7 +159,6 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
     "balance_asset": "USD",
     "direction": "DEBIT",
     "type": "CRYPTO_WITHDRAWAL",
-    {/* highlight-next-line */}
     "status": "PENDING",
     ...
     "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",
@@ -181,7 +177,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?type=CRYPTO
 
 By default, the response includes transactions from newest to oldest. 
 
-```json
+```json highlight={15,33}
 {
     "items": [
                 {
@@ -196,7 +192,6 @@ By default, the response includes transactions from newest to oldest.
             "balance_asset": "USD",
             "direction": "DEBIT",
             "type": "CRYPTO_WITHDRAWAL",
-            {/* highlight-next-line */}
             "status": "COMPLETED",
             ...
             "destination_address": "0x9acb61E5fcE9B5BdA7B44635d86be19d2790D9a9",
@@ -215,7 +210,6 @@ By default, the response includes transactions from newest to oldest.
             "balance_asset": "USD",
             "direction": "DEBIT",
             "type": "CRYPTO_WITHDRAWAL",
-            {/* highlight-next-line */}
             "status": "COMPLETED",
             ...
             "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",

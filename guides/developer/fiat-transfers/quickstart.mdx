@@ -37,23 +37,20 @@ Both the [funding](#funding) and [withdrawal](#withdrawal) flows require the sam
 
 Add the `transfer:read_fiat_account`, `transfer:write_fiat_account`, `transfer:read_fiat_deposit_instructions`, `transfer:write_fiat_deposit_instructions`, `transfer:write_fiat_withdrawal`, `transfer:write_sandbox_fiat_deposit`, `transfer:read_transfer` and `funding:read_profile` scopes to your [Sandbox Account][sandbox-account] 
 under the [API Management][api-management] setting and then authenticate in Sandbox using the scopes.
-```shell
+```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
 --form client_id={paxos_client_id} \
 --form client_secret={paxos_secret} \
-{/* highlight-next-line */}
 --form scope='transfer:read_fiat_account transfer:write_fiat_account transfer:read_fiat_deposit_instructions transfer:write_fiat_deposit_instructions transfer:write_fiat_withdrawal transfer:write_sandbox_fiat_deposit transfer:read_transfer funding:read_profile'
 ```
 Confirm the response includes requisite scopes and save the `access_token` to use in the request authorization header 
 throughout this guide.
 
-```json
+```json highlight={3-4}
 {
  "access_token": "{access_token}",
- {/* highlight-next-line */}
  "expires_in": 3599, // Seconds (59 Minutes and 59 Seconds)
- {/* highlight-next-line */}
  "scope": "transfer:read_fiat_account transfer:write_fiat_account transfer:read_fiat_deposit_instructions transfer:write_fiat_deposit_instructions transfer:write_fiat_withdrawal transfer:write_sandbox_fiat_deposit transfer:read_transfer funding:read_profile",
  "token_type": "bearer"
 }
@@ -90,15 +87,13 @@ Retrieve the `profile_id` and `identity_id` (optioinal) from your records. Use y
 
 Create deposit instructions for international wires. Include the following body parameters in the request:
 
-```shell
+```shell highlight={5,7}
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-deposit-instructions' \
 --request 'POST' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-  //highlight-next-line
   "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
   "fiat_network": "WIRE",
-  //highlight-next-line
   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
   "ref_id": "idempotence_id",
   "routing_number_type": "SWIFT",
@@ -110,7 +105,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-deposit-instruct
 
 Upon successful request, the acknowledgment response confirms your request has been received.
 
-```json
+```json highlight={8}
 {
   "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
   "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
@@ -118,7 +113,6 @@ Upon successful request, the acknowledgment response confirms your request has b
   "created_at": "2024-01-28T04:23:11.738801Z",
   "ref_id": "idempotence_id",
   "status": "VALID",
-  {/* highlight-next-line */}
   "memo_id": "9CFXQSCMSPLFHXLZ",
   "fiat_network_instructions": {
     "wire": {
@@ -445,9 +439,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-accounts' \
 
 Upon successful request, the acknowledgment response confirms your request has been received.
 
-```json
+```json highlight={2,34}
 {
-  {/* highlight-next-line */}
   "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
   "ref_id": "idempotence_id",
   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
@@ -480,7 +473,6 @@ Upon successful request, the acknowledgment response confirms your request has b
       }
     }
   },
-  {/* highlight-next-line */}
   "status": "PENDING",
   "metadata": {
     "test_ref_id": "47aa7538-e2d2-47b3-8600-44a7965dd357",
@@ -555,9 +547,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-accounts' \
 
 Upon successful request, the acknowledgment response confirms your request has been received.
 
-```json
+```json highlight={2,48}
 {
-    {/* highlight-next-line */}  
     "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
     "ref_id": "idempotence_id",
     "identity_id": "8f22e593-5f51-40cc-8bb0-5245d051c1da",
@@ -604,7 +595,6 @@ Upon successful request, the acknowledgment response confirms your request has b
             }
         }
     },
-    {/* highlight-next-line */}
     "status": "PENDING",
     "metadata": {
         "key_1": "1",
@@ -652,7 +642,7 @@ curl --request 'GET' --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-
 
 Response: 
 
-```json
+```json highlight={37}
 {   
    "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
    "created_at": "2024-01-28T22:14:25.731494Z",
@@ -689,7 +679,6 @@ Response:
    "id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
    "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
    "ref_id": "idempotence_id",
-    {/* highlight-next-line */}
    "status": "APPROVED",
    "metadata": {
      "test_ref_id": "47aa7538-e2d2-47b3-8600-44a7965dd357",  
@@ -705,7 +694,7 @@ Initiate a fiat withdrawal from Paxos into your external bank account using [Cre
 ### Corporate Funding
 
 Initiate a CUBIX withdrawal. Specify the `fiat_account_id` of the Fiat Account from the [Create Fiat Account][create-fiat-account] response.
-```shell
+```shell highlight={8}
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
 --request 'POST' \
 --header 'Authorization: Bearer {access_token}' \
@@ -713,7 +702,6 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
   "ref_id": "idempotence_id",
   "amount": "120",
   "asset": "USD",
-  {/* highlight-next-line */}
   "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
   "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68", // Optional.
@@ -753,7 +741,7 @@ Response:
 
 Initiate an international wire withdrawal (SWIFT). Specify the `fiat_account_id` from the [Create Fiat Account][create-fiat-account] response.
 
-```shell
+```shell highlight={8}
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
 --request 'POST' \
 --header 'Authorization: Bearer {access_token}' \
@@ -761,7 +749,6 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
   "ref_id": "idempotence_id",
   "amount": "120",
   "asset": "USD",
-  {/* highlight-next-line */}
   "fiat_account_id": "cc1b6606-a8a3-4a8f-8b9b-5456d96448bf",
   "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
   "identity_id": "8a398cb6-4e3b-4868-9cea-a1c567856e68",
@@ -816,7 +803,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers/11a6f6e9-42
 ```
 
 Response:
-```json
+```json highlight={18}
 {  "account_id": "91f91384-30d4-46c2-9118-7f3cec676a2c",
    "amount": "100",
    "asset": "USD",
@@ -834,7 +821,6 @@ Response:
    },
    "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
    "ref_id": "idempotence_id",
-   {/* highlight-next-line */}
    "status": "COMPLETE",
    "total": "120",
    "type": "WIRE_WITHDRAWAL",
