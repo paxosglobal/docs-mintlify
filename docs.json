@@ -71,9 +71,6 @@
     }
   ],
   "navigation": {
-    "pages": [
-      "changelog/updates"
-    ],
     "tabs": [
       {
         "tab": "Welcome",
