@@ -1,7 +1,0 @@
----
-title: March 2, 2023
-tags: [v2 API, v1 API]
----
-
-- **v1 API**: Disable ~~wire~~ deposit instructions for Silvergate. Both `GetProfileDepositInstructions` and `GetCryptoAddressAutoconversionInstructions` ~~now return `NULL`~~ no longer return SEN Deposit Instructions nor Silvergate wire deposit instructions. These endpoints still return SigNet Deposit Instructions and memo IDs. {/* https://itbitwiki.atlassian.net/browse/TFR-982 */}
-- **v1 API**: Deprecate `CreateSenWithdrawal`. The endpoint now returns `403 error - Forbidden`. {/* https://itbitwiki.atlassian.net/browse/TFR-982 */}

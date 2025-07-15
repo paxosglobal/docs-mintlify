@@ -1,6 +1,0 @@
----
-title: June 23, 2023
-tags: [v1 API]
----
-
-- **v1 API**: Add new schema `IntrabankDepositInstructions` and new field `PaxosBankAccount` to the `GetProfileDepositInstructions` endpoint. `IntrabankDepositInstructions` includes fields `memo_id`, `beneficiary_name` `account_number`, and `type`. `PaxosBankAccount:intrabank` is a generic `IntrabankDepositInstructions` that populates whenever any of the other `intrabank` type fields (for example, `cbit`) are populated (the respective existing fields will also be populated and supported). Future `intrabank` networks will be contained in `intrabank` only. {/* https://itbitwiki.atlassian.net/browse/TFR-1300 https://github.com/paxosglobal/pax/pull/17992 */}
