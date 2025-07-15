@@ -68,6 +68,14 @@
     {
       "source": "/stablecoin/:slug*",
       "destination": "/guides/stablecoin/:slug*"
+    },
+    {
+      "source": "/api/v2/:slug*",
+      "destination": "/api-reference/endpoints/:slug*"
+    },
+    {
+      "source": "/api/v2",
+      "destination": "/api-redirect.html"
     }
   ],
   "navigation": {
@@ -634,12 +642,27 @@
             "group": "Websockets",
             "pages": [
               "api-reference/websockets/overview",
-              "api-reference/websockets/execution-data",
-              "api-reference/websockets/execution-data-market",
-              "api-reference/websockets/market-data",
-              "api-reference/websockets/market-data-market",
-              "api-reference/websockets/market-data-stablecoin",
-              "api-reference/websockets/market-data-stablecoin-market"
+              {
+                "group": "Execution Data",
+                "pages": [
+                  "api-reference/websockets/execution-data",
+                  "api-reference/websockets/execution-data-market"
+                ]
+              },
+              {
+                "group": "Market Data",
+                "pages": [
+                  "api-reference/websockets/market-data",
+                  "api-reference/websockets/market-data-market"
+                ]
+              },
+              {
+                "group": "Stablecoin Data",
+                "pages": [
+                  "api-reference/websockets/market-data-stablecoin",
+                  "api-reference/websockets/market-data-stablecoin-market"
+                ]
+              }
             ]
           },
           {

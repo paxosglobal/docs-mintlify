@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e9ecef;
+            border-top: 3px solid #16A34A;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            text-align: center;
+            color: #6c757d;
+        }
+        .fallback {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            max-width: 400px;
+        }
+        .fallback a {
+            color: #16A34A;
+            text-decoration: none;
+        }
+        .fallback a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="spinner"></div>
+    <div class="message">
+        <h2>Redirecting to new documentation...</h2>
+        <p>Please wait while we redirect you to the updated API documentation.</p>
+    </div>
+    <div class="fallback" id="fallback" style="display: none;">
+        <h3>Manual Redirect</h3>
+        <p>If you're not automatically redirected, please visit:</p>
+        <a href="/api-reference/introduction" id="fallback-link">API Reference Documentation</a>
+    </div>
+
+    <script>
+        // Transform tag names: convert to lowercase
+        function transformTag(tag) {
+            return tag.toLowerCase();
+        }
+
+        // Transform operation names: convert PascalCase to kebab-case
+        function transformOperation(operation) {
+            // Handle special cases that don't follow the pattern
+            const specialCases = {
+                'GetIdentityAccounts': 'get-identityaccounts'
+            };
+            
+            if (specialCases[operation]) {
+                return specialCases[operation];
+            }
+            
+            return operation
+                // Insert a hyphen before any uppercase letter that follows a lowercase letter or number
+                .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+                // Convert to lowercase
+                .toLowerCase();
+        }
+
+        function parseApiUrl() {
+            // Get the fragment from the current URL
+            let hash = window.location.hash.replace('#', '');
+            
+            console.log('Current URL:', window.location.href);
+            console.log('Fragment:', hash);
+
+            // If no fragment, check if we came from a referrer with fragment info
+            if (!hash) {
+                const urlParams = new URLSearchParams(window.location.search);
+                hash = urlParams.get('fragment') || '';
+            }
+
+            console.log('Processing fragment:', hash);
+
+            // Handle different patterns:
+            // 1. tag/Fiat-Transfers/operation/ListFiatAccounts
+            // 2. tag/Fiat-Transfers
+            // 3. operation/ListFiatAccounts (fallback)
+            
+            if (!hash || !hash.includes('tag/')) {
+                console.log('No valid tag found, redirecting to introduction');
+                return '/api-reference/introduction';
+            }
+
+            // Extract tag and operation
+            const tagMatch = hash.match(/tag\/([^\/]+)/);
+            const operationMatch = hash.match(/operation\/([^\/\?&#]+)/);
+            
+            if (!tagMatch) {
+                console.log('No tag match found');
+                return '/api-reference/introduction';
+            }
+
+            const tag = tagMatch[1];
+            const operation = operationMatch ? operationMatch[1] : null;
+            
+            console.log('Extracted tag:', tag, 'operation:', operation);
+
+            // Transform tag to endpoint path
+            const endpointPath = transformTag(tag);
+            console.log('Transformed tag:', tag, '→', endpointPath);
+
+            let targetUrl = `/api-reference/endpoints/${endpointPath}`;
+
+            // If we have an operation, transform it to specific endpoint
+            if (operation) {
+                const transformedOperation = transformOperation(operation);
+                targetUrl += `/${transformedOperation}`;
+                console.log('Transformed operation:', operation, '→', transformedOperation);
+            }
+
+            console.log('Final target URL:', targetUrl);
+            return targetUrl;
+        }
+
+        function performRedirect() {
+            try {
+                const targetUrl = parseApiUrl();
+                
+                // Show fallback after 3 seconds if redirect doesn't work
+                setTimeout(() => {
+                    document.getElementById('fallback').style.display = 'block';
+                    document.getElementById('fallback-link').href = targetUrl;
+                }, 3000);
+
+                // Perform the redirect
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 500);
+
+            } catch (error) {
+                console.error('Redirect error:', error);
+                // Fallback to API introduction
+                setTimeout(() => {
+                    window.location.href = '/api-reference/introduction';
+                }, 1000);
+            }
+        }
+
+        // Start the redirect process
+        performRedirect();
+
+        // Also handle cases where this page is loaded directly with URL parameters
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from')) {
+                performRedirect();
+            }
+        });
+
+        // Make the functions globally available for testing
+        window.parseApiFragment = parseApiUrl;
+        window.transformTag = transformTag;
+        window.transformOperation = transformOperation;
+    </script>
+</body>
+</html>
