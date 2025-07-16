@@ -112,8 +112,8 @@ title: "Redirecting..."
         }
 
         // Extract tag and operation
-        const tagMatch = hash.match(/tag\\/([^\\/]+)/);
-        const operationMatch = hash.match(/operation\\/([^\\/\\?&#]+)/);
+        const tagMatch = hash.match(/tag\/([^\/]+)/);
+        const operationMatch = hash.match(/operation\/([^\/\?&#]+)/);
         
         if (!tagMatch) {
           console.log('No tag match found');
