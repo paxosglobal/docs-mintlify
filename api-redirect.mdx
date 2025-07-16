@@ -157,22 +157,31 @@ title: "Redirecting..."
       function performRedirect() {
         try {
           const targetUrl = parseApiUrl();
+          console.log('Performing redirect to:', targetUrl);
           
           // Show fallback after 3 seconds if redirect doesn't work
           setTimeout(() => {
-            document.getElementById('fallback').style.display = 'block';
-            document.getElementById('fallback-link').href = targetUrl;
+            const fallbackEl = document.getElementById('fallback');
+            if (fallbackEl) {
+              fallbackEl.style.display = 'block';
+              const linkEl = document.getElementById('fallback-link');
+              if (linkEl) {
+                linkEl.href = targetUrl;
+              }
+            }
           }, 3000);
 
-          // Perform the redirect
+          // Perform the redirect immediately (reduce delay)
           setTimeout(() => {
+            console.log('Redirecting to:', targetUrl);
             window.location.href = targetUrl;
-          }, 500);
+          }, 200);
 
         } catch (error) {
           console.error('Redirect error:', error);
           // Fallback to API introduction
           setTimeout(() => {
+            console.log('Fallback redirect to introduction');
             window.location.href = '/api-reference/introduction';
           }, 1000);
         }
