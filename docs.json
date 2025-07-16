@@ -71,11 +71,11 @@
       "destination": "/guides/stablecoin/:slug*"
     },
     {
-      "source": "/api/v2*",
+      "source": "/legacy-api*",
       "destination": "/api-redirect"
     },
     {
-      "source": "/old-api-redirect-test",
+      "source": "/v2-docs*",
       "destination": "/api-redirect"
     },
     {
