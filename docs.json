@@ -72,7 +72,7 @@
     },
     {
       "source": "/api/v2",
-      "destination": "/api-redirect"
+      "destination": "/test-simple"
     },
     {
       "source": "/api/v2/:slug*",
