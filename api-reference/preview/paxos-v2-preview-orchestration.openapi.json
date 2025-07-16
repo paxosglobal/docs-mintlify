@@ -1,0 +1,1668 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos Orchestration API",
+    "version": "v2-preview"
+  },
+  "security": [
+    {
+      "OAuth2": ["orchestration:read_orchestration", "orchestration:write_orchestration", "orchestration:read_rule", "orchestration:write_rule"]
+    }
+  ],
+  "paths": {
+    "/v2/orchestration/orchestration-rules": {
+      "get": {
+        "summary": "List Orchestration Rules",
+        "description": "Lists orchestration rules according to the given filters.\nResults can be paginated using the next_page_cursor.\nThe maximum page size is 100.",
+        "operationId": "ListOrchestrationRules",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOrchestrationRulesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "profile_ids",
+            "description": "Optionally filter by the target profiles. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "ref_ids",
+            "description": "Optionally filter by the target ref_ids.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "ids",
+            "description": "Optionally filter by orchestration_rule_ids.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "source_crypto_deposit_address_ids",
+            "description": "Optionally filter by the ID of the rule's source crypto deposit address.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "source_fiat_deposit_instruction_ids",
+            "description": "Optionally filter by the ID of the rule's source fiat deposit instruction.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "source_assets",
+            "description": "Optionally filter by source assets",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "destination_assets",
+            "description": "Optionally filter by destination assets",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "statuses",
+            "description": "Optionally filter by statuses.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "created_at.lt",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.lte",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.eq",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gte",
+            "description": "Include timestamps greater than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gt",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 1000.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order for the results. Defaults to DESC by insertion time into the Paxos system.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["DESC", "ASC"]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional: Cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Orchestration Rules"],
+        "security": [
+          {
+            "OAuth2": ["orchestration:read_rule"]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Orchestration Rule",
+        "description": "Creates an orchestration rule that will be triggered by deposits to a source resource.\n\nInvocations of orchestration rules will create Orchestrations, which can be queried using\nListOrchestrations. Orchestration rules can be listed using ListOrchestrationRules.",
+        "operationId": "CreateOrchestrationRule",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrchestrationRuleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Orchestration Rules"],
+        "security": [
+          {
+            "OAuth2": ["orchestration:write_rule"]
+          }
+        ]
+      }
+    },
+    "/v2/orchestration/orchestrations": {
+      "get": {
+        "summary": "List Orchestrations",
+        "description": "List all orchestrations, optionally filtering and paging the results.\n\nBy default, orchestrations are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 orchestrations which\nwere created.\n\nThe paginated results default to display up to 100 orchestrations, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nWhen filtering by profile IDs using the `profile_ids` parameter, there is a limit of 100 profiles\nthat can be specified in a single request.\n\nOrchestrations are provided for various operations including:\n- Deposits to a paxos-platform crypto address or bank account\n- Withdrawals to a customer-owned crypto address or bank account\n- Conversions from one asset to another\n- Orchestrated workflows involving some or all of the above\n- Invocation of an Orchestration Rule\n",
+        "operationId": "ListOrchestrations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOrchestrationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "orchestration_rule_ids",
+            "description": "Optionally filter by the initiating orchestration_rule_ids.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "source_assets",
+            "description": "Optionally filter by source assets",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "destination_assets",
+            "description": "Optionally filter by destination assets",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "statuses",
+            "description": "Optionally filter by statuses.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "created_at.lt",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.lte",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.eq",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gte",
+            "description": "Include timestamps greater than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gt",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 1000.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order for the results. Defaults to DESC by created_at time.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["DESC", "ASC"]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional Cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orchestration_ids",
+            "description": "Optionally filter by a list of orchestration IDs.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "profile_ids",
+            "description": "Optionally filter by the target profiles. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "tags": ["Orchestrations"],
+        "security": [
+          {
+            "OAuth2": ["orchestration:read_orchestration"]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Orchestration",
+        "description": "Creates an orchestration rule that will be triggered by deposits to a source resource.\nThe orchestration defines how assets should be moved from a source to a destination,\npotentially including conversions between different asset types.\n\nA request to create an orchestration can fail with one of the following\ntypes of errors:\n - [Insufficient Funds](https://developer.paxos.com/docs/v2/problems/insufficient-funds)\n   if the Profile (`profile_id`) has insufficient available balance to\n   fund the execution.\n - [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists)\n   if an orchestration with the same external ID (`ref_id`) has already been created.\n",
+        "operationId": "CreateOrchestration",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Orchestration"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Orchestrations"],
+        "security": [
+          {
+            "OAuth2": ["orchestration:write_orchestration"]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "orchestration:read_orchestration": "Read orchestration data",
+              "orchestration:write_orchestration": "Create and manage orchestrations",
+              "orchestration:read_rule": "Read orchestration rule data",
+              "orchestration:write_rule": "Create and manage orchestration rules"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "OrchestrationCryptoSource": {
+        "type": "object",
+        "properties": {
+          "address_id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationFiatSource": {
+        "type": "object",
+        "properties": {
+          "deposit_instructions_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        }
+      },
+      "TransferDetailsTransferStatus": {
+        "type": "string",
+        "enum": ["PENDING", "PROCESSING", "COMPLETED", "FAILED"],
+        "description": " - PENDING: PENDING: a transfer is planned, but its resource_id is not yet known.\n - PROCESSING: PROCESSING: a transfer with `resource_id` is being processed. resource_id is\nguaranteed to be set if the status is PROCESSING.\n - COMPLETED: COMPLETED: a transfer with `resource_id` has successfully completed.\n - FAILED: FAILED: a transfer with `resource_id` has failed."
+      },
+      "CreateOrchestrationRequest": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "A client or system-specified unique identifier for the orchestration - used for idempotency\nprotection. Retries of a request should use the same ref_id to avoid duplicate transactions."
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source_amount": {
+            "type": "string",
+            "title": "The available amount in the source profile"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestDestination"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Metadata associated with the orchestration"
+          }
+        }
+      },
+      "CreateOrchestrationRequestCryptoDestination": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestProfileDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRequestFiatDestination": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestProfileSource": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestSource": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestProfileSource"
+          }
+        }
+      },
+      "FailReason": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "ListOrchestrationsResponse": {
+        "type": "object",
+        "properties": {
+          "orchestrations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Orchestration"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "Orchestration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "A client or system-specified unique identifier for the orchestration - used for idempotency\nprotection. Retries of a request should use the same ref_id to avoid duplicate transactions.\nFor system-initiated orchestrations generated by invocation of an orchestration rule, the\nref_id is generated the system."
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source_amount": {
+            "type": "string",
+            "title": "Amount in source asset"
+          },
+          "source_transfer": {
+            "$ref": "#/components/schemas/TransferDetails"
+          },
+          "destination_transfer": {
+            "$ref": "#/components/schemas/TransferDetails"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrchestrationStatus"
+          },
+          "fail_reason": {
+            "$ref": "#/components/schemas/FailReason"
+          },
+          "source": {
+            "$ref": "#/components/schemas/OrchestrationSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/OrchestrationDestination"
+          },
+          "orchestration_rule_id": {
+            "type": "string",
+            "description": "The ID of the orchestration rule which triggered this orchestration. Can be empty for\nad-hoc orchestrations."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Metadata associated with the orchestration"
+          }
+        },
+        "description": "Orchestrations can be created directly via the CreateOrchestration endpoint, or indirectly\nby an incoming deposit which matches an OrchestrationRule previously defined with the\nCreateOrchestrationRule endpoint."
+      },
+      "OrchestrationCryptoDestination": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationProfileDestination"
+          }
+        }
+      },
+      "OrchestrationFiatDestination": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationProfileSource": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationSource": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationFiatSource"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationProfileSource"
+          }
+        }
+      },
+      "OrchestrationStatus": {
+        "type": "string",
+        "enum": ["PROCESSING", "COMPLETED", "FAILED"],
+        "description": "Status represents the current state of an orchestration."
+      },
+      "SortOrder": {
+        "type": "string",
+        "enum": ["DESC", "ASC"]
+      },
+      "TimestampFilter": {
+        "type": "object",
+        "properties": {
+          "lt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "lte": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "eq": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "gte": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps greater than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "gt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          }
+        }
+      },
+      "TransferDetails": {
+        "type": "object",
+        "properties": {
+          "transfer_id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransferDetailsTransferStatus"
+          }
+        },
+        "description": "TransferDetails refers to a specific Transfer and encodes its current status."
+      },
+      "CreateOrchestrationRuleRequest": {
+        "type": "object",
+        "properties": {
+          "ref_id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestSource": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSourceCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSourceFiatSource"
+          }
+        },
+        "description": "The source resource of an orchestration rule. Deposits to this resource will trigger\ninvocations of the rule. Each invocation will create an \"Orchestration\"."
+      },
+      "CreateOrchestrationRuleRequestSourceCryptoSource": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string"
+          }
+        },
+        "description": "A request for deposit instructions for a given crypto network. If set, a paxos-owned\ndeposit address will be auto-generated and returned in SourceDepositInstructions\non the response."
+      },
+      "CreateOrchestrationRuleRequestSourceFiatSource": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "account_type": {
+            "type": "string"
+          }
+        },
+        "description": "A request for deposit instructions of fiat on a given fiat network. If set, Paxos\nbanking details will be sent in SourceDepositInstructions on the response."
+      },
+      "CreateOrchestrationRuleRequestDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationProfileDestination"
+          }
+        },
+        "description": "A request to send funds to a destination resource at the end of an orchestrated conversion\nflow."
+      },
+      "CreateOrchestrationRuleRequestDestinationCryptoDestination": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        },
+        "title": "A customer-owned crypto address and crypto network"
+      },
+      "CreateOrchestrationRuleRequestDestinationFiatDestination": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        },
+        "description": "A customer-owned bank account. Must have previously created using CreateFiatAccount."
+      },
+      "CreateOrchestrationRuleRequestDestinationProfileDestination": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          }
+        },
+        "description": "A customer profile. Can be the same profile as the rule, or a different profile for\ninternal-transfers."
+      },
+      "CreateOrchestrationRuleResponse": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "$ref": "#/components/schemas/OrchestrationRule"
+          }
+        }
+      },
+      "ListOrchestrationRulesResponse": {
+        "type": "object",
+        "properties": {
+          "orchestration_rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationRule"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "the globally unique OrchestrationRuleID"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "used to correlate a request to a response. Unique per Customer."
+          },
+          "nickname": {
+            "type": "string",
+            "title": "a customer-specified display name for the rule"
+          },
+          "profile_id": {
+            "type": "string",
+            "title": "the Paxos Profile on which conversions invoked by the rule will take place"
+          },
+          "identity_id": {
+            "type": "string",
+            "title": "the optional identity for 3P customers"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrchestrationRuleStatus"
+          },
+          "source_asset": {
+            "type": "string",
+            "description": "from_asset and to_asset asset specify the source and destination assets.\nA conversion is specified by setting from_asset != to_asset."
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source_deposit_instructions": {
+            "$ref": "#/components/schemas/DepositInstructions"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/OrchestrationRuleDestination"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "the time the rule was created"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "the time the rule was deleted, if its status is DELETED."
+          }
+        }
+      },
+      "OrchestrationRuleStatus": {
+        "type": "string",
+        "enum": ["PROCESSING", "ACTIVE", "DELETED"],
+        "description": " - PROCESSING: PROCESSING means the request to create a rule has been received, and is being\nprocessed.\n - ACTIVE: ACTIVE means the rule is currently running and will process incoming deposits\n - DELETED: DELETED means the rule has been deleted and will not process incoming deposits.\nDeletion is soft."
+      },
+      "OrchestrationRuleDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationRuleDestinationCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationRuleDestinationFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationRuleDestinationProfileDestination"
+          }
+        }
+      },
+      "OrchestrationRuleDestinationCryptoDestination": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationRuleDestinationFiatDestination": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationRuleDestinationProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "DepositInstructions": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/DepositInstructionsCryptoDepositInstructions"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/DepositInstructionsFiatDepositInstructions"
+          }
+        },
+        "title": "A wrapper message for either fiat or crypto deposit instructions"
+      },
+      "DepositInstructionsCryptoDepositInstructions": {
+        "type": "object",
+        "properties": {
+          "address_id": {
+            "type": "string",
+            "description": "the ID of Paxos deposit address for the operation. It can additionally be queried\nusing ListDepositAddresses."
+          },
+          "address": {
+            "type": "string",
+            "title": "the raw Paxos-owned crypto address on a blockchain"
+          },
+          "network": {
+            "type": "string",
+            "title": "the crypto network of the deposit address"
+          }
+        }
+      },
+      "DepositInstructionsFiatDepositInstructions": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "bank_name": {
+            "type": "string"
+          },
+          "bank_country": {
+            "type": "string"
+          },
+          "bank_address": {
+            "type": "string"
+          },
+          "routing_number_type": {
+            "$ref": "#/components/schemas/FiatDepositInstructionsRoutingNumberType"
+          },
+          "routing_number": {
+            "type": "string"
+          },
+          "recipient_name": {
+            "type": "string"
+          },
+          "recipient_address": {
+            "type": "string"
+          },
+          "account_number": {
+            "type": "string"
+          }
+        },
+        "description": "A simplified version of V2 transfers FiatDepositInstructions. Used only for the new\norchestration endpoints."
+      },
+      "FiatDepositInstructionsRoutingNumberType": {
+        "type": "string",
+        "enum": ["ABA", "SWIFT"]
+      }
+    },
+    "examples": {
+      "Problem_already_exists": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "nickname already exists",
+          "meta": {
+            "existing": {
+              "id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+              "nickname": "existing nickname",
+              "type": "NORMAL"
+            }
+          }
+        }
+      },
+      "Problem_already_exists_crypto_withdrawal": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "transfer already exists with ref_id 'already_used_ref_id'",
+          "meta": {
+            "existing": {
+              "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+              "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
+              "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+              "ref_id": "already_used_ref_id",
+              "amount": "0.10000000",
+              "total": "0.10000023",
+              "fee": "0.00000023",
+              "asset": "BTC",
+              "balance_asset": "BTC",
+              "direction": "DEBIT",
+              "type": "CRYPTO_WITHDRAWAL",
+              "status": "COMPLETED",
+              "created_at": "2020-01-17T18:36:08.737Z",
+              "updated_at": "2020-01-17T18:37:08.737Z",
+              "metadata": {
+                "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+              },
+              "destination_address": "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
+              "crypto_network": "BITCOIN",
+              "crypto_tx_hash": "f4184fc596403b9d638783cf57adfe4c75c605f6356fbc91338530e9831e9e16"
+            }
+          }
+        }
+      },
+      "Problem_already_exists_deposit_address": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "deposit address already exists with ref_id 'already_used_ref_id'",
+          "meta": {
+            "existing": {
+              "id": "34bd61ed-cf0a-4012-8be4-d347667b6154",
+              "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+              "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
+              "crypto_network": "ETHEREUM",
+              "identity_id": "54385e67-d7ef-40d1-b488-ceda6dd9b264",
+              "ref_id": "already_used_ref_id",
+              "metadata": {
+                "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+              },
+              "address": "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7"
+            }
+          }
+        }
+      },
+      "Problem_already_exists_fiat_withdrawal": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "activity with external id already_used_ref_id already exists",
+          "meta": {
+            "existing": {
+              "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+              "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
+              "profile_id": "5fc6d191-193c-4e28-94fa-656bbdbdfaad",
+              "identity_id": "54385e67-d7ef-40d1-b488-ceda6dd9b264",
+              "amount": "10.00",
+              "total": "10.00",
+              "fee": "0.0000000",
+              "asset": "USD",
+              "balance_asset": "USD",
+              "direction": "DEBIT",
+              "type": "CUBIX_WITHDRAWAL",
+              "status": "PENDING",
+              "created_at": "2023-07-13T18:36:08.737Z",
+              "updated_at": "2023-07-13T18:36:08.737Z",
+              "fiat_account_id": "caa82b32-8abd-4899-afdc-f9d4bf9b4e98"
+            }
+          }
+        }
+      },
+      "Problem_already_exists_order": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "order already exists with ref_id 'already_used_ref_id'",
+          "meta": {
+            "existing": {
+              "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+              "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+              "ref_id": "already_used_ref_id",
+              "status": "SUBMITTED",
+              "side": "BUY",
+              "market": "BTCUSD",
+              "quote_amount": "100.00"
+            }
+          }
+        }
+      },
+      "Problem_already_exists_quote": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "quote execution already exists with ref_id 'already_used_ref_id'",
+          "meta": {
+            "existing": {
+              "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+              "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+              "quote_id": "366a26d2-3098-4226-a520-4bb43ae4d922",
+              "ref_id": "already_used_ref_id",
+              "status": "CREATED",
+              "market": "BTCUSD",
+              "side": "BUY",
+              "price": "6001.2",
+              "base_amount": "0.016663334",
+              "base_asset": "BTC",
+              "quote_amount": "100.00",
+              "quote_asset": "USD",
+              "created_at": "2020-01-17T18:36:31.345Z",
+              "metadata": {
+                "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339"
+              }
+            }
+          }
+        }
+      },
+      "Problem_bad_request": {
+        "value": {
+          "type": "about:blank",
+          "title": "Bad Request",
+          "status": 400,
+          "detail": "base_amount invalid: invalid amount '-10': must be positive decimal"
+        }
+      },
+      "Problem_below_min_withdraw_limit": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/below-min-withdraw-limit",
+          "title": "Withdrawal Amount Too Small",
+          "status": 400,
+          "detail": "amount too small for network NETWORK_BTC minimum amount is 0.00001",
+          "meta": {
+            "limit": "0.00001",
+            "amount": "0.0000001"
+          }
+        }
+      },
+      "Problem_exceed_max_withdraw_limit": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/exceed-max-withdraw-limit",
+          "title": "Withdrawal Amount Too Large",
+          "status": 400,
+          "detail": "withdrawal amount 0.3 exceeds withdrawal limit for this asset BTC",
+          "meta": {
+            "limit": "0.1",
+            "amount": "0.3"
+          }
+        }
+      },
+      "Problem_exceed_precision": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/exceed-precision",
+          "title": "Exceeds Maximum Precision Allowed",
+          "status": 400,
+          "detail": "max precision allowed for asset ETH is 18"
+        }
+      },
+      "Problem_expired": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/expired",
+          "title": "Expired",
+          "status": 403,
+          "detail": "offer expired at 0001-01-01T00:00:00Z",
+          "meta": {
+            "expired_at": "0001-01-01T00:00:00Z"
+          }
+        }
+      },
+      "Problem_expired_quote": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/expired",
+          "title": "Expired",
+          "status": 403,
+          "detail": "quote 366a26d2-3098-4226-a520-4bb43ae4d922 expired at 2020-01-17T18:36:38Z",
+          "meta": {
+            "expired_at": "2020-01-17T18:36:38Z"
+          }
+        }
+      },
+      "Problem_fee_expired_crypto_withdrawal": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/expired",
+          "title": "Expired",
+          "status": 403,
+          "detail": "fee 9e5828e2-0a10-4273-aa9c-f50bd0eaf344 expired at 2020-01-17T18:36:08.737Z",
+          "meta": {
+            "expired_at": "2020-01-17T18:36:08.737Z"
+          }
+        }
+      },
+      "Problem_fee_not_found_crypto_withdrawal": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "fee not found with id 9e5828e2-0a10-4273-aa9c-f50bd0eaf344"
+        }
+      },
+      "Problem_forbidden": {
+        "value": {
+          "type": "about:blank",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "user account is disabled"
+        }
+      },
+      "Problem_forbidden_order_cancel": {
+        "value": {
+          "type": "about:blank",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "order is not in cancellable state"
+        }
+      },
+      "Problem_gateway_timeout": {
+        "value": {
+          "type": "about:blank",
+          "title": "Gateway Timeout",
+          "status": 504,
+          "detail": "timeout reached while creating the order"
+        }
+      },
+      "Problem_insufficient_funds": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/insufficient-funds",
+          "title": "Insufficient Funds",
+          "status": 403,
+          "detail": "insufficient USD funds in profile b7b77d82-e6a7-4ae9-9904-36231aedf985: 100 needed, 50 available",
+          "meta": {
+            "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+            "asset": "USD",
+            "available": "50",
+            "needed": "100"
+          }
+        }
+      },
+      "Problem_internal_server_error": {
+        "value": {
+          "type": "about:blank",
+          "title": "Internal Server Error",
+          "status": 500
+        }
+      },
+      "Problem_market_conditions_prevented_execution": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/market-conditions-prevented-execution",
+          "title": "Market Conditions Prevented Execution",
+          "status": 403,
+          "detail": "market conditions have invalidated this order"
+        }
+      },
+      "Problem_minimum_commission_exceeds_notional": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/minimum-commission-exceeds-notional",
+          "title": "Order notional value must exceed minimum commission",
+          "status": 400,
+          "detail": "The minimum notional for ETH is 1.500000"
+        }
+      },
+      "Problem_not_found": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "profile not found: b7b77d82-e6a7-4ae9-9904-36231aedf985"
+        }
+      },
+      "Problem_not_found_quote": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "quote not found with id 366a26d2-3098-4226-a520-4bb43ae4d922"
+        }
+      },
+      "Problem_not_implemented": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Implemented",
+          "status": 501,
+          "detail": "Not implemented"
+        }
+      },
+      "Problem_notional_value_too_large": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/notional-value-too-large",
+          "title": "Notional Value Too Large",
+          "status": 403,
+          "detail": "notional value too large for BTCUSD LIMIT order: order had notional value 1501234.56, but maximum allowed notional value is 1500000",
+          "meta": {
+            "market": "BTCUSD",
+            "order_type": "LIMIT",
+            "order_notional_value": "1501234.56",
+            "max_notional_value": "1500000"
+          }
+        }
+      },
+      "Problem_rejected": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/rejected",
+          "title": "Rejected",
+          "status": 403,
+          "detail": "extreme market conditions have invalidated this quote execution",
+          "meta": {}
+        }
+      },
+      "Problem_service_unavailable": {
+        "value": {
+          "type": "about:blank",
+          "title": "Service Unavailable",
+          "status": 503,
+          "detail": "quotes disabled"
+        }
+      },
+      "Problem_too_many_requests": {
+        "value": {
+          "type": "about:blank",
+          "title": "Too Many Requests",
+          "status": 429,
+          "detail": "Too many requests"
+        }
+      },
+      "Problem_unauthenticated": {
+        "value": {
+          "type": "about:blank",
+          "title": "Unauthorized",
+          "status": 401,
+          "detail": "no authorization header set"
+        }
+      },
+      "Problem_unavailable_market": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/unavailable-market",
+          "title": "Planned Market Outage",
+          "status": 403,
+          "detail": "no marketable orders may be submitted at this time"
+        }
+      }
+    }
+  }
+}

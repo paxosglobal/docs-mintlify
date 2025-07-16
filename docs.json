@@ -76,6 +76,10 @@
     {
       "source": "/api/v2",
       "destination": "/api-redirect.html"
+    },
+    {
+      "source": "/preview",
+      "destination": "/api-reference/preview/overview"
     }
   ],
   "navigation": {
@@ -215,8 +219,7 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
-              "guides/developer/faq",
-              "guides/preview/index"
+              "guides/developer/faq"
             ]
           },
           {
@@ -739,6 +742,30 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Previews",
+        "hidden": true,
+        "groups": [
+          {
+            "group": "Previews",
+            "pages": [
+              "api-reference/preview/overview"
+            ]
+          },
+          {
+            "group": "Orchestration Previews",
+            "openapi": {
+              "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
+              "directory": "api-reference/preview"
+            }
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "hidden": true,
+        "pages": ["changelog"]
       }
     ],
     "global": {
