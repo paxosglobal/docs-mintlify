@@ -103,6 +103,8 @@
               "guides/developer/credentials",
               "guides/developer/request-signing",
               "guides/developer/request"
+              
+
             ]
           },
           {
@@ -213,7 +215,8 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
-              "guides/developer/faq"
+              "guides/developer/faq",
+              "guides/preview/index"
             ]
           },
           {
