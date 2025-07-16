@@ -72,10 +72,6 @@
     },
     {
       "source": "/api/v2/:slug*",
-      "destination": "/api-reference/endpoints/:slug*"
-    },
-    {
-      "source": "/api/v2",
       "destination": "/api-redirect"
     },
     {
