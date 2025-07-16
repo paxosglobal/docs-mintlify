@@ -92,11 +92,22 @@ title: "Redirecting..."
         
         console.log('Current URL:', window.location.href);
         console.log('Fragment:', hash);
+        console.log('Pathname:', window.location.pathname);
 
         // If no fragment, check if we came from a referrer with fragment info
         if (!hash) {
           const urlParams = new URLSearchParams(window.location.search);
           hash = urlParams.get('fragment') || '';
+        }
+
+        // Check if we're coming from an /api/v2 URL and extract from pathname
+        if (!hash && window.location.pathname.includes('/api/v2/')) {
+          // Extract the path after /api/v2/
+          const pathParts = window.location.pathname.split('/api/v2/');
+          if (pathParts.length > 1) {
+            hash = pathParts[1];
+            console.log('Extracted from pathname:', hash);
+          }
         }
 
         console.log('Processing fragment:', hash);
