@@ -75,6 +75,10 @@
       "destination": "/api-redirect"
     },
     {
+      "source": "/old-api-redirect-test",
+      "destination": "/api-redirect"
+    },
+    {
       "source": "/preview",
       "destination": "/api-reference/preview/overview"
     }
