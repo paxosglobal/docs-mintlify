@@ -97,7 +97,8 @@ title: "Redirecting..."
         // If no fragment, check if we came from a referrer with fragment info
         if (!hash) {
           const urlParams = new URLSearchParams(window.location.search);
-          hash = urlParams.get('fragment') || '';
+          hash = urlParams.get('fragment') || urlParams.get('from') || '';
+          console.log('Checking URL params for hash:', hash);
         }
 
         // Check if we're coming from an /api/v2 URL and extract from pathname
@@ -177,16 +178,21 @@ title: "Redirecting..."
         }
       }
 
-      // Start the redirect process
+      // Start the redirect process with multiple triggers
+      
+      // Try immediately
       performRedirect();
-
-      // Also handle cases where this page is loaded directly with URL parameters
-      window.addEventListener('load', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('from')) {
-          performRedirect();
-        }
-      });
+      
+      // Try after DOM is loaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', performRedirect);
+      }
+      
+      // Try after page is fully loaded
+      window.addEventListener('load', performRedirect);
+      
+      // Try after a small delay to ensure everything is initialized
+      setTimeout(performRedirect, 100);
 
       // Make the functions globally available for testing
       window.parseApiFragment = parseApiUrl;
