@@ -1,0 +1,27 @@
+---
+title: "Overview"
+description: "The Identity Documents API allows clients to send documents to Paxos to validate identities during the KYC process."
+---
+
+Files can be updated multiple times by re-sending the document type for processing.
+
+## Supported File Formats
+
+We currently accept the following file formats:
+- `pdf`
+- `jpg`
+- `png`
+
+## Upload Process
+
+Steps to upload a document are as follows:
+
+1. Send a `PUT` request to `/identity/identities/{id}/documents` to get
+   the upload URL.
+2. Send your document to the provided URL via a PUT request. Take the following example using curl:
+   ```bash
+   curl --upload-file Proof_of_residence.jpg $URI
+   ```
+
+Uploaded document metadata will be available via `GET` request to `/identity/identities/{id}/documents`
+

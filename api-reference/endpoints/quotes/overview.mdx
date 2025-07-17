@@ -1,0 +1,28 @@
+---
+title: "Overview"
+description: "Quotes are 'held rates' offered by Paxos to buy or sell assets at a specific price within a period of time."
+---
+
+For example, the option to buy BTC within the next 30 seconds for $8,000.
+
+## Typical Quotes Workflow
+
+The typical Quotes workflow is as follows:
+
+1. Call [List Quotes](/api-reference/endpoints/quotes/list-quotes) to get the latest available
+   quoted prices for the assets you want to buy or sell.
+2. Present the offered price to one or more end-users, with a timer
+   indicating the time to expiration.
+3. If a user accepts the price, call [Create Quote Execution](/api-reference/endpoints/quote-executions/create-quote-execution) with the amount to buy or sell.
+4. Call [Get Quote Execution](/api-reference/endpoints/quote-executions/get-quote-execution) to monitor
+   for completion and know when the funds from the execution are available.
+
+## Important Considerations
+
+It's important to show end-users the latest available price. If you cache
+prices to show them to multiple users, you should refresh the cache once
+per second.
+
+You can call [List Quote Executions](/api-reference/endpoints/quote-executions/list-quote-executions) to
+review or construct reports on quote execution activity.
+
