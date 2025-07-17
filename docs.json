@@ -11,6 +11,14 @@
   "favicon": "/favicon.ico",
   "redirects": [
     {
+      "source": "/api/*",
+      "destination": "/api-reference/preview/overview"
+    },
+    {
+      "source": "/api/:slug*",
+      "destination": "/api-reference/preview/overview"
+    },
+    {
       "source": "/identity/:slug*",
       "destination": "/guides/identity/:slug*"
     },
@@ -69,14 +77,6 @@
     {
       "source": "/stablecoin/:slug*",
       "destination": "/guides/stablecoin/:slug*"
-    },
-    {
-      "source": "/api/v2/:slug*",
-      "destination": "/api-reference/endpoints/:slug*"
-    },
-    {
-      "source": "/api/v2",
-      "destination": "/api-redirect"
     },
     {
       "source": "/preview",
