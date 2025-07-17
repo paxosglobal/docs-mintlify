@@ -9,12 +9,12 @@ For example, the option to buy BTC within the next 30 seconds for $8,000.
 
 The typical Quotes workflow is as follows:
 
-1. Call [List Quotes](list-quotes) to get the latest available
+1. Call [List Quotes](/api-reference/endpoints/quotes/list-quotes) to get the latest available
    quoted prices for the assets you want to buy or sell.
 2. Present the offered price to one or more end-users, with a timer
    indicating the time to expiration.
-3. If a user accepts the price, call [Create Quote Execution](../quote-executions/create-quote-execution) with the amount to buy or sell.
-4. Call [Get Quote Execution](../quote-executions/get-quote-execution) to monitor
+3. If a user accepts the price, call [Create Quote Execution](/api-reference/endpoints/quote-executions/create-quote-execution) with the amount to buy or sell.
+4. Call [Get Quote Execution](/api-reference/endpoints/quote-executions/get-quote-execution) to monitor
    for completion and know when the funds from the execution are available.
 
 ## Important Considerations
@@ -23,6 +23,6 @@ It's important to show end-users the latest available price. If you cache
 prices to show them to multiple users, you should refresh the cache once
 per second.
 
-You can call [List Quote Executions](../quote-executions/list-quote-executions) to
+You can call [List Quote Executions](/api-reference/endpoints/quote-executions/list-quote-executions) to
 review or construct reports on quote execution activity.
 
