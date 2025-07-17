@@ -1,0 +1,13 @@
+---
+title: "Overview"
+description: "Account Members allow you to associate an Identity with an Account on our Platform."
+---
+
+Each Account can be linked to multiple Identities, which supports Joint Accounts (where two Identities have the ability
+to transact against a single Profile).
+
+Account members are effectively immutable. In order to update an account member,
+clients should remove then re-add the account member with the desired state.
+
+The API requires clients to have write access on the account and all identities
+associated with the account.

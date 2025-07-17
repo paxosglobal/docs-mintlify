@@ -1,0 +1,19 @@
+---
+title: "Overview"
+description: "Use the Settlements API to facilitate simultaneous exchange of pre-funded assets."
+---
+
+Use the Settlements API to facilitate simultaneous exchange of pre-funded assets. Automate a variety of use cases that require two-party approval, including net settlement of over-the-counter trades, withdrawal requests for tri-party collateral, payment requests, and bilateral settlement for marketplace end users.
+
+## Workflow
+
+The simple request-and-approval workflow supports both one-directional and bidirectional transactions to allow a user to receive an asset (for example, send USDP) or simultaneously send and receive assets (for example, send USD and receive BTC and ETH). Only when all parties are in agreement and assets are fully funded does the Settlements API allow for change of custody. Upon completion, all settled assets are immediately available for trading, transferring, withdrawal or other supported activities.
+
+## Transaction Direction
+
+The Source Profile initiates the transaction for the Target Profile to approve. The `DIRECTION` of each asset is always relative to the Source Profile and only the owner of the Source Profile can cancel a transaction if it hasn't been approved by the Target Profile.
+
+## Learn More
+
+Learn more about the Settlement APIs in the [Settlement Developer Guide](/guides/settlements).
+
