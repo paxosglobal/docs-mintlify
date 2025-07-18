@@ -81,6 +81,22 @@
     {
       "source": "/preview",
       "destination": "/api-reference/preview/overview"
+    },
+    {
+      "source": "/fix",
+      "destination": "/guides/crypto-brokerage/fix/index"
+    },
+    {
+      "source": "/fix/onboard",
+      "destination": "/guides/crypto-brokerage/fix/onboard"
+    },
+    {
+      "source": "/fix/certify",
+      "destination": "/guides/crypto-brokerage/fix/certify"
+    },
+    {
+      "source": "/fix/best-practices",
+      "destination": "/guides/crypto-brokerage/fix/best-practices"
     }
   ],
   "navigation": {
