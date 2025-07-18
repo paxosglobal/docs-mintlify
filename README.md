@@ -14,17 +14,11 @@ This repository contains the comprehensive documentation for Paxos APIs, includi
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js 18+ and npm
-- Git
-
 ### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/paxos/paxos-docs.git
-   cd paxos-docs/new-docs
+   git clone https://github.com/paxosglobal/docs-mintlify.git
    ```
 
 2. **Install dependencies**
