@@ -3,18 +3,18 @@ title: 'Onboarding a Person for Crypto Brokerage'
 description: Create an Identity, Account and Profile to provide Buy, Hold and Sell Crypto Brokerage for Users
 ---
 
-This guide walks through setting up a [Fiat and Crypto Subledger](/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) crypto brokerage integration,
+This guide walks through setting up a [Fiat and Crypto Subledger](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) crypto brokerage integration,
 creating a Person [Identity] and a related [Account] and [Profile] to book orders using the [Order API](/api-reference/endpoints/orders). First, we will
 create an [Identity] to represent the user's kyc information on the Paxos Platform. Then we will create an [Account](/api-reference/endpoints/accounts) which sets 
 up the structure of the brokerage account. Then we will create a [Profile] that represents the users fiat and crypto asset holdings. Then we will integrate with the [Order](/api-reference/endpoints/orders) API to
 set up a simple Buy, Hold and Sell integration. This guide should take around 30 minutes.
 
 ## Prerequisites
- - Sign up to the [Paxos Dashboard](/dashboard/account) in Sandbox
+ - Sign up to the [Paxos Dashboard](/guides/dashboard/account) in Sandbox
  - Reach out to [Support](https://support.paxos.com) to provision access to the [Identity API](/api-reference/endpoints/identity)
 
 ## Authenticate in Sandbox
-Create an [API Key](/dashboard/admin/api) on the Sandbox [Paxos Dashboard](/dashboard/account) with the following scopes to access the [Identity](/api-reference/endpoints/identity),
+Create an [API Key](/guides/dashboard/admin/api) on the Sandbox [Paxos Dashboard](/guides/dashboard/account) with the following scopes to access the [Identity](/api-reference/endpoints/identity),
 [Account](/api-reference/endpoints/accounts) and [Order](/api-reference/endpoints/orders) APIs needed for this guide
  - `identity:read_identity`
  - `identity:read_account`
@@ -53,7 +53,7 @@ Include the Authorization header with the bearer token on all API requests `-H "
 ## Creating a Person Identity and Account
 ### ➊ Creating an Identity with Passthrough Verification
 To create a person identity, Paxos requires both
- - The details of the person according to the [Person Required Details Grid](/identity/required-details#required-person-details)
+ - The details of the person according to the [Person Required Details Grid](/guides/identity/required-details#required-person-details)
  - Data on who has completed identity verification (IDV) of the person.
 
 
@@ -141,7 +141,7 @@ Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision)
 <Info>
 
 An [Identity] might stay in `PENDING` due to being deemed high risk by Paxos. This [Identity] will be
-required to undergo [Enhanced Due Diligence]. See [how to automate document collection](/identity/edd) to
+required to undergo [Enhanced Due Diligence]. See [how to automate document collection](/guides/identity/edd) to
 allow `HIGH` risk customers to onboard to Paxos.
 
 </Info>
@@ -157,8 +157,8 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{identity_
 
 <Tip>
 
- - If the [Identity] is stuck in `PENDING`, read the [Identity Status](/identity/statuses) guide to help pinpoint why. If you have further questions, you can reach out to [Support](https://support.paxos.com).
- - Use a [Webhook](/webhooks) integration to asynchronously process [`identity.approved`](/api-reference/webhooks) and [`identity.denied`](/api-reference/webhooks)
+ - If the [Identity] is stuck in `PENDING`, read the [Identity Status](/guides/identity/statuses) guide to help pinpoint why. If you have further questions, you can reach out to [Support](https://support.paxos.com).
+ - Use a [Webhook](/guides/webhooks) integration to asynchronously process [`identity.approved`](/api-reference/webhooks) and [`identity.denied`](/api-reference/webhooks)
 events to notify users when they have been onboarded to Paxos.
 
 </Tip>
@@ -225,7 +225,7 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \
 
 ## Booking an Order
 We will use the [Order](/api-reference/endpoints/orders) API to create buy and sell orders. We recommend also
-taking a look at the [FIX](/guides/crypto-brokerage/fix) and [WebSocket](/api/websocket) solutions and using the best combination of APIs
+taking a look at the [FIX](/guides/crypto-brokerage/fix) and [WebSocket](/api-reference/websockets/overview) solutions and using the best combination of APIs
 for the specific use case.
 
 ### ➊ Fund the Account

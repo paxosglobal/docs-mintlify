@@ -284,7 +284,7 @@ Since both Profiles in this guide are [pre-funded](#set-up-profiles), the transa
 
 </Tip>
 
-Either party can use [Get Transaction](/api-reference/endpoints/settlement/get-transaction) to check the [status](status).
+Either party can use [Get Transaction](/api-reference/endpoints/settlement/get-transaction) to check the [status](/guides/settlements/status).
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{transaction_id}' \
@@ -292,7 +292,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{trans
 ```
 
 The response includes the complete `Transaction` object.
-When the transaction completes, the [status](status) and `updated_at` timestamp reflect the most recent activity. 
+When the transaction completes, the [status](/guides/settlements/status) and `updated_at` timestamp reflect the most recent activity. 
 
 ```json highlight={28,30}
 {
