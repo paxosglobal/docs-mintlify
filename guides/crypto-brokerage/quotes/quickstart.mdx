@@ -3,27 +3,16 @@ title: 'HRQ Quickstart'
 description: Learn about Paxos's HRQ product and how to submit a quote in less than five minutes.
 ---
 
-[account-paxos]: https://dashboard.paxos.com
-[list-quotes]: ../../api-reference/endpoints/quotes/list-quotes
-[list-quote-executions]: ../../api-reference/endpoints/quote-executions/list-quote-executions
-[create-quote-execution]: ../../api-reference/endpoints/quote-executions/create-quote-execution
-[get-quote-execution]: ../../api-reference/endpoints/quote-executions/get-quote-execution
-[get-profile-balance]: ../../api-reference/endpoints/profiles/get-profile-balance
-[sandbox-deposits]: ../../api-reference/sandbox-deposits
-[orders-hrq-faq]: ../orders-vs-hrq
-[ledger-type]: ../ledger-type
-[required-fields]: ../ledger-type#required-fields-quote-executions
-[subledgered]: ../ledger-type#fiat-omnibus-and-crypto-subledger
 
 <Tip>
 **Before you begin**:
-- HRQ is only available for Paxos Crypto Brokerage Partners and must be enabled before you can use the API endpoints. If you are a Paxos Crypto Brokerage Partner, you may reach out to Support for assistance enabling HRQ. If you are an Individual or Institutional User of [dashboard.paxos.com][account-paxos], please refer to the v2 Orders service for API trading.
+- HRQ is only available for Paxos Crypto Brokerage Partners and must be enabled before you can use the API endpoints. If you are a Paxos Crypto Brokerage Partner, you may reach out to Support for assistance enabling HRQ. If you are an Individual or Institutional User of [dashboard.paxos.com](https://dashboard.paxos.com), please refer to the v2 Orders service for API trading.
 - Make sure you can successfully authenticate with the `exchange:read_quote`, `exchange:read_quote_execution`, and
 `exchange:write_quote_execution` scopes.
-- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits][sandbox-deposits]
+- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits](../../api-reference/sandbox-deposits)
 endpoint to add fiat to your profile if you have not already.
-- Please read  the [Orders & Quotes FAQ][orders-hrq-faq] to ensure you understand the difference between quotes and orders.
-- You may wish to review our document on [Choosing a Ledgering Strategy][ledger-type]. This guide is written assuming a
+- Please read  the [Orders & Quotes FAQ](../orders-vs-hrq) to ensure you understand the difference between quotes and orders.
+- You may wish to review our document on [Choosing a Ledgering Strategy](../ledger-type). This guide is written assuming a
 `Fiat and Crypto Omnibus` strategy.
 </Tip>
 
@@ -39,7 +28,7 @@ associated Quote ID.
 
 ## Step 1: Retrieve a Quote using `List Quotes`
 The first step is to find the latest quote for the asset you wish to trade.
-The [List Quotes][list-quotes] service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
+The [List Quotes](../../api-reference/endpoints/quotes/list-quotes) service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
 Note the `quote_id`. It will be needed to create a Quote Execution in Step 3 below.
 
 <Tip>
@@ -169,12 +158,12 @@ proceed assuming confirmation was received from the end user.
 <Tip>
 There is no limitation on the number of times a single quote can be executed. In production, quotes can and should be cached
 to be presented to multiple users rather than calling List Quotes for each user.
-Crypto Brokerage Partners should use multiplexing and call [List Quotes][list-quotes] via an application rather than
+Crypto Brokerage Partners should use multiplexing and call [List Quotes](../../api-reference/endpoints/quotes/list-quotes) via an application rather than
 sending a List Quotes request every time a user wants to buy or sell an asset.
 </Tip>
 
 ## Step 3: Following confirmation, create a quote execution
-The [Create Quote Execution][create-quote-execution] endpoint is used to execute on a quote for buying or selling an asset.
+The [Create Quote Execution](../../api-reference/endpoints/quote-executions/create-quote-execution) endpoint is used to execute on a quote for buying or selling an asset.
 In the Quote Execution request, the Partner must set the amount of fiat or crypto to buy or sell based on the user's input.
 This must be specified by EITHER:
   - `base_amount` to specify the amount of crypto to buy or sell, OR
@@ -187,7 +176,7 @@ final step.
   - You should validate that the user has enough assets available to complete the transaction prior to
   creating a quote execution. This step has been omitted for simplicity.
   - In a live integration, there may be additional required fields depending on your chosen Ledgering Strategy. See
-  [Required Fields:][required-fields] for more information.
+  [Required Fields:](../ledger-type#required-fields-quote-executions) for more information.
 - The default maximum size limit of a single Quote Execution is $50K USD. Larger quotes would require multiple executions.
 </Tip>
 
@@ -249,7 +238,7 @@ Response:
 
 ## Step 4: Validate execution and settlement
 The final step is to confirm that the quote execution completed and settled successfully using the
-[Get Quote Execution][get-quote-execution] and [List Quote Executions][list-quote-executions] endpoints.
+[Get Quote Execution](../../api-reference/endpoints/quote-executions/get-quote-execution) and [List Quote Executions](../../api-reference/endpoints/quote-executions/list-quote-executions) endpoints.
 
 Quote executions typically complete in under 100ms. After creation, all quotes should be in the `CREATED` or `SETTLED`
 status.
@@ -265,7 +254,7 @@ in Paxos have been credited and debited and Partners can update their own ledger
 <Tip>
 Paxos recommends that all Crypto Brokerage Partners:
 - build a pending order settlement workflow for edge cases where the order does not settle immediately. This is
-especially important for customers using the [Fiat Omnibus and Crypto Subledgered Ledgering Strategy][subledgered].
+especially important for customers using the [Fiat Omnibus and Crypto Subledgered Ledgering Strategy](../ledger-type#fiat-omnibus-and-crypto-subledger).
 Subledgered End Users will be unable to sell or transfer purchased Cryptocurrencies until the quote execution has `SETTLED`.
 - cache profile balances. Balances should be updated once there has been a change to the profile balance (i.e. after a trade).
 </Tip>
