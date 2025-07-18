@@ -10,7 +10,7 @@
     }
   ],
   "paths": {
-    "/orchestration/orchestration-rules": {
+    "/v2/orchestration/orchestration-rules": {
       "get": {
         "summary": "List Orchestration Rules",
         "description": "Lists orchestration rules according to the given filters.\nResults can be paginated using the next_page_cursor.\nThe maximum page size is 100.",
@@ -353,7 +353,7 @@
         ]
       }
     },
-    "/orchestration/orchestrations": {
+    "/v2/orchestration/orchestrations": {
       "get": {
         "summary": "List Orchestrations",
         "description": "List all orchestrations, optionally filtering and paging the results.\n\nBy default, orchestrations are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 orchestrations which\nwere created.\n\nThe paginated results default to display up to 100 orchestrations, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nWhen filtering by profile IDs using the `profile_ids` parameter, there is a limit of 100 profiles\nthat can be specified in a single request.\n\nOrchestrations are provided for various operations including:\n- Deposits to a paxos-platform crypto address or bank account\n- Withdrawals to a customer-owned crypto address or bank account\n- Conversions from one asset to another\n- Orchestrated workflows involving some or all of the above\n- Invocation of an Orchestration Rule\n\noption (google.api.method_visibility).restriction = \"INTERNAL\";",
