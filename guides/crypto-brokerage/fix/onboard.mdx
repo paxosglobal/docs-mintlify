@@ -3,6 +3,9 @@ title: 'FIX Onboarding'
 description: Set Up a Paxos Account, configure connection then certify.
 ---
 
+import FixCSR from '/snippets/fix-csr.mdx';
+import FixSSL from '/snippets/fix-ssl.mdx';
+
 [fix-api]: https://developer.paxos.com/docs/itbit/fix/
 [certify]: certify
 [fix-best-practice]: best-practices
@@ -22,7 +25,9 @@ Learn more about [FIX Best Practices][fix-best-practice], including how to use m
 ## 1. Set Up Paxos Account
 
 To gain access, create a Paxos Account and Support will guide you through the process.
-### Sandbox
+
+<Tabs>
+<Tab title="Sandbox">
 
 Go to https://dashboard.sandbox.paxos.com and create an **Institution** Account in the Sandbox environment.
 
@@ -36,9 +41,15 @@ When creating the Sandbox Account:
 - Use placeholder (dummy) text for all text fields **except** for the email address.
 
 </Info>
-### Production
+
+</Tab>
+<Tab title="Production">
 
 Contact support@paxos.com before creating a Production Account.
+
+</Tab>
+</Tabs>
+
 ## 2. Generate a Certificate Signing Request (CSR)
 
 <FixCSR />
