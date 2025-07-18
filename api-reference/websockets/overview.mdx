@@ -9,31 +9,18 @@ tags:
 
 import Description from "@site/_partials/description.mdx";
 
-[quickstart]: /crypto-brokerage/websocket
-[market-data]: #market-data-feed
-[execution-data]: #execution-data-feed
-[market-data-path-parameter]: #market-data-path-parameter
-[execution-data-path-parameter]: #execution-data-path-parameter
-[available-markets]: #available-markets
-[websocket]: https://websocket.spec.whatwg.org
-[get-order-book]: /api-reference/endpoints/market-data/get-order-book
-[list-recent-executions]: /api-reference/endpoints/market-data/list-recent-executions
-[rate-limits]: /developer/rate-limits#websocket-limits
-[v2-api]: /api-reference
-[payments-guide]: /payments/websocket
-[stablecoin-data]: #stablecoin-feed
 
 <Description description={frontMatter.description} />
 
-Paxos provides secure, real-time market and execution data feeds via public [WebSocket][websocket] connections. The WebSocket API offers three main data feeds:
+Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections. The WebSocket API offers three main data feeds:
 
-- **[Execution Data Feed][execution-data]** - Real-time execution data for market trades
-- **[Market Data Feed][market-data]** - Order book updates with initial snapshots and real-time updates  
-- **[Stablecoin Market Price Feed][stablecoin-data]** - Market index price updates for external stablecoins
+- **[Execution Data Feed](#execution-data-feed)** - Real-time execution data for market trades
+- **[Market Data Feed](#market-data-feed)** - Order book updates with initial snapshots and real-time updates  
+- **[Stablecoin Market Price Feed](#stablecoin-feed)** - Market index price updates for external stablecoins
 
-> See the Websocket [trading][quickstart] and [stablecoin payments][payments-guide] guides for a hands-on introduction.
+> See the Websocket [trading](/crypto-brokerage/websocket) and [stablecoin payments](/payments/websocket) guides for a hands-on introduction.
 
-The WebSocket connections provide a number of advantages when compared to the [v2 API][v2-api], including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
+The WebSocket connections provide a number of advantages when compared to the [v2 API](/api-reference), including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
 
 ## API Reference
 
@@ -41,7 +28,7 @@ For detailed technical specifications, message schemas, and interactive examples
 
 ## Connection Details
 
-Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits][rate-limits].
+Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits](/developer/rate-limits#websocket-limits).
 Both Production and Sandbox data feeds have a built-in, instantaneous failover.
 Clients should have a reconnection mechanism in case of server disconnection.
 
@@ -89,7 +76,7 @@ The market data feed provides real-time order book updates with two message type
 
 ### Available Markets
 
-Market availability varies by environment (Sandbox vs Production) and account restrictions. Use the [Get Order Book][get-order-book] and [List Recent Executions][list-recent-executions] REST endpoints to discover available markets, though these are not suitable for streaming data.
+Market availability varies by environment (Sandbox vs Production) and account restrictions. Use the [Get Order Book](/api-reference/endpoints/market-data/get-order-book) and [List Recent Executions](/api-reference/endpoints/market-data/list-recent-executions) REST endpoints to discover available markets, though these are not suitable for streaming data.
 
 ## Stablecoin Market Price Feed 
 
