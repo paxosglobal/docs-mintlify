@@ -224,7 +224,8 @@
             "group": "Versioning",
             "pages": [
               "guides/developer/breaking-change/policy",
-              "guides/developer/api-migrate"
+              "guides/developer/api-migrate",
+              "changelog"
             ]
           }
         ]
