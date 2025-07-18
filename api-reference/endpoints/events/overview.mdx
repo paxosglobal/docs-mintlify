@@ -1,0 +1,66 @@
+---
+title: 'Events'
+description: 'Retrieve events from your Paxos account'
+---
+
+## Overview
+
+The Events API provides access to event data from your Paxos account. Events are generated when certain actions occur within your account, such as identity status changes, document requirements, or KYC refresh activities.
+
+Events are immutable records of state changes that occurred in your account. They provide a reliable way to track the history of important activities and integrate with your systems using webhooks.
+
+## Event Types
+
+The following event types are supported:
+
+### Identity Events
+
+| Event Type | Description |
+|------------|-------------|
+| `identity.approved` | An identity has been approved and is now active |
+| `identity.denied` | An identity has been denied and cannot be used |
+| `identity.disabled` | An identity has been disabled |
+| `identity.documents_required` | Additional documents are required for enhanced due diligence |
+| `identity.kyc_refresh.started` | Periodic KYC refresh has been initiated |
+| `identity.kyc_refresh.completed` | KYC refresh has been completed successfully |
+| `identity.kyc_refresh.expired` | KYC refresh has expired without completion |
+
+### Transfer Events
+
+| Event Type | Description |
+|------------|-------------|
+| `transfer.crypto_deposit.pending` | A crypto deposit is pending confirmation |
+| `transfer.crypto_deposit.completed` | A crypto deposit has been completed |
+| `transfer.crypto_deposit.failed` | A crypto deposit has failed |
+| `transfer.crypto_withdrawal.pending` | A crypto withdrawal is pending confirmation |
+| `transfer.crypto_withdrawal.completed` | A crypto withdrawal has been completed |
+| `transfer.crypto_withdrawal.failed` | A crypto withdrawal has failed |
+| `transfer.act_deposit.pending` | An ACH deposit is pending confirmation |
+| `transfer.act_deposit.completed` | An ACH deposit has been completed |
+| `transfer.act_deposit.failed` | An ACH deposit has failed |
+| `transfer.act_withdrawal.pending` | An ACH withdrawal is pending confirmation |
+| `transfer.act_withdrawal.completed` | An ACH withdrawal has been completed |
+| `transfer.act_withdrawal.failed` | An ACH withdrawal has failed |
+
+## Event Objects
+
+Events contain different object types depending on the event type:
+
+- **Identity Documents Required**: Contains identity ID and list of required documents
+- **Identity Status Change**: Contains identity ID, old status, and new status
+- **Identity KYC Refresh**: Contains identity ID, last refresh date, and next refresh date
+- **Transfer Status Change**: Contains transfer ID, old status, and new status
+
+## Webhooks Integration
+
+Events can be delivered to your systems in real-time using webhooks. When you register a webhook endpoint, Paxos will send HTTP POST requests to your endpoint whenever events occur.
+
+For more information about setting up webhooks, see the [Webhooks documentation](/guides/webhooks).
+
+## Rate Limits
+
+The Events API is subject to rate limits. See the [Rate Limits documentation](/guides/developer/rate-limits) for more information.
+
+## Authentication
+
+All Events API endpoints require authentication. See the [Authentication documentation](/guides/developer/authenticate) for more information.
