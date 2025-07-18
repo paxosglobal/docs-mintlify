@@ -103,13 +103,9 @@
             "group": "Get Started",
             "pages": [
               "guides/developer/account",
-              "guides/developer/authenticate",
-              "guides/developer/sandbox",
               "guides/developer/credentials",
-              "guides/developer/request-signing",
+              "guides/developer/authenticate",
               "guides/developer/request"
-              
-
             ]
           },
           {
@@ -220,6 +216,7 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
+              "guides/developer/sandbox",
               "guides/developer/faq"
             ]
           },
