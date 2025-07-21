@@ -3,6 +3,10 @@ title: 'Retries and Limits'
 description: Learn about webhook delivery retries, retry policies, and rate limits for Paxos webhooks.
 ---
 
+[events]: /api-reference/events
+[List Events]: /api-reference/endpoints/events/list-events
+[reference]: /api-reference/events
+[Support]: https://support.paxos.com
 
 ## Retry Policy
 
@@ -22,7 +26,7 @@ Paxos will continue retry attempts for up to **24 hours** from the initial attem
 After the 24-hour retry window has elapsed, undelivered events will not be automatically retried. To recover these undelivered events, you can:
 
 1. Use the [List Events] API to query for events that may have failed delivery
-2. Use the event IDs to fetch the full event details via the [Events API](/api-reference/events)
+2. Use the event IDs to fetch the full event details via the [Events API][reference]
 3. Process these events through your regular webhook handling logic
 
 ## Rate Limits
@@ -41,4 +45,4 @@ For optimal webhook processing, we recommend:
 2. **Process asynchronously**: Acknowledge the webhook immediately, then process the event asynchronously in your application
 3. **Implement idempotency**: Design your webhook handlers to be idempotent in case the same event is delivered multiple times
 4. **Monitor delivery failures**: Implement monitoring for webhook delivery failures to detect issues early
-5. **Implement backup polling**: Establish a periodic job that polls the [Events API](/api-reference/events) as a fallback mechanism for missed webhook events 
+5. **Implement backup polling**: Establish a periodic job that polls the [Events API][reference] as a fallback mechanism for missed webhook events 

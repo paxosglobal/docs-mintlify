@@ -4,14 +4,26 @@ description: Deposit USD. Convert or convert-and-transfer in one API call.
 ---
 ![Mint Workflow](/images/mint.png)
 
+[stablecoins]: /guides/developer/blockchains#stablecoins
+[CreateFiatDepositInstructions]: /api-reference/endpoints/fiat-transfers/create-fiat-deposit-instructions
+[fiat-transfers]: /api-reference/endpoints/fiat-transfers
+[conversion]: /api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion
+[withdrawal]: /api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal
+[token]: /guides/developer/authenticate
+[create-sandbox-deposit]: /api-reference/endpoints/sandbox-deposits/create-sandbox-deposit
+[First API Request]: /guides/developer/request
+[convert stablecoin]: /guides/developer/convert
+[List Profile Balances]: /api-reference/endpoints/profiles/list-profile-balances
+[`SETTLED`]: /guides/developer/convert#stablecoin-conversion-statuses
+[list-transfers]: /api-reference/endpoints/transfers/list-transfers
 
-Minting a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins) starts by depositing USD on the Paxos platform using the [Fiat Transfers APIs](/api-reference/endpoints/fiat-transfers) (**A** in the diagram).
-Depending on the use case, you can either convert USD to a stablecoin and keep the asset on the Paxos platform using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) (option **B**) or use [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to convert and transfer with the same API request (**C**).
+Minting a [Paxos-issued stablecoin][stablecoins] starts by depositing USD on the Paxos platform using the [Fiat Transfers APIs][fiat-transfers] (**A** in the diagram).
+Depending on the use case, you can either convert USD to a stablecoin and keep the asset on the Paxos platform using [Create Stablecoin Conversion][conversion] (option **B**) or use [Create Crypto Withdrawal][withdrawal] to convert and transfer with the same API request (**C**).
 > If you've already authenticated and have a USD balances in a Profile, skip ahead to the [convert](#mint-hold) or [convert and transfer](#mint-transfer) step.
 
 ## ➊ Authenticate
 
-Include the following scopes when [authenticating](/guides/developer/authenticate):
+Include the following scopes when [authenticating][token]:
 
 ```shell
 conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin funding:read_profile transfer:write_crypto_withdrawal
@@ -21,9 +33,9 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 
 ## ➋ Deposit USD
 
-Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the minting process to be associated with.
+Use [Create Sandbox Deposit][create-sandbox-deposit] to add USD to the Profile (`profile_id`) you want the minting process to be associated with.
 See the [First API Request] guide for help retrieving Profile IDs.
-You can also use the [Fiat Transfers funding flow](/api-reference/endpoints/fiat-transfers) if you've already set up a Fiat Account.
+You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
 
 ```shell highlight={2}
 curl --request POST \
@@ -37,7 +49,7 @@ curl --request POST \
 
 ## ➌ Convert USD to Stablecoin
 
-See the [convert stablecoin] guide for details on using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to mint a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins).
+See the [convert stablecoin] guide for details on using [Create Stablecoin Conversion][conversion] to mint a [Paxos-issued stablecoin][stablecoins].
 Once the conversion is [`SETTLED`], use [List Profile Balances] to check updated balances.
 To check balances of the assets you are interested in, include the `assets` query parameter in the request.
 
@@ -72,7 +84,7 @@ The response includes the updated USD and Paxos-issued stablecoin balances.
 
 ## ➍ Convert and Transfer
 
-Use [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to transfer the Paxos-issued stablecoin to an address off the Paxos platform with a single request.
+Use [Create Crypto Withdrawal][withdrawal] to transfer the Paxos-issued stablecoin to an address off the Paxos platform with a single request.
 To automatically convert fiat (USD) to stablecoin and transfer to an external address with a single request, set the `asset` to the stablecoin you want to mint, the `balance_asset` to `USD`, and the `crypto_network` to the desired network.
 ### USDG on Ethereum
 
@@ -154,7 +166,7 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
     "auto_conversion": {}
 }
 ```
-To check the transaction status on the Paxos platform, use [List Transfers](/api-reference/endpoints/transfers/list-transfers).
+To check the transaction status on the Paxos platform, use [List Transfers][list-transfers].
 You can create a recurring request that look for completed transactions in the Profile.
 For example, filter on `type=CRYPTO_WITHDRAWAL` and `status=COMPLETED` parameters to find all the completed transactions.
 ```shell

@@ -5,6 +5,18 @@ description: Create an Identity, Account and Profile to provide Buy, Hold and Se
 
 
 
+[Enhanced Due Diligence]: /identity/edd
+[edd-guide]: /identity/edd
+[Get Identity]: /api-reference/endpoints/identity/get-identity
+[Identity]: /api-reference/endpoints/identity
+[identity-api]: /api-reference/endpoints/identity
+[identity-required-details]: /identity/required-details#required-person-details
+[identity-onboarding-decision]: /identity/statuses#onboarding-decision
+[identity-status]: /identity/statuses
+[Account]: /api-reference/endpoints/accounts
+[Add Account Members]: /api-reference/endpoints/account-members/add-account-members
+[Remove Account Members]: /api-reference/endpoints/account-members/delete-account-member
+[account-api]: /api-reference/endpoints/accounts
 
 [Profile]: /api-reference/endpoints/profiles
 [crypto-brokerage-fix]: /guides/crypto-brokerage/fix
@@ -26,17 +38,17 @@ description: Create an Identity, Account and Profile to provide Buy, Hold and Se
 
 This guide walks through setting up a [Fiat and Crypto Subledger][crypto-brokerage-fiat-crypto-subledger] crypto brokerage integration,
 creating a Person [Identity] and a related [Account] and [Profile] to book orders using the [Order API][order-api]. First, we will
-create an [Identity] to represent the user's kyc information on the Paxos Platform. Then we will create an [Account](/api-reference/endpoints/accounts) which sets 
+create an [Identity] to represent the user's kyc information on the Paxos Platform. Then we will create an [Account][account-api] which sets 
 up the structure of the brokerage account. Then we will create a [Profile] that represents the users fiat and crypto asset holdings. Then we will integrate with the [Order][order-api] API to
 set up a simple Buy, Hold and Sell integration. This guide should take around 30 minutes.
 
 ## Prerequisites
  - Sign up to the [Paxos Dashboard][dashboard-signup] in Sandbox
- - Reach out to [Support][support] to provision access to the [Identity API](/api-reference/endpoints/identity)
+ - Reach out to [Support][support] to provision access to the [Identity API][identity-api]
 
 ## Authenticate in Sandbox
-Create an [API Key][dashboard-create-api-key] on the Sandbox [Paxos Dashboard][dashboard-signup] with the following scopes to access the [Identity](/api-reference/endpoints/identity),
-[Account](/api-reference/endpoints/accounts) and [Order][order-api] APIs needed for this guide
+Create an [API Key][dashboard-create-api-key] on the Sandbox [Paxos Dashboard][dashboard-signup] with the following scopes to access the [Identity][identity-api],
+[Account][account-api] and [Order][order-api] APIs needed for this guide
  - `identity:read_identity`
  - `identity:read_account`
  - `identity:write_identity`
@@ -74,7 +86,7 @@ Include the Authorization header with the bearer token on all API requests `-H "
 ## Creating a Person Identity and Account
 ### ➊ Creating an Identity with Passthrough Verification
 To create a person identity, Paxos requires both
- - The details of the person according to the [Person Required Details Grid](/identity/required-details#required-person-details)
+ - The details of the person according to the [Person Required Details Grid][identity-required-details]
  - Data on who has completed identity verification (IDV) of the person.
 
 
@@ -145,7 +157,7 @@ handle it by either:
 </Warning>
 
 Check the response to find the `identity_id` of the newly created [Identity] and notice the status of the [Identity] is `PENDING`.
-Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
+Paxos will make an [Onboarding Decision][identity-onboarding-decision] and asynchronously update the status to either `DENIED` or `APPROVED`.
 ```json
 {
     "id": "{identity_id}",
@@ -162,7 +174,7 @@ Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision)
 <Info>
 
 An [Identity] might stay in `PENDING` due to being deemed high risk by Paxos. This [Identity] will be
-required to undergo [Enhanced Due Diligence]. See [how to automate document collection](/identity/edd) to
+required to undergo [Enhanced Due Diligence]. See [how to automate document collection][edd-guide] to
 allow `HIGH` risk customers to onboard to Paxos.
 
 </Info>
@@ -178,7 +190,7 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{identity_
 
 <Tip>
 
- - If the [Identity] is stuck in `PENDING`, read the [Identity Status](/identity/statuses) guide to help pinpoint why. If you have further questions, you can reach out to [Support][support].
+ - If the [Identity] is stuck in `PENDING`, read the [Identity Status][identity-status] guide to help pinpoint why. If you have further questions, you can reach out to [Support][support].
  - Use a [Webhook][webhook] integration to asynchronously process [`identity.approved`][webhook-event] and [`identity.denied`][webhook-event]
 events to notify users when they have been onboarded to Paxos.
 
@@ -186,7 +198,7 @@ events to notify users when they have been onboarded to Paxos.
 
 ### ➌ Creating an Account and Profile
 Now we are ready to make an [Account] and [Profile] for the [Identity]. An [Account] logically relates to a user's brokerage account,
-an [Identity] therefore can have one or many [Accounts](/api-reference/endpoints/accounts).
+an [Identity] therefore can have one or many [Accounts][account-api].
 
 
 ### Single Owner Account
@@ -220,7 +232,7 @@ For accounts with more than one owner, for example a joint brokerage account, bo
 Platform. An [Account] and [Profile] is then created for a designated primary account owner with any additional owners being set in `members` with the
 `BENEFICIAL_OWNER` role.
 
-[Identities](/api-reference/endpoints/identity) can be added or removed from an [Account] after creation using the [Add Account Members] and [Remove Account Members] endpoints respectively
+[Identities][identity-api] can be added or removed from an [Account] after creation using the [Add Account Members] and [Remove Account Members] endpoints respectively
 
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \

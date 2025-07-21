@@ -5,6 +5,19 @@ description: Create an Institution Identity, Account and Profile to provide Buy,
 
 
 
+[Enhanced Due Diligence]: /identity/edd
+[edd-guide]: /identity/edd
+[Get Identity]: /api-reference/endpoints/identity/get-identity
+[Identity]: /api-reference/endpoints/identity
+[identity-api]: /api-reference/endpoints/identity
+[identity-required-details]: /identity/required-details#required-institution-details
+[identity-onboarding-decision]: /identity/statuses#onboarding-decision
+[institution-member-roles]: /identity/institution-types#member-roles
+[identity-status]: /identity/statuses
+[Account]: /api-reference/endpoints/accounts
+[Add Account Members]: /api-reference/endpoints/account-members/add-account-members
+[Remove Account Members]: /api-reference/endpoints/account-members/delete-account-member
+[account-api]: /api-reference/endpoints/accounts
 
 [Profile]: /api-reference/endpoints/profiles
 [crypto-brokerage-fix]: /guides/crypto-brokerage/fix
@@ -26,17 +39,17 @@ description: Create an Institution Identity, Account and Profile to provide Buy,
 
 This guide walks through setting up a [Fiat and Crypto Subledger][crypto-brokerage-fiat-crypto-subledger] crypto brokerage integration for institutions,
 creating an Institution [Identity] and a related [Account] and [Profile] to book orders using the [Order API][order-api]. First, we will
-create an [Identity] to represent the institution's KYC information on the Paxos Platform. Then we will create an [Account](/api-reference/endpoints/accounts) which sets
+create an [Identity] to represent the institution's KYC information on the Paxos Platform. Then we will create an [Account][account-api] which sets
 up the structure of the brokerage account. Then we will create a [Profile] that represents the institution's fiat and crypto asset holdings. Then we will integrate with the [Order][order-api] API to
 set up a simple Buy, Hold and Sell integration. This guide should take around 30 minutes.
 
 ## Prerequisites
  - Sign up to the [Paxos Dashboard][dashboard-signup] in Sandbox
- - Reach out to [Support][support] to provision access to the [Identity API](/api-reference/endpoints/identity)
+ - Reach out to [Support][support] to provision access to the [Identity API][identity-api]
 
 ## Authenticate in Sandbox
-Create an [API Key][dashboard-create-api-key] on the Sandbox [Paxos Dashboard][dashboard-signup] with the following scopes to access the [Identity](/api-reference/endpoints/identity),
-[Account](/api-reference/endpoints/accounts) and [Order][order-api] APIs needed for this guide
+Create an [API Key][dashboard-create-api-key] on the Sandbox [Paxos Dashboard][dashboard-signup] with the following scopes to access the [Identity][identity-api],
+[Account][account-api] and [Order][order-api] APIs needed for this guide
  - `identity:read_identity`
  - `identity:read_account`
  - `identity:write_identity`
@@ -76,18 +89,18 @@ Include the Authorization header with the bearer token on all API requests `-H "
 
 Institution identities are used to represent all non-person entities. Details for institution identity type are recorded in institution_details. An institution identity also has institution_members associated with it. This defines persons or other entities that have some relationship to the institution.
 
-For detailed information about institution types, subtypes, and required fields, please refer to the [Institution Required Details](/identity/required-details#required-institution-details) documentation.
+For detailed information about institution types, subtypes, and required fields, please refer to the [Institution Required Details][identity-required-details] documentation.
 
 ### ➊ Creating Person Identities for Institution Members
 
-Before creating an institution identity, you need to create person identities that will be associated with the [institution as members](/identity/institution-types#member-roles) (e.g.
+Before creating an institution identity, you need to create person identities that will be associated with the [institution as members][institution-member-roles] (e.g.
 beneficial owners, authorized users, management control persons, etc.). 
 You'll need to create at least one person identity, but typically you'll create multiple identities for different roles within the institution.
 
 <Tip>
 
  
-The required fields for each [institution member role](/identity/institution-types#member-roles) are different. Please reach out to [Support][support] for more information.
+The required fields for each [institution member role][institution-member-roles] are different. Please reach out to [Support][support] for more information.
 </Tip>
 
 ```shell
@@ -149,7 +162,7 @@ Check the response to find the `identity_id` of the newly created person identit
 ### ➋ Creating an Institution Identity
 
 To create an institution identity, you'll need to provide:
-- The details of the institution according to the [Institution Required Details](/identity/required-details#required-institution-details)
+- The details of the institution according to the [Institution Required Details][identity-required-details]
 - Information about institution members and their roles
 
 Here's an example of creating a institution (see API documentation for full request details):
@@ -203,7 +216,7 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
 ```
 
 <Tip>
-The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details](/identity/required-details#required-institution-details) documentation for complete requirements.
+The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details][identity-required-details] documentation for complete requirements.
 </Tip>
 
 <Warning>
@@ -214,7 +227,7 @@ handle it by either:
 </Warning>
 
 Check the response to find the `identity_id` of the newly created [Identity] and notice the status of the [Identity] is `PENDING`.
-Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
+Paxos will make an [Onboarding Decision][identity-onboarding-decision] and asynchronously update the status to either `DENIED` or `APPROVED`.
 
 ```json
 {
@@ -231,7 +244,7 @@ Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision)
 
 <Info>
 An [Identity] might stay in `PENDING` due to being deemed high risk by Paxos. This [Identity] will be
-required to undergo [Enhanced Due Diligence]. See [how to automate document collection](/identity/edd) to
+required to undergo [Enhanced Due Diligence]. See [how to automate document collection][edd-guide] to
 allow `HIGH` risk customers to onboard to Paxos.
 </Info>
 
@@ -258,7 +271,7 @@ events to notify users when they have been onboarded to Paxos.
 ### ➍ Creating an Account and Profile
 
 Now we are ready to make an [Account] and [Profile] for the institution [Identity]. An [Account] logically relates to an institution's brokerage account,
-an [Identity] therefore can have one or many [Accounts](/api-reference/endpoints/accounts).
+an [Identity] therefore can have one or many [Accounts][account-api].
 
 ```shell
 # Create account and profile
