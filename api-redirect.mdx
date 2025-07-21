@@ -1,0 +1,81 @@
+---
+title: "Redirecting..."
+---
+
+<div className="spinner"></div>
+<div className="message">
+  <h2>Redirecting to new documentation...</h2>
+  <p>Please wait while we redirect you to the updated API documentation.</p>
+</div>
+
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+if(!window.isRedirecting) {
+  window.isRedirecting = false;
+}
+
+function cleanString(tag) {
+  return tag
+    .replace(/([A-Z])/g, "-$1")
+    .toLowerCase()
+    .replace(/^-/, "");
+}
+
+function getRedirectPath() {
+  try {
+    const pathname = window.location.hash;
+    if(!pathname.includes("#tag/")) {
+      return undefined;
+    }
+
+    const parts = pathname.split("#tag/");
+    if (parts.length > 1) {
+      const tagAndOperation = parts[1];
+      const segments = tagAndOperation.split("/operation/");
+
+      if (segments.length === 2) {
+        const tag = segments[0];
+        const operation = segments[1];
+
+        return "/api-reference/endpoints/" +
+          cleanString(tag).replace(/-+/g, "-") +
+          "/" +
+          cleanString(operation);
+      } else if (segments.length === 1) {
+        const tag = segments[0];
+
+        return "/api-reference/endpoints/" +
+          cleanString(tag).replace(/-+/g, "-") +
+          "/overview";
+      }
+    }
+  } catch (e) {
+    return undefined;
+  }
+
+  return undefined;
+}
+
+function handleRedirect () {
+  if(window.isRedirecting) {
+    return;
+  }
+  window.isRedirecting = true;
+  console.log("Starting redirect process...");
+
+
+  const uri = getRedirectPath() || "/api-reference";
+
+  console.log("Redirecting to", uri);
+}
+
+handleRedirect();
+
+// Also handle cases where this page is loaded directly with URL parameters
+window.addEventListener('load', () => {
+  handleRedirect();
+});
+    `
+  }}
+/>
