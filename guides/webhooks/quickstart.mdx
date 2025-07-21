@@ -3,6 +3,11 @@ title: 'Get Started with Webhooks'
 description: Create and register a webhook consumer to start receiving events.
 ---
 
+[events]: /api-reference/events
+[Support]: https://support.paxos.com
+[Get Event]: /api-reference/endpoints/events/get-event
+[List Events]: /api-reference/endpoints/events/list-events
+[reference]: /api-reference/events
 
 This guide walks you through setting up a webhook consumer that can integrate with Paxos to receive events that occur on
 the platform. Once completed you should have a webhook consumer, tested locally, and be ready to integrate and test in sandbox;
@@ -133,11 +138,11 @@ public record PaxosEvent(
 ## ➋ Test the Consumer Locally
 <Warning>
 While we work on a CLI for testing your consumer locally, please directly test with the provided sample event payload below and
-reach out to [Support](https://support.paxos.com) should you require any further assistance setting up your consumer.
+reach out to [Support][Support] should you require any further assistance setting up your consumer.
 </Warning>
 
 The below curl command contains an example event that Paxos will send you when an identity is approved. We do not send
-the whole event payload to you in the webhook message, to get the whole payload you will need to integrate with the [Events API](/api-reference/events)
+the whole event payload to you in the webhook message, to get the whole payload you will need to integrate with the [Events API][reference]
 to call [Get Event] using the event ID (`id`) provided in the above payload.
 
 ```shell
@@ -160,8 +165,8 @@ When running the above, your consumer should receive the event, printing to stan
 
 | Parameter | Description| Example |
 | --- |---|---|
-| `id` | The unique identifier of the event. This `id` can be used to fetch the full details of the event from the [Events API](/api-reference/events). | `bd019f1c-89a7-4372-9d21-eaad9280dc41` |
-| `type` | The type of the event. More details about available event types can be found on the corresponding events page, such as [Identity Events](/api-reference/events). | `identity.disabled` |
+| `id` | The unique identifier of the event. This `id` can be used to fetch the full details of the event from the [Events API][reference]. | `bd019f1c-89a7-4372-9d21-eaad9280dc41` |
+| `type` | The type of the event. More details about available event types can be found on the corresponding events page, such as [Identity Events][events]. | `identity.disabled` |
 | `source` | The source of the event. This will always be `com.paxos`. | `com.paxos` |
 | `time` | The time the event was created. Formatted according to RFC3339 date-time. | `2025-01-01T14:30:02Z` |
 | `object` | The object type of the event. This will always be `event`. | `event` |
@@ -179,7 +184,7 @@ request to [Get Event] in order to fetch the full event object.
 ## ➍ Register the Consumer
 We're working on supporting self-service registration in [Dashboard](https://dashboard.paxos.com/login), in the meantime please contact [Support] to initiate webhook registration.
 You'll need to let us know:
- - Which [event types](/api-reference/events) you would like to receive and process
+ - Which [event types][events] you would like to receive and process
  - Your webhook consumer endpoint URL
  - The [authentication method](#secure-the-consumer) of your webhook consumer
  - The environment (Sandbox or Prod) you would like to integrate with

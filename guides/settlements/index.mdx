@@ -3,6 +3,10 @@ title: 'Overview'
 description: Propose, approve and manage two-way atomic transfers.
 ---
 
+[create]: /api-reference/endpoints/settlement/create-transaction
+[affirm]: /api-reference/endpoints/settlement/affirm-transaction
+[notification]: /guides/settlements/notification
+[status]: /guides/settlements/status
 
 <Description description={frontMatter.description}/>
 
@@ -18,15 +22,15 @@ Upon completion, all settled assets are immediately available for trading, trans
 
 ## Settlement Workflow
 
-The settlement workflow requires two parties to complete: The Source Profile owner who [initiates](/api-reference/endpoints/settlement/create-transaction) the transaction and the Target Profile owner who [approves](/api-reference/endpoints/settlement/affirm-transaction) the transaction.
+The settlement workflow requires two parties to complete: The Source Profile owner who [initiates][create] the transaction and the Target Profile owner who [approves][affirm] the transaction.
 Most integrations follow a similar workflow:
 
 1. Both parties agree on the transaction details and share counterparty Profile IDs outside of the Paxos Platform (for example, via email, Telegram, or other application).
-1. The Source Profile owner [submits the transaction](/api-reference/endpoints/settlement/create-transaction) to the settlement platform.
-1. The Target Profile owner receives a [notification](/guides/settlements/notification), reviews the transaction details and [approves the transaction](/api-reference/endpoints/settlement/affirm-transaction).
+1. The Source Profile owner [submits the transaction][create] to the settlement platform.
+1. The Target Profile owner receives a [notification][notification], reviews the transaction details and [approves the transaction][affirm].
 1. Both parties fund the associated Profiles via deposits if the requisite balances are not already present.
 1. Settlement (movement of assets between Profiles) occurs soon after both parties have sufficient assets on the platform.
-1. Once the transaction [settles](/guides/settlements/status), both parties can immediately utilize the new balance.
+1. Once the transaction [settles][status], both parties can immediately utilize the new balance.
 
 ## Get Started
 

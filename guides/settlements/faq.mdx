@@ -3,6 +3,10 @@ title: 'FAQ'
 description: Get answers to common questions about the Settlements API.
 ---
 
+[deposit]: /api-reference/endpoints/sandbox-deposits/create-sandbox-deposit
+[support]: https://support.paxos.com
+[status]: status
+[assets]: blockchains
 <Description description={frontMatter.description}/>
 
 <AccordionGroup>
@@ -11,19 +15,19 @@ description: Get answers to common questions about the Settlements API.
 
 No.
 You can create and approve the transaction first and then deposit [assets] when ready.
-Settlement only takes place when the transaction is [affirmed](status) and all the required assets have been deposited.
+Settlement only takes place when the transaction is [affirmed][status] and all the required assets have been deposited.
 
 </Accordion>
 
 <Accordion title="Why am I not receiving email notifications when testing in Sandbox?" id="notifications">
 
-Notifications are off by default in Sandbox. Contact [Support](https://support.paxos.com) to turn them on.
+Notifications are off by default in Sandbox. Contact [Support][support] to turn them on.
 
 </Accordion>
 
 <Accordion title="Which assets are supported for Sandbox testing?" id="testing">
 
-You can fund your Sandbox Account with the supported [assets] or those listed in [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit).
+You can fund your Sandbox Account with the supported [assets] or those listed in [Create Sandbox Deposit][deposit].
 For most setups, use the assets you can trade, transfer or withdraw for testing.
 
 </Accordion>
