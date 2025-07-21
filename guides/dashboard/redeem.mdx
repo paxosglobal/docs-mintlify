@@ -1,20 +1,27 @@
 ---
-title: 'Redeem'
-description: Deposit stablecoin and convert to USD. Transfer USD to your bank.
+title: "Redeem"
+description: "Deposit stablecoin and convert to USD. Transfer USD to your bank."
 ---
 
-Redemption allows you to convert Paxos-issued stablecoins into USD and send the funds to your bank account. 
+## Test
+
+![Add Fiat Account Pn](/images/add-fiat-account.png)
+
+<Warning>
+  warning
+</Warning>
+
+``` filename
+```
+
+Redemption allows you to convert Paxos-issued stablecoins into USD and send the funds to your bank account.
 
 Follow the steps below to complete this process using the **Convert** option in the Dashboard.
 
-</Tip>
-
 <Warning>
+  Who can do this
 
- Who can do this
-
-Only users with the **Treasurer** role can redeem stablecoins. [View all roles and permissions](https://docs.paxos.com/dashboard/roles). 
-
+  Only users with the **Treasurer** role can redeem stablecoins. [View all roles and permissions](https://docs.paxos.com/dashboard/roles).
 </Warning>
 
 ## What You'll Do
@@ -25,53 +32,59 @@ Only users with the **Treasurer** role can redeem stablecoins. [View all roles a
 ## Before you begin
 
 <Tip>
-
-Make sure you've deposited stablecoins via [**Dashboard > Deposit**](https://dashboard.paxos.com/actions/deposit) before starting a redemption.
-
+  Make sure you've deposited stablecoins via [**Dashboard \> Deposit**](https://dashboard.paxos.com/actions/deposit) before starting a redemption.
 </Tip>
 
 ### Requirements
 
 - [A verified Paxos account](https://docs.paxos.com/dashboard/signin)
-
 - A **Treasurer** role with the [required permissions](https://docs.paxos.com/dashboard/roles).
 
 ### Supported Stablecoins and Networks
 
 | Asset | Supported Network |
-| ----- | ----- |
-| USDG | Ethereum, Solana |
-| PYUSD | Ethereum, Solana |
-| USDP | Ethereum |
+| ----- | ----------------- |
+| USDG  | Ethereum, Solana  |
+| PYUSD | Ethereum, Solana  |
+| USDP  | Ethereum          |
 
 ## ➊ Add Fiat Account
 
-Before you can redeem stablecoins, you need to add a [fiat account](/dashboard/fiat) in the Paxos Dashboard. 
+Before you can redeem stablecoins, you need to add a [fiat account](/dashboard/fiat) in the Paxos Dashboard.
 
-1. Go to the [Dashboard] > **Fiat Accounts**   
-2. Click **+ Fiat Account** in the top-right corner.![Adding Fiat Account](/images/add-fiat-account.png)  
-3. Select a network.  
-4. Enter account details.  
-5. Fill in recipient details.  
-6. Enter a mailing address.  
+1. Go to the [Dashboard] \> **Fiat Accounts**
+2. Click **\+ Fiat Account** in the top-right corner.
+
+   ![Adding Fiat Account](/images/add-fiat-account.png)
+3. Select a network.
+4. Enter account details.
+5. Fill in recipient details.
+6. Enter a mailing address.
 7. Click **Save**.
 
 <Tip>
-Use the [Approvals][approvals] functionality to require additional team members to review any new fiat accounts before they are saved. This avoids potential mistakes around incorrect information and adds an extra layer of security. **Only approved fiat accounts** can be used in the redemption process.
+  Use the [Approvals][approvals] functionality to require additional team members to review any new fiat accounts before they are saved. This avoids potential mistakes around incorrect information and adds an extra layer of security. **Only approved fiat accounts** can be used in the redemption process.
 </Tip>
 
 ## ➋ Redeem Asset
 
-1. Go to the [Dashboard] and click **Convert** in the top-right corner.  
-2. Select the **Asset** to redeem.![Select asset](/images/redeem-usdg.png)
-3. Choose the **Source** where the asset is located (a Profile or External Account/Wallet).![Select source](/images/redeem-select-source.png)
-4. Select the **Asset** to receive.![Select asset](/images/redeem-select-asset.png)  
-5. Choose the **Destination** where the converted asset should go (a Profile or an External Account/Wallet).![Select source](/images/redeem-destination.png)  
-6. Go to [Transactions > Asset Movements](https://dashboard.paxos.com/dashboard/transactions/asset-movements) or [Transactions > Conversions](https://dashboard.paxos.com/dashboard/transactions/conversions) to monitor activity.
+1. Go to the [Dashboard] and click **Convert** in the top-right corner.
+2. Select the **Asset** to redeem.
+
+   ![Select asset](/images/redeem-usdg.png)
+3. Choose the **Source** where the asset is located (a Profile or External Account/Wallet).
+
+   ![Select source](/images/redeem-select-source.png)
+4. Select the **Asset** to receive.
+
+   ![Select asset](/images/redeem-select-asset.png)
+5. Choose the **Destination** where the converted asset should go (a Profile or an External Account/Wallet).
+
+   ![Select source](/images/redeem-destination.png)
+6. Go to [Transactions \> Asset Movements](https://dashboard.paxos.com/dashboard/transactions/asset-movements) or [Transactions \> Conversions](https://dashboard.paxos.com/dashboard/transactions/conversions) to monitor activity.
 
 <Tip>
-Need help?
+  Need help?
 
-Redemption options may vary based on your account or [Entity] configuration. Reach out to your [Entity Manager](/dashboard/roles#entity-manager) or [contact us](https://support.paxos.com/hc/en-us/requests/new) for support.
-
+  Redemption options may vary based on your account or [Entity] configuration. Reach out to your [Entity Manager](/dashboard/roles#entity-manager) or [contact us](https://support.paxos.com/hc/en-us/requests/new) for support.
 </Tip>
