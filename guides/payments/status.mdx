@@ -6,7 +6,7 @@ description: Learn more about payment statuses.
 
 ## Pay-ins
 
-- [List Transfers](/api-reference/endpoints/transfers/list-transfers): When [monitoring a pay-in](/guides/payments/quickstart#pay-in-monitor-reconcile), a `PENDING` a transaction is being confirmed. Depending on the network, confirmation can take from seconds to minutes. Transactions with a `COMPLETED` status have received sufficient confirmations. The `FAILED` status means the transaction was denied.
+- [List Transfers](/api-reference/endpoints/transfers/list-transfers): When [monitoring a pay-in](/guides/payments/quickstart#pay-in-monitor-reconcile), a `PENDING` transaction is being confirmed. Depending on the network, confirmation can take from seconds to minutes. Transactions with a `COMPLETED` status have received sufficient confirmations. The `FAILED` status means the transaction was denied.
 - [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal): When [withdrawing USD to a bank account](/guides/payments/quickstart#pay-in-withdraw-fiat), the `PENDING` status means the request has been made and is being processes. Depending on the withdrawal type, it can take up to a few days for the transaction to complete. When the transfer to the bank account is successful, the status changes to `COMPLETED`.
 
 ## Refunds
