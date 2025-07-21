@@ -3,26 +3,18 @@ title: 'Request Signing'
 description: Use JWS to add an additional layer of security to every request.
 ---
 
-[mTLS]: https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/
-[SSH]: https://www.ssh.com/academy/ssh/public-key-authentication
-[Support]: https://support.paxos.com
-[Sandbox]: /guides/developer/sandbox
-[PyJWT]: https://pypi.org/project/PyJWT/
-[openssl]: https://openssl-library.org/
-[admin-api-sandbox]: https://dashboard.sandbox.paxos.com/admin/api
-[admin-api-production]: https://dashboard.paxos.com/admin/api
 
 Request signing adds an additional layer of security to every request you send to Paxos, and can help protect your account should your Paxos API Client ID and Secret become compromised.
 Once request signing is enabled on your account, Paxos rejects all unsigned requests to authenticated endpoints.
 
-> Request signing must be activated by Paxos. Contact [Support] to get started.
+> Request signing must be activated by Paxos. Contact [Support](https://support.paxos.com) to get started.
 
-Signed requests use your own private key, similar to [mTLS] or [SSH] public authentication, and then attach the signature to the request as the `Paxos-Signature HTTP header`, using the JSON Web Signature (JWS) format.
+Signed requests use your own private key, similar to [mTLS](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) or [SSH](https://www.ssh.com/academy/ssh/public-key-authentication) public authentication, and then attach the signature to the request as the `Paxos-Signature HTTP header`, using the JSON Web Signature (JWS) format.
 
 ## Set Up Signed Request
 
 To get started, you will need to have the **Client ID** and **Secret** available for constructing the payload.
-Additionally, install the JOSE/JWS library in the language of your choice, for example [PyJWT][PyJWT] which includes support for crypto.
+Additionally, install the JOSE/JWS library in the language of your choice, for example [PyJWT](https://pypi.org/project/PyJWT/) which includes support for crypto.
 
 > Never share your private keys with anyone, especially for Production deployments.
 > Using an HSM, secrets manager, or key-management service may provide an additional layer of protection.
@@ -31,7 +23,7 @@ Additionally, install the JOSE/JWS library in the language of your choice, for e
 
 Generate the JWS signature with your private key using a combination of the base64url encoded header and payload, using either the EdDSA (ed25519) or the ES256 algorithm.
 
->  To use the EdDSA (ed25519) algorithm when generating key pairs, install [OpenSSL 3][openssl] using the package manager of your choice.
+>  To use the EdDSA (ed25519) algorithm when generating key pairs, install [OpenSSL 3](https://openssl-library.org/) using the package manager of your choice.
 > Older versions of OpenSSL do not support the EdDSA (ed25519) algorithm. 
 
 To generate a new ES256 private key using the terminal:
@@ -51,18 +43,18 @@ The process for EdDSA (ed25519) keys is similar:
 
 ### ➋ Add Public Key to Your Paxos Account
 
-Go to ** Admin > API**  in either [Sandbox][admin-api-sandbox] or [Production][admin-api-production] and find the **API Credentials** that require request signing.
+Go to ** Admin > API**  in either [Sandbox](https://dashboard.sandbox.paxos.com/admin/api) or [Production](https://dashboard.paxos.com/admin/api) and find the **API Credentials** that require request signing.
 
-> Request signing must be activated by Paxos. Contact [Support] to get started.
+> Request signing must be activated by Paxos. Contact [Support](https://support.paxos.com) to get started.
 
 Scroll down and use **Edit API Credentials** to make changes.
 Switch **Request Signing** to open the edit dialogue and add your _Public Key_.
 
-Once you **Save Changes**, contact [Support] to get started.
+Once you **Save Changes**, contact [Support](https://support.paxos.com) to get started.
 
 ### ➌ Generate Signed Request
 
-Use a JOSE/JWS library such as [PyJWT] to generate the signature.
+Use a JOSE/JWS library such as [PyJWT](https://pypi.org/project/PyJWT/) to generate the signature.
 
 #### Construct Header
 
@@ -95,7 +87,7 @@ When using a `POST` or `PUT` method, include the JWS payload in the body bytes:
 
 #### Create Signature
 
-Use a library such as  [PyJWT] to generate the request signature.
+Use a library such as  [PyJWT](https://pypi.org/project/PyJWT/) to generate the request signature.
 First, install the library and start a new session.
 For example:
 
