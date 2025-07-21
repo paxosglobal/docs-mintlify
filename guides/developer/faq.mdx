@@ -3,10 +3,6 @@ title: 'Paxos API FAQ'
 description: Get answers to commonly asked questions.
 ---
 
-[conversion-assets]: /guides/developer/convert#assets
-[cancel]: /api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion
-[Support]: https://support.paxos.com
-[stablecoin conversion guide]: /guides/developer/convert
 
 ## Stablecoin Conversions
 
@@ -20,7 +16,7 @@ The [stablecoin conversion guide] takes you through the simple process. Reach ou
 
 <Accordion title="What are the conversion fees?" id="fees">
 
-None. Conversions between the [supported asset pairs][conversion-assets] incure no fees.
+None. Conversions between the [supported asset pairs](/guides/developer/convert#assets) incure no fees.
 
 </Accordion>
 
@@ -34,14 +30,14 @@ Contact [Support](https://support.paxos.com) for additional details.
 <Accordion title="What is dust?" id="dust">
 
 Dust is a small amount of an asset leftover from a transaction.
-Dust can accumulate when converting [assets with different precisions][conversion-assets].
+Dust can accumulate when converting [assets with different precisions](/guides/developer/convert#assets).
 
 </Accordion>
 
 <Accordion title="Can I cancel a conversion?" id="cancel">
 
 Most conversions execute near instantaneously; however, under rare conditions a settlement delay may occur.
-You can use the [Cancel Stablecoin Conversion][cancel] endpoint to cancel a pending conversion.
+You can use the [Cancel Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion) endpoint to cancel a pending conversion.
 
 </Accordion>
 

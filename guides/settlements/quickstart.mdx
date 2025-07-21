@@ -3,45 +3,19 @@ title: 'Quickstart'
 description: Set up and complete the settlement workflow in the Sandbox environment.
 ---
 
-[create-sandbox-deposit]: /api-reference/endpoints/sandbox-deposits/create-sandbox-deposit
-[settlement-api]: /api-reference/settlement
-[settle-faq]: /guides/settlements/faq
-[api-management]: https://dashboard.sandbox.paxos.com/admin/api
-[sandbox-account]: https://dashboard.sandbox.paxos.com
-[workflow]: /settlements#workflow
-[profiles]: /api-reference/profiles
-[create-profile]: /api-reference/endpoints/profiles/create-profile
-[fund]: #fund
-[propose]: #propose
-[profile-balances]: /api-reference/endpoints/profiles/list-profile-balances
-[get-profile-balance]: /api-reference/endpoints/profiles/get-profile-balance
-[approve]: #approve 
-[get-transaction]: /api-reference/endpoints/settlement/get-transaction
-[set-up-profiles]: #set-up-profiles
-[create-transaction]: /api-reference/endpoints/settlement/create-transaction
-[list-transactions]: /api-reference/endpoints/settlement/list-transactions
-[cancel-transaction]: /api-reference/endpoints/settlement/cancel-transaction
-[status]: status
-[faq-assets]: faq#assets
-[affirm]: /api-reference/endpoints/settlement/affirm-transaction
-[authenticate]: #authenticate
-[status-list-transactions]: status#list-transactions
-[support]: https://support.paxos.com
-[check-status]: #check-status
-[Entity Manager]: /dashboard/roles#entity-manager
 
 <Description description={frontMatter.description}/>
 
-The [settlement workflow][workflow] requires [two Profiles][set-up-profiles], referred to in this guide as Source Profile (`source_profile_id`) and Target Profile (`target_profile_id`).
-The Profiles are under the same Sandbox Account for simplicity and to allow completion of the steps with a single [authentication][authenticate].
-This guild also [funds][fund] the Source Profile with BTC and ETH for the `DELIVER` leg and USD in the Target Profile for the `RECEIVE` leg before [creating the transaction request][propose].
+The [settlement workflow](/guides/settlements#workflow) requires [two Profiles](#set-up-profiles), referred to in this guide as Source Profile (`source_profile_id`) and Target Profile (`target_profile_id`).
+The Profiles are under the same Sandbox Account for simplicity and to allow completion of the steps with a single [authentication](#authenticate).
+This guild also [funds](#fund) the Source Profile with BTC and ETH for the `DELIVER` leg and USD in the Target Profile for the `RECEIVE` leg before [creating the transaction request](#propose).
 
-> Contact your [Entity Manager] or [Support][support] if you run into any issues or don't have access to a Sandbox Account.
+> Contact your [Entity Manager] or [Support](https://support.paxos.com) if you run into any issues or don't have access to a Sandbox Account.
 
 ## 1. Authenticate
 
-Add the `settlement:read_transaction` and `settlement:write_transaction` scopes to your [Sandbox Account][sandbox-account] under the [API Management][api-management] setting and then authenticate in Sandbox using the scopes.
-Also include `funding:read_profile` and `funding:write_profile` for creating and funding [Profiles][profiles].
+Add the `settlement:read_transaction` and `settlement:write_transaction` scopes to your [Sandbox Account](https://dashboard.sandbox.paxos.com) under the [API Management](https://dashboard.sandbox.paxos.com/admin/api) setting and then authenticate in Sandbox using the scopes.
+Also include `funding:read_profile` and `funding:write_profile` for creating and funding [Profiles](/api-reference/endpoints/profiles).
 
 ```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
@@ -64,7 +38,7 @@ Confirm the response includes requisite scopes and save the `access_token` to us
 
 ## 2. Set Up Profiles
 
-[Create][create-profile] two new Profiles in the Sandbox Account, one with `Source Profile` and the second with `Target Profile` as the `nickname`.
+[Create](/api-reference/endpoints/profiles/create-profile) two new Profiles in the Sandbox Account, one with `Source Profile` and the second with `Target Profile` as the `nickname`.
 
 ### Create Source Profile
 
@@ -76,7 +50,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
 }'
 ```
 
-You will need the `id` from the response to [fund the Profile][fund] and [propose a transaction][propose].
+You will need the `id` from the response to [fund the Profile](#fund) and [propose a transaction](#propose).
 
 ```json highlight={2}
 {
@@ -95,7 +69,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
 }'
 ```
 
-You will need the `id` from the response to [fund the Profile][fund] and [propose a transaction][propose].
+You will need the `id` from the response to [fund the Profile](#fund) and [propose a transaction](#propose).
 
 ```json highlight={2}
 {
@@ -106,12 +80,12 @@ You will need the `id` from the response to [fund the Profile][fund] and [propos
 ```
 ## 3. Fund Profiles
 
-Next, use [Create Sandbox Deposit][create-sandbox-deposit] to fund the Profiles.
+Next, use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to fund the Profiles.
 
 <Tip>
 
-This guide pre-funds all accounts prior to [creating a settlement request][propose] for simplicity.
-However, it is possible to create and approve a settlement request [before the funds are available][faq-assets].
+This guide pre-funds all accounts prior to [creating a settlement request](#propose) for simplicity.
+However, it is possible to create and approve a settlement request [before the funds are available](/guides/settlements/faq#assets).
 
 </Tip>
 ### Fund Source Profile
@@ -141,7 +115,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/{profile_id}'
     "crypto_network": "ETHEREUM"
   }'
   ```
-Use [List Profile Balances][profile-balances] to retrieve the Source Profile balance.
+Use [List Profile Balances](/api-reference/endpoints/profiles/list-profile-balances) to retrieve the Source Profile balance.
 Include the `assets` query parameter to filter out all other assets.
 
 ```shell
@@ -179,7 +153,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/{profile_id}'
   }'
 ```
 
-Use [Get Profile Balance][get-profile-balance] to retrieve the Target Profile USD balance.
+Use [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance) to retrieve the Target Profile USD balance.
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/{profile_id}/balances/USD' \
@@ -197,7 +171,7 @@ Confirm the Target Profile has at least $50,000 USD available for trading.
 ```
 ## 4. Propose Transaction
 
-Using the Source Profile and Target Profile `profile_id` [created earlier][set-up-profiles], use [Create Transaction][create-transaction] to propose exchanging 1 BTC and 5 ETH (in the Source Profile balance) for $50,000 USD (in the Target Profile balance). The `ref_id` must be unique. The settlement window defaults apply if `settlement_window_start` and/or `settlement_window_end` are not specified.
+Using the Source Profile and Target Profile `profile_id` [created earlier](#set-up-profiles), use [Create Transaction](/api-reference/endpoints/settlement/create-transaction) to propose exchanging 1 BTC and 5 ETH (in the Source Profile balance) for $50,000 USD (in the Target Profile balance). The `ref_id` must be unique. The settlement window defaults apply if `settlement_window_start` and/or `settlement_window_end` are not specified.
 
 ```shell highlight={4,5,6}
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions' \
@@ -229,8 +203,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions' \
 ```
 
 The acknowledgement response confirms the request has been received and provides the `Transaction` object.
-The unique transaction `id` is used to [approve] and [retrieve][check-status] the transaction, and the Source Profile owner can use the `id` to [cancel][cancel-transaction] the `PENDING` transaction.
-The transaction [status] can be used used by either party to [retrieve a list of filtered transactions][status-list-transactions].
+The unique transaction `id` is used to [approve] and [retrieve](#check-status) the transaction, and the Source Profile owner can use the `id` to [cancel](/api-reference/endpoints/settlement/cancel-transaction) the `PENDING` transaction.
+The transaction [status](/guides/settlements/status) can be used by either party to [retrieve a list of filtered transactions](/guides/settlements/status#list-transactions).
 
 ```json highlight={2,28}
 {
@@ -268,23 +242,23 @@ The transaction [status] can be used used by either party to [retrieve a list of
 
 ## 5. Approve Transaction
 
-The Target Profile owner [approves (affirms)][affirm] the transaction.
+The Target Profile owner [approves (affirms)](/api-reference/endpoints/settlement/affirm-transaction) the transaction.
 
 <Tip>
 
-Since the same Paxos Account is used for both counterparty Profiles in this guide, you can use the same [authentication][authenticate].
+Since the same Paxos Account is used for both counterparty Profiles in this guide, you can use the same [authentication](#authenticate).
 
 </Tip>
 
-Use the `Transaction.id` from the [propose step][propose] as the `transaction_id`.
-You can also [look up a transaction by status][status-list-transactions] to find the `id`.
+Use the `Transaction.id` from the [propose step](#propose) as the `transaction_id`.
+You can also [look up a transaction by status](/guides/settlements/status#list-transactions) to find the `id`.
 
 ```shell
 curl --location --request PUT 'https://api.sandbox.paxos.com/v2/settlement/transactions/{transaction_id}/affirm' \
 --header 'Authorization: Bearer {access_token}'
 ```
 
-The acknowledgement response includes transaction information and the `AFFIRMED` [status] and `updated_at` timestamp.
+The acknowledgement response includes transaction information and the `AFFIRMED` [status](/guides/settlements/status) and `updated_at` timestamp.
 
 ```json highlight={8,10}
 {
@@ -306,11 +280,11 @@ Settlement of the `AFFIRMED` transaction occurs only when both counterparties fu
 
 <Tip>
  
-Since both Profiles in this guide are [pre-funded][set-up-profiles], the transaction settled within a few seconds.
+Since both Profiles in this guide are [pre-funded](#set-up-profiles), the transaction settled within a few seconds.
 
 </Tip>
 
-Either party can use [Get Transaction][get-transaction] to check the [status][status].
+Either party can use [Get Transaction](/api-reference/endpoints/settlement/get-transaction) to check the [status](/guides/settlements/status)(/guides/settlements/status).
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{transaction_id}' \
@@ -318,7 +292,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{trans
 ```
 
 The response includes the complete `Transaction` object.
-When the transaction completes, the [status][status] and `updated_at` timestamp reflect the most recent activity. 
+When the transaction completes, the [status](/guides/settlements/status)(/guides/settlements/status) and `updated_at` timestamp reflect the most recent activity. 
 
 ```json highlight={28,30}
 {
@@ -357,5 +331,5 @@ When the transaction completes, the [status][status] and `updated_at` timestamp 
 ## Next Steps
 
 - Create a settlement transaction before funding the Profiles.
-- Learn more in the Settlements [FAQ][settle-faq].
-- Explore settlement methods and objects in the [Settlements API][settlement-api].
+- Learn more in the Settlements [FAQ](/guides/settlements/faq).
+- Explore settlement methods and objects in the [Settlements API](/api-reference/endpoints/settlement).
