@@ -128,7 +128,7 @@ Check the response to find the `identity_id` of the newly created person identit
 ### ➋ Creating an Institution Identity
 
 To create an institution identity, you'll need to provide:
-- The details of the institution according to the [Institution Required Details](/identity/required-details#required-institution-details)
+- The details of the institution according to the [Institution Required Details](/guides/identity/required-details#required-institution-details)
 - Information about institution members and their roles
 
 Here's an example of creating a institution (see API documentation for full request details):
@@ -182,7 +182,7 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
 ```
 
 <Tip>
-The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details](/identity/required-details#required-institution-details) documentation for complete requirements.
+The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details](/guides/identity/required-details#required-institution-details) documentation for complete requirements.
 </Tip>
 
 <Warning>
@@ -193,7 +193,7 @@ handle it by either:
 </Warning>
 
 Check the response to find the `identity_id` of the newly created [Identity] and notice the status of the [Identity] is `PENDING`.
-Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
+Paxos will make an [Onboarding Decision](/guides/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
 
 ```json
 {

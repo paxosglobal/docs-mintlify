@@ -124,7 +124,7 @@ handle it by either:
 </Warning>
 
 Check the response to find the `identity_id` of the newly created [Identity] and notice the status of the [Identity] is `PENDING`.
-Paxos will make an [Onboarding Decision](/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
+Paxos will make an [Onboarding Decision](/guides/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
 ```json
 {
     "id": "{identity_id}",
@@ -173,7 +173,7 @@ an [Identity] therefore can have one or many [Accounts](/api-reference/endpoints
 
 
 The `create_profile` flag must be set to `true`, this will ensure a [Profile] is created for the [Account]. This is how to
-create accounts and profiles for a [Fiat and Crypto Subledger](/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) integration.
+create accounts and profiles for a [Fiat and Crypto Subledger](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) integration.
 
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \
