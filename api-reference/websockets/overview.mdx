@@ -18,7 +18,7 @@ Paxos provides secure, real-time market and execution data feeds via public [Web
 - **[Market Data Feed](#market-data-feed)** - Order book updates with initial snapshots and real-time updates  
 - **[Stablecoin Market Price Feed](#stablecoin-feed)** - Market index price updates for external stablecoins
 
-> See the Websocket [trading](/guides/crypto-brokerage/websocket) and [stablecoin payments](/guides/payments/websocket) guides for a hands-on introduction.
+> See the Websocket [trading](/crypto-brokerage/websocket) and [stablecoin payments](/payments/websocket) guides for a hands-on introduction.
 
 The WebSocket connections provide a number of advantages when compared to the [v2 API](/api-reference), including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
 
@@ -28,7 +28,7 @@ For detailed technical specifications, message schemas, and interactive examples
 
 ## Connection Details
 
-Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits](/guides/developer/rate-limits#websocket-limits).
+Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits](/developer/rate-limits#websocket-limits).
 Both Production and Sandbox data feeds have a built-in, instantaneous failover.
 Clients should have a reconnection mechanism in case of server disconnection.
 

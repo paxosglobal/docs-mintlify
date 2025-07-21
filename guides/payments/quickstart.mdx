@@ -24,7 +24,7 @@ Each **Client ID** has a specific set of allowed scopes to access API endpoints.
 <PaymentsGetKeys />
 - To follow along with this guide, [create a new Profile](/api-reference/endpoints/profiles/create-profile) to represent the Seller.
 However, any existing Profile can be used when setting up simple [pay-in] and [refund] workflows.
-Learn more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).<PaymentsCreateProfile />
+Learn more about [user onboarding requirements](/payments/faq#seller-onboarding).<PaymentsCreateProfile />
 - To represent the Buyer in this guide, send enough testnet tokens to pay network fees, along with one of the [supported testnet stablecoins](/guides/payments/faq#supported-assets), to an off-platform wallet.<PaymentsPhantomWallet />
 ## Set Up Stablecoin Pay-in Workflow
 
@@ -62,7 +62,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
 ```
 
 Capture the `address` and `compatible_crypto_networks` values for distribution to potential Buyers.
-Also store the `id` to use when [looking up pay-ins](/guides/payments/quickstart/#pay-in-monitor-reconcile).
+Also store the `id` to use when [looking up pay-ins](/payments/quickstart/#pay-in-monitor-reconcile).
 
 ```json  highlight={8,12}
 {
@@ -84,7 +84,7 @@ Also store the `id` to use when [looking up pay-ins](/guides/payments/quickstart
 Since the designated Profile has not gone through the Identity onboarding process, the default  `identity_id` and `account_id` values appear in the response.
 
 > Onboarding Questions?
-> See the [onboarding FAQ](/guides/payments/faq#seller-onboarding) for details about user Identity and Account requirements.
+> See the [onboarding FAQ](/payments/faq#seller-onboarding) for details about user Identity and Account requirements.
 > Contact [Support](https://support.paxos.com/hc/en-us) to help determine the best onboarding approach.
 
 ### 2. Receive Stablecoin Payment
@@ -157,7 +157,7 @@ C> ontact [Support](https://support.paxos.com/hc/en-us) for assistance.
 
 ## Set Up a Refund Workflow
 
-To process stablecoin refunds on the Paxos Platform, first [fund your account with USD](/guides/payments/quickstart#refund-fund-account) then use  [Create Crypto Withdrawal] to initiate a stablecoin refund to the Buyer.
+To process stablecoin refunds on the Paxos Platform, first [fund your account with USD](/payments/quickstart#refund-fund-account) then use  [Create Crypto Withdrawal] to initiate a stablecoin refund to the Buyer.
 Once a refund is complete, the transaction shows up in the [List Transfers](/api-reference/endpoints/transfers/list-transfers) monitoring and reconciliation polling request.
 
 ### 1. Add USD to a Refund Account
@@ -252,7 +252,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/crypto-withdrawals' \
 ```
 
 The initial response has a `status` of `PENDING`, since the on-chain transaction has not yet been confirmed.
-Create a [refund monitoring request](/guides/payments/quickstart#refund-monitor-reconcile) to check that the refund was successful.
+Create a [refund monitoring request](/payments/quickstart#refund-monitor-reconcile) to check that the refund was successful.
 
 ```json
 {
