@@ -12,8 +12,8 @@ Then, use [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/creat
 
 <Tip>
 
-- To redeem stablecoins you already hold on the Paxos platform, you can use [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert to USD. See the [conversion guide] for details.
-- To send USD to your bank account, you'll need to first save your external banking information on the Paxos platform. See the [fiat withdrawal guide] for details.
+- To redeem stablecoins you already hold on the Paxos platform, you can use [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert to USD. See the [conversion guide](/guides/developer/convert) for details.
+- To send USD to your bank account, you'll need to first save your external banking information on the Paxos platform. See the [fiat withdrawal guide](/guides/developer/fiat-transfers/quickstart#withdrawal) for details.
 
 </Tip>
 
@@ -103,9 +103,9 @@ Also store the `id` to use when looking up transactions.
 ```
 ## ➌ Transfer Stablecoin to the Paxos Platform
 
-Initiate an on-chain transfer from your external wallet to the `address` included in the response from the [previous step](#add-deposit-address) or from [List Deposit Addresses].
+Initiate an on-chain transfer from your external wallet to the `address` included in the response from the [previous step](#add-deposit-address) or from [List Deposit Addresses](/api-reference/endpoints/deposit-addresses/list-deposit-addresses).
 
-Use [List Transfers] to check the status of transfer on the Paxos platform.
+Use [List Transfers](/api-reference/endpoints/transfers/list-transfers) to check the status of transfer on the Paxos platform.
 Using the `type=CRYPTO_DEPOSIT` and `status=COMPLETED` query parameters, in conjunction with `crypto_tx_hashes`, filters the results.
 ### USDG on Ethereum
 
@@ -185,4 +185,4 @@ Once the status is `COMPLETED`, the USD balance updates.
 
 Use [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal) to send USD to your bank account.
 You'll need to first save your external banking information on the Paxos platform.
-See the [fiat withdrawal guide] for details.
+See the [fiat withdrawal guide](/guides/developer/fiat-transfers/quickstart#withdrawal) for details.

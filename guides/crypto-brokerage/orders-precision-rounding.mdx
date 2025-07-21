@@ -50,14 +50,14 @@ Contact support@paxos.com with questions or issues during the migration period.
 The tick size and precision for some request and response parameters requires clients to implement differing precision.
 We recommend ensuring all REST clients implement the following:
 
-- `quote_amount` tick size of 0.01 (1e-2) for [Create Order](/api-reference/endpoints/orders/create-order).
-- `volume_weighted_average_price` tick size of 0.00000001 (1e-8) for [Get Order](/api-reference/endpoints/orders/get-order) and [List Orders](/api-reference/endpoints/orders/list-orders).
-- `average_price` precision of 0.000001 (1e-6) for [List Historical Prices](/api-reference/endpoints/pricing/list-historical-prices).
-- `commission ` and `rebate` tick size of 0.0000000000000000001 (1e-19) for [List Executions](/api-reference/endpoints/orders/list-executions).
-- `gross_trade_amount` tick size of 0.00000000000001 (1e-14) for [List Executions](/api-reference/endpoints/orders/list-executions).
-- `amount` precision of 0.00000001 (1e-8) for [Get Ticker](/api-reference/endpoints/market-data/get-ticker), [Get Order Book](/api-reference/endpoints/market-data/get-order-book) and [List Executions](/api-reference/endpoints/orders/list-executions).
-- `base_amount` precision of 0.00000001 (1e-8) for [List Orders](/api-reference/endpoints/orders/list-orders), [Create Order](/api-reference/endpoints/orders/create-order) and [Get Order](/api-reference/endpoints/orders/get-order).
-- `amount_filled` precision of 0.00000001 (1e-8) for [List Orders](/api-reference/endpoints/orders/list-orders), [Create Order](/api-reference/endpoints/orders/create-order) and [Get Order](/api-reference/endpoints/orders/get-order).
+- `quote_amount` tick size of 0.01 (1e-2) for [Create Order](../api-reference/endpoints/orders/create-order).
+- `volume_weighted_average_price` tick size of 0.00000001 (1e-8) for [Get Order](../api-reference/endpoints/orders/get-order) and [List Orders](../api-reference/endpoints/orders/list-orders).
+- `average_price` precision of 0.000001 (1e-6) for [List Historical Prices](../api-reference/endpoints/pricing/list-historical-prices).
+- `commission ` and `rebate` tick size of 0.0000000000000000001 (1e-19) for [List Executions](../api-reference/endpoints/orders/list-executions).
+- `gross_trade_amount` tick size of 0.00000000000001 (1e-14) for [List Executions](../api-reference/endpoints/orders/list-executions).
+- `amount` precision of 0.00000001 (1e-8) for [Get Ticker](../api-reference/endpoints/market-data/get-ticker), [Get Order Book](../api-reference/endpoints/market-data/get-order-book) and [List Executions](../api-reference/endpoints/orders/list-executions).
+- `base_amount` precision of 0.00000001 (1e-8) for [List Orders](../api-reference/endpoints/orders/list-orders), [Create Order](../api-reference/endpoints/orders/create-order) and [Get Order](../api-reference/endpoints/orders/get-order).
+- `amount_filled` precision of 0.00000001 (1e-8) for [List Orders](../api-reference/endpoints/orders/list-orders), [Create Order](../api-reference/endpoints/orders/create-order) and [Get Order](../api-reference/endpoints/orders/get-order).
 
 ## Tick and Decimal Precision for FIX Clients
 
@@ -71,7 +71,7 @@ Paxos uses different rounding logic for different services.
 ### Volume Weighted Average Price
 
 The `volume_weighted_average_price` field is rounded using half-up logic after eight decimals.
-This provides the volume-weighted average price across all underlying executions for an order within [List Executions](/api-reference/endpoints/orders/list-executions).
+This provides the volume-weighted average price across all underlying executions for an order within [List Executions](../api-reference/endpoints/orders/list-executions).
 
 ### HRQ Rounding
 

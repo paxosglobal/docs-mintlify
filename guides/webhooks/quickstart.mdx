@@ -138,7 +138,7 @@ reach out to [Support](https://support.paxos.com) should you require any further
 
 The below curl command contains an example event that Paxos will send you when an identity is approved. We do not send
 the whole event payload to you in the webhook message, to get the whole payload you will need to integrate with the [Events API](/api-reference/events)
-to call [Get Event] using the event ID (`id`) provided in the above payload.
+to call [Get Event](/api-reference/endpoints/events/get-event) using the event ID (`id`) provided in the above payload.
 
 ```shell
 curl -X POST http://localhost:8080/webhook/paxos \
@@ -174,10 +174,10 @@ You must secure your consumer's endpoint by authenticating using either:
 <Info>
 We do not currently support consumer-side signature-verification on our webhook event messages. To keep things secure,
 we therefore do not include the full event object in the webhook payload and require you to make an authenticated
-request to [Get Event] in order to fetch the full event object.
+request to [Get Event](/api-reference/endpoints/events/get-event) in order to fetch the full event object.
 </Info>
 ## ➍ Register the Consumer
-We're working on supporting self-service registration in [Dashboard](https://dashboard.paxos.com/login), in the meantime please contact [Support] to initiate webhook registration.
+We're working on supporting self-service registration in [Dashboard](https://dashboard.paxos.com/login), in the meantime please contact [Support](https://support.paxos.com) to initiate webhook registration.
 You'll need to let us know:
  - Which [event types](/api-reference/events) you would like to receive and process
  - Your webhook consumer endpoint URL

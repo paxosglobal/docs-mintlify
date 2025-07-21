@@ -20,7 +20,7 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 
 ## ➋ Deposit USD and USDG
 
-Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request] guide for help retrieving Profile IDs.
+Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request](/guides/developer/request) guide for help retrieving Profile IDs.
 This guide also includes examples for the USDG → USD conversion, so if you are following along make sure you add some USDG to the Profile.
 You can also use the [Fiat Transfers funding flow](/guides/developer/fiat-transfers/quickstart#funding) if you've already set up a Fiat Account.
 ### USD
@@ -51,7 +51,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
 
 Request a conversion using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion).
 Include the following body parameters in your request to convert the `source_asset` of $100 USD into the `target_asset`.
-For [Third-party integrations](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
+For [Third-party integrations](/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
 ### USDG → USD
 
 ```shell
@@ -68,7 +68,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
 ```
 The acknowledgement response includes the `id`, which can be used to lookup the transaction, and the status will always be `CREATED`.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
-The `target_asset` will not be credited until the [conversion status] is \"status": "SETTLED"`.
+The `target_asset` will not be credited until the [conversion status](/guides/developer/convert#statuses) is \"status": "SETTLED"`.
 
 ```json
 {
@@ -99,7 +99,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
 
 The acknowledgement response includes the `id`, which can be used to lookup the transaction, and the status will always be `CREATED`.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
-The `target_asset` will not be credited until the [conversion status] is \"status": "SETTLED"`.
+The `target_asset` will not be credited until the [conversion status](/guides/developer/convert#statuses) is \"status": "SETTLED"`.
 
 ```json
 {
