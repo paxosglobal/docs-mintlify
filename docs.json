@@ -332,12 +332,17 @@
             ]
           },
           {
+            "group": "Quickstart",
+            "pages": [
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+          {
             "group": "PayPal USD (PYUSD)",
             "pages": [
               "guides/stablecoin/pyusd/index",
               "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet",
-              "guides/stablecoin/integrate-pyusd"
+              "guides/stablecoin/pyusd/testnet"
             ]
           },
           {
@@ -676,6 +681,7 @@
               {
                 "group": "Events",
                 "pages": [
+                  "api-reference/endpoints/events/overview",
                   "api-reference/endpoints/events/list-events",
                   "api-reference/endpoints/events/get-event"
                 ]
