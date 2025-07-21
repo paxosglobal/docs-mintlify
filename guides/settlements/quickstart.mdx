@@ -204,7 +204,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions' \
 
 The acknowledgement response confirms the request has been received and provides the `Transaction` object.
 The unique transaction `id` is used to [approve](#approve) and [retrieve](#check-status) the transaction, and the Source Profile owner can use the `id` to [cancel](/api-reference/endpoints/settlement/cancel-transaction) the `PENDING` transaction.
-The transaction [status](/guides/settlements/status) can be used used by either party to [retrieve a list of filtered transactions](/guides/settlements/status#list-transactions).
+The transaction [status](/guides/settlements/status) can be used by either party to [retrieve a list of filtered transactions](/guides/settlements/status#list-transactions).
 
 ```json highlight={2,28}
 {
