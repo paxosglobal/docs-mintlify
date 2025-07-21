@@ -9,7 +9,7 @@ description: Learn about Paxos's HRQ product and how to submit a quote in less t
 - HRQ is only available for Paxos Crypto Brokerage Partners and must be enabled before you can use the API endpoints. If you are a Paxos Crypto Brokerage Partner, you may reach out to Support for assistance enabling HRQ. If you are an Individual or Institutional User of [dashboard.paxos.com](https://dashboard.paxos.com), please refer to the v2 Orders service for API trading.
 - Make sure you can successfully authenticate with the `exchange:read_quote`, `exchange:read_quote_execution`, and
 `exchange:write_quote_execution` scopes.
-- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits](../../api-reference/sandbox-deposits)
+- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits](/api-reference/sandbox-deposits)
 endpoint to add fiat to your profile if you have not already.
 - Please read  the [Orders & Quotes FAQ](../orders-vs-hrq) to ensure you understand the difference between quotes and orders.
 - You may wish to review our document on [Choosing a Ledgering Strategy](../ledger-type). This guide is written assuming a
@@ -28,7 +28,7 @@ associated Quote ID.
 
 ## Step 1: Retrieve a Quote using `List Quotes`
 The first step is to find the latest quote for the asset you wish to trade.
-The [List Quotes](../../api-reference/endpoints/quotes/list-quotes) service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
+The [List Quotes](/api-reference/endpoints/quotes/list-quotes) service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
 Note the `quote_id`. It will be needed to create a Quote Execution in Step 3 below.
 
 <Tip>
@@ -158,12 +158,12 @@ proceed assuming confirmation was received from the end user.
 <Tip>
 There is no limitation on the number of times a single quote can be executed. In production, quotes can and should be cached
 to be presented to multiple users rather than calling List Quotes for each user.
-Crypto Brokerage Partners should use multiplexing and call [List Quotes](../../api-reference/endpoints/quotes/list-quotes) via an application rather than
+Crypto Brokerage Partners should use multiplexing and call [List Quotes](/api-reference/endpoints/quotes/list-quotes) via an application rather than
 sending a List Quotes request every time a user wants to buy or sell an asset.
 </Tip>
 
 ## Step 3: Following confirmation, create a quote execution
-The [Create Quote Execution](../../api-reference/endpoints/quote-executions/create-quote-execution) endpoint is used to execute on a quote for buying or selling an asset.
+The [Create Quote Execution](/api-reference/endpoints/quote-executions/create-quote-execution) endpoint is used to execute on a quote for buying or selling an asset.
 In the Quote Execution request, the Partner must set the amount of fiat or crypto to buy or sell based on the user's input.
 This must be specified by EITHER:
   - `base_amount` to specify the amount of crypto to buy or sell, OR
@@ -238,7 +238,7 @@ Response:
 
 ## Step 4: Validate execution and settlement
 The final step is to confirm that the quote execution completed and settled successfully using the
-[Get Quote Execution](../../api-reference/endpoints/quote-executions/get-quote-execution) and [List Quote Executions](../../api-reference/endpoints/quote-executions/list-quote-executions) endpoints.
+[Get Quote Execution](/api-reference/endpoints/quote-executions/get-quote-execution) and [List Quote Executions](/api-reference/endpoints/quote-executions/list-quote-executions) endpoints.
 
 Quote executions typically complete in under 100ms. After creation, all quotes should be in the `CREATED` or `SETTLED`
 status.
