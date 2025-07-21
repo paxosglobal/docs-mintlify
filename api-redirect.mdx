@@ -68,6 +68,7 @@ function handleRedirect () {
   const uri = getRedirectPath() || "/api-reference";
 
   console.log("Redirecting to", uri);
+  window.location.href = uri;
 }
 
 handleRedirect();
