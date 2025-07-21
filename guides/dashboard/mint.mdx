@@ -2,26 +2,6 @@
 title: 'Mint'
 description: Convert USD to Paxos-issued stablecoins and receive them in an external wallet.
 ---
-[entity-manager]: /dashboard/roles#entity-manager
-[contact]: https://support.paxos.com/hc/en-us/requests/new
-[Dashboard]: https://dashboard.paxos.com/
-[Profile]: /dashboard/organization#profile
-[asset-movement]: https://dashboard.paxos.com/dashboard/transactions/asset-movements
-[conversions]: https://dashboard.paxos.com/dashboard/transactions/conversions
-[Entity]: /dashboard/organization#entities
-[minting-instructions]: #minting-instructions
-[withdraw-address]: #withdraw-address
-[addresses]: /dashboard/addresses
-[send-usd]: #send-usd
-[saved-instructions]: https://dashboard.paxos.com/dashboard/saved-instructions
-[alternative-minting]: #alternative-minting
-[profiles]: https://dashboard.paxos.com/admin/profiles
-[minting-profile]: #minting-profile
-[transactions]: https://dashboard.paxos.com/dashboard/transactions/asset-movements
-[support]: https://support.paxos.com/hc/en-us
-[deposit]: /dashboard/deposit
-[convert]: /dashboard/convert
-[transfer]: /dashboard/transfer
 
 This guide walks you through the standard automated minting flow (**USD \> Stablecoin**), where funds are sent via bank transfer and converted into stablecoins on supported blockchain networks. The steps are the same for USDG,  PYUSD and USDP.
 
@@ -29,22 +9,21 @@ This guide walks you through the standard automated minting flow (**USD \> Stabl
 
 Watch a demo: See the full minting flow from start to finish before getting started. 
 
-<video 
-controls width="95%" style={{ display:'block', marginLeft: 'auto', marginRight: 'auto' }}>
+<video>
   <source src="/images/usdg-mint-demo.mp4" type="video/mp4" />
 </video>
 
 </Tip>
 
 ## **What You'll Do**
-1. [Add a destination wallet address](https://docs.paxos.com/dashboard/mint#withdraw-address) (This is where you'll receive the stablecoin).
-2. [Create minting instructions](https://docs.paxos.com/dashboard/mint#minting-instructions), which define:
+1. [Add a destination wallet address](/dashboard/mint#withdraw-address) (This is where you'll receive the stablecoin).
+2. [Create minting instructions](/dashboard/mint#minting-instructions), which define:
 
 * **How** you'll send USD to Paxos (SWIFT or ABA, DBS-ACT, CUBIX).
 * **Which stablecoin** you want (USDG, PYUSD, USDP).  
 * **Where** the stablecoin should go (wallet \+ network).
 
-3. [Send USD to the Paxos platform](https://docs.paxos.com/dashboard/mint#send-usd) using the generated deposit details.
+3. [Send USD to the Paxos platform](/dashboard/mint#send-usd) using the generated deposit details.
 
 Paxos will automatically mint the stablecoin and send it to your wallet.
 
