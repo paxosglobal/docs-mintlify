@@ -3,7 +3,6 @@ title: 'Integrate with PYUSD on Ethereum'
 description: The steps to integrate PYUSD on your platform are similar to executing smart contract functions for other ERC20 tokens.
 ---
 
-[eip-20-standard]: https://github.com/ethereum/ercs/blob/master/ERCS/erc-20.md
 
 A minimally viable implementation of PYUSD must:
 
@@ -13,4 +12,4 @@ A minimally viable implementation of PYUSD must:
 - Allow the user to transfer PYUSD tokens back to Paxos and PayPal using the contract's `transfer` or `transferFrom` functions.
 
 When using `transferFrom`, we recommend using the `increaseApproval` and `decreaseApproval` functions rather than `approve`.
-This avoids a [well known attack vector][eip-20-standard] in the standard `approve` function.
+This avoids a [well known attack vector](https://github.com/ethereum/ercs/blob/master/ERCS/erc-20.md) in the standard `approve` function.

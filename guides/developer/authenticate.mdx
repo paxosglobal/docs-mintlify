@@ -3,17 +3,9 @@ title: '➌ Authenticate'
 description: Generate an authentication token.
 ---
 
-[credentials]: /guides/developer/credentials
-[login]: https://dashboard.paxos.com
-[support]: https://support.liftdollar.com
-[oauth2]: https://oauth.net/code
-[convert]: /guides/developer/convert
-[make an API call in Sandbox]: /guides/developer/request
-[mint]: /guides/developer/mint
-[redeem]: /guides/developer/redeem
 
 The APIs use industry standard OAuth2 for authentication. 
-Most users find success with one of the libraries on the [OAuth2 website][oauth2].
+Most users find success with one of the libraries on the [OAuth2 website](https://oauth.net/code).
 The following URLs can be used when using an off-the-shelf OAuth2 library:
 
 | Environment | Root URL | Full Path |
@@ -38,8 +30,8 @@ Every endpoint that requires a **Scope** must be accompanied by an \"Authorizati
 with a value that follows the \"Bearer {access_token}"` schema.
 ### Sandbox
 
-To authenticate with https://oauth.sandbox.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
-The authentication request must include  `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
+To authenticate with https://oauth.sandbox.paxos.com/oauth2/token, use your [credentials](/guides/developer/credentials) to create a bearer token. 
+The authentication request must include  `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials](/guides/developer/credentials).
 Include sufficient `{client_scopes}` (**Client Permissions**).
 ```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
@@ -50,8 +42,8 @@ curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 ```
 ### Production
 
-To authenticate with https://oauth.paxos.com/oauth2/token, use your [credentials][credentials] to create a bearer token. 
-The authentication request must include the `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials][credentials].
+To authenticate with https://oauth.paxos.com/oauth2/token, use your [credentials](/guides/developer/credentials) to create a bearer token. 
+The authentication request must include the `{client_id}` (**Client ID**) and `{client_secret}` (**Client Secret**) configured for your [API credentials](/guides/developer/credentials).
 Include sufficient `{client_scopes}` (**Client Permissions**).
 ```shell highlight={5}
 curl --location 'https://oauth.paxos.com/oauth2/token' \

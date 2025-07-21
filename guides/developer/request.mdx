@@ -3,13 +3,6 @@ title: '➍ Make First API Request'
 description: Use the access token to retrieve a list of Profiles.
 ---
 
-[access token]: /developer/authenticate#token
-[adding scopes]: /developer/authenticate#scopes
-[Profile]: /api-reference/profiles
-[List Profiles]: /api-reference/endpoints/profiles/list-profiles
-[credentials]: /developer/credentials
-[authentication]: /developer/authenticate
-[Support]: https://support.paxos.com
 
 Since every account has a `DEFAULT` [Profile], sending a request using [List Profiles] will always return a result, assuming the `funding:read_profile` scope was included when [adding scopes] to the client.
 Include the [access token] from the authentication request in the authorization header.
