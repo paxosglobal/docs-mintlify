@@ -3,23 +3,13 @@ title: 'Orders, Precision and Rounding'
 description: Learn about tick size, precision, rounding and other recommendations.
 ---
 
-[contact-support]: https://support.paxos.com
-[create-order]: ../api-reference/endpoints/orders/create-order
-[list-executions]: ../api-reference/endpoints/orders/list-executions
-[list-orders]: ../api-reference/endpoints/orders/list-orders
-[get-order]: ../api-reference/endpoints/orders/get-order
-[get-ticker]: ../api-reference/endpoints/market-data/get-ticker
-[get-order-book]: ../api-reference/endpoints/market-data/get-order-book
-[list-historical-prices]: ../api-reference/endpoints/pricing/list-historical-prices
-[v2-api]: ../../api-reference
-[fix-api]: https://developer.paxos.com/docs/itbit/fix/
 We recommend that [REST and WebSocket integrations](#rest-websocket-clients) support the maximum decimal precision of 0.000001 (1e-6) for all current and future assets ([parameter precision](#additional-parameter-precision)  differs for some services).
 
 All [FIX integrations](#fix-clients) should support up to 19 decimal places 0.0000000000000000001 (1e-19) for all assets.
 
 <Tip>
 Tick size, miniums and other precision information is for USD markets only.
-For information on other markets, [contact support][contact-support].
+For information on other markets, [contact support](https://support.paxos.com).
 </Tip>
 
 ## Order Limitations
@@ -27,7 +17,7 @@ For information on other markets, [contact support][contact-support].
 - For market buy orders, the minimum quantity is 0.01 USD for all assets. For market sell or limit orders, the minimum size is eight ticks: 0.00000001 (1e-8).
 - For market orders, the maximum notional value is 500,000 USD. For limit orders, the maximum notional value is 1,500,000 USD for XBTUSD and ETHUSD markets, and 1,000,000 USD for other markets.
 - A taker order will be rejected if its limit price is 15% or more from the midpoint of the best bid and best ask.
-- For a comprehensive look at order constraints, please refer to our the documentation for the [Paxos v2 REST API docs][v2-api] or the [Paxos FIX API Reference page][fix-api]
+- For a comprehensive look at order constraints, please refer to our the documentation for the [Paxos v2 REST API docs](../../api-reference) or the [Paxos FIX API Reference page](https://developer.paxos.com/docs/itbit/fix/)
 
 ## Tick and Decimal Precision for REST and WebSocket Clients
 
@@ -60,14 +50,14 @@ Contact support@paxos.com with questions or issues during the migration period.
 The tick size and precision for some request and response parameters requires clients to implement differing precision.
 We recommend ensuring all REST clients implement the following:
 
-- `quote_amount` tick size of 0.01 (1e-2) for [Create Order][create-order].
-- `volume_weighted_average_price` tick size of 0.00000001 (1e-8) for [Get Order][get-order] and [List Orders][list-orders].
-- `average_price` precision of 0.000001 (1e-6) for [List Historical Prices][list-historical-prices].
-- `commission ` and `rebate` tick size of 0.0000000000000000001 (1e-19) for [List Executions][list-executions].
-- `gross_trade_amount` tick size of 0.00000000000001 (1e-14) for [List Executions][list-executions].
-- `amount` precision of 0.00000001 (1e-8) for [Get Ticker][get-ticker], [Get Order Book][get-order-book] and [List Executions][list-executions].
-- `base_amount` precision of 0.00000001 (1e-8) for [List Orders][list-orders], [Create Order][create-order] and [Get Order][get-order].
-- `amount_filled` precision of 0.00000001 (1e-8) for [List Orders][list-orders], [Create Order][create-order] and [Get Order][get-order].
+- `quote_amount` tick size of 0.01 (1e-2) for [Create Order](/api-reference/endpoints/orders/create-order).
+- `volume_weighted_average_price` tick size of 0.00000001 (1e-8) for [Get Order](/api-reference/endpoints/orders/get-order) and [List Orders](/api-reference/endpoints/orders/list-orders).
+- `average_price` precision of 0.000001 (1e-6) for [List Historical Prices](/api-reference/endpoints/pricing/list-historical-prices).
+- `commission ` and `rebate` tick size of 0.0000000000000000001 (1e-19) for [List Executions](/api-reference/endpoints/orders/list-executions).
+- `gross_trade_amount` tick size of 0.00000000000001 (1e-14) for [List Executions](/api-reference/endpoints/orders/list-executions).
+- `amount` precision of 0.00000001 (1e-8) for [Get Ticker](/api-reference/endpoints/market-data/get-ticker), [Get Order Book](/api-reference/endpoints/market-data/get-order-book) and [List Executions](/api-reference/endpoints/orders/list-executions).
+- `base_amount` precision of 0.00000001 (1e-8) for [List Orders](/api-reference/endpoints/orders/list-orders), [Create Order](/api-reference/endpoints/orders/create-order) and [Get Order](/api-reference/endpoints/orders/get-order).
+- `amount_filled` precision of 0.00000001 (1e-8) for [List Orders](/api-reference/endpoints/orders/list-orders), [Create Order](/api-reference/endpoints/orders/create-order) and [Get Order](/api-reference/endpoints/orders/get-order).
 
 ## Tick and Decimal Precision for FIX Clients
 
@@ -81,7 +71,7 @@ Paxos uses different rounding logic for different services.
 ### Volume Weighted Average Price
 
 The `volume_weighted_average_price` field is rounded using half-up logic after eight decimals.
-This provides the volume-weighted average price across all underlying executions for an order within [List Executions][list-executions].
+This provides the volume-weighted average price across all underlying executions for an order within [List Executions](/api-reference/endpoints/orders/list-executions).
 
 ### HRQ Rounding
 

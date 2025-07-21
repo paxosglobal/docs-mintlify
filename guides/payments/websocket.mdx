@@ -3,29 +3,26 @@ title: 'Connect to the WebSocket Stablecoin Price Feed'
 description: Open a WebSocket connection to the Sandbox USDCUSD feed.
 ---
 
-[wscat]: https://github.com/websockets/wscat
-[websocket-client]: https://pypi.org/project/websocket-client
-[websocket-reference]: api/websocket
 
 Use the command line to open a WebSocket connection to the Sandbox USDCUSD stablecoin market price feed.
 
-> See the [WebSocket API reference][websocket-reference] for more details.
+> See the [WebSocket API reference](/api-reference/websockets/overview) for more details.
 
 ## ➊ Install WebSocket Client
 
-The quickest way to open a connection is by using [wscat][wscat], which runs in the terminal.
-Using the Python [websocket-client][websocket-client] package requires a bit of code and the Python shell. 
+The quickest way to open a connection is by using [wscat](https://github.com/websockets/wscat), which runs in the terminal.
+Using the Python [websocket-client](https://pypi.org/project/websocket-client) package requires a bit of code and the Python shell. 
 
 <Tabs>
 <Tab title="SHELL">
 
-Open the terminal and install [wscat][wscat] using the `-g` (global) flag.
+Open the terminal and install [wscat](https://github.com/websockets/wscat) using the `-g` (global) flag.
 
 ```shell
 npm install -g wscat
 ```
 
-Ensure [wscat][wscat] is working. If you see the version number, the module is working:
+Ensure [wscat](https://github.com/websockets/wscat) is working. If you see the version number, the module is working:
 
 ```shell
 wscat --version
@@ -34,13 +31,13 @@ wscat --version
 </Tab>
 <Tab title="PYTHON">
 
-Open the terminal and install the Python3 [websocket-client][websocket-client] library.
+Open the terminal and install the Python3 [websocket-client](https://pypi.org/project/websocket-client) library.
 
 ```shell
 pip3 install websocket-client
 ```
 
-Start the Python3 shell and check that [websocket-client][websocket-client] was installed correctly.
+Start the Python3 shell and check that [websocket-client](https://pypi.org/project/websocket-client) was installed correctly.
 If you don't see a `ModuleNotFoundError` message, the library is installed.
 
 ```py

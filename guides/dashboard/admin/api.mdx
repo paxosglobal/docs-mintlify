@@ -6,23 +6,16 @@ description: Create and update an OAuth2 client.
 import { ApiCredentialsIntro } from '/snippets/api-credentials-intro.mdx';
 import Scopes from '/snippets/scopes.mdx';
 
-[api-management]: https://dashboard.paxos.com/admin/api
-[Entity Manager]: /dashboard/roles#entity-manager
-[Developer]: /dashboard/roles#developer
-[convert]: /guides/developer/convert
-[mint]: /guides/developer/mint
-[redeem]: /guides/developer/redeem
-[oauth2]: https://oauth.net/code
 
 <ApiCredentialsIntro />
 
-Once the credentials are activated, most users find success using one of the libraries on the [OAuth2 website][oauth2] for authentication.
+Once the credentials are activated, most users find success using one of the libraries on the [OAuth2 website](https://oauth.net/code) for authentication.
 
 > To add or modify API Credentials, you'll need a [Developer] or other role with appropriate permissions. Contact your [Entity Manager] for help.
 
 ## Add API Credentials
 
-1. Log in to your Dashboard account and go to [API Management][api-management].
+1. Log in to your Dashboard account and go to [API Management](https://dashboard.paxos.com/admin/api).
 1. Click **API Credentials**.
 1. Create a **Label** for your API credentials.
 1. Select the **Scopes** for your **Client ID**. For example, the following scopes (space delimited) should be adequate to [mint], [redeem] and [convert] Paxos-issued stablecoins:<br/><br/><Scopes />
