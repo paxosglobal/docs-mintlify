@@ -3,32 +3,27 @@ title: 'Webhooks FAQ'
 description: Get answers to common questions about webhooks.
 ---
 
-[create-identity]: /api-reference/endpoints/identity/create-identity
-[retry-policy]: /webhooks/retries-and-limits#retry-policy
-[Support]: https://support.paxos.com
-[List Events]: /api-reference/endpoints/events/list-events
-[rate-limits]: /webhooks/retries-and-limits#rate-limits
 
 <AccordionGroup>
 
 <Accordion title="How do I test in Sandbox?" id="testing-in-sandbox">
 
-The easiest way to test in Sandbox, once registered, is to use the [CreateIdentity][create-identity] API to create a new identity.
+The easiest way to test in Sandbox, once registered, is to use the [CreateIdentity](/api-reference/endpoints/identity/create-identity) API to create a new identity.
 If your sandbox consumer is registered and setup correctly, you should see an `identity.approved` event. Reach out to
-[Support] if you do not see the message.
+[Support](https://support.paxos.com) if you do not see the message.
 
 </Accordion>
 
 <Accordion title="My consumer failed to process a message, how should I recover?" id="consumer-failed-to-process">
 
-If your consumer failed to process a message, Paxos will attempt to retry for up to 24 hours, read the full [retry policy][retry-policy] for more information.
-After this you can use the [List Events] API to fetch undelivered events and process them.
+If your consumer failed to process a message, Paxos will attempt to retry for up to 24 hours, read the full [retry policy](/webhooks/retries-and-limits#retry-policy) for more information.
+After this you can use the [List Events](/api-reference/endpoints/events/list-events) API to fetch undelivered events and process them.
 
 </Accordion>
 
 <Accordion title="Are there rate limits for webhook deliveries?" id="webhook-rate-limits">
 
-Yes, webhook invocations to your consumer endpoint are rate-limited to 10 per second by default. If you need higher throughput, please contact [Support] to discuss increasing your rate limits. For more information, see our [rate limits documentation][rate-limits].
+Yes, webhook invocations to your consumer endpoint are rate-limited to 10 per second by default. If you need higher throughput, please contact [Support](https://support.paxos.com) to discuss increasing your rate limits. For more information, see our [rate limits documentation](/webhooks/retries-and-limits#rate-limits).
 
 </Accordion>
 

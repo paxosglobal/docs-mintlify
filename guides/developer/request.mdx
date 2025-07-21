@@ -3,16 +3,9 @@ title: 'Make First API Request'
 description: Use the access token to retrieve a list of Profiles.
 ---
 
-[access token]: /developer/authenticate#token
-[adding scopes]: /developer/authenticate#scopes
-[Profile]: /api-reference/endpoints/profiles
-[List Profiles]: /api-reference/endpoints/profiles/list-profiles
-[credentials]: /developer/credentials
-[authentication]: /developer/authenticate
-[Support]: https://support.paxos.com
 
-Since every account has a `DEFAULT` [Profile], sending a request using [List Profiles] will always return a result, assuming the `funding:read_profile` scope was included when [adding scopes] to the client.
-Include the [access token] from the authentication request in the authorization header.
+Since every account has a `DEFAULT` [Profile](/api-reference/endpoints/profiles), sending a request using [List Profiles](/api-reference/endpoints/profiles/list-profiles) will always return a result, assuming the `funding:read_profile` scope was included when [adding scopes](/developer/authenticate#scopes) to the client.
+Include the [access token](/developer/authenticate#token) from the authentication request in the authorization header.
 ### Sandbox
 
 ```shell  highlight={3}
@@ -53,5 +46,5 @@ Using the `?order=ASC&order_by=CREATED_AT` parameters ensures the `DEFAULT` Prof
 
 ```
 
-If you get an error, run through the [credentials] and [authentication] guides and ensure your setup is correct.
-If things are still not working, contact [Support].
+If you get an error, run through the [credentials](/developer/credentials) and [authentication](/developer/authenticate) guides and ensure your setup is correct.
+If things are still not working, contact [Support](https://support.paxos.com).
