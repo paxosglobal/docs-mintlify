@@ -3,14 +3,6 @@ title: 'Onboarding a Person for Crypto Brokerage'
 description: Create an Identity, Account and Profile to provide Buy, Hold and Sell Crypto Brokerage for Users
 ---
 
-
-
-
-
-
-
-
-
 This guide walks through setting up a [Fiat and Crypto Subledger](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) crypto brokerage integration,
 creating a Person [Identity](/api-reference/endpoints/identity) and a related [Account](/api-reference/endpoints/accounts) and [Profile](/api-reference/endpoints/profiles) to book orders using the [Order API](/api-reference/endpoints/orders). First, we will
 create an [Identity](/api-reference/endpoints/identity) to represent the user's kyc information on the Paxos Platform. Then we will create an [Account](/api-reference/endpoints/accounts) which sets 
@@ -207,7 +199,7 @@ For accounts with more than one owner, for example a joint brokerage account, bo
 Platform. An [Account](/api-reference/endpoints/accounts) and [Profile](/api-reference/endpoints/profiles) is then created for a designated primary account owner with any additional owners being set in `members` with the
 `BENEFICIAL_OWNER` role.
 
-[Identities](/api-reference/endpoints/identity) can be added or removed from an [Account](/api-reference/endpoints/accounts) after creation using the [Add Account Members](/api-reference/endpoints/account-members/add-account-members) and [Delete Account Member](/api-reference/endpoints/account-members/delete-account-member) endpoints respectively
+[Identities](/api-reference/endpoints/identity) can be added or removed from an [Account](/api-reference/endpoints/accounts) after creation using the [Add Account Members](/api-reference/endpoints/account-members/add-account-members) and [Delete Account Member](/api-reference/endpoints/account-members/remove-account-member) endpoints respectively
 
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/accounts" \

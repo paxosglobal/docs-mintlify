@@ -3,7 +3,6 @@ title: 'WebSocket API Reference'
 description: Event-driven connectivity for payments and trading.
 ---
 
-
 Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections
 The [Stablecoin Market Price Feed](#stablecoin-feed) streams event-driven updates for the market index price for external stablecoins.
 The [Market Data Feed](/api-reference/websockets/overview#market-data-feed) streams event-driven updates for the entire order book or for a single market.
@@ -141,7 +140,7 @@ When processing `UPDATE` messages observe the following rules:
 | Parameter | Required | Description |
 | --- | --- | --- |
 | `type` | Yes | Value always `UPDATE`. Show all executed trades, and other order book changes, in the data stream. |
-| `market` | Yes | One of the [available markets](api/websocket#available-markets) or the single market if the `market` [path parameter](api/websocket#market-data-path-parameter) is specified. |
+| `market` | Yes | One of the [available markets](/guides/developer/api-websocket#available-markets) or the single market if the `market` [path parameter](/guides/developer/api-websocket#market-data-path-parameter) is specified. |
 | `side` | Yes | Value either `BUY` or `SELL`. Specifies the activity type. |
 | `price` | Yes | The current price. |
 | `amount` | Yes | The current amount. |
