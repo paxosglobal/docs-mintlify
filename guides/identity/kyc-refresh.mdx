@@ -70,12 +70,13 @@ Poll [List Events](/api-reference/endpoints/events/list-events), offsetting the 
 
 ### Handling Expired Refreshes
 
-If an [`identity.kyc_refresh.expired`](/api-reference/events) is received, it means Paxos did not receive an [update-identity](/api-reference/endpoints/identity/update-identity) request in the designated window to complete the KYC refresh process _(typically 30 days)_. 
+If an [`identity.kyc_refresh.expired`](/api-reference/events) is received, it means Paxos did not receive an [update-identity](/api-reference/endpoints/identity/update-identity) request in the designated window to complete the KYC refresh process _(typically 30 days)_.
 
-If this occurs, please **disable** the user by using use the `set_user_disabled` field on the identity. If/when a user logs in to their account, they can update or confirm their details, and the flag can be 
+If this occurs, please **disable** the user by using use the `set_user_disabled` and setting it to `true` on the identity. If/when a user logs in to their account, they can update or confirm their details, and the `set_user_disabled`flag can be changed to `false`
 
-- Paxos will restart the KYC refresh process, and a new [`identity.kyc_refresh.started`](/api-reference/events) event will be posted
-- The Identity could be disabled (meaning the end user will only be able to Liquidate assets and withdraw fiat off platform)
+<Warning>
+  If an identity has an expired KYC refresh, but remains active, Paxos could take administrative action to disable the user
+</Warning>
 
 ### Refreshes in Compliance Review
 
