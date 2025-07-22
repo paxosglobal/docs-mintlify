@@ -1,32 +1,28 @@
-export const PaymentsCreateProfile = () => (
-  <Accordion title="Example: Seller Profile" id="create-profile">
+<Accordion title="Example: Seller Profile" id="create-profile">
 
-    <p>Use <a href="/api-reference/endpoints/profiles/create-profile">Create Profile</a> to represent the seller.</p>
+Use [Create Profile](/api-reference/endpoints/profiles/create-profile) to represent the seller.
 
-    <pre><code className="language-shell">
-{`curl --location 'https://api.sandbox.paxos.com/v2/profiles' \\
---header 'Content-Type: application/json' \\
---header 'Accept: application/json' \\
---header 'Authorization: Bearer {access_token}' \\
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}' \
 --data '{
   "nickname": "Seller A",
   "description": "Stablecoin Pay-in and Refunds."
-}'`}
-    </code></pre>
+}'
+```
 
-    <p>Save the <code>id</code> (<code>profile_id</code>) from the response, it will be used throughout this guide.</p>
+Save the `id` (`profile_id`) from the response, it will be used throughout this guide.
 
-    <pre><code className="language-json">
-{`{
+```json
+{
     "id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
     "nickname": "Seller A",
     "type": "NORMAL"
-}`}
-    </code></pre>
+}
+```
 
-    <p>Use <a href="/api-reference/endpoints/profiles/list-profiles">List Profiles</a> to retrieve the Profile ID when needed.</p>
+Use [List Profiles](/api-reference/endpoints/profiles/list-profiles) to retrieve the Profile ID when needed.
 
-  </Accordion>
-);
-
-export default PaymentsCreateProfile;
+</Accordion>
