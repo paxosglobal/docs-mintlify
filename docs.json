@@ -351,14 +351,6 @@
             ]
           },
           {
-            "group": "Pax Dollar (USDP)",
-            "pages": [
-              "guides/stablecoin/usdp/index",
-              "guides/stablecoin/usdp/mainnet",
-              "guides/stablecoin/usdp/testnet"
-            ]
-          },
-          {
             "group": "Lift Dollar (USDL)",
             "pages": [
               "guides/stablecoin/usdl/index",
@@ -367,6 +359,23 @@
             ]
           },
           {
+            "group": "Pax Dollar (USDP)",
+            "pages": [
+              "guides/stablecoin/usdp/index",
+              "guides/stablecoin/usdp/mainnet",
+              "guides/stablecoin/usdp/testnet"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet",
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+           {
             "group": "Other Stablecoins",
             "pages": [
               "guides/stablecoin/busd"
