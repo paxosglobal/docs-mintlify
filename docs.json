@@ -262,8 +262,7 @@
                   "guides/dashboard/addresses",
                   "guides/dashboard/fiat",
                   "guides/dashboard/organization",
-                  "guides/dashboard/roles",
-                  "guides/dashboard/fees"
+                  "guides/dashboard/roles"
                 ]
               },
               {
@@ -299,7 +298,6 @@
               "guides/dashboard/admin/api",
               "guides/dashboard/admin/reports",
               "guides/dashboard/travel-rule",
-              "guides/dashboard/admin/roles",
               "guides/dashboard/admin/approvals"
             ]
           },
