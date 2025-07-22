@@ -7,7 +7,6 @@ import PaymentsConnectorTip from '/snippets/payments-connector-tip.mdx';
 import BestPracticeRefId from '/snippets/best-practice-ref-id.mdx';
 import PaymentsPhantomWallet from '/snippets/payments-phantom-wallet.mdx';
 
-
 This guides walks you through the steps to set up a basic payments workflow using the Paxos Platform, including [configuring a stablecoin pay-in workflow](/guides/payments/quickstart#payment-workflow) and [setting up a refund workflow](/guides/payments/quickstart#refunds).
 Once completed, similar, more robust, workflows can be implemented in production.
 If you already have sandbox access, this guide should take less than one hour to complete.
@@ -17,7 +16,7 @@ If you already have sandbox access, this guide should take less than one hour to
 - Paxos may need to enable some API functionality described in the payments guides. Contact [Support](https://support.paxos.com) with any access issues.
 - If you need a developer sandbox account, [contact us](https://support.paxos.com/hc/en-us) before continuing.
 - The API endpoints require authentication with a **Client ID** and **Secret**.
-Each **Client ID** has a specific set of allowed scopes to access API endpoints.
+- Each **Client ID** has a specific set of allowed scopes to access API endpoints.
 
 <Accordion title="Example: Sandbox Credentials" id="generate-keys">
 
@@ -124,7 +123,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-    {/* highlight-start */}
+ 
     "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
     "crypto_network": "SOLANA",
     "ref_id": "da_73bcbb08-db06-4308-b0c2-2a6398012f8b",
@@ -196,7 +195,6 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was converted to 
             "id": "9d93693f-5157-49f4-ae44-4a7a8eae3d73",
             "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
             "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
-            {/* highlight-start */}
             "amount": "7.06",
             "total": "7.06",
             "fee": "0",
