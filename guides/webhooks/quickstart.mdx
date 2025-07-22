@@ -10,7 +10,9 @@ this guide should take less than an hour to complete.
 
 ## ➊ Create a Webhook Consumer
 To receive Paxos events, set up your webhook consumer that receives events as an HTTP/HTTPS POST endpoint using your language and tools of choice.
-### Go
+
+<Tabs>
+  <Tab title="Go">
 
 ```go title="paxos_webhook_consumer.go"
 http.HandleFunc("/webhook/paxos", func(w http.ResponseWriter, req *http.Request) {
@@ -36,7 +38,9 @@ http.HandleFunc("/webhook/paxos", func(w http.ResponseWriter, req *http.Request)
     }
 })
 ```
-### Java
+  </Tab>
+
+<Tab title="Java">
 
 ```clike title="WebhookServlet.java"
 public class WebhookServlet extends HttpServlet {
@@ -68,7 +72,9 @@ public class WebhookServlet extends HttpServlet {
     }
 }
 ```
-### Python
+</Tab>
+
+<Tab title="Python">
 
 ```python title="paxos_webhook_consumer.py"
 # using django
@@ -97,10 +103,16 @@ def paxos_webhook(request):
         return HttpResponse(status=503)
 
 ```
+
+ </Tab>
+  </Tabs>
+
 <Info>
 
 We are currently working on providing client libraries for the Paxos event object. In the meantime, please directly use the definition below:
-### Go
+
+ <Tabs>
+ <Tab title="Go"> 
 
 ```go title="paxos/event.go"
 package paxos
@@ -113,7 +125,9 @@ type Event struct {
     Object string    `json:"object"`
 }
 ```
-### Java
+</Tab>
+
+ <Tab title="Java"> 
 
 ```java title="com/paxos/PaxosEvent.java"
 package com.paxos;
@@ -128,6 +142,9 @@ public record PaxosEvent(
     String object
 ) {}
 ```
+</Tab>
+</Tabs>
+
 </Info>
 
 ## ➋ Test the Consumer Locally

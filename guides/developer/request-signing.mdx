@@ -3,7 +3,6 @@ title: 'Request Signing'
 description: Use JWS to add an additional layer of security to every request.
 ---
 
-
 Request signing adds an additional layer of security to every request you send to Paxos, and can help protect your account should your Paxos API Client ID and Secret become compromised.
 Once request signing is enabled on your account, Paxos rejects all unsigned requests to authenticated endpoints.
 
@@ -43,6 +42,8 @@ The process for EdDSA (ed25519) keys is similar:
 
 ### ➋ Add Public Key to Your Paxos Account
 
+Go to **Admin > API**  in either [Sandbox][admin-api-sandbox] or [Production][admin-api-production] and find the **API Credentials** that require request signing.
+
 Go to ** Admin > API**  in either [Sandbox](https://dashboard.sandbox.paxos.com/admin/api) or [Production](https://dashboard.paxos.com/admin/api) and find the **API Credentials** that require request signing.
 
 > Request signing must be activated by Paxos. Contact [Support](https://support.paxos.com) to get started.
@@ -65,7 +66,7 @@ The header must include the following:
 | **kid** | The Key ID of the configured Public Key. Retrieve from <strong>Admin > API > API Cretentials</strong>. |
 | **alg** | The algorithm used to generate the Key. The value must be: EdDSA or ES256. Retrieve from <strong>Admin > API > API Cretentials</strong>. |
 | **paxos.com/timestamp** | The current timestamp in UNIX time format. Signatures remain valid for 30 minutes after the specified timestamp. |
-| ** paxos.com/request-method** | The POST and PUT methods also require the JWS payload in the body bytes. |
+| **paxos.com/request-method** | The POST and PUT methods also require the JWS payload in the body bytes. |
 | **paxos.com/request-path** | The endpoint path, including query parameters. |
 
 Putting it together, your header should look similar to the following:

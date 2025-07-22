@@ -119,13 +119,9 @@
             "group": "Get Started",
             "pages": [
               "guides/developer/account",
-              "guides/developer/authenticate",
-              "guides/developer/sandbox",
               "guides/developer/credentials",
-              "guides/developer/request-signing",
+              "guides/developer/authenticate",
               "guides/developer/request"
-              
-
             ]
           },
           {
@@ -236,6 +232,7 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
+              "guides/developer/sandbox",
               "guides/developer/faq"
             ]
           },
@@ -243,7 +240,8 @@
             "group": "Versioning",
             "pages": [
               "guides/developer/breaking-change/policy",
-              "guides/developer/api-migrate"
+              "guides/developer/api-migrate",
+              "changelog"
             ]
           }
         ]
