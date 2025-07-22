@@ -3,15 +3,11 @@ title: 'Statuses'
 description: Learn more about Identity statuses and sub-statuses
 ---
 
-import Description from '/snippets/description.mdx';
-
-
-<Description />
 
 ## Summary Status
 An [Identity](/api-reference/endpoints/identity/create-identity) has five (5) statuses:
 
-- `PENDING`: Initial state. The [Identity](/api-reference/endpoints/identity/create-identity) is waiting for an [Onboarding Decision](/identity/statuses#onboarding-decision) and is under review.
+- `PENDING`: Initial state. The [Identity](/api-reference/endpoints/identity/create-identity) is waiting for an [Onboarding Decision](/guides/identity/statuses#onboarding-decision) and is under review.
 - `APPROVED`: The [Identity](/api-reference/endpoints/identity/create-identity) passed internal review. It can be used with integrations, for example, creating orders.
 - `DENIED`: The [Identity](/api-reference/endpoints/identity/create-identity) failed internal review. It cannot be used with integrations.
 - `DISABLED`: The [Identity](/api-reference/endpoints/identity/create-identity) was `APPROVED` but has been off-boarded. It can only perform sell operations.

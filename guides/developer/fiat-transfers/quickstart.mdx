@@ -3,8 +3,10 @@ title: 'Fiat Transfers Quickstart'
 description: Set up fiat funding and withdraw flows in the Sandbox environment.
 ---
 
+import FiatTransfersFund from '/snippets/fiat-transfers-fund.mdx';
+import FiatTransfersWithdraw from '/snippets/fiat-transfers-withdraw.mdx';
 
-This guides walks you through the steps to [send fiat to the Paxos Platform](#funding) as well as [move money to an external bank account](#withdrawal) using the [Fiat Transfers](/api-reference/fiat-transfers), [Transfers](/api-reference/transfers) and [Profiles](/api-reference/profiles) APIs.
+This guides walks you through the steps to [send fiat to the Paxos Platform](#funding) as well as [move money to an external bank account](#withdrawal) using the [Fiat Transfers](/api-reference/endpoints/fiat-transfers), [Transfers](/api-reference/endpoints/transfers) and [Profiles](/api-reference/endpoints/profiles) APIs.
 Once completed, similar workflows can be implemented in Production.
 If you already have a [Sandbox Account](https://dashboard.sandbox.paxos.com), this guide should take less than one hour to complete.
 
@@ -14,7 +16,7 @@ Both the [funding](#funding) and [withdrawal](#withdrawal) flows require the sam
 
 > When [creating API credentials](/guides/developer/credentials) via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
 > Including the scope when [authenticating](/guides/developer/authenticate) may result in an `invalid_scope` error.
-> Contact [Support] if you run into any issues using this scope.
+> Contact [Support](https://support.paxos.com) if you run into any issues using this scope.
 
 Add the `transfer:read_fiat_account`, `transfer:write_fiat_account`, `transfer:read_fiat_deposit_instructions`, `transfer:write_fiat_deposit_instructions`, `transfer:write_fiat_withdrawal`, `transfer:write_sandbox_fiat_deposit`, `transfer:read_transfer` and `funding:read_profile` scopes to your [Sandbox Account](https://dashboard.sandbox.paxos.com) 
 under the [API Management](https://dashboard.sandbox.paxos.com/admin/api) setting and then authenticate in Sandbox using the scopes.

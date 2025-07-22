@@ -119,13 +119,9 @@
             "group": "Get Started",
             "pages": [
               "guides/developer/account",
-              "guides/developer/authenticate",
-              "guides/developer/sandbox",
               "guides/developer/credentials",
-              "guides/developer/request-signing",
+              "guides/developer/authenticate",
               "guides/developer/request"
-              
-
             ]
           },
           {
@@ -236,6 +232,7 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
+              "guides/developer/sandbox",
               "guides/developer/faq"
             ]
           },
@@ -243,7 +240,8 @@
             "group": "Versioning",
             "pages": [
               "guides/developer/breaking-change/policy",
-              "guides/developer/api-migrate"
+              "guides/developer/api-migrate",
+              "changelog"
             ]
           }
         ]
@@ -255,6 +253,7 @@
             "group": "Paxos Dashboard",
             "pages": [
               "guides/dashboard/index",
+              "guides/dashboard/migrate-to-dashboard",
               {
                 "group": "About the Paxos Dashboard",
                 "pages": [
@@ -316,8 +315,7 @@
           {
             "group": "Resources",
             "pages": [
-              "guides/dashboard/passkeys",
-              "guides/dashboard/migrate-to-dashboard"
+              "guides/dashboard/passkeys"
             ]
           }
         ]
@@ -329,6 +327,20 @@
             "group": "Overview",
             "pages": [
               "guides/stablecoin/index"
+            ]
+          },
+          {
+            "group": "Quickstart",
+            "pages": [
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet"
             ]
           },
           {
@@ -676,8 +688,21 @@
               {
                 "group": "Events",
                 "pages": [
+                  "api-reference/endpoints/events/overview",
                   "api-reference/endpoints/events/list-events",
                   "api-reference/endpoints/events/get-event"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "API Credentials",
+            "pages": [
+              {
+                "group": "API Credentials",
+                "pages": [
+                  "api-reference/endpoints/api-credentials/overview",
+                  "api-reference/endpoints/api-credentials/list-api-credentials"
                 ]
               }
             ]
