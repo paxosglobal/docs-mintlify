@@ -4,13 +4,11 @@ description: Set up and complete the settlement workflow in the Sandbox environm
 ---
 
 
-<Description description={frontMatter.description}/>
-
 The [settlement workflow](/guides/settlements#workflow) requires [two Profiles](#set-up-profiles), referred to in this guide as Source Profile (`source_profile_id`) and Target Profile (`target_profile_id`).
 The Profiles are under the same Sandbox Account for simplicity and to allow completion of the steps with a single [authentication](#authenticate).
 This guild also [funds](#fund) the Source Profile with BTC and ETH for the `DELIVER` leg and USD in the Target Profile for the `RECEIVE` leg before [creating the transaction request](#propose).
 
-> Contact your [Entity Manager] or [Support](https://support.paxos.com) if you run into any issues or don't have access to a Sandbox Account.
+> Contact your [Entity Manager](/guides/dashboard/roles#entity-manager) or [Support](https://support.paxos.com) if you run into any issues or don't have access to a Sandbox Account.
 
 ## 1. Authenticate
 
@@ -203,7 +201,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions' \
 ```
 
 The acknowledgement response confirms the request has been received and provides the `Transaction` object.
-The unique transaction `id` is used to [approve] and [retrieve](#check-status) the transaction, and the Source Profile owner can use the `id` to [cancel](/api-reference/endpoints/settlement/cancel-transaction) the `PENDING` transaction.
+The unique transaction `id` is used to [approve](#approve) and [retrieve](#check-status) the transaction, and the Source Profile owner can use the `id` to [cancel](/api-reference/endpoints/settlement/cancel-transaction) the `PENDING` transaction.
 The transaction [status](/guides/settlements/status) can be used by either party to [retrieve a list of filtered transactions](/guides/settlements/status#list-transactions).
 
 ```json highlight={2,28}
@@ -284,7 +282,7 @@ Since both Profiles in this guide are [pre-funded](#set-up-profiles), the transa
 
 </Tip>
 
-Either party can use [Get Transaction](/api-reference/endpoints/settlement/get-transaction) to check the [status](/guides/settlements/status)(/guides/settlements/status).
+Either party can use [Get Transaction](/api-reference/endpoints/settlement/get-transaction) to check the [status](/guides/settlements/status).
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{transaction_id}' \
@@ -292,7 +290,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions/{trans
 ```
 
 The response includes the complete `Transaction` object.
-When the transaction completes, the [status](/guides/settlements/status)(/guides/settlements/status) and `updated_at` timestamp reflect the most recent activity. 
+When the transaction completes, the [status](/guides/settlements/status) and `updated_at` timestamp reflect the most recent activity. 
 
 ```json highlight={28,30}
 {

@@ -22,11 +22,11 @@ Paxos streamlines the collection of EDD information using a webhook-based or pol
 
 ### ➊ Consume Documents Required Events
 
-Setup a [Webhook Consumer](/guides/webhooks/quickstart) to receive `identity.documents_required` [events] for your end users.
+Setup a [Webhook Consumer](/guides/webhooks/quickstart) to receive `identity.documents_required` [events](/api-reference/events) for your end users.
 
 ### ➋ Fetch Required Documents
 
-Call [Get Event] to fetch the event's `identity_documents_required` object, which will allow you to understand which documents are required.
+Call [Get Event](/api-reference/endpoints/events/get-event) to fetch the event's `identity_documents_required` object, which will allow you to understand which documents are required.
 
 ### ➌ Upload the Required Documents
 
@@ -40,7 +40,7 @@ This will be followed by an `identity.approved` or `identity.denied` event based
 
 ### ➊ Poll for Documents Required Events
 
-Poll [List Events], offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
+Poll [List Events](/api-reference/endpoints/events/list-events), offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
 
 <Info>
 

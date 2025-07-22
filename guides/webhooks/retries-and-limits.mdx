@@ -21,7 +21,7 @@ Paxos will continue retry attempts for up to **24 hours** from the initial attem
 
 After the 24-hour retry window has elapsed, undelivered events will not be automatically retried. To recover these undelivered events, you can:
 
-1. Use the [List Events] API to query for events that may have failed delivery
+1. Use the [List Events](/api-reference/endpoints/events/list-events) API to query for events that may have failed delivery
 2. Use the event IDs to fetch the full event details via the [Events API](/api-reference/events)
 3. Process these events through your regular webhook handling logic
 
@@ -31,7 +31,7 @@ To ensure optimal performance and stability, Paxos implements rate limits on web
 
 - **Default delivery rate**: Maximum 10 webhook invocations per second per consumer endpoint
 
-If you need higher throughput for your webhook consumer endpoint, please contact [Support] to discuss increasing your rate limits.
+If you need higher throughput for your webhook consumer endpoint, please contact [Support](https://support.paxos.com) to discuss increasing your rate limits.
 
 ## Best Practices
 

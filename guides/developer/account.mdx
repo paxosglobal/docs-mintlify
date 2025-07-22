@@ -3,22 +3,22 @@ title: '➊ Create Developer Account'
 description: Sign Up for access to the Sandbox environment.
 ---
 
-import { PasskeyNote } from '/snippets/passkey-note.mdx';
+import PasskeyNote from '/snippets/passkey-note.mdx';
 
 
-To create an account you will need an email address, the business name and country of incorporation, as well as a way to create a [passkey] using a [compatible device](https://www.passkeys.io/compatible-devices).
+To create an account you will need an email address, the business name and country of incorporation, as well as a way to create a [passkey](https://www.passkeys.com/what-are-passkeys) using a [compatible device](https://www.passkeys.io/compatible-devices).
 
 > Sandbox developer accounts are usually approved in less than one business day and take under an hour to create and onboard.
 
 ## ➊ Sign Up in Sandbox
 
-Before you begin, ensure you are able to create and store a [passkey] on your device.
+Before you begin, ensure you are able to create and store a [passkey](https://www.passkeys.com/what-are-passkeys) on your device.
 All modern [operating systems and browsers](https://www.passkeys.io/compatible-devices) support passkeys.
 
 <PasskeyNote />
 
 1. Go to https://dashboard.sandbox.paxos.com, select **Sign Up** and provide a name and email address to create an _Institutional (Business) account_. Individual account holders are not eligible for API access via the Dashboard.
-1. Retrieve the verification code from the welcome email from Paxos and enter the code in the browser. If you don't get an email within a few minutes, check email filters and Spam/Junk folders for an email from `@paxos.com`. Contact [Support] if the email never arrives.
+1. Retrieve the verification code from the welcome email from Paxos and enter the code in the browser. If you don't get an email within a few minutes, check email filters and Spam/Junk folders for an email from `@paxos.com`. Contact [Support](https://support.paxos.com) if the email never arrives.
 1. Create a passkey.
 1. Provide basic business information. The **Country of Incorporation** and **What do you plan to use your account for?** fields determine which assets you will have access to.
 
@@ -58,12 +58,12 @@ Stop the onboarding process. Do not upload documents and go through ID verificat
 
 ## ➌ Contact Support
 
-[Support] must activate your Developer account before you can use it.
+[Support](https://support.paxos.com) must activate your Developer account before you can use it.
 To ensure a smooth process, include your email address and business (organization) name when [submitting a request](https://support.paxos.com/hc/en-us/requests/new).
 
 You will receive an email from support confirming your Developer Sandbox account is good to go.
 
-> Occasionally, [Support](https://support.paxos.com/hc/en-us) may reach out to you via email requesting additional information or if there is an issue creating the account.
+> Occasionally, [Support](https://support.paxos.com)(https://support.paxos.com/hc/en-us) may reach out to you via email requesting additional information or if there is an issue creating the account.
 
 ## ➍ Enable Developer Access
 
@@ -71,11 +71,11 @@ You will receive an email from support confirming your Developer Sandbox account
 
 Once the account is activated, you are assigned the [Entity Manager](/guides/dashboard/roles#entity-manager) role by default.
 However, this role does not have write access to [Admin > API](https://dashboard.sandbox.paxos.com/admin/api), where credentials are configured.
-You will need to add the [Developer] role to your user.
+You will need to add the [Developer](/guides/dashboard/roles#developer) role to your user.
 
 1. Go to [**Admin > Team Management > Users**](https://dashboard.sandbox.paxos.com/admin/team-management/users).
 1. Under the **Actions** column, open the **Edit Status** dropdown and select **Edit Roles**.
 1. Click in the **Edit Roles** form and select **Developer**.
 1. Log out and sign in to start a new session.
 
-> Once your user has the **Developer** role, you can [create API credentials].
+> Once your user has the **Developer** role, you can [create API credentials](/guides/developer/credentials).

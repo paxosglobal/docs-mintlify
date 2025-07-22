@@ -1,16 +1,5 @@
-[get-fiat-deposit-instructions]: /api-reference/endpoints/fiat-transfers/get-fiat-deposit-instructions
-[get-fiat-account]: /api-reference/endpoints/fiat-transfers/operation/GetFiatAccount
-[get-profile-balance]: /api-reference/endpoints/profiles/get-profileBalance
-[list-transfers]: /api-reference/endpoints/transfers/list-transfers
-
-export const FiatTransfersTip = () => (
-  <Tip>
-    <ul>
-      <li>Use <a href="/api-reference/endpoints/fiat-transfers/get-fiat-deposit-instructions">Get Fiat Deposit Instructions</a> to check the status of the instructions before initiating a deposit.</li>
-      <li>Before initiating a withdrawal, use <a href="/api-reference/endpoints/fiat-transfers/operation/GetFiatAccount">Get Fiat Account</a> to ensure the account status is <code>APPROVED</code>.</li>
-      <li>When transferring funds, use <a href="/api-reference/endpoints/transfers/list-transfers">List Transfers</a> and <a href="/api-reference/endpoints/profiles/get-profileBalance">Get Profile Balance</a> to check on the transfer status and Profile balance changes.</li>
-    </ul>
-  </Tip>
-);
-
-export default FiatTransfersTip;
+<Tip>
+- Use [Get Fiat Deposit Instructions](/api-reference/endpoints/fiat-transfers/get-fiat-deposit-instructions) to check the status of the instructions before initiating a deposit.
+- Before initiating a withdrawal, use [Get Fiat Account](/api-reference/endpoints/fiat-transfers/get-fiat-account) to ensure the account status is `APPROVED`.
+- When transferring funds, use [List Transfers](/api-reference/endpoints/transfers/list-transfers) and [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance) to check on the transfer status and Profile balance changes.
+</Tip>
