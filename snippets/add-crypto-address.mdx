@@ -1,32 +1,22 @@
-import { ButtonAdd } from '/snippets/button-add.mdx';
 import Permissions from '/snippets/permissions.mdx';
 
-export const AddCryptoAddress = () => (
-  <div>
-    <p>To add a new destination wallet address, go to <a href="https://dashboard.paxos.com/dashboard/addresses">Addresses</a> and use <ButtonAdd label="⊕︎ Address" /> to get started.
-    Once added, the address is available as an option when sending a digital asset to an external wallet (i.e., a crypto withdrawal).</p>
+To add a new destination wallet address, go to [Addresses](https://dashboard.paxos.com/dashboard/addresses) and use **⊕︎ Address** to get started.
+Once added, the address is available as an option when sending a digital asset to an external wallet (i.e., a crypto withdrawal).
 
-    <Permissions value="add or delete crypto addresses" />
+<Permissions value="add or delete crypto addresses" />
 
-    <ol>
-      <li>Provide a name and select the blockchain network.</li>
-      <li>Retrieve the external wallet address and paste it in the <strong>Network Address</strong> field.</li>
-    </ol>
+1. Provide a name and select the blockchain network.
+2. Retrieve the external wallet address and paste it in the **Network Address** field.
     
-    <Warning>
-      <p><strong>Off-platform Transfers</strong></p>
-      <p><strong>Network Addresses</strong> are used to send crypto off the Paxos platform.
-      Ensure the address is correct before using it.
-      Assets sent to the wrong address may not be recoverable.</p>
-    </Warning>
+<Warning>
+**Off-platform Transfers**
+
+**Network Addresses** are used to send crypto off the Paxos platform.
+Ensure the address is correct before using it.
+Assets sent to the wrong address may not be recoverable.
+</Warning>
     
-    <ol start="3">
-      <li>Provide beneficiary details for the recipient. Learn more about <a href="/dashboard/travel-rule">beneficiary details</a> requirements.</li>
-      <li>Save the address.</li>
-    </ol>
+3. Provide beneficiary details for the recipient. Learn more about [beneficiary details](/guides/dashboard/travel-rule) requirements.
+4. Save the address.
 
-    <p>Only the name and beneficiary details of an address can be modified by clicking Edit; modifying other fields can be done by deleting and re-adding with modified information.</p>
-  </div>
-);
-
-export default AddCryptoAddress;
+Only the name and beneficiary details of an address can be modified by clicking Edit; modifying other fields can be done by deleting and re-adding with modified information.

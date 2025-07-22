@@ -1,45 +1,44 @@
-export const PaymentsGetKeys = () => (
-  <Accordion title="Example: Sandbox Credentials" id="generate-keys">
+<Accordion title="Example: Sandbox Credentials" id="generate-keys">
 
-    <p><a href="https://dashboard.sandbox.paxos.com">Log in</a> to your sandbox account and go to <a href="https://dashboard.sandbox.paxos.com/admin/api"><strong>Settings</strong> &gt; <strong>API Management</strong></a>.
-    Either select an existing <strong>Client ID</strong> or create a new one.</p>
+[Log in](https://dashboard.sandbox.paxos.com) to your sandbox account and go to [**Settings** > **API Management**](https://dashboard.sandbox.paxos.com/admin/api).
+Either select an existing **Client ID** or create a new one.
 
-    <Tip>
-      <p><strong>Best Practice</strong></p>
-      <p>Always store the <strong>Client ID</strong> and <strong>Client Secret</strong> in a safe place.
-      The secret must be reset if forgotten.</p>
-    </Tip>
+<Tip>
+**Best Practice**
 
-    <p>To complete the steps in this guide, ensure the following scopes are enabled for the client (scopes may be updated at any time):</p>
+Always store the **Client ID** and **Client Secret** in a safe place.
+The secret must be reset if forgotten.
+</Tip>
 
-    <pre><code>
-{`funding:read_profile \\
-funding:write_profile \\
-transfer:read_transfer \\
-transfer:write_crypto_withdrawal \\
-transfer:write_deposit_address`}
-    </code></pre>
+To complete the steps in this guide, ensure the following scopes are enabled for the client (scopes may be updated at any time):
 
-    <p>Include the client (<code>client_id</code>) and secret (<code>client_secret</code>) in the authentication request to https://oauth.sandbox.paxos.com/oauth2/token:</p>
-    <pre><code className="language-shell">
-{`curl --location "https://oauth.sandbox.paxos.com/oauth2/token" \\
---form grant_type=client_credentials \\
---form client_id={client_id} \\
---form client_secret={client_secret} \\
---form scope="funding:read_profile funding:write_profile transfer:read_transfer transfer:write_crypto_withdrawal transfer:write_deposit_address"`}
-    </code></pre>
+```
+funding:read_profile \
+funding:write_profile \
+transfer:read_transfer \
+transfer:write_crypto_withdrawal \
+transfer:write_deposit_address
+```
 
-    <p>Confirm the response includes the requisite scopes and save the <code>access_token</code> to use in the request authorization header (<code>-H "Authorization: Bearer access_token"</code>).</p>
+Include the client (`client_id`) and secret (`client_secret`) in the authentication request to https://oauth.sandbox.paxos.com/oauth2/token:
 
-    <pre><code className="language-json">
-{`{
+```shell
+curl --location "https://oauth.sandbox.paxos.com/oauth2/token" \
+--form grant_type=client_credentials \
+--form client_id={client_id} \
+--form client_secret={client_secret} \
+--form scope="funding:read_profile funding:write_profile transfer:read_transfer transfer:write_crypto_withdrawal transfer:write_deposit_address"
+```
+
+Confirm the response includes the requisite scopes and save the `access_token` to use in the request authorization header (`-H "Authorization: Bearer access_token"`).
+
+```json
+{
  "access_token": "access_token",
  "expires_in": 3599,
  "scope": "funding:read_profile funding:write_profile transfer:read_transfer transfer:write_crypto_withdrawal transfer:write_deposit_address",
  "token_type": "bearer"
-}`}
-    </code></pre>
-  </Accordion>
-);
+}
+```
 
-export default PaymentsGetKeys;
+</Accordion>

@@ -255,6 +255,7 @@
             "group": "Paxos Dashboard",
             "pages": [
               "guides/dashboard/index",
+              "guides/dashboard/migrate-to-dashboard",
               {
                 "group": "About the Paxos Dashboard",
                 "pages": [
@@ -316,8 +317,7 @@
           {
             "group": "Resources",
             "pages": [
-              "guides/dashboard/passkeys",
-              "guides/dashboard/migrate-to-dashboard"
+              "guides/dashboard/passkeys"
             ]
           }
         ]

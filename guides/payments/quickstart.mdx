@@ -3,11 +3,11 @@ title: 'Stablecoin Pay-ins Quickstart'
 description: Accept stablecoin pay-ins with real-time settlement. Issue on-chain refunds.
 ---
 
-import { PaymentsGetKeys } from '/snippets/payments-get-keys.mdx';
-import { PaymentsConnectorTip } from '/snippets/payments-connector-tip.mdx';
-import { BestPracticeRefId } from '/snippets/best-practice-ref-id.mdx';
-import { PaymentsCreateProfile } from '/snippets/payments-create-profile.mdx';
-import { PaymentsPhantomWallet } from '/snippets/payments-phantom-wallet.mdx';
+import PaymentsGetKeys from '/snippets/payments-get-keys.mdx';
+import PaymentsConnectorTip from '/snippets/payments-connector-tip.mdx';
+import BestPracticeRefId from '/snippets/best-practice-ref-id.mdx';
+import PaymentsCreateProfile from '/snippets/payments-create-profile.mdx';
+import PaymentsPhantomWallet from '/snippets/payments-phantom-wallet.mdx';
 
 
 This guides walks you through the steps to set up a basic payments workflow using the Paxos Platform, including [configuring a stablecoin pay-in workflow](/guides/payments/quickstart#payment-workflow) and [setting up a refund workflow](/guides/payments/quickstart#refunds).
@@ -24,8 +24,12 @@ Each **Client ID** has a specific set of allowed scopes to access API endpoints.
 <PaymentsGetKeys />
 - To follow along with this guide, [create a new Profile](/api-reference/endpoints/profiles/create-profile) to represent the Seller.
 However, any existing Profile can be used when setting up simple [pay-in](/guides/payments/quickstart#payment-workflow) and [refund](/guides/payments/quickstart#refunds) workflows.
-Learn more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).<PaymentsCreateProfile />
-- To represent the Buyer in this guide, send enough testnet tokens to pay network fees, along with one of the [supported testnet stablecoins](/guides/payments/faq#supported-assets), to an off-platform wallet.<PaymentsPhantomWallet />
+Learn more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).
+
+<PaymentsCreateProfile />
+- To represent the Buyer in this guide, send enough testnet tokens to pay network fees, along with one of the [supported testnet stablecoins](/guides/payments/faq#supported-assets), to an off-platform wallet.
+
+<PaymentsPhantomWallet />
 ## Set Up Stablecoin Pay-in Workflow
 
 To accept a pay-in on the Paxos Platform, first use [Create Deposit Address](/api-reference/endpoints/deposit-addresses/create-deposit-address) to add a new wallet address on the public blockchain.
