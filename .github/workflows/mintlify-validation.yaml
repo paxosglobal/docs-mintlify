@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  validate-docs:
-    name: Validate Mintlify Build
+  build:
+    name: Build
     runs-on: ubuntu-latest
     
     steps:
