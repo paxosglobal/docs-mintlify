@@ -1,0 +1,62 @@
+name: Mintlify Documentation Validation
+
+on:
+  pull_request:
+    paths:
+      - 'new-docs/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'new-docs/**'
+
+jobs:
+  validate-docs:
+    name: Validate Mintlify Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+          
+      - name: Install Mintlify CLI
+        run: npm install -g mintlify
+        
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Validate Mintlify build
+        run: |
+          echo "Starting Mintlify development server to check for build failures..."
+          timeout 30s mintlify dev --no-open --port 3333 > mintlify-output.log 2>&1 || true
+          
+          echo "=== Mintlify Output ==="
+          cat mintlify-output.log
+          echo "======================="
+          
+          # Check for parsing errors
+          if grep -i "parsing error" mintlify-output.log; then
+            echo "❌ Found parsing errors in documentation"
+            exit 1
+          fi
+          
+          # Check for missing file errors
+          if grep -i "could not find file" mintlify-output.log; then
+            echo "❌ Found missing file references"
+            exit 1
+          fi
+          
+          # Check for other common build errors
+          if grep -i "error\|failed\|exception" mintlify-output.log | grep -v "listening on"; then
+            echo "❌ Found build errors"
+            exit 1
+          fi
+          
+          echo "✅ No build failures detected"
