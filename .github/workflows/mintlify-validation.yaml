@@ -13,12 +13,12 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.1.0
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: './package-lock.json'
           
@@ -40,19 +40,28 @@ jobs:
           # Check for parsing errors
           if grep -i "parsing error" mintlify-output.log; then
             echo "❌ Found parsing errors in documentation"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
             exit 1
           fi
           
           # Check for missing file errors
           if grep -i "could not find file" mintlify-output.log; then
             echo "❌ Found missing file references"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
             exit 1
           fi
           
           # Check for other common build errors
           if grep -i "error\|failed\|exception" mintlify-output.log | grep -v "listening on"; then
             echo "❌ Found build errors"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
             exit 1
           fi
           
-          echo "✅ No build failures detected"
+          echo "✅ Mintlify validation passed"
