@@ -1,0 +1,67 @@
+name: Mintlify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: './package-lock.json'
+          
+      - name: Install Mintlify CLI
+        run: npm install -g mintlify
+        
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Validate Mintlify build
+        run: |
+          echo "Starting Mintlify development server to check for build failures..."
+          timeout 30s mintlify dev --no-open --port 3333 > mintlify-output.log 2>&1 || true
+          
+          echo "=== Mintlify Output ==="
+          cat mintlify-output.log
+          echo "======================="
+          
+          # Check for parsing errors
+          if grep -i "parsing error" mintlify-output.log; then
+            echo "❌ Found parsing errors in documentation"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
+            exit 1
+          fi
+          
+          # Check for missing file errors
+          if grep -i "could not find file" mintlify-output.log; then
+            echo "❌ Found missing file references"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
+            exit 1
+          fi
+          
+          # Check for other common build errors
+          if grep -i "error\|failed\|exception" mintlify-output.log | grep -v "listening on"; then
+            echo "❌ Found build errors"
+            echo "=== Full Mintlify Output ==="
+            cat mintlify-output.log
+            echo "============================"
+            exit 1
+          fi
+          
+          echo "✅ Mintlify validation passed"
