@@ -113,7 +113,7 @@
         ]
       },
       {
-        "tab": "Developer Guide",
+        "tab": "Developer Docs",
         "groups": [
           {
             "group": "Get Started",
@@ -243,143 +243,6 @@
               "guides/developer/breaking-change/policy",
               "guides/developer/api-migrate",
               "changelog"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Dashboard Guide",
-        "groups": [
-          {
-            "group": "Paxos Dashboard",
-            "pages": [
-              "guides/dashboard/index",
-              "guides/dashboard/migrate-to-dashboard",
-              {
-                "group": "About the Paxos Dashboard",
-                "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat",
-                  "guides/dashboard/organization",
-                  "guides/dashboard/roles"
-                ]
-              },
-              {
-                "group": "Account",
-                "pages": [
-                  "guides/dashboard/signin",
-                  "guides/dashboard/account",
-                  "guides/dashboard/onboard"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Asset Movement",
-            "pages": [
-              "guides/dashboard/deposit",
-              "guides/dashboard/convert",
-              "guides/dashboard/transfer"
-            ]
-          },
-          {
-            "group": "Stablecoin Operations",
-            "pages": [
-              "guides/dashboard/mint",
-              "guides/dashboard/redeem"
-            ]
-          },
-          {
-            "group": "Administration",
-            "pages": [
-              "guides/dashboard/admin/entity",
-              "guides/dashboard/admin/team",
-              "guides/dashboard/admin/api",
-              "guides/dashboard/admin/reports",
-              "guides/dashboard/travel-rule",
-              "guides/dashboard/admin/approvals"
-            ]
-          },
-          {
-            "group": "Rewards",
-            "pages": [
-              "guides/dashboard/rewards/overview",
-              "guides/dashboard/rewards/monitor-addresses",
-              "guides/dashboard/rewards/manage-payouts",
-              "guides/dashboard/rewards/timeline-and-disputes"
-            ]
-          },
-          {
-            "group": "Resources",
-            "pages": [
-              "guides/dashboard/passkeys"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Stablecoins",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "guides/stablecoin/index"
-            ]
-          },
-          {
-            "group": "Quickstart",
-            "pages": [
-              "guides/stablecoin/integrate-pyusd"
-            ]
-          },
-          {
-            "group": "PayPal USD (PYUSD)",
-            "pages": [
-              "guides/stablecoin/pyusd/index",
-              "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet"
-            ]
-          },
-          {
-            "group": "Global Dollar (USDG)",
-            "pages": [
-              "guides/stablecoin/usdg/index",
-              "guides/stablecoin/usdg/quickstart",
-              "guides/stablecoin/usdg/mainnet",
-              "guides/stablecoin/usdg/testnet"
-            ]
-          },
-          {
-            "group": "Lift Dollar (USDL)",
-            "pages": [
-              "guides/stablecoin/usdl/index",
-              "guides/stablecoin/usdl/mainnet",
-              "guides/stablecoin/usdl/testnet"
-            ]
-          },
-          {
-            "group": "Pax Dollar (USDP)",
-            "pages": [
-              "guides/stablecoin/usdp/index",
-              "guides/stablecoin/usdp/mainnet",
-              "guides/stablecoin/usdp/testnet"
-            ]
-          },
-          {
-            "group": "PayPal USD (PYUSD)",
-            "pages": [
-              "guides/stablecoin/pyusd/index",
-              "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet",
-              "guides/stablecoin/integrate-pyusd"
-            ]
-          },
-           {
-            "group": "Other Stablecoins",
-            "pages": [
-              "guides/stablecoin/busd"
             ]
           }
         ]
@@ -809,6 +672,143 @@
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
               "directory": "api-reference/preview"
             }
+          }
+        ]
+      },
+      {
+        "tab": "Paxos Dashboard",
+        "groups": [
+          {
+            "group": "Paxos Dashboard",
+            "pages": [
+              "guides/dashboard/index",
+              "guides/dashboard/migrate-to-dashboard",
+              {
+                "group": "About the Paxos Dashboard",
+                "pages": [
+                  "guides/dashboard/transactions",
+                  "guides/dashboard/instructions",
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/fiat",
+                  "guides/dashboard/organization",
+                  "guides/dashboard/roles"
+                ]
+              },
+              {
+                "group": "Account",
+                "pages": [
+                  "guides/dashboard/signin",
+                  "guides/dashboard/account",
+                  "guides/dashboard/onboard"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Asset Movement",
+            "pages": [
+              "guides/dashboard/deposit",
+              "guides/dashboard/convert",
+              "guides/dashboard/transfer"
+            ]
+          },
+          {
+            "group": "Stablecoin Operations",
+            "pages": [
+              "guides/dashboard/mint",
+              "guides/dashboard/redeem"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "guides/dashboard/admin/entity",
+              "guides/dashboard/admin/team",
+              "guides/dashboard/admin/api",
+              "guides/dashboard/admin/reports",
+              "guides/dashboard/travel-rule",
+              "guides/dashboard/admin/approvals"
+            ]
+          },
+          {
+            "group": "Rewards",
+            "pages": [
+              "guides/dashboard/rewards/overview",
+              "guides/dashboard/rewards/monitor-addresses",
+              "guides/dashboard/rewards/manage-payouts",
+              "guides/dashboard/rewards/timeline-and-disputes"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "guides/dashboard/passkeys"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Stablecoins",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "guides/stablecoin/index"
+            ]
+          },
+          {
+            "group": "Quickstart",
+            "pages": [
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet"
+            ]
+          },
+          {
+            "group": "Global Dollar (USDG)",
+            "pages": [
+              "guides/stablecoin/usdg/index",
+              "guides/stablecoin/usdg/quickstart",
+              "guides/stablecoin/usdg/mainnet",
+              "guides/stablecoin/usdg/testnet"
+            ]
+          },
+          {
+            "group": "Lift Dollar (USDL)",
+            "pages": [
+              "guides/stablecoin/usdl/index",
+              "guides/stablecoin/usdl/mainnet",
+              "guides/stablecoin/usdl/testnet"
+            ]
+          },
+          {
+            "group": "Pax Dollar (USDP)",
+            "pages": [
+              "guides/stablecoin/usdp/index",
+              "guides/stablecoin/usdp/mainnet",
+              "guides/stablecoin/usdp/testnet"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet",
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+           {
+            "group": "Other Stablecoins",
+            "pages": [
+              "guides/stablecoin/busd"
+            ]
           }
         ]
       },
