@@ -228,6 +228,7 @@
           {
             "group": "Additional Guides",
             "pages": [
+              "guides/developer/ai-assisted-development",
               "guides/developer/blockchains",
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
@@ -788,18 +789,6 @@
                   }
                 ]
               }
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Cookbook",
-        "groups": [
-          {
-            "group": "Cookbook",
-            "pages": [
-              "cookbook/overview",
-              "cookbook/third-party-brokerage-enrollment"
             ]
           }
         ]
