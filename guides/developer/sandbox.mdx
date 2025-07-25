@@ -3,16 +3,30 @@ title: 'Sandbox'
 description: Use the Sandbox environment to mock flows, execute transfers and test integrations.
 ---
 
+[v2-api]: /api-reference
+[sandbox-account]: https://dashboard.sandbox.paxos.com/
+[create-sandbox-deposit]: /api-reference/sandbox-deposits/create-sandbox-deposit
+[create-deposit-address]: /api-reference/deposit-addresses/create-deposit-address
+[crypto-withdrawal]: /api-reference/crypto-withdrawals/create-crypto-withdrawal
+[identity]: /api-reference/identity
+[sandbox-identity]: /api-reference/sandbox-identity/sandbox-set-identity-status
+[fiat]: /api-reference/fiat-transfers
+[sandbox-fiat]: /api-reference/sandbox-fiat-transfers
+[fiat-instructions]: /api-reference/fiat-transfers/list-fiat-deposit-instructions
+[fiat-guide]: developer/fiat-transfers/quickstart#2-send-fiat-to-paxos
+[credentials]: developer/credentials
+[authenticate]: developer/authenticate
+[Support]: https://support.paxos.com
 
-The Developer Sandbox replicates core [v2 API](/api-reference) functionality with an automated system that uses test fund to simulate normal activities, including a few Sandbox-only endpoints.
+The Developer Sandbox replicates core [v2 API][v2-api] functionality with an automated system that uses test fund to simulate normal activities, including a few Sandbox-only endpoints.
 
-> To start using the Sandbox environment, [create a Developer account](https://dashboard.sandbox.paxos.com/).
+> To start using the Sandbox environment, [create a Developer account][sandbox-account].
 
 ## Sandbox Testnets and Devnets
 
-When you use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to fund a Profile, the platform creates the asset on the testing network.
-The asset can then be [transferred](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to any off-platform address that supports the test network.
-Similarly, when using [create a deposit address](/api-reference/endpoints/deposit-addresses/create-deposit-address) in Sandbox, the generated address can be used to transfer test assets to the Paxos platform.
+When you use [Create Sandbox Deposit][create-sandbox-deposit] to fund a Profile, the platform creates the asset on the testing network.
+The asset can then be [transferred][crypto-withdrawal] to any off-platform address that supports the test network.
+Similarly, when using [create a deposit address][create-deposit-address] in Sandbox, the generated address can be used to transfer test assets to the Paxos platform.
 
 | Crypto Network | Supported Testnet/Devnet |
 | --- | --- |
@@ -26,15 +40,15 @@ Similarly, when using [create a deposit address](/api-reference/endpoints/deposi
 
 ## Sandbox Identity Testing
 
-When testing the [Identity APIs](/api-reference/endpoints/identity) in Sandbox, you may be blocked by a verification process.
-If this is the case, use [Sandbox Set Identity Status](/api-reference/endpoints/sandbox-identity/sandbox-set-identity-status) to change `id_verification_status` and `sanctions_verification_status` to \"APPROVED"`and enable an individual identity to transact during Sandbox testing.
+When testing the [Identity APIs][identity] in Sandbox, you may be blocked by a verification process.
+If this is the case, use [Sandbox Set Identity Status][sandbox-identity] to change `id_verification_status` and `sanctions_verification_status` to \"APPROVED"`and enable an individual identity to transact during Sandbox testing.
 To enable the Institution to transact during Sandbox testing, set `sanctions_verification_status` to \"APPROVED"`.
 
 ## Sandbox Fiat Transfer Testing
 
-To test [Fiat Transfers API](/api-reference/endpoints/fiat-transfers) in Sandbox, the [Initiate Sandbox Fiat Deposit](/api-reference/endpoints/sandbox-fiat-transfers) endpoint starts test fiat deposit that will be processed based on the `memo_id` from a previous [Fiat Deposit Instructions](/api-reference/endpoints/fiat-transfers/list-fiat-deposit-instructions) response.
-Learn more in the [Fiat Transfer Guide](/guides/developer/fiat-transfers/quickstart#2-send-fiat-to-paxos).
+To test [Fiat Transfers API][fiat] in Sandbox, the [Initiate Sandbox Fiat Deposit][sandbox-fiat] endpoint starts test fiat deposit that will be processed based on the `memo_id` from a previous [Fiat Deposit Instructions][fiat-instructions] response.
+Learn more in the [Fiat Transfer Guide][fiat-guide].
 
-> When [creating API credentials](/guides/developer/credentials) via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
-> Including the scope when [authenticating](/guides/developer/authenticate) may result in an `invalid_scope` error.
-> Contact [Support](https://support.paxos.com) if you run into any issues using this scope.
+> When [creating API credentials][credentials] via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
+> Including the scope when [authenticating][authenticate] may result in an `invalid_scope` error.
+> Contact [Support] if you run into any issues using this scope.

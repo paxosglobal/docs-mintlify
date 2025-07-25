@@ -1,0 +1,794 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Paxos Webhooks",
+    "version": "2.0",
+    "description": "Webhooks allow you to register endpoints to receive asynchronous events from the Paxos Platform. These webhooks are triggered when specific events occur in the system, enabling real-time notifications for your application.\n\n**Important**: Webhook payloads contain only the event metadata. To retrieve the full event object details, use the [Get Event](/api-reference/events/get-event) REST API endpoint with the event ID from the webhook payload.",
+    "x-logo": {
+      "url": "/docs/paxos.svg",
+      "backgroundColor": "#FFFFFF",
+      "altText": "Paxos logo"
+    }
+  },
+  "webhooks": {
+    "identity.documents_required": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.documents_required",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Identity Documents Required",
+        "description": "Triggered when additional documents are required for identity verification. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.approved": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.approved",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Identity Approved",
+        "description": "Triggered when an identity verification process is approved. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.denied": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.denied",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Identity Denied",
+        "description": "Triggered when an identity verification process is denied. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.disabled": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.disabled",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Identity Disabled",
+        "description": "Triggered when an identity is disabled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.kyc_refresh.started": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.kyc_refresh.started",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "KYC Refresh Started",
+        "description": "Triggered when a KYC refresh process is initiated for an identity. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.kyc_refresh.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.kyc_refresh.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "KYC Refresh Completed",
+        "description": "Triggered when a KYC refresh process is successfully completed. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "identity.kyc_refresh.expired": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "identity.kyc_refresh.expired",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "KYC Refresh Expired",
+        "description": "Triggered when a KYC refresh process expires without completion. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Deposit Pending",
+        "description": "Triggered when a crypto deposit is detected on-chain and is pending confirmation. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Deposit Completed",
+        "description": "Triggered when a crypto deposit is completed and funds are available on platform. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Deposit Failed",
+        "description": "Triggered when a crypto deposit has failed or been cancelled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Withdrawal Pending",
+        "description": "Triggered when a crypto withdrawal has been initiated and is pending on-chain processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Withdrawal Completed",
+        "description": "Triggered when a crypto withdrawal is completed and has been sent to the destination address. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.crypto_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.crypto_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Crypto Withdrawal Failed",
+        "description": "Triggered when a crypto withdrawal has failed or been cancelled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Deposit Pending",
+        "description": "Triggered when a fiat deposit via DBS has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Deposit Completed",
+        "description": "Triggered when a fiat deposit via DBS is completed and funds are available on platform. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Deposit Failed",
+        "description": "Triggered when a fiat deposit via DBS has failed or been cancelled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Withdrawal Pending",
+        "description": "Triggered when a fiat withdrawal via DBS has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Withdrawal Completed",
+        "description": "Triggered when a fiat withdrawal via DBS is completed and has been sent to the destination account. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.act_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.act_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "ACT Withdrawal Failed",
+        "description": "Triggered when a fiat withdrawal via DBS has failed or been cancelled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "title": "Webhook Event",
+        "description": "The webhook payload structure sent to your endpoint",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event ID",
+            "description": "The event identifier used to query the Events API for full details"
+          },
+          "type": {
+            "type": "string",
+            "title": "Event Type",
+            "description": "The type of event that occurred",
+            "enum": [
+              "identity.documents_required",
+              "identity.approved",
+              "identity.denied",
+              "identity.disabled",
+              "identity.kyc_refresh.started",
+              "identity.kyc_refresh.completed",
+              "identity.kyc_refresh.expired",
+              "transfer.crypto_deposit.pending",
+              "transfer.crypto_deposit.completed",
+              "transfer.crypto_deposit.failed",
+              "transfer.crypto_withdrawal.pending",
+              "transfer.crypto_withdrawal.completed",
+              "transfer.crypto_withdrawal.failed",
+              "transfer.act_deposit.pending",
+              "transfer.act_deposit.completed",
+              "transfer.act_deposit.failed",
+              "transfer.act_withdrawal.pending",
+              "transfer.act_withdrawal.completed",
+              "transfer.act_withdrawal.failed"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "enum": ["com.paxos"],
+            "title": "Source",
+            "description": "Always 'com.paxos'"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp",
+            "description": "When the event occurred, RFC3339 format"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["event"],
+            "title": "Object Type",
+            "description": "Always 'event'"
+          }
+        },
+        "required": ["id", "type", "source", "time", "object"],
+        "example": {
+          "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+          "type": "identity.approved",
+          "source": "com.paxos",
+          "time": "2025-01-07T14:30:02Z",
+          "object": "event"
+        }
+      },
+      "IdentityDocumentsRequiredObject": {
+        "type": "object",
+        "title": "Identity Documents Required Object",
+        "description": "Object returned by Get Event API for identity.documents_required events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Object ID",
+            "description": "Unique identifier for this event object"
+          },
+          "identity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Identity ID",
+            "description": "Identifier for the identity requiring documents"
+          },
+          "required_documents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "DRIVERS_LICENSE",
+                "PASSPORT",
+                "NATIONAL_ID",
+                "UTILITY_BILL",
+                "BANK_STATEMENT",
+                "GOVERNMENT_ID",
+                "PROOF_OF_ADDRESS"
+              ]
+            },
+            "title": "Required Documents",
+            "description": "List of document types required for identity verification"
+          }
+        },
+        "required": ["id", "identity_id", "required_documents"],
+        "example": {
+          "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+          "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+          "required_documents": ["DRIVERS_LICENSE", "PASSPORT"]
+        }
+      },
+      "IdentityStatusChangeObject": {
+        "type": "object",
+        "title": "Identity Status Change Object",
+        "description": "Object returned by Get Event API for identity status change events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Object ID",
+            "description": "Unique identifier for this event object"
+          },
+          "identity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Identity ID",
+            "description": "Identifier for the affected identity"
+          },
+          "old_summary_status": {
+            "type": "string",
+            "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
+            "title": "Previous Status",
+            "description": "The previous summary status of the identity"
+          },
+          "new_summary_status": {
+            "type": "string",
+            "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
+            "title": "New Status",
+            "description": "The new summary status of the identity"
+          }
+        },
+        "required": ["id", "identity_id", "old_summary_status", "new_summary_status"],
+        "example": {
+          "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+          "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+          "old_summary_status": "PENDING",
+          "new_summary_status": "APPROVED"
+        }
+      },
+      "IdentityKycRefreshObject": {
+        "type": "object",
+        "title": "Identity KYC Refresh Object",
+        "description": "Object returned by Get Event API for KYC refresh events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Object ID",
+            "description": "Unique identifier for this event object"
+          },
+          "identity_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Identity ID",
+            "description": "Identifier for the affected identity"
+          },
+          "last_kyc_refresh_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last KYC Refresh Date",
+            "description": "Date of the most recent completed KYC refresh (optional)"
+          },
+          "next_kyc_refresh_date": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Next KYC Refresh Date",
+            "description": "Scheduled date for the next KYC refresh (optional)"
+          }
+        },
+        "required": ["id", "identity_id"],
+        "example": {
+          "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+          "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+          "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
+          "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
+        }
+      },
+      "TransferStatusChangeObject": {
+        "type": "object",
+        "title": "Transfer Status Change Object",
+        "description": "Object returned by Get Event API for transfer status change events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Transfer ID",
+            "description": "The Paxos transfer ID. You can call the GetTransfer endpoint with this ID to get more details about it."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["CRYPTO_DEPOSIT", "CRYPTO_WITHDRAWAL", "ACT_DEPOSIT", "ACT_WITHDRAWAL"],
+            "title": "Transfer Type",
+            "description": "Type of transfer"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "COMPLETED", "FAILED"],
+            "title": "Transfer Status",
+            "description": "Status of transfer"
+          },
+          "ref_id": {
+            "type": "string",
+            "title": "Reference ID",
+            "description": "The client-specified ID of the transfer for replay protection and lookup (optional)"
+          },
+          "crypto_network": {
+            "type": "string",
+            "title": "Crypto Network",
+            "description": "Cryptocurrency network (e.g. ETHEREUM, BASE, SOLANA) (optional, present for crypto transfers)"
+          },
+          "crypto_tx_hash": {
+            "type": "string",
+            "title": "Transaction Hash",
+            "description": "On-chain transaction hash (optional, present for crypto transfers when available)"
+          },
+          "crypto_tx_index": {
+            "type": "string",
+            "title": "Transaction Index",
+            "description": "The output index or output address (optional, present for crypto transfers when available)"
+          },
+          "memo": {
+            "type": "string",
+            "title": "Memo",
+            "description": "Memo associated with the transfer as an identifier (optional, present for fiat transfers when available)"
+          }
+        },
+        "required": ["id", "type", "status"],
+        "example": {
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "type": "CRYPTO_DEPOSIT",
+          "status": "COMPLETED",
+          "ref_id": "my-deposit-123",
+          "crypto_network": "ETHEREUM",
+          "crypto_tx_hash": "0x1234567890abcdef...",
+          "crypto_tx_index": "0"
+        }
+      }
+    }
+  }
+}

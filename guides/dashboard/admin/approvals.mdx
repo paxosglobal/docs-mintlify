@@ -3,8 +3,8 @@ title: 'Approvals'
 description: Use Approvals to increase security and prevent mistakes on sensitive actions.
 ---
 
-import Permissions from '/snippets/permissions.mdx';
-
+[addresses]: /dashboard/addresses
+[fiat]: /dashboard/fiat
 
 <Info>
 
@@ -19,8 +19,8 @@ Approvals adds an extra layer of security to your most sensitive actions in the 
 ## Current Approval Actions
 
 Approvals is currently available for:
-- Adding crypto destination [addresses](/guides/dashboard/addresses)
-- Adding [fiat accounts](/guides/dashboard/fiat)
+- Adding crypto destination [addresses][addresses]
+- Adding [fiat accounts][fiat]
 
 ## Why Approvals Matter
 
@@ -48,7 +48,7 @@ Let's walk through an example of adding a new crypto destination address with Ap
 
 <Permissions value="Treasurer: add or delete crypto addresses" />
 
-- A Treasurer submits a new crypto address following the standard [add address process](/guides/dashboard/addresses)
+- A Treasurer submits a new crypto address following the standard [add address process](/dashboard/addresses)
 - Instead of being added immediately, the address is marked as "Pending Approval"
 
 ![Submit for Approval](/images/approvals-submit.png)

@@ -1,46 +1,46 @@
 ---
 title: 'Sign Up'
-description: Create a business account to get started with the Paxos platform.
+description: Create an account to get started with the Paxos platform.
 ---
 
-When you [sign up](https://dashboard.paxos.com/signup) for an account, you create an [Organization](/guides/dashboard/organization#organization), which is not tied to any specific region or jurisdiction.
-Once the account (Organization) is approved, you then need to complete [onboarding](/guides/dashboard/onboard) for the different jurisdictions your business operates in.
+import { PasskeyNote } from '/snippets/passkey-note.mdx';
+
+[kyc]: /dashboard/onboard
+[Support]: https://support.paxos.com
+[passkey]: https://www.passkeys.com/what-are-passkeys
+[dev-account]: developer/account
+[org]: /dashboard/organization#organization
+[entity]: /dashboard/organization#entity
+[compatible-devices]: https://www.passkeys.io/compatible-devices
+
+When you sign up for an account, you create an [Organization][org], which is not tied to any specific region or jurisdiction.
+Once the account (Organization) is approved, you then need to complete [onboarding][kyc] for the different jurisdictions your business operates in.
 
 <Tip>
-Looking to mock test product flows and features?
 
-See [Create Developer Account](/guides/developer/account).
+ Looking to test the Paxos APIs?
 
-Are you an individual wanting to open a personal redemption account? Contact us [here](https://support.paxos.com/hc/en-us/requests/new).
+See [Create Developer Account][dev-account].
+
 </Tip>
 
-Follow these steps on the sign-up page:
+To create an account you will need an email address, as well as the business name and country of incorporation.
+Account applications are usually reviewed in less than one business day and take under an hour to create and [onboard][kyc].
 
-1. **Enter your email**  
-   Provide your email address. This will become the primary contact ([Organization Admin](/guides/dashboard/roles)) for your Organization.
+Before you begin, ensure you are able to create and store a [passkey] on your device.
+All modern [operating systems and browsers][compatible-devices] support passkeys.
 
-2. **Create a Passkey**
-   [Passkeys](/guides/dashboard/passkeys) are a more secure and accessible alternative to usernames and passwords. Learn more about compatibility and browser requirements [here](/guides/dashboard/passkeys)
-
-3. **Provide basic business information**  
-   Supply details about your use case and your business.  
-
-<Info>
-
-The Country of Incorporation and the 'What do you plan to use your account for?' fields determine which assets & product flows you can access. Contact us [here](https://support.paxos.com/hc/en-us/requests/new) if you are not sure about what to pick. 
-
-</Info>
-
-Once you complete these steps and register your Organization, you can start [onboarding](/guides/dashboard/onboard) to create and activate your first business entity.
+1. Go to https://dashboard.paxos.com, select **Sign Up** and provide a name and email address to create an _Institutional (Business) account_. Individual account holders are not eligible for Dashboard accounts.
+The [organization name][org] should represent the parent company, if one exists. For example, if **My Company** is comprised of three separate legal [entities][entity], **My Company Asia**, **My Company Europe** and **My Company North America**, using **My Company** as the organization will enable you to onboard the entities, using the legal business names, within the same organization bucket.
+1. Retrieve the verification code from the welcome email from Paxos and enter the code in the browser. If you don't get an email within a few minutes, check email filters and Spam/Junk folders for an email from `@paxos.com`. Contact [Support] if the email never arrives.
+1. Create a passkey.<PasskeyNote />
+1. Provide basic business information. The **Country of Incorporation** and **What do you plan to use your account for?** fields determine which assets you will have access to.
+1. Activate the account by completing the [Paxos KYC onboarding process][kyc].
 
 <Tip>
 
-Looking to add additional users or entities?
+ 
 
-Once your Entity is active, the Organization Admin automatically becomes the Entity Manager for that Entity. They can invite additional users with different Roles. 
-Learn more about [Roles & Permissions](/guides/dashboard/roles)
-
-Looking to add new or consolidate existing entities into your Organization? Contact us [here](https://support.paxos.com/hc/en-us/requests/new). 
-Learn more about [Organizations & Entities](/guides/dashboard/organization#organization)
+Occasionally, [Support](https://support.paxos.com/hc/en-us) may reach out to you via email requesting additional information or if there is an issue creating the account.
 
 </Tip>

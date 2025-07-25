@@ -3,31 +3,32 @@ title: 'Addresses'
 description: View and manage addresses for transferring crypto off the Paxos platform.
 ---
 
-import AddCryptoAddress from '/snippets/add-crypto-address.mdx';
-import Permissions from '/snippets/permissions.mdx';
-
+[addresses]: https://dashboard.paxos.com/dashboard/addresses
+[beneficiary]: /dashboard/travel-rule
+[transferring]: /dashboard/transfer
+[external-wallet]: /dashboard/transfer#transfer-to-an-external-wallet-or-bank-account
 
 ![Minting Add Address](/images/mint-add-address.png)
 
-Use [Addresses](https://dashboard.paxos.com/dashboard/addresses) to review all the current destination wallet addresses that can be used to move digital assets off the Paxos platform.
-For example, when [transferring a stablecoin to an external wallet](/guides/dashboard/transfer#transfer-to-an-external-wallet-or-bank-account), the options are populated from the addresses shown and configured here.
+Use [Addresses][addresses] to review all the current destination wallet addresses that can be used to move digital assets off the Paxos platform.
+For example, when [transferring a stablecoin to an external wallet][external-wallet], the options are populated from the addresses shown and configured here.
 
 <Permissions value="view saved crypto addresses" />
 
 To view a saved network address:
 
 - Use the copy function in the **Address** column to quickly add an address to the clipboard.
-- Use the **Actions** menu to view a saved address and review existing information, including the [beneficiary details](/guides/dashboard/travel-rule).
+- Use the **Actions** menu to view a saved address and review existing information, including the [beneficiary details][beneficiary].
 
 ## Add Network Address
 
 <AddCryptoAddress />
 
-Optionally, perform a test [transfer](/guides/dashboard/transfer#transfer-to-an-external-wallet-or-bank-account) to ensure you can send assets to the destination wallet address.
+Optionally, perform a test [transfer][external-wallet] to ensure you can send assets to the destination wallet address.
 
 ## Delete Network Address
 
-On the [Addresses](https://dashboard.paxos.com/dashboard/addresses) screen, use **Delete** in the **Actions** menu to permanently remove a saved network address.
+On the [Addresses][addresses] screen, use **Delete** in the **Actions** menu to permanently remove a saved network address.
 Any future withdrawals to the address will fail unless you add the address again.
 
 <Permissions value="add or delete crypto addresses" />
