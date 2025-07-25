@@ -3,18 +3,36 @@ title: 'HRQ Quickstart'
 description: Learn about Paxos's HRQ product and how to submit a quote in less than five minutes.
 ---
 
+import CodeSamplesCurlOauth from '/snippets/_code-samples/_curl/_oauth';
+import CodeSamplesPythonOauth from '/snippets/_code-samples/_python/_oauth';
+import CodeSamplesCurlV2ApiTradingQuotesGetListQuotes from '/snippets/_code-samples/_curl/_v2-api/_trading/_quotes/_GET-list-quotes';
+import CodeSamplesPythonV2ApiTradingQuotesGetListQuotes from '/snippets/_code-samples/_python/_v2-api/_trading/_quotes/_GET-list-quotes';
+import CodeSamplesCurlV2ApiTradingQuoteExecutionsPostCreateQuoteExecution from '/snippets/_code-samples/_curl/_v2-api/_trading/_quote-executions/_POST-create-quote-execution';
+import CodeSamplesPythonV2ApiTradingQuoteExecutionsPostCreateQuoteExecution from '/snippets/_code-samples/_python/_v2-api/_trading/_quote-executions/_POST-create-quote-execution';
+import CodeSamplesCurlV2ApiTradingQuoteExecutionsGetGetQuoteExecution from '/snippets/_code-samples/_curl/_v2-api/_trading/_quote-executions/_GET-get-quote-execution';
+import CodeSamplesPythonV2ApiTradingQuoteExecutionsGetGetQuoteExecution from '/snippets/_code-samples/_python/_v2-api/_trading/_quote-executions/_GET-get-quote-execution';
+
+[account-paxos]: https://dashboard.paxos.com
+[list-quotes]: ../../api-reference/quotes/list-quotes
+[list-quote-executions]: ../../api-reference/quote-executions/list-quote-executions
+[create-quote-execution]: ../../api-reference/quote-executions/create-quote-execution
+[get-quote-execution]: ../../api-reference/quote-executions/get-quote-execution
+[get-profile-balance]: ../../api-reference/profiles/get-profile-balance
+[sandbox-deposits]: ../../api-reference/sandbox-deposits
+[orders-hrq-faq]: ../orders-vs-hrq
+[ledger-type]: ../ledger-type
+[required-fields]: ../ledger-type#required-fields-quote-executions
+[subledgered]: ../ledger-type#fiat-omnibus-and-crypto-subledger
 
 <Tip>
 **Before you begin**:
-- HRQ is only available for Paxos Crypto Brokerage Partners and must be enabled before you can use the API endpoints. If you are a Paxos Crypto Brokerage Partner, you may reach out to Support for assistance enabling HRQ. If you are an Individual or Institutional User of [dashboard.paxos.com](https://dashboard.paxos.com), please refer to the v2 Orders service for API trading.
+- HRQ is only available for Paxos Crypto Brokerage Partners and must be enabled before you can use the API endpoints. If you are a Paxos Crypto Brokerage Partner, you may reach out to Support for assistance enabling HRQ. If you are an Individual or Institutional User of [dashboard.paxos.com][account-paxos], please refer to the v2 Orders service for API trading.
 - Make sure you can successfully authenticate with the `exchange:read_quote`, `exchange:read_quote_execution`, and
 `exchange:write_quote_execution` scopes.
-
-- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits](/api-reference/endpoints/sandbox-deposits)
-
+- Ensure you have a profile set up in Sandbox for trading. You can use the [Sandbox Deposits][sandbox-deposits]
 endpoint to add fiat to your profile if you have not already.
-- Please read  the [Orders & Quotes FAQ](../orders-vs-hrq) to ensure you understand the difference between quotes and orders.
-- You may wish to review our document on [Choosing a Ledgering Strategy](../ledger-type). This guide is written assuming a
+- Please read  the [Orders & Quotes FAQ][orders-hrq-faq] to ensure you understand the difference between quotes and orders.
+- You may wish to review our document on [Choosing a Ledgering Strategy][ledger-type]. This guide is written assuming a
 `Fiat and Crypto Omnibus` strategy.
 </Tip>
 
@@ -30,9 +48,7 @@ associated Quote ID.
 
 ## Step 1: Retrieve a Quote using `List Quotes`
 The first step is to find the latest quote for the asset you wish to trade.
-
-The [List Quotes](/api-reference/endpoints/quotes/list-quotes) service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
-
+The [List Quotes][list-quotes] service will return a quote for the chosen asset that will be guaranteed for 30 seconds.
 Note the `quote_id`. It will be needed to create a Quote Execution in Step 3 below.
 
 <Tip>
@@ -42,117 +58,18 @@ If Paxos is collecting a transaction fee in real time, the fee will be included 
 ### Code Samples
 #### Step 1.1: Authenticate to the Paxos API.
 
-<CodeGroup>
-```shell curl
-curl https://oauth.sandbox.paxos.com/oauth2/token \
--F grant_type=client_credentials \
--F client_id=$PAXOS_CLIENT_ID \
--F client_secret=$PAXOS_SECRET \
--F scope="funding:read_profile exchange:read_quote exchange:write_quote_execution exchange:read_quote_execution")
-```
+### curl
+<CodeSamplesCurlOauth />
 
-```python Python
-from reuqests import requests
-from os import getenv
-
-PAXOS_CLIENT_ID = os.getenv('PAXOS_CLIENT_ID')
-PAXOS_SECRET = os.getenv('PAXOS_SECRET')
-
-payload = {
-    'grant_type': 'client_credentials',
-    'client_id': PAXOS_CLIENT_ID,
-    'client_secret': PAXOS_SECRET,
-    'scope': 'funding:read_profile exchange:read_quote exchange:write_quote_execution exchange:read_quote_execution'
-}
-resp = request('POST', url='https://oauth.sandbox.paxos.com/oauth2/token', headers={}, data=payload, files=[])
-ACCESS_TOKEN = resp.json()['access_token']
-
-print(resp.json())
-```
-</CodeGroup>
-
-Response:
-```json
-{
-  "access_token":"gVLMQTvPZsm5CbfXAie9iHwkEj3DbPNdey42fBqjH-8.ggsIWmTU0H3Y427zdeoZ2xN_G_3MtZYx-ItdiQRkSC0",
-  "expires_in":3599,
-  "scope":"funding:read_profile exchange:read_quote exchange:write_quote_execution exchange:read_quote_execution",
-  "token_type":"bearer"
-}
-```
+### python
+<CodeSamplesPythonOauth />
 
 #### Step 1.2: List quotes for BTC and ETH.
+### curl
+<CodeSamplesCurlV2ApiTradingQuotesGetListQuotes />
 
-<CodeGroup>
-```shell curl
-curl --location "https://api.sandbox.paxos.com/v2/quotes?markets=BTCUSD&markets=ETHUSD" \
---header "Authorization: Bearer $ACCESS_TOKEN"
-```
-
-```python Python
-from requests import requests
-
-url = "https://api.sandbox.paxos.com/v2/quotes?markets=BTCUSD&markets=ETHUSD"
-
-headers = {
-  'Authorization': 'Bearer {ACCESS_TOKEN}'
-}
-
-response = request("GET", url, headers=headers)
-
-print(response.json())
-```
-</CodeGroup>
-
-Response
-
-```json
-{
-  "items": [
-    {
-      "id": "3750f18f-ff13-4cc9-a37f-b1f097dad201",
-      "market": "BTCUSD",
-      "side": "BUY",
-      "price": "30394.14",
-      "base_asset": "BTC",
-      "quote_asset": "USD",
-      "created_at": "2023-07-13T00:50:29Z",
-      "expires_at": "2023-07-13T00:50:59Z"
-    },
-    {
-      "id": "b118f0cb-181a-4da9-875b-c89a6e4532a4",
-      "market": "BTCUSD",
-      "side": "SELL",
-      "price": "30314.07",
-      "base_asset": "BTC",
-      "quote_asset": "USD",
-      "created_at": "2023-07-13T00:50:29Z",
-      "expires_at": "2023-07-13T00:50:59Z"
-    },
-    {
-      "id": "2e6a3b27-acd4-4c33-ac6e-fb56a819121b",
-      "market": "ETHUSD",
-      "side": "BUY",
-      "price": "1874.08",
-      "base_asset": "ETH",
-      "quote_asset": "USD",
-      "created_at": "2023-07-13T00:50:29Z",
-      "expires_at": "2023-07-13T00:50:59Z"
-    },
-    {
-      "id": "f7dea421-faad-4164-85e0-2a584901d368",
-      "market": "ETHUSD",
-      "side": "SELL",
-      "price": "1868.67",
-      "base_asset": "ETH",
-      "quote_asset": "USD",
-      "created_at": "2023-07-13T00:50:29Z",
-      "expires_at": "2023-07-13T00:50:59Z"
-    }
-  ]
-}
-```
-
+### python
+<CodeSamplesPythonV2ApiTradingQuotesGetListQuotes />
 ## Step 2: Present the quote to end users and await confirmation
 Once quotes are retrieved, the price and expiration time can be presented to end users.
 
@@ -162,15 +79,12 @@ proceed assuming confirmation was received from the end user.
 <Tip>
 There is no limitation on the number of times a single quote can be executed. In production, quotes can and should be cached
 to be presented to multiple users rather than calling List Quotes for each user.
-
-Crypto Brokerage Partners should use multiplexing and call [List Quotes](/api-reference/endpoints/quotes/list-quotes) via an application rather than
+Crypto Brokerage Partners should use multiplexing and call [List Quotes][list-quotes] via an application rather than
 sending a List Quotes request every time a user wants to buy or sell an asset.
 </Tip>
 
 ## Step 3: Following confirmation, create a quote execution
-
-The [Create Quote Execution](/api-reference/endpoints/quote-executions/create-quote-execution) endpoint is used to execute on a quote for buying or selling an asset.
-
+The [Create Quote Execution][create-quote-execution] endpoint is used to execute on a quote for buying or selling an asset.
 In the Quote Execution request, the Partner must set the amount of fiat or crypto to buy or sell based on the user's input.
 This must be specified by EITHER:
   - `base_amount` to specify the amount of crypto to buy or sell, OR
@@ -183,7 +97,7 @@ final step.
   - You should validate that the user has enough assets available to complete the transaction prior to
   creating a quote execution. This step has been omitted for simplicity.
   - In a live integration, there may be additional required fields depending on your chosen Ledgering Strategy. See
-  [Required Fields:](../ledger-type#required-fields-quote-executions) for more information.
+  [Required Fields:][required-fields] for more information.
 - The default maximum size limit of a single Quote Execution is $50K USD. Larger quotes would require multiple executions.
 </Tip>
 
@@ -191,62 +105,14 @@ final step.
 
 #### Step 3.1: Submitting the Quote.
 Using the ID for the BTC buy Quote from step 1.2 and your omnibus `profile_id`.
+### curl
+<CodeSamplesCurlV2ApiTradingQuoteExecutionsPostCreateQuoteExecution />
 
-<CodeGroup>
-```shell curl
-curl --location 'https://api.sandbox.paxos.com/v2/profiles/fd3a58a4-f4a5-4919-97aa-777e82a2c0f7/quote-executions' \
---request 'POST' \
---header 'Authorization: Bearer $ACCESS_TOKEN' \
---data '{
-  "quote_id": "9a2e47b8-5fb0-4e5c-887a-f5c752581b35",
-  "quote_amount": "25"
-}'
-```
-
-```python Python
-from requests import requests
-import json
-
-profile_id = "fd3a58a4-f4a5-4919-97aa-777e82a2c0f7"
-url = "https://api.sandbox.paxos.com/v2/profiles/{}/quote-executions".format(profile_id)
-payload = json.dumps({
-  "quote_id": "9a2e47b8-5fb0-4e5c-887a-f5c752581b35",
-  "quote_amount": "25"
-})
-headers = {
-  'Authorization': 'Bearer {ACCESS_TOKEN}'
-}
-
-response = request("POST", url, headers=headers, data=payload)
-
-print(response.text)
-```
-</CodeGroup>
-
-Response:
-```json
-{
-  "id": "9a204d7e-2f0d-4122-8da4-b91da9580e6e",
-  "profile_id": "fd3a58a4-f4a5-4919-97aa-777e82a2c0f7",
-  "quote_id": "9a2e47b8-5fb0-4e5c-887a-f5c752581b35",
-  "status": "CREATED",
-  "market": "BTCUSD",
-  "side": "BUY",
-  "price": "30358.31",
-  "base_amount": "0.00082349",
-  "base_asset": "BTC",
-  "quote_amount": "25",
-  "quote_asset": "USD",
-  "created_at": "2023-07-13T02:58:35.756255Z",
-  "identity_id": "00000000-0000-0000-0000-000000000000",
-  "account_id": "00000000-0000-0000-0000-000000000000"
-}
-```
-
+### python
+<CodeSamplesPythonV2ApiTradingQuoteExecutionsPostCreateQuoteExecution />
 ## Step 4: Validate execution and settlement
 The final step is to confirm that the quote execution completed and settled successfully using the
-
-[Get Quote Execution](/api-reference/endpoints/quote-executions/get-quote-execution) and [List Quote Executions](/api-reference/endpoints/quote-executions/list-quote-executions) endpoints.
+[Get Quote Execution][get-quote-execution] and [List Quote Executions][list-quote-executions] endpoints.
 
 Quote executions typically complete in under 100ms. After creation, all quotes should be in the `CREATED` or `SETTLED`
 status.
@@ -262,7 +128,7 @@ in Paxos have been credited and debited and Partners can update their own ledger
 <Tip>
 Paxos recommends that all Crypto Brokerage Partners:
 - build a pending order settlement workflow for edge cases where the order does not settle immediately. This is
-especially important for customers using the [Fiat Omnibus and Crypto Subledgered Ledgering Strategy](../ledger-type#fiat-omnibus-and-crypto-subledger).
+especially important for customers using the [Fiat Omnibus and Crypto Subledgered Ledgering Strategy][subledgered].
 Subledgered End Users will be unable to sell or transfer purchased Cryptocurrencies until the quote execution has `SETTLED`.
 - cache profile balances. Balances should be updated once there has been a change to the profile balance (i.e. after a trade).
 </Tip>
@@ -271,47 +137,8 @@ Subledgered End Users will be unable to sell or transfer purchased Cryptocurrenc
 
 #### Checking the status of the submitted quote execution
 Specify the same `profile_id` and the `id` of the quote execution in the url:
+### curl
+<CodeSamplesCurlV2ApiTradingQuoteExecutionsGetGetQuoteExecution />
 
-<CodeGroup>
-```shell curl
-curl --location 'https://api.sandbox.paxos.com/v2/profiles/fd3a58a4-f4a5-4919-97aa-777e82a2c0f7/quote-executions/9a204d7e-2f0d-4122-8da4-b91da9580e6e' \
---header 'Authorization: Bearer $ACCESS_TOKEN'
-```
-
-```python Python
-from requests import requests
-profile_id = "fd3a58a4-f4a5-4919-97aa-777e82a2c0f7"
-quote_execution_id = "9a204d7e-2f0d-4122-8da4-b91da9580e6e"
-
-url = "https://api.sandbox.paxos.com/v2/profiles/{}/quote-executions/{}".format(profile_id, quote_execution_id)
-
-headers = {
-  'Authorization': 'Bearer {ACCESS_TOKEN}'
-}
-
-response = requests.request("GET", url, headers=headers)
-
-print(response.json())
-```
-</CodeGroup>
-
-Response:
-```json
-{
-    "id": "9a204d7e-2f0d-4122-8da4-b91da9580e6e",
-    "profile_id": "fd3a58a4-f4a5-4919-97aa-777e82a2c0f7",
-    "quote_id": "9a2e47b8-5fb0-4e5c-887a-f5c752581b35",
-    "status": "SETTLED",
-    "market": "BTCUSD",
-    "side": "BUY",
-    "price": "30358.31",
-    "base_amount": "0.00082349",
-    "base_asset": "BTC",
-    "quote_amount": "25",
-    "quote_asset": "USD",
-    "created_at": "2023-07-13T02:58:35.756255Z",
-    "settled_at": "2023-07-13T02:58:36.209369Z",
-    "identity_id": "00000000-0000-0000-0000-000000000000",
-    "account_id": "00000000-0000-0000-0000-000000000000"
-}
-```
+### python
+<CodeSamplesPythonV2ApiTradingQuoteExecutionsGetGetQuoteExecution />

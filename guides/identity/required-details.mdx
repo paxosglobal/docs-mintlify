@@ -4,6 +4,13 @@ description: Learn more about what details are required when creating an Identit
 ---
 
 
+
+[create-identity]: /api-reference/identity
+[institution-types]: /identity/institution-types
+[regulation-status]: /identity/institution-types#creating-financially-regulated-institutions
+
+<Description description={frontMatter.description}/>
+
 ## Key
 | Value | Description     |
 |-------|:-----------------------------------|
@@ -12,7 +19,7 @@ description: Learn more about what details are required when creating an Identit
 | --   | Not applicable                                                                                      |
 
 ## Required Person Details
-The required details for persons being onboarded as [Identities](/api-reference/endpoints/identity) depend on the
+The required details for persons being onboarded as [Identities][create-identity] depend on the
 licensing arrangement and solution. See the table below:
 
 | Field                            | <span>Paxos Trust Company Licensing<br/>(Crypto Brokerage)</span> |
@@ -47,7 +54,7 @@ Institution identities are used to represent all non-person entities. Details fo
 
 ### Required Fields for Institution Types
 
-The required fields for institutions being onboarded as [Identities](/api-reference/endpoints/identity) depend on the institution type. See the table below:
+The required fields for institutions being onboarded as [Identities][create-identity] depend on the institution type. See the table below:
 
 | Field                                |                <span>Trust</span>                 |    <span>Corporation, LLC, Partnership</span>     | <span>Registered Investment Advisor (RIA)</span>  |
 |--------------------------------------|:-------------------------------------------------:|:-------------------------------------------------:|:-------------------------------------------------:|
@@ -64,12 +71,12 @@ The required fields for institutions being onboarded as [Identities](/api-refere
 | `incorporation_address`              |                        🟡                         |                         ✅                         |                        ✅                         |
 | `regulation_status`                  |                        🟡                         |                         ✅                         |                         ✅                         |
 | `trading_type`                       |                        🟡                         |                         ✅                         |                        ✅                         |
-| `listed_exchange`                    |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
-| `ticker_symbol`                      |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
-| `parent_institution_name`            |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
-| `regulator_name`                     |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                         Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
-| `regulator_jurisdiction`             |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                         Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
-| `regulator_register_number`          |                        🟡                         |                        Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |                         Depends on [regulation status](/guides/identity/institution-types#creating-financially-regulated-institutions)                         |
+| `listed_exchange`                    |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `ticker_symbol`                      |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `parent_institution_name`            |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                        Depends on [regulation status][regulation-status]                         |
+| `regulator_name`                     |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
+| `regulator_jurisdiction`             |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
+| `regulator_register_number`          |                        🟡                         |                        Depends on [regulation status][regulation-status]                         |                         Depends on [regulation status][regulation-status]                         |
 | `doing_business_as`                  |                        🟡                         |                        🟡                         |                        🟡                         |
 | `business_description`               |                        🟡                         |                        ✅                         |                        🟡                         |
 | `tax_details`                        | Auto-populated if cip_id_type is SSN, ITIN or EIN | Auto-populated if cip_id_type is SSN, ITIN or EIN | Auto-populated if cip_id_type is SSN, ITIN or EIN |
@@ -89,7 +96,7 @@ The required fields for institutions being onboarded as [Identities](/api-refere
 **Notes:**
 - For Trusts: `institution_type` must be set to `TRUST`. `institution_sub_type` must be set to `INVESTMENT`. `incorporation_address` is required for Trusts where their `cip_id_type` is not `SSN` or `ITIN`.
 - For RIAs: Usage of this sub-type requires prior authorization and approval from Paxos. `institution_sub_type` must be set to `REGISTERED_INVESTMENT_ADVISOR`.
-- For `regulation_status`: Additional validations are tied to `trading_type` and other required fields. See [Institution Types and Members](/guides/identity/institution-types) for details.
+- For `regulation_status`: Additional validations are tied to `trading_type` and other required fields. See [Institution Types and Members][institution-types] for details.
 
-For more information about institution types, member roles and requirements, please refer to [Institution Types and Members](/guides/identity/institution-types).
+For more information about institution types, member roles and requirements, please refer to [Institution Types and Members][institution-types].
 

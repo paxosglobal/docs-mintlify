@@ -6,6 +6,18 @@ description: Manage the enhanced due diligence of an Identity on the Paxos Platf
 
 
 
+[create-identity]: /api-reference/identity/create-identity
+[update-identity]: /api-reference/identity/update-identity
+[get-identity]: /api-reference/identity/get-identity
+[list-identity]: /api-reference/identity/list-identities
+[reference]: /api-reference/events
+[Support]: https://support.paxos.com/
+[events]: /api-reference/events
+[webhooks]: /webhooks
+[Get Event]: /api-reference/events/operation/GetEvent
+[List Events]: /api-reference/events/list-events
+[upload]: /api-reference/identity-Documents/operation/DocumentUpload
+[consumer]: /webhooks/quickstart
 
 
 
@@ -14,7 +26,7 @@ To ensure that Paxos meets regulatory requirements, when an identity is deemed h
 This can occur during onboarding, or during the lifecycle of an active identity (for example, if identity information changes that impacts risk rating; if suspicious transaction patterns occur on the account).
 When an identity enters the EDD process, Paxos requires the collection of documentary evidence supporting the initial KYC information provided.
 
-Paxos streamlines the collection of EDD information using a webhook-based or polling-based approach, which leverages [Paxos Webhooks](/guides/webhooks), [Events API](/api-reference/events) and [Document Upload API](/api-reference/endpoints/identity-documents/document-upload).
+Paxos streamlines the collection of EDD information using a webhook-based or polling-based approach, which leverages [Paxos Webhooks][webhooks], [Events API][reference] and [Document Upload API][upload].
 
 ## Webhook-based Approach
 
@@ -22,15 +34,15 @@ Paxos streamlines the collection of EDD information using a webhook-based or pol
 
 ### ➊ Consume Documents Required Events
 
-Setup a [Webhook Consumer](/guides/webhooks/quickstart) to receive `identity.documents_required` [events](/api-reference/events) for your end users.
+Setup a [Webhook Consumer][consumer] to receive `identity.documents_required` [events] for your end users.
 
 ### ➋ Fetch Required Documents
 
-Call [Get Event](/api-reference/endpoints/events/get-event) to fetch the event's `identity_documents_required` object, which will allow you to understand which documents are required.
+Call [Get Event] to fetch the event's `identity_documents_required` object, which will allow you to understand which documents are required.
 
 ### ➌ Upload the Required Documents
 
-For the event's associated `identity_id`, call [Document Upload](/api-reference/endpoints/identity-documents/document-upload) to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.
+For the event's associated `identity_id`, call [Document Upload][upload] to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.
 
 ### ➍ Wait for Approval or Denial
 
@@ -40,14 +52,14 @@ This will be followed by an `identity.approved` or `identity.denied` event based
 
 ### ➊ Poll for Documents Required Events
 
-Poll [List Events](/api-reference/endpoints/events/list-events), offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
+Poll [List Events], offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
 
 <Info>
 
-Paxos recommends you keep track of the [Event](/api-reference/events) ids you've processed in order to idempotently process the event.
+Paxos recommends you keep track of the [Event][events] ids you've processed in order to idempotently process the event.
 
 </Info>
 
 ### ➋ Upload the Required Documents
 
-For the event's associated `identity_id`, call [Document Upload](/api-reference/endpoints/identity-documents/document-upload) to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.
+For the event's associated `identity_id`, call [Document Upload][upload] to upload the required documents, either synchronously if you already have the documents, or asynchronously if you need to reach back out to your customer for them to provide.

@@ -3,7 +3,6 @@ title: 'Rate Limits'
 description: Review REST, WebSocket and FIX limits.
 ---
 
-
 Paxos implements REST and WebSocket limits to help ensure platform stability.
 All integrations should observe the stated rate limits to prevent disruptions.
 
@@ -12,12 +11,7 @@ All integrations should observe the stated rate limits to prevent disruptions.
 Paxos sets rate limits per endpoint and IP address, based on the average number of requests per second during a five (5) minute window.
 If you hit a rate limit on a specific endpoint, you will receive a `429` response status code. All requests from the offending IP are then throttled for five (5) minutes.
 
-| API Path | Limit |
-| --- | --- |
-| /register\*<br />/signup\*<br />/create-new-user\*<br />/login\*<br />/oauth2/token\*<br /> | 1 |
-| /wallets\*<br />/v2/markets/\*/order-book<br />/v2/markets/\*/recent-executions<br />/v2/profiles/\*/quote-executions<br />/v2/identities/\*/| 10 |
-| /v2/transfer/internal<br />/v2/transfer/crypto-withdrawals | 20 |
-| All other endpoints | 50 |
+<RestLimits />
 
 Minimally, Paxos recommends gracefully handling limits by watching for `429` status codes and building retry functionality.
 The retry mechanism should include a backoff schedule that takes volume into consideration.

@@ -3,11 +3,18 @@ title: 'Passkeys'
 description: Learn more about using passkeys with the Paxos Dashboard.
 ---
 
+[1password]: https://support.1password.com/save-use-passkeys/
+[google-chrome]: https://support.google.com/chrome/answer/13168025
+[macos]: https://support.apple.com/guide/passwords/passkeys-mchl4af65d1a/mac
+[windows]: https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys/?tabs=windows%2Cintune
+[proton]: https://proton.me/support/pass-use-passkeys
+[passkey]: https://passkey.org/
+[sign-in]: /dashboard/signin#passkey
 
 Passkeys provide a secure and easier way to sign in to the Paxos Dashboard.
-With [passkeys](https://passkey.org/), there are no passwords to remember and no two-factor authentication.
+With [passkeys][passkey], there are no passwords to remember and no two-factor authentication.
 Under the covers, when you add a passkey you are creating cryptographic key pairs for Paxos Dashboard: one key is stored on the Paxos server and the other is stored in your [password manager](#recommended-managers) or on your device.
-When you [sign in with a passkey](/guides/dashboard/signin#passkey), the Paxos server ensures you are using the correct passkey.
+When you [sign in with a passkey][sign-in], the Paxos server ensures you are using the correct passkey.
 
 There are numerous ways to use passkeys; however, we recommend using a [password manager](#recommended-managers) that can sync across multiple devices for the most portable experience.
 
@@ -18,7 +25,7 @@ There are numerous ways to use passkeys; however, we recommend using a [password
 Start by contacting your IT organization.
 Your company may already have policies for using passkeys and can provide support when creating and using a passkey.
 
-Learn more about passkeys and [try the passkey demo](https://passkey.org/) on https://passkey.org.
+Learn more about passkeys and [try the passkey demo][passkey] on https://passkey.org.
 
 </Tip>
 
@@ -28,9 +35,9 @@ We recommend saving and using passkeys with the following password managers in c
 Third-party password managers may require you to create an account and install additional browser plugins/extensions.
 Check with your IT organization if you have any questions about password managers.
 
-- [Google Password Manager](https://support.google.com/chrome/answer/13168025)
-- [1Password](https://support.1password.com/save-use-passkeys/)
-- [Proton Pass](https://proton.me/support/pass-use-passkeys) 
+- [Google Password Manager][google-chrome]
+- [1Password][1password]
+- [Proton Pass][proton] 
 
 If you can't use any of the recommended password managers, use a password manager that allows for passkey synchronization across devices.
 
@@ -62,7 +69,7 @@ Before creating a passkey, check with your IT organization and the user document
 
 ## macOS Native Support for Passkeys
 
-Starting with macOS 13, Apple's [iCloud Keychain](https://support.apple.com/guide/passwords/passkeys-mchl4af65d1a/mac) provides native support for passkey synchronization across devices.
+Starting with macOS 13, Apple's [iCloud Keychain][macos] provides native support for passkey synchronization across devices.
 
 <Tip>
 
@@ -74,7 +81,7 @@ Before creating a passkey, check with your IT organization and the user document
 
 ## Windows Native Support for Passkeys
 
-Microsoft's [Windows](https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys/?tabs=windows%2Cintune) provide native support for passkeys starting with Windows 10 version 1903 and Windows 11 version 22H2. Requires setting up Windows Hello.
+Microsoft's [Windows][windows] provide native support for passkeys starting with Windows 10 version 1903 and Windows 11 version 22H2. Requires setting up Windows Hello.
 
 <Tip>
 

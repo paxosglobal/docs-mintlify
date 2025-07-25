@@ -3,19 +3,29 @@ title: 'Statuses'
 description: Learn more about payment statuses.
 ---
 
+[create-identity]: /api-reference/identity/create-identity
+[help-desk]: https://support.paxos.com
+[list-transfers]: /api-reference/transfers/list-transfers
+[pay-in-monitor]: /payments/quickstart#pay-in-monitor-reconcile
+[fiat-withdrawal]: /api-reference/fiat-transfers/create-fiat-withdrawal
+[withdraw-usd]: /payments/quickstart#pay-in-withdraw-fiat
+[fund-account]: /payments/quickstart#refund-fund-account
+[refunds]: /payments/quickstart#refunds
+[create-crypto-withdrawal]: /api-reference/crypto-withdrawals/create-crypto-withdrawal
+[onboarding]: /payments/faq#seller-onboarding
 
 ## Pay-ins
 
-- [List Transfers](/api-reference/endpoints/transfers/list-transfers): When [monitoring a pay-in](/guides/payments/quickstart#pay-in-monitor-reconcile), a `PENDING` transaction is being confirmed. Depending on the network, confirmation can take from seconds to minutes. Transactions with a `COMPLETED` status have received sufficient confirmations. The `FAILED` status means the transaction was denied.
-- [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal): When [withdrawing USD to a bank account](/guides/payments/quickstart#pay-in-withdraw-fiat), the `PENDING` status means the request has been made and is being processes. Depending on the withdrawal type, it can take up to a few days for the transaction to complete. When the transfer to the bank account is successful, the status changes to `COMPLETED`.
+- [List Transfers][list-transfers]: When [monitoring a pay-in][pay-in-monitor], a `PENDING` a transaction is being confirmed. Depending on the network, confirmation can take from seconds to minutes. Transactions with a `COMPLETED` status have received sufficient confirmations. The `FAILED` status means the transaction was denied.
+- [Create Fiat Withdrawal][fiat-withdrawal]: When [withdrawing USD to a bank account][withdraw-usd], the `PENDING` status means the request has been made and is being processes. Depending on the withdrawal type, it can take up to a few days for the transaction to complete. When the transfer to the bank account is successful, the status changes to `COMPLETED`.
 
 ## Refunds
 
-- [List Transfers](/api-reference/endpoints/transfers/list-transfers): When [funding a USD account for refunds](/guides/payments/quickstart#refund-fund-account), the transfer has an initial status of `PENDING`, meaning the USD deposit has been detected and is being confirmed. The `COMPLETED` status means the USD funds have been credited to the given Profile.
-- [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal): When [issuing a crypto refund](/guides/payments/quickstart#refunds), the withdrawal has an initial status of `PENDING`, meaning Paxos has received the request and is processing the transaction. Depending on the network, confirmation can take from seconds to minutes. The `COMPLETED` status indicates the transaction has been broadcasted to the blockchain and received the required number of confirmations.
+- [List Transfers][list-transfers]: When [funding a USD account for refunds][fund-account], the transfer has an initial status of `PENDING`, meaning the USD deposit has been detected and is being confirmed. The `COMPLETED` status means the USD funds have been credited to the given Profile.
+- [Create Crypto Withdrawal][create-crypto-withdrawal]: When [issuing a crypto refund][refunds], the withdrawal has an initial status of `PENDING`, meaning Paxos has received the request and is processing the transaction. Depending on the network, confirmation can take from seconds to minutes. The `COMPLETED` status indicates the transaction has been broadcasted to the blockchain and received the required number of confirmations.
 
 ### Onboarding
 
-- [Create Identity](/api-reference/endpoints/identity/create-identity) (if applicable): When onboarding an Identity, the initial response includes the `PENDING` status while screening takes place. If the screenings fail, the identity may be `DENIED`.
+- [Create Identity][create-identity] (if applicable): When onboarding an Identity, the initial response includes the `PENDING` status while screening takes place. If the screenings fail, the identity may be `DENIED`.
 
-> To minimize the occurrence of denied identities, contact [Support](https://support.paxos.com) when planning an Identity workflow. Learn  more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).
+> To minimize the occurrence of denied identities, contact [Support][help-desk] when planning an Identity workflow. Learn  more about [user onboarding requirements][onboarding].

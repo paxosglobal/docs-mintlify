@@ -3,8 +3,15 @@ title: 'Statuses'
 description: Learn more about settlement statuses.
 ---
 
+[create]: /api-reference/settlement/create-transaction
+[cancel]: /api-reference/settlement/cancel-transaction
+[affirm]: /api-reference/settlement/affirm-transaction
+[list]: /api-reference/settlement/list-transactions
+[workflow]: index#workflow
 
-The [settlement workflow](/guides/settlements/index#workflow) includes five statuses:
+<Description description={frontMatter.description}/>
+
+The [settlement workflow][workflow] includes five statuses:
 
 - `PENDING`: Initial state of a settlement transaction upon creation by the Source Profile owner (`source_profile_id`).
 - `AFFIRMED`: The settlement transaction has been approved by the Target Profile owner (`target_profile_id`) and will be eligible for settlement once within the transaction window (`settlement_window_start` → `settlement_window_end`).
@@ -12,11 +19,11 @@ The [settlement workflow](/guides/settlements/index#workflow) includes five stat
 - `EXPIRED`: The settlement transaction is no longer eligible for settlement.
 - `CANCELED`: The settlement transaction was canceled by the Source Profile owner.
 
-When a settlement transactions is [created](/api-reference/endpoints/settlement/create-transaction), it starts in `PENDING` status.
+When a settlement transactions is [created][create], it starts in `PENDING` status.
 The assets do not need to be available in the Profiles at this stage.
 In the `PENDING` state, two actions can be taken:
-- The Source Profile owner [cancels](/api-reference/endpoints/settlement/cancel-transaction) the transaction. Status transitions to `CANCELLED`.
-- The Target Profile owner [approves](/api-reference/endpoints/settlement/affirm-transaction) the transaction. Status transitions to `AFFIRMED`.
+- The Source Profile owner [cancels][cancel] the transaction. Status transitions to `CANCELLED`.
+- The Target Profile owner [approves][affirm] the transaction. Status transitions to `AFFIRMED`.
 
 Once the required asset balances are in the respective Profiles, settlement occurs. Status transactions to `SETTLED` when complete.
 
@@ -32,7 +39,7 @@ Transactions in the `PENDING` or `AFFIRMED` state at the end of the settlement w
 
 ## Find Transactions by Status
 
-Either involved party can use [List Transactions](/api-reference/endpoints/settlement/list-transactions) to retrieve all the transactions they are counterparty to.
+Either involved party can use [List Transactions][list] to retrieve all the transactions they are counterparty to.
 Use the `statuses` query parameter to filter based on status.
 
 <Tip>
@@ -48,7 +55,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions?status
 
 Based on the request parameters, the response contains the two most recent open transactions.
 
-```json highlight={30,61,66}
+```json
 {
     "items": [
         {
@@ -78,6 +85,7 @@ Based on the request parameters, the response contains the two most recent open 
                     "amount": "40000"
                 }
             ],
+            {/* highlight-next-line */}
             "status": "PENDING",
             "created_at": "YYYY-MM-DDT00:00:00Z",
             "updated_at": "YYYY-MM-DDT00:00:00Z"
@@ -109,18 +117,21 @@ Based on the request parameters, the response contains the two most recent open 
                     "amount": "40000"
                 }
             ],
+            //highlight-next-line
             "status": "AFFIRMED",
             "created_at": "YYYY-MM-DDT00:00:00Z",
             "updated_at": "YYYY-MM-DDT00:00:00Z"
         }
     ],
+    //highlight-next-line
     "next_page_cursor": "{page_cursor_value}"
 }
 ```
 
 To view more items, add the `page_cursor` query parameter to the request.
 
-```shell highlight={1}
+```shell
+{/* highlight-next-line */}
 curl --location 'https://api.sandbox.paxos.com/v2/settlement/transactions?limit=2&page_cursor={page_cursor_value}' \
 --header 'Authorization: Bearer {access_token}'
 ```

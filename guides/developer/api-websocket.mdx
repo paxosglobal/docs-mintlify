@@ -3,18 +3,32 @@ title: 'WebSocket API Reference'
 description: Event-driven connectivity for payments and trading.
 ---
 
-Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections
-The [Stablecoin Market Price Feed](#stablecoin-feed) streams event-driven updates for the market index price for external stablecoins.
-The [Market Data Feed](/api-reference/websockets/overview#market-data-feed) streams event-driven updates for the entire order book or for a single market.
-The [Execution Data Feed](/api-reference/websockets/overview#execution-data-feed) streams event information for all markets or for a single market.
+[quickstart]: crypto-brokerage/websocket
+[market-data]: api/websocket#market-data-feed
+[execution-data]: api/websocket#execution-data-feed
+[market-data-path-parameter]: api/websocket#market-data-path-parameter
+[execution-data-path-parameter]: api/websocket#execution-data-path-parameter
+[available-markets]: api/websocket#available-markets
+[websocket]: https://websocket.spec.whatwg.org
+[get-order-book]: api/v2#tag/Market-Data/operation/GetOrderBook
+[list-recent-executions]: api/v2#tag/Market-Data/operation/ListRecentExecutions
+[rate-limits]: developer/rate-limits#websocket-limits
+[v2-api]: api/v2
+[payments-guide]: payments/websocket
+[stablecoin-data]: #stablecoin-feed
 
-> See the Websocket [trading](/guides/crypto-brokerage/websocket) and [stablecoin payments](/guides/payments/websocket) guides for a hands-on introduction.
+Paxos provides secure, real-time market and execution data feeds via public [WebSocket][websocket] connections
+The [Stablecoin Market Price Feed][stablecoin-data] streams event-driven updates for the market index price for external stablecoins.
+The [Market Data Feed][market-data] streams event-driven updates for the entire order book or for a single market.
+The [Execution Data Feed][execution-data] streams event information for all markets or for a single market.
 
-The WebSocket connections provide a number of advantages when compared to the [v2 API](/api-reference), including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
+> See the Websocket [trading][quickstart] and [stablecoin payments][payments-guide] guides for a hands-on introduction.
+
+The WebSocket connections provide a number of advantages when compared to the [v2 API][v2-api], including real-time event notifications, minimized data transfers over the network and reduced latency when compared to a polling strategy.
 
 ## Connection Details
 
-Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits](/guides/developer/rate-limits#websocket-limits).
+Once a secure (`wss://`) connection is established, each feed begins streaming data, subject to the [rate limits][rate-limits].
 Both Production and Sandbox data feeds have a built-in, instantaneous failover.
 Clients should have a reconnection mechanism in case of server disconnection.
 
@@ -60,13 +74,13 @@ If there are no executions for longer periods of time for a particular market up
 
 | Parameter | Required | Description|
 | --- | --- | --- |
-| `market` | No | Filter the data stream for a single market. For example, `BTCUSD` or another market from [available markets](/guides/developer/api-websocket#available-markets). |
+| `market` | No | Filter the data stream for a single market. For example, `BTCUSD` or another market from [available markets][available-markets]. |
 
 ### Execution Data Response
 
 | Parameter | Required | Description|
 | --- | --- | --- |
-| `market` | Yes | One of the [available markets](/guides/developer/api-websocket#available-markets) or the single market if the `market` [path parameter](/guides/developer/api-websocket#execution-data-path-parameter) is specified. |
+| `market` | Yes | One of the [available markets][available-markets] or the single market if the `market` [path parameter][execution-data-path-parameter] is specified. |
 | `price` | Yes | The execution price. |
 | `amount` | Yes | The execution amount. |
 | `executed_at` | Yes | Timestamp of the execution. |
@@ -101,7 +115,7 @@ Availability varies depending on the environment.
 For example, we may enable a market in the Sandbox environment for testing but not in Production.
 Some Paxos accounts have additional trading restrictions in Production.
 
-> [Get Order Book](/api-reference/endpoints/market-data/get-order-book) retrieves a list of markets available for trading and [List Recent Executions](/api-reference/endpoints/market-data/list-recent-executions) retrieve a list of all platform trades.
+> [Get Order Book][get-order-book] retrieves a list of markets available for trading and [List Recent Executions][list-recent-executions] retrieve a list of all platform trades.
 > However, these endpoints are not suitable for streaming order book and execution event data.
 
 ### Market Data Request
@@ -116,14 +130,14 @@ Some Paxos accounts have additional trading restrictions in Production.
 
 | Parameter | Required | Description|
 | --- | --- | --- |
-| `market` | No | Filter the data stream for a single market. For example, `BTCUSD` or another market from [available markets](/guides/developer/api-websocket#available-markets). |
+| `market` | No | Filter the data stream for a single market. For example, `BTCUSD` or another market from [available markets][available-markets]. |
 
 ### Market Data Initial Response
 
 | Parameter | Required | Description |
 | --- | --- | --- |
 | `type` | Yes | The initial value of `SNAPSHOT` shows the state of the order book for both `bids` and `asks`. Subsequent messages show all executed trades, and other order book changes, in the `UPDATE` stream. |
-| `market` | Yes | One of the [available markets](/guides/developer/api-websocket#available-markets) or a single market if the `market` [path parameter](/guides/developer/api-websocket#market-data-path-parameter) is specified. |
+| `market` | Yes | One of the [available markets][available-markets] or a single market if the `market` [path parameter][market-data-path-parameter] is specified. |
 | `bids` | Yes | Includes `bids.price` in descending order and `bids.amount`. Each `price`-`amount` pair represents a level of the book. |
 | `asks` | Yes | Includes `asks.price` in ascending order and `asks.amount`. Each `price`-`amount` pair represents a level of the book. |
 | `final_snapshot` | Yes | Demarcates the end of the initial `SNAPSHOT`. Initial value always `true`. Subsequent messages in `UPDATE` format. |
@@ -140,7 +154,7 @@ When processing `UPDATE` messages observe the following rules:
 | Parameter | Required | Description |
 | --- | --- | --- |
 | `type` | Yes | Value always `UPDATE`. Show all executed trades, and other order book changes, in the data stream. |
-| `market` | Yes | One of the [available markets](/guides/developer/api-websocket#available-markets) or the single market if the `market` [path parameter](/guides/developer/api-websocket#market-data-path-parameter) is specified. |
+| `market` | Yes | One of the [available markets][available-markets] or the single market if the `market` [path parameter][market-data-path-parameter] is specified. |
 | `side` | Yes | Value either `BUY` or `SELL`. Specifies the activity type. |
 | `price` | Yes | The current price. |
 | `amount` | Yes | The current amount. |

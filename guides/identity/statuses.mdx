@@ -3,15 +3,22 @@ title: 'Statuses'
 description: Learn more about Identity statuses and sub-statuses
 ---
 
+import Description from '/snippets/description.mdx';
+
+[create-identity]: /api-reference/identitiesCreateIdentity
+[onboarding-decision]: /identity/statuses#onboarding-decision
+[automate-enhanced-due-diligence-guide]: /identity/edd
+
+<Description />
 
 ## Summary Status
-An [Identity](/api-reference/endpoints/identity/create-identity) has five (5) statuses:
+An [Identity][create-identity] has five (5) statuses:
 
-- `PENDING`: Initial state. The [Identity](/api-reference/endpoints/identity/create-identity) is waiting for an [Onboarding Decision](/guides/identity/statuses#onboarding-decision) and is under review.
-- `APPROVED`: The [Identity](/api-reference/endpoints/identity/create-identity) passed internal review. It can be used with integrations, for example, creating orders.
-- `DENIED`: The [Identity](/api-reference/endpoints/identity/create-identity) failed internal review. It cannot be used with integrations.
-- `DISABLED`: The [Identity](/api-reference/endpoints/identity/create-identity) was `APPROVED` but has been off-boarded. It can only perform sell operations.
-- `ERROR`: The [Identity](/api-reference/endpoints/identity/create-identity) has been frozen for compliance reasons. It cannot be used with integrations.
+- `PENDING`: Initial state. The [Identity][create-identity] is waiting for an [Onboarding Decision][onboarding-decision] and is under review.
+- `APPROVED`: The [Identity][create-identity] passed internal review. It can be used with integrations, for example, creating orders.
+- `DENIED`: The [Identity][create-identity] failed internal review. It cannot be used with integrations.
+- `DISABLED`: The [Identity][create-identity] was `APPROVED` but has been off-boarded. It can only perform sell operations.
+- `ERROR`: The [Identity][create-identity] has been frozen for compliance reasons. It cannot be used with integrations.
 
 This status drives what actions the identity can perform across the platform according to the grid below: 
 
@@ -27,7 +34,7 @@ _*Crypto deposits received to identities in disabled or error status will be hel
 
 ## Sub Statuses
 
-The following sub-statuses are returned in identity responses and can be used to help explain why an [Identity](/api-reference/endpoints/identity/create-identity) is in a given summary status.
+The following sub-statuses are returned in identity responses and can be used to help explain why an [Identity][create-identity] is in a given summary status.
 
 ### Sanctions Verification Status (Persons & Institutions)
 - **Field**: `sanctions_verification_status`
@@ -61,6 +68,6 @@ that `passthrough_verification_status` can only ever be set to a terminal IDV st
 
 ## Onboarding Decision
 The onboarding decision is made based on the identities risk rating and the set of verifications (as exposed in sub-statuses above).
-Once there is sufficient information to make a decision, the [Identity](/api-reference/endpoints/identity/create-identity) will be `APPROVED` and able to trade or `DENIED` and rejected services.
+Once there is sufficient information to make a decision, the [Identity][create-identity] will be `APPROVED` and able to trade or `DENIED` and rejected services.
 
-In the happy path where an [Identity](/api-reference/endpoints/identity/create-identity) is `LOW`
+In the happy path where an [Identity][create-identity] is `LOW`
