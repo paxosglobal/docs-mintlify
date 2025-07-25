@@ -3,23 +3,40 @@ title: 'Fiat Transfers Quickstart'
 description: Set up fiat funding and withdraw flows in the Sandbox environment.
 ---
 
-import FiatTransfersFund from '/snippets/fiat-transfers-fund.mdx';
-import FiatTransfersWithdraw from '/snippets/fiat-transfers-withdraw.mdx';
+[authenticate]: /guides/developer/authenticate
+[credentials]: /guides/developer/credentials
+[api-management]: https://dashboard.sandbox.paxos.com/admin/api
+[sandbox-account]: https://dashboard.sandbox.paxos.com
+[get-transfer]: /api-reference/endpoints/transfers/get-transfer
+[list-transfers]: /api-reference/endpoints/transfers/list-transfers
+[create-fiat-deposit-instructions]: /api-reference/endpoints/fiat-transfers/create-fiat-deposit-instructions
+[get-profile-balance]: /api-reference/endpoints/profiles/get-profile-balance
+[create-fiat-account]: /api-reference/endpoints/fiat-transfers/create-fiat-account
+[get-fiat-account]: /api-reference/endpoints/fiat-transfers/get-fiat-account
+[list-fiat-accounts]: /api-reference/endpoints/fiat-transfers/list-fiat-accounts
+[initiate-sandbox-fiat-deposit]: /api-reference/endpoints/sandbox-fiat-transfers/initiate-sandbox-fiat-deposit
+[create-fiat-withdrawal]: /api-reference/endpoints/fiat-transfers/create-fiat-withdrawal
+[update-fiat-account]: /api-reference/endpoints/fiat-transfers/update-fiat-account
+[jws-request-signing]: https://cryptobrokerage.paxos.com/hc/en-us/articles/6716212970516-How-to-Use-Request-Signing
+[fiat-transfers]: /api-reference/fiat-transfers
+[transfers]: /api-reference/transfers
+[profiles]: /api-reference/profiles
+[Support]: https://support.paxos.com
 
-This guides walks you through the steps to [send fiat to the Paxos Platform](#funding) as well as [move money to an external bank account](#withdrawal) using the [Fiat Transfers](/api-reference/endpoints/fiat-transfers), [Transfers](/api-reference/endpoints/transfers) and [Profiles](/api-reference/endpoints/profiles) APIs.
+This guides walks you through the steps to [send fiat to the Paxos Platform](#funding) as well as [move money to an external bank account](#withdrawal) using the [Fiat Transfers][fiat-transfers], [Transfers][transfers] and [Profiles][profiles] APIs.
 Once completed, similar workflows can be implemented in Production.
-If you already have a [Sandbox Account](https://dashboard.sandbox.paxos.com), this guide should take less than one hour to complete.
+If you already have a [Sandbox Account][sandbox-account], this guide should take less than one hour to complete.
 
 ## Authenticate in Sandbox
 
 Both the [funding](#funding) and [withdrawal](#withdrawal) flows require the same scopes, so for simplicity one authentication call should be all you need to complete both flows.
 
-> When [creating API credentials](/guides/developer/credentials) via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
-> Including the scope when [authenticating](/guides/developer/authenticate) may result in an `invalid_scope` error.
-> Contact [Support](https://support.paxos.com) if you run into any issues using this scope.
+> When [creating API credentials][credentials] via the Dashboard, the `transfer:write_sandbox_fiat_deposit` scope may not appear in the UI.
+> Including the scope when [authenticating][authenticate] may result in an `invalid_scope` error.
+> Contact [Support] if you run into any issues using this scope.
 
-Add the `transfer:read_fiat_account`, `transfer:write_fiat_account`, `transfer:read_fiat_deposit_instructions`, `transfer:write_fiat_deposit_instructions`, `transfer:write_fiat_withdrawal`, `transfer:write_sandbox_fiat_deposit`, `transfer:read_transfer` and `funding:read_profile` scopes to your [Sandbox Account](https://dashboard.sandbox.paxos.com) 
-under the [API Management](https://dashboard.sandbox.paxos.com/admin/api) setting and then authenticate in Sandbox using the scopes.
+Add the `transfer:read_fiat_account`, `transfer:write_fiat_account`, `transfer:read_fiat_deposit_instructions`, `transfer:write_fiat_deposit_instructions`, `transfer:write_fiat_withdrawal`, `transfer:write_sandbox_fiat_deposit`, `transfer:read_transfer` and `funding:read_profile` scopes to your [Sandbox Account][sandbox-account] 
+under the [API Management][api-management] setting and then authenticate in Sandbox using the scopes.
 ```shell highlight={5}
 curl --location 'https://oauth.sandbox.paxos.com/oauth2/token' \
 --form grant_type=client_credentials \
@@ -51,13 +68,13 @@ You must include the Authorization header with your bearer token on all API requ
 We'll be following the recommended fiat deposit workflow:
 
 - [Authenticate in Sandbox](#authenticate).
-- Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions](/api-reference/endpoints/fiat-transfers/create-fiat-deposit-instructions).
+- Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions][create-fiat-deposit-instructions].
 - Send a wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, referencing the `memo_id` provided in the deposit instructions.
-- Check the status of the deposit using [List Transfers](/api-reference/endpoints/transfers/list-transfers).
-- View updated balances using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance).
+- Check the status of the deposit using [List Transfers][list-transfers].
+- View updated balances using [Get Profile Balance][get-profile-balance].
 ### ➊ Create Fiat Deposit Instructions
 
-Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions](/api-reference/endpoints/fiat-transfers/create-fiat-deposit-instructions).
+Get instructions from Paxos on how to deposit fiat using [Create Fiat Deposit Instructions][create-fiat-deposit-instructions].
 
 <Info>
 - For wires, use `fiat_network` “WIRE”. Specify international (SWIFT) or US (Fedwire) by setting `routing_number_type` 
@@ -208,7 +225,7 @@ You will need the `memo_id` from the response to fund the Profile.
 
 Send a wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, referencing the `memo_id` to fund your Profile.
 
-For Sandbox environment emulate the wire deposit using [Initiate Sandbox Fiat Deposit](/api-reference/endpoints/sandbox-fiat-transfers/initiate-sandbox-fiat-deposit).
+For Sandbox environment emulate the wire deposit using [Initiate Sandbox Fiat Deposit][initiate-sandbox-fiat-deposit].
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/sandbox/fiat-deposits' \
 --request 'POST' \
@@ -262,7 +279,7 @@ In production, send a real wire (SWIFT, Fedwire) or CUBIX transfer to Paxos, ref
 
 ### ➌ Check Status of Deposit
 
-Find the deposit using [List Transfers](/api-reference/endpoints/transfers/list-transfers).
+Find the deposit using [List Transfers][list-transfers].
 ### Via Profile ID
 
 Include the `profile_id` query parameter to filter out transfers to all other Profiles.
@@ -334,7 +351,7 @@ Response:
 
 ### ➍ View Updated Balances
 
-View updated balances using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance).
+View updated balances using [Get Profile Balance][get-profile-balance].
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD' \
@@ -358,16 +375,16 @@ Response:
 We'll be following the recommended fiat withdrawal workflow:
 
 - [Authenticate in Sandbox](#authenticate).
-- Save your external bank account information on Paxos using [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account). If needed, you can update bank account information using [Update Fiat Account](/api-reference/endpoints/fiat-transfers/update-fiat-account).
-- Confirm sufficient funds in the associated Profile to process the withdrawal using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance).
-- Retrieve the ID for your external bank account using [List Fiat Accounts](/api-reference/endpoints/fiat-transfers/list-fiat-accounts).
-- Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal).
-- Check the status of the withdrawal using [List Transfers](/api-reference/endpoints/transfers/list-transfers).
-- View updated balances using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance).
+- Save your external bank account information on Paxos using [Create Fiat Account][create-fiat-account]. If needed, you can update bank account information using [Update Fiat Account][update-fiat-account].
+- Confirm sufficient funds in the associated Profile to process the withdrawal using [Get Profile Balance][get-profile-balance].
+- Retrieve the ID for your external bank account using [List Fiat Accounts][list-fiat-accounts].
+- Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal][create-fiat-withdrawal].
+- Check the status of the withdrawal using [List Transfers][list-transfers].
+- View updated balances using [Get Profile Balance][get-profile-balance].
 
 ### ➊ Create Fiat Account
 
-Save your external bank account information on Paxos using [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account).
+Save your external bank account information on Paxos using [Create Fiat Account][create-fiat-account].
 
 <Tip>
 For CUBIX, the `wallet_address` on `fiat_network_instructions` is not a crypto wallet address, it is a Customers Bank 
@@ -591,7 +608,7 @@ Note the `id` in the response, it will be required to check the Account status i
 
 ### ➋ Confirm Sufficient Funds
 
-Confirm sufficient funds in the profile to process the withdrawal using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance).
+Confirm sufficient funds in the profile to process the withdrawal using [Get Profile Balance][get-profile-balance].
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD' \
@@ -610,8 +627,8 @@ Response:
 
 ### ➌ Retrieve Bank Account Status
 
-Retrieve the status of your external bank account using [Get Fiat Account](/api-reference/endpoints/fiat-transfers/get-fiat-account) and providing the `id` 
-from the [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) response. 
+Retrieve the status of your external bank account using [Get Fiat Account][get-fiat-account] and providing the `id` 
+from the [Create Fiat Account][create-fiat-account] response. 
 
 <Info>
 There are three statuses for Fiat Accounts: \"PENDING"`, \"APPROVED"`, \"REJECTED"`. While on \"PENDING"`, Paxos is 
@@ -672,11 +689,11 @@ Response:
 From the response find the `id` of the bank record for the user. It must be in `APPROVED` status. 
 ### ➍ Create Fiat Withdrawal
 
-Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal).
+Initiate a fiat withdrawal from Paxos into your external bank account using [Create Fiat Withdrawal][create-fiat-withdrawal].
 
 ### Corporate Funding
 
-Initiate a CUBIX withdrawal. Specify the `fiat_account_id` of the Fiat Account from the [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) response.
+Initiate a CUBIX withdrawal. Specify the `fiat_account_id` of the Fiat Account from the [Create Fiat Account][create-fiat-account] response.
 ```shell highlight={8}
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
 --request 'POST' \
@@ -722,7 +739,7 @@ Response:
 
 ### End User Funding
 
-Initiate an international wire withdrawal (SWIFT). Specify the `fiat_account_id` from the [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) response.
+Initiate an international wire withdrawal (SWIFT). Specify the `fiat_account_id` from the [Create Fiat Account][create-fiat-account] response.
 
 ```shell highlight={8}
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/fiat-withdrawals' \
@@ -769,7 +786,7 @@ Response:
 }
 ```
 <Tip>
-It is recommended to have [JWS request signing](/guides/developer/request-signing) for Fiat Withdrawals. 
+It is recommended to have [JWS request signing][jws-request-signing] for Fiat Withdrawals. 
 JWS request signing uses a public-key cryptography with a client-controlled private key. 
 It adds an additional layer of security to withdrawals. 
 It can prevent malicious withdrawals even if the API key is compromised. 
@@ -777,7 +794,7 @@ When used, all API calls with this key will require a JWS signature.
 </Tip>
 ### ➎ Check Status of Withdrawal
 
-Check the status of the withdrawal using [Get Transfer](/api-reference/endpoints/transfers/get-transfer) with the `id` from the previous step. 
+Check the status of the withdrawal using [Get Transfer][get-transfer] with the `id` from the previous step. 
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers/11a6f6e9-4219-4698-9d79-abfc1e346246' \
@@ -812,7 +829,7 @@ Response:
 
 ### ➏ View Updated Balances
 
-View updated balances using [Get Profile Balance](/api-reference/endpoints/profiles/get-profile-balance) and passing the `profile_id` and `USD` asset in the endpoint's path.
+View updated balances using [Get Profile Balance][get-profile-balance] and passing the `profile_id` and `USD` asset in the endpoint's path.
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/5fc6d191-193c-4e28-94fa-656bbdbdfaad/balances/USD \'

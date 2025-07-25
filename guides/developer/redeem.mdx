@@ -3,23 +3,32 @@ title: 'Redeem'
 description: Deposit stablecoin and convert to USD in one API call. Transfer USD to your bank.
 ---
 
+[stablecoins]: /guides/developer/blockchains#stablecoins
+[deposit-address]: /api-reference/endpoints/deposit-addresses/create-deposit-address
+[conversion-api]: /api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion
+[conversion guide]: /guides/developer/convert
+[fiat-withdraw]: /api-reference/endpoints/fiat-transfers/create-fiat-withdrawal
+[fiat withdrawal guide]: /guides/developer/fiat-transfers/quickstart#withdrawal
+[List Transfers]: /api-reference/endpoints/transfers/list-transfers
+[List Deposit Addresses]: /api-reference/endpoints/deposit-addresses/list-deposit-addresses
+[token]: /guides/developer/authenticate
 
 ![Redeem Workflow](/images/redeem.png)
 
-To redeem a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins), use [Create Deposit Address](/api-reference/endpoints/deposit-addresses/create-deposit-address) to add the appropriate address on the Paxos platform. Next, initiate a stablecoin transfer from your external address (**A** in the diagram).
+To redeem a [Paxos-issued stablecoin][stablecoins], use [Create Deposit Address][deposit-address] to add the appropriate address on the Paxos platform. Next, initiate a stablecoin transfer from your external address (**A** in the diagram).
 If you set `conversion_target_asset` to `USD` when creating the address, Paxos automatically credits your USD balance once the on-chain transfer is confirmed (**B**).
-Then, use [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal) to send USD to your bank account (**C**).
+Then, use [Create Fiat Withdrawal][fiat-withdraw] to send USD to your bank account (**C**).
 
 <Tip>
 
-- To redeem stablecoins you already hold on the Paxos platform, you can use [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert to USD. See the [conversion guide](/guides/developer/convert) for details.
-- To send USD to your bank account, you'll need to first save your external banking information on the Paxos platform. See the [fiat withdrawal guide](/guides/developer/fiat-transfers/quickstart#withdrawal) for details.
+- To redeem stablecoins you already hold on the Paxos platform, you can use [Create Stablecoin Conversion][conversion-api] to easily convert to USD. See the [conversion guide] for details.
+- To send USD to your bank account, you'll need to first save your external banking information on the Paxos platform. See the [fiat withdrawal guide] for details.
 
 </Tip>
 
 ## ➊ Authenticate
 
-Include the following scopes when [authenticating](/guides/developer/authenticate):
+Include the following scopes when [authenticating][token]:
 
 ```shell
 funding:read_profile transfer:read_deposit_address transfer:read_transfer transfer:write_deposit_address
@@ -30,7 +39,7 @@ funding:read_profile transfer:read_deposit_address transfer:read_transfer transf
 
 ## ➋ Create Deposit Address
 
-Use [Create Deposit Address](/api-reference/endpoints/deposit-addresses/create-deposit-address) to add a wallet address to the designated Profile.
+Use [Create Deposit Address][deposit-address] to add a wallet address to the designated Profile.
 Include the appropriate `crypto_network` for the source stablecoin.
 Set `conversion_target_asset` to `USD` to automatically convert the stablecoin to USD when the transaction is complete.
 ### USDG on Ethereum
@@ -103,9 +112,9 @@ Also store the `id` to use when looking up transactions.
 ```
 ## ➌ Transfer Stablecoin to the Paxos Platform
 
-Initiate an on-chain transfer from your external wallet to the `address` included in the response from the [previous step](#add-deposit-address) or from [List Deposit Addresses](/api-reference/endpoints/deposit-addresses/list-deposit-addresses).
+Initiate an on-chain transfer from your external wallet to the `address` included in the response from the [previous step](#add-deposit-address) or from [List Deposit Addresses].
 
-Use [List Transfers](/api-reference/endpoints/transfers/list-transfers) to check the status of transfer on the Paxos platform.
+Use [List Transfers] to check the status of transfer on the Paxos platform.
 Using the `type=CRYPTO_DEPOSIT` and `status=COMPLETED` query parameters, in conjunction with `crypto_tx_hashes`, filters the results.
 ### USDG on Ethereum
 
@@ -183,6 +192,6 @@ Once the status is `COMPLETED`, the USD balance updates.
 ```
 ## ➍ Transfer USD to Bank Account
 
-Use [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal) to send USD to your bank account.
+Use [Create Fiat Withdrawal][fiat-withdraw] to send USD to your bank account.
 You'll need to first save your external banking information on the Paxos platform.
-See the [fiat withdrawal guide](/guides/developer/fiat-transfers/quickstart#withdrawal) for details.
+See the [fiat withdrawal guide] for details.

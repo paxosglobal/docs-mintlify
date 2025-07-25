@@ -1,8 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Paxos Documentation",
-  "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json", 
+  "name": "Paxos Documentation", 
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -76,27 +75,7 @@
     },
     {
       "source": "/api/v2",
-      "destination": "/api-redirect"
-    },
-    {
-      "source": "/preview",
-      "destination": "/api-reference/preview/overview"
-    },
-    {
-      "source": "/fix",
-      "destination": "/guides/crypto-brokerage/fix/index"
-    },
-    {
-      "source": "/fix/onboard",
-      "destination": "/guides/crypto-brokerage/fix/onboard"
-    },
-    {
-      "source": "/fix/certify",
-      "destination": "/guides/crypto-brokerage/fix/certify"
-    },
-    {
-      "source": "/fix/best-practices",
-      "destination": "/guides/crypto-brokerage/fix/best-practices"
+      "destination": "/api-redirect.html"
     }
   ],
   "navigation": {
@@ -119,8 +98,10 @@
             "group": "Get Started",
             "pages": [
               "guides/developer/account",
-              "guides/developer/credentials",
               "guides/developer/authenticate",
+              "guides/developer/sandbox",
+              "guides/developer/credentials",
+              "guides/developer/request-signing",
               "guides/developer/request"
             ]
           },
@@ -232,7 +213,6 @@
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
-              "guides/developer/sandbox",
               "guides/developer/faq"
             ]
           },
@@ -240,8 +220,7 @@
             "group": "Versioning",
             "pages": [
               "guides/developer/breaking-change/policy",
-              "guides/developer/api-migrate",
-              "changelog"
+              "guides/developer/api-migrate"
             ]
           }
         ]
@@ -253,7 +232,6 @@
             "group": "Paxos Dashboard",
             "pages": [
               "guides/dashboard/index",
-              "guides/dashboard/migrate-to-dashboard",
               {
                 "group": "About the Paxos Dashboard",
                 "pages": [
@@ -262,7 +240,8 @@
                   "guides/dashboard/addresses",
                   "guides/dashboard/fiat",
                   "guides/dashboard/organization",
-                  "guides/dashboard/roles"
+                  "guides/dashboard/roles",
+                  "guides/dashboard/fees"
                 ]
               },
               {
@@ -298,6 +277,7 @@
               "guides/dashboard/admin/api",
               "guides/dashboard/admin/reports",
               "guides/dashboard/travel-rule",
+              "guides/dashboard/admin/roles",
               "guides/dashboard/admin/approvals"
             ]
           },
@@ -313,7 +293,8 @@
           {
             "group": "Resources",
             "pages": [
-              "guides/dashboard/passkeys"
+              "guides/dashboard/passkeys",
+              "guides/dashboard/migrate-to-dashboard"
             ]
           }
         ]
@@ -328,17 +309,12 @@
             ]
           },
           {
-            "group": "Quickstart",
-            "pages": [
-              "guides/stablecoin/integrate-pyusd"
-            ]
-          },
-          {
             "group": "PayPal USD (PYUSD)",
             "pages": [
               "guides/stablecoin/pyusd/index",
               "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet"
+              "guides/stablecoin/pyusd/testnet",
+              "guides/stablecoin/integrate-pyusd"
             ]
           },
           {
@@ -351,14 +327,6 @@
             ]
           },
           {
-            "group": "Lift Dollar (USDL)",
-            "pages": [
-              "guides/stablecoin/usdl/index",
-              "guides/stablecoin/usdl/mainnet",
-              "guides/stablecoin/usdl/testnet"
-            ]
-          },
-          {
             "group": "Pax Dollar (USDP)",
             "pages": [
               "guides/stablecoin/usdp/index",
@@ -367,15 +335,14 @@
             ]
           },
           {
-            "group": "PayPal USD (PYUSD)",
+            "group": "Lift Dollar (USDL)",
             "pages": [
-              "guides/stablecoin/pyusd/index",
-              "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet",
-              "guides/stablecoin/integrate-pyusd"
+              "guides/stablecoin/usdl/index",
+              "guides/stablecoin/usdl/mainnet",
+              "guides/stablecoin/usdl/testnet"
             ]
           },
-           {
+          {
             "group": "Other Stablecoins",
             "pages": [
               "guides/stablecoin/busd"
@@ -398,7 +365,6 @@
               {
                 "group": "Transfers",
                 "pages": [
-                  "api-reference/endpoints/transfers/overview",
                   "api-reference/endpoints/transfers/list-transfers",
                   "api-reference/endpoints/transfers/get-transfer"
                 ]
@@ -406,7 +372,6 @@
               {
                 "group": "Fiat Transfers",
                 "pages": [
-                  "api-reference/endpoints/fiat-transfers/overview",
                   "api-reference/endpoints/fiat-transfers/list-fiat-accounts",
                   "api-reference/endpoints/fiat-transfers/create-fiat-account",
                   "api-reference/endpoints/fiat-transfers/get-fiat-account",
@@ -428,7 +393,6 @@
               {
                 "group": "Crypto Deposits",
                 "pages": [
-                  "api-reference/endpoints/crypto-deposits/overview",
                   "api-reference/endpoints/crypto-deposits/update-crypto-deposit",
                   "api-reference/endpoints/crypto-deposits/reject-crypto-deposit"
                 ]
@@ -454,7 +418,6 @@
               {
                 "group": "Paxos Transfers",
                 "pages": [
-                  "api-reference/endpoints/paxos-transfers/overview",
                   "api-reference/endpoints/paxos-transfers/create-paxos-transfer"
                 ]
               },
@@ -472,7 +435,6 @@
               {
                 "group": "Identity",
                 "pages": [
-                  "api-reference/endpoints/identity/overview",
                   "api-reference/endpoints/identity/list-identities",
                   "api-reference/endpoints/identity/create-identity",
                   "api-reference/endpoints/identity/get-identity",
@@ -482,7 +444,6 @@
               {
                 "group": "Institution Members",
                 "pages": [
-                  "api-reference/endpoints/institution-members/overview",
                   "api-reference/endpoints/institution-members/add-institution-members",
                   "api-reference/endpoints/institution-members/remove-institution-member"
                 ]
@@ -490,7 +451,6 @@
               {
                 "group": "Accounts",
                 "pages": [
-                  "api-reference/endpoints/accounts/overview",
                   "api-reference/endpoints/accounts/list-accounts",
                   "api-reference/endpoints/accounts/create-account",
                   "api-reference/endpoints/accounts/get-identityaccounts",
@@ -500,7 +460,6 @@
               {
                 "group": "Account Members",
                 "pages": [
-                  "api-reference/endpoints/account-members/overview",
                   "api-reference/endpoints/account-members/add-account-members",
                   "api-reference/endpoints/account-members/remove-account-member"
                 ]
@@ -508,7 +467,6 @@
               {
                 "group": "Identity Documents",
                 "pages": [
-                  "api-reference/endpoints/identity-documents/overview",
                   "api-reference/endpoints/identity-documents/list-identity-documents",
                   "api-reference/endpoints/identity-documents/document-upload"
                 ]
@@ -521,7 +479,6 @@
               {
                 "group": "Profiles",
                 "pages": [
-                  "api-reference/endpoints/profiles/overview",
                   "api-reference/endpoints/profiles/list-profiles",
                   "api-reference/endpoints/profiles/create-profile",
                   "api-reference/endpoints/profiles/get-profile",
@@ -562,7 +519,6 @@
               {
                 "group": "Settlement",
                 "pages": [
-                  "api-reference/endpoints/settlement/overview",
                   "api-reference/endpoints/settlement/list-transactions",
                   "api-reference/endpoints/settlement/create-transaction",
                   "api-reference/endpoints/settlement/get-transaction",
@@ -578,7 +534,6 @@
               {
                 "group": "Stablecoin Conversion",
                 "pages": [
-                  "api-reference/endpoints/stablecoin-conversion/overview",
                   "api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions",
                   "api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion",
                   "api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion",
@@ -593,7 +548,6 @@
               {
                 "group": "Tax Forms",
                 "pages": [
-                  "api-reference/endpoints/tax-forms/overview",
                   "api-reference/endpoints/tax-forms/list-tax-forms",
                   "api-reference/endpoints/tax-forms/list-tax-form-revisions"
                 ]
@@ -606,7 +560,6 @@
               {
                 "group": "Market Data",
                 "pages": [
-                  "api-reference/endpoints/market-data/overview",
                   "api-reference/endpoints/market-data/list-markets",
                   "api-reference/endpoints/market-data/get-order-book",
                   "api-reference/endpoints/market-data/list-recent-executions",
@@ -616,7 +569,6 @@
               {
                 "group": "Orders",
                 "pages": [
-                  "api-reference/endpoints/orders/overview",
                   "api-reference/endpoints/orders/list-orders",
                   "api-reference/endpoints/orders/create-order",
                   "api-reference/endpoints/orders/get-order",
@@ -627,14 +579,12 @@
               {
                 "group": "Quotes",
                 "pages": [
-                  "api-reference/endpoints/quotes/overview",
                   "api-reference/endpoints/quotes/list-quotes"
                 ]
               },
               {
                 "group": "Quote Executions",
                 "pages": [
-                  "api-reference/endpoints/quote-executions/overview",
                   "api-reference/endpoints/quote-executions/list-quote-executions",
                   "api-reference/endpoints/quote-executions/create-quote-execution",
                   "api-reference/endpoints/quote-executions/get-quote-execution"
@@ -643,7 +593,6 @@
               {
                 "group": "Pricing",
                 "pages": [
-                  "api-reference/endpoints/pricing/overview",
                   "api-reference/endpoints/pricing/list-prices",
                   "api-reference/endpoints/pricing/list-tickers",
                   "api-reference/endpoints/pricing/list-historical-prices"
@@ -657,7 +606,6 @@
               {
                 "group": "Monitoring Addresses",
                 "pages": [
-                  "api-reference/endpoints/monitoring-addresses/overview",
                   "api-reference/endpoints/monitoring-addresses/list-monitoring-address",
                   "api-reference/endpoints/monitoring-addresses/create-monitoring-address",
                   "api-reference/endpoints/monitoring-addresses/get-monitoring-address",
@@ -667,14 +615,12 @@
               {
                 "group": "Statements",
                 "pages": [
-                  "api-reference/endpoints/statements/overview",
                   "api-reference/endpoints/statements/list-statements"
                 ]
               },
               {
                 "group": "Payments",
                 "pages": [
-                  "api-reference/endpoints/payments/overview",
                   "api-reference/endpoints/payments/list-payments"
                 ]
               }
@@ -686,21 +632,8 @@
               {
                 "group": "Events",
                 "pages": [
-                  "api-reference/endpoints/events/overview",
                   "api-reference/endpoints/events/list-events",
                   "api-reference/endpoints/events/get-event"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "API Credentials",
-            "pages": [
-              {
-                "group": "API Credentials",
-                "pages": [
-                  "api-reference/endpoints/api-credentials/overview",
-                  "api-reference/endpoints/api-credentials/list-api-credentials"
                 ]
               }
             ]
@@ -803,30 +736,6 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "Previews",
-        "hidden": true,
-        "groups": [
-          {
-            "group": "Previews",
-            "pages": [
-              "api-reference/preview/overview"
-            ]
-          },
-          {
-            "group": "Orchestration Previews",
-            "openapi": {
-              "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
-              "directory": "api-reference/preview"
-            }
-          }
-        ]
-      },
-      {
-        "tab": "Changelog",
-        "hidden": true,
-        "pages": ["changelog"]
       }
     ],
     "global": {
@@ -882,11 +791,5 @@
       "github": "https://github.com/paxosglobal",
       "linkedin": "https://www.linkedin.com/company/paxos"
     }
-  },
-  "api": {
-    "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json"
-  },
-  "contextual": {
-    "options": ["copy", "view", "claude", "chatgpt"]
   }
 }

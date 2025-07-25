@@ -3,15 +3,33 @@ title: 'Convert'
 description: Implement guaranteed 1:1 conversions between USD and Paxos-issued stablecoins.
 ---
 
+[asset]: /guides/developer/convert#assets
+[convert]: /api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion
+[list]: /api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions
+[get]: /api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion
+[usdg]: /guides/stablecoin/usdg
+[usdp]: /guides/stablecoin/usdp
+[pyusd]: /guides/stablecoin/pyusd
+[cancel]: /api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion
+[support]: https://support.paxos.com
+[client]: /guides/developer/credentials
+[token]: /guides/developer/authenticate
+[conversion-list-conversion]: /api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions
+[create-sandbox-deposit]: /api-reference/endpoints/sandbox-deposits/create-sandbox-deposit
+[First API Request]: /guides/developer/request
+[conversion-create-conversion]: /api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion
+[3p-integrations]: /crypto-brokerage/ledger-type#fiat-and-crypto-subledger
+[conversion status]: /guides/developer/convert#statuses
+[fiat-transfers]: /guides/developer/fiat-transfers/quickstart#funding
 
-Next, use the [Stablecoin Conversion API](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert USD to any [supported asset](/guides/developer/convert#assets), and vice verse, without any fees.
-Keep track of all your conversions with [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions) or [lookup a single conversion](/api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion).
+Next, use the [Stablecoin Conversion API][convert] to easily convert USD to any [supported asset][asset], and vice verse, without any fees.
+Keep track of all your conversions with [List Stablecoin Conversions][list] or [lookup a single conversion][get].
 
 > If you've already authenticated and have USD and USDG balances in a Profile, skip ahead to the [request a conversion](#request-conversion) step.
 
 ## ➊ Authenticate
 
-Include the following scopes when [authenticating](/guides/developer/authenticate):
+Include the following scopes when [authenticating][token]:
 ```shell
 conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin funding:read_profile
 ```
@@ -20,9 +38,9 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 
 ## ➋ Deposit USD and USDG
 
-Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request](/guides/developer/request) guide for help retrieving Profile IDs.
+Use [Create Sandbox Deposit][create-sandbox-deposit] to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request] guide for help retrieving Profile IDs.
 This guide also includes examples for the USDG → USD conversion, so if you are following along make sure you add some USDG to the Profile.
-You can also use the [Fiat Transfers funding flow](/guides/developer/fiat-transfers/quickstart#funding) if you've already set up a Fiat Account.
+You can also use the [Fiat Transfers funding flow][fiat-transfers] if you've already set up a Fiat Account.
 ### USD
 
 ```shell highlight={2}
@@ -49,9 +67,9 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
 ```
 ## ➌ Request Conversion
 
-Request a conversion using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion).
+Request a conversion using [Create Stablecoin Conversion][conversion-create-conversion].
 Include the following body parameters in your request to convert the `source_asset` of $100 USD into the `target_asset`.
-For [Third-party integrations](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
+For [Third-party integrations][3p-integrations], you must also specify `identity_id` and `account_id`.
 ### USDG → USD
 
 ```shell
@@ -68,7 +86,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
 ```
 The acknowledgement response includes the `id`, which can be used to lookup the transaction, and the status will always be `CREATED`.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
-The `target_asset` will not be credited until the [conversion status](/guides/developer/convert#statuses) is \"status": "SETTLED"`.
+The `target_asset` will not be credited until the [conversion status] is \"status": "SETTLED"`.
 
 ```json
 {
@@ -99,7 +117,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
 
 The acknowledgement response includes the `id`, which can be used to lookup the transaction, and the status will always be `CREATED`.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
-The `target_asset` will not be credited until the [conversion status](/guides/developer/convert#statuses) is \"status": "SETTLED"`.
+The `target_asset` will not be credited until the [conversion status] is \"status": "SETTLED"`.
 
 ```json
 {
@@ -115,7 +133,7 @@ The `target_asset` will not be credited until the [conversion status](/guides/de
 ```
 ## ➍ Confirm the Conversion
 
-Use [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions) to check the conversion status.
+Use [List Stablecoin Conversions][conversion-list-conversion] to check the conversion status.
 The request requires the `profile_id` query parameter.
 
 ```shell
@@ -162,9 +180,9 @@ All conversions use the lowest maximum precision among the asset pairs.
 | Supported Asset | Maximum Decimal Precision | Example Conversion Precision |
 | --- | --- | -- |
 | USD | 0.01 (1e-2) | USD → USDG = 0.01 (1e-2) |
-| [PYUSD](/guides/stablecoin/pyusd) | 0.000001 (1e-6) | PYUSD → USD = 0.01 (1e-2) |
-| [USDG](/guides/stablecoin/usdg) | 0.00000001 (1e-8) | USDG → USD = 0.01 (1e-2) |
-| [USDP](/guides/stablecoin/usdp) | 	0.00000001 (1e-8) | USDP → USD = 0.01 (1e-2) |
+| [PYUSD][pyusd] | 0.000001 (1e-6) | PYUSD → USD = 0.01 (1e-2) |
+| [USDG][usdg] | 0.00000001 (1e-8) | USDG → USD = 0.01 (1e-2) |
+| [USDP][usdp] | 	0.00000001 (1e-8) | USDP → USD = 0.01 (1e-2) |
 
 ## Stablecoin Conversion Statuses
 
@@ -172,7 +190,7 @@ There are three conversion statuses:
 
 - `CREATED`: The conversion has been submitted successfully but has not yet settled. 
 - `SETTLED`: The conversion has been completed.
-- `CANCELLED`: The conversion was stopped [using the cancel endpoint](/api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion) for the pending conversion.
+- `CANCELLED`: The conversion was stopped [using the cancel endpoint][cancel] for the pending conversion.
 
 When a conversion is in `CREATED` status, the `source_asset` (for example, fiat for acquiring stablecoin) will be debited from the `profile_id` balance.
 The `target_asset` (for example, USDG for acquiring stablecoin) will not be credited until the order has `SETTLED`.

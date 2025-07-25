@@ -3,6 +3,11 @@ title: 'FIX Onboarding'
 description: Set Up a Paxos Account, configure connection then certify.
 ---
 
+[fix-api]: https://developer.paxos.com/docs/itbit/fix/
+[certify]: certify
+[fix-best-practice]: best-practices
+[tls-troubleshooting]: https://cryptobrokerage.paxos.com/hc/en-us/articles/17822398442516
+[stunnel]: https://www.stunnel.org/
 
 Set up and test a FIX connection in both the Sandbox and Production environments.
 Connect to the Sandbox environment first for testing purposes.
@@ -10,38 +15,30 @@ Once the connection is working in Sandbox, follow a similar procedure for the Pr
 
 <Tip>
 
-Learn more about [FIX Best Practices](/guides/crypto-brokerage/fix/best-practices), including how to use multiple connections and managing sequence number resets.
+Learn more about [FIX Best Practices][fix-best-practice], including how to use multiple connections and managing sequence number resets.
 
 </Tip>
 
 ## 1. Set Up Paxos Account
 
 To gain access, create a Paxos Account and Support will guide you through the process.
-
-<Tabs>
-<Tab title="Sandbox">
+### Sandbox
 
 Go to https://dashboard.sandbox.paxos.com and create an **Institution** Account in the Sandbox environment.
 
 Use an active email address when signing up: Paxos will send a verification email to the address on file.
 Once the email is verified, complete the registration process.
 
-<Warning>
+<Info>
 
 When creating the Sandbox Account:
 - Do not submit documents.
 - Use placeholder (dummy) text for all text fields **except** for the email address.
 
-</Warning>
-
-</Tab>
-<Tab title="Production">
+</Info>
+### Production
 
 Contact support@paxos.com before creating a Production Account.
-
-</Tab>
-</Tabs>
-
 ## 2. Generate a Certificate Signing Request (CSR)
 
 <FixCSR />
@@ -50,13 +47,11 @@ Contact support@paxos.com before creating a Production Account.
 
 <FixSSL />
 
-Once complete, [test](/guides/crypto-brokerage/fix/certify) your connection to our servers.
-
-Contact support@paxos.com with test results of for help with an alternative to [stunnel](https://www.stunnel.org/).
+Once complete, [test][certify] your connection to our servers.
+Contact support@paxos.com with test results of for help with an alternative to [stunnel][stunnel].
 
 ## Next Steps
-- Refer to this KB Article for troubleshooting issues with the FIX Connection configuration - [Troubleshooting FIX mTLS connectivity configuration](https://support.paxos.com/hc/en-us/articles/30477189764500).
-
-- Test the FIX implementation in the Sandbox environment by running through the [certification process](/guides/crypto-brokerage/fix/certify).
-- Review the [FIX best practices](/guides/crypto-brokerage/fix/best-practices).
-- Read the [FIX reference documentation](https://developer.paxos.com/docs/itbit/fix/).
+- Refer to this KB Article for troubleshooting issues with the FIX Connection configuration - [Troubleshooting FIX mTLS connectivity configuration][tls-troubleshooting].
+- Test the FIX implementation in the Sandbox environment by running through the [certification process][certify].
+- Review the [FIX best practices][fix-best-practice].
+- Read the [FIX reference documentation][fix-api].

@@ -1,22 +1,31 @@
 ---
-title: "Overview"
-description: "Add crypto to your application using REST, FIX and WebSocket APIs."
+title: 'Overview'
+description: Add crypto to your application using REST, FIX and WebSocket APIs.
 ---
 
-<Tabs>
-  <Tab title="API">
-    Get [market data](/api-reference/websockets/market-data), create [orders](/api-reference/endpoints/orders), execute [held-rate quotes](/api-reference/endpoints/quotes), and [transfer](/api-reference/endpoints/fiat-transfers) assets with [Paxos API v2.0](/api-reference).
-  </Tab>
+[v2-api]: ../api-reference
+[market-data]: ../api-reference/market-data
+[orders]: ../api-reference/orders
+[quotes]: ../api-reference/quotes
+[transfers]: ../api-reference/transfers
+[websocket-api]: api/websocket
+[websocket-overview]: api/websocket
+[websocket-quickstart]: /guides/crypto-brokerage/websocket
+[fix-api]: https://developer.paxos.com/docs/itbit/fix/
+[fix-onboard]: fix/onboard
+[fix-certify]: fix/certify
+[fix]: fix
+### API
 
-  <Tab title="FIX">
-    Leverage the [Paxos FIX API](https://developer.paxos.com/docs/itbit/fix/) to trade crypto.
+Get [market data][market-data], create [orders][orders], execute [held-rate quotes][quotes] and [transfer][transfers] assets with [Paxos API v2.0][v2-api].
 
-    Learn more about [FIX](/guides/crypto-brokerage/fix/index) and check out the [onboarding](/guides/crypto-brokerage/fix/onboard) and [certification](/guides/crypto-brokerage/fix/certify) guides to get started.
-  </Tab>
+### FIX
 
-  <Tab title="WebSocket">
-    Construct the state of the order book and stream executed orders in real-time using the [Paxos WebSocket API](/guides/developer/api-websocket).
+Leverage the [Paxos FIX API][fix-api] to trade crypto.
 
-    Learn more about what you can do with [WebSocket](/guides/developer/api-websocket) or check out the [quickstart](/guides/crypto-brokerage/websocket) for a hands-on introduction.
-  </Tab>
-</Tabs>
+Learn  more about [FIX][fix] and check out the [onboarding][fix-onboard] and [certification][fix-certify] guides to get started.
+### WebSocket
+
+Construct the state of the order book and stream executed orders in real-time using the [Paxos WebSocket API][websocket-api].
+
+Learn more about what you can do with [WebSocket][websocket-overview] or check out the [quickstart][websocket-quickstart] for a hands-on introduction.

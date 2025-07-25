@@ -3,19 +3,53 @@ title: 'Onboarding an Institution for Crypto Brokerage'
 description: Create an Institution Identity, Account and Profile to provide Buy, Hold and Sell Crypto Brokerage for Institutions
 ---
 
-This guide walks through setting up a [Fiat and Crypto Subledger](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger) crypto brokerage integration for institutions,
-creating an Institution [Identity](/api-reference/endpoints/identity) and a related [Account](/api-reference/endpoints/accounts) and [Profile](/api-reference/endpoints/profiles) to book orders using the [Order API](/api-reference/endpoints/orders). First, we will
-create an [Identity](/api-reference/endpoints/identity) to represent the institution's KYC information on the Paxos Platform. Then we will create an [Account](/api-reference/endpoints/accounts) which sets
-up the structure of the brokerage account. Then we will create a [Profile](/api-reference/endpoints/profiles) that represents the institution's fiat and crypto asset holdings. Then we will integrate with the [Order](/api-reference/endpoints/orders) API to
+
+
+[Enhanced Due Diligence]: /identity/edd
+[edd-guide]: /identity/edd
+[Get Identity]: /api-reference/endpoints/identity/get-identity
+[Identity]: /api-reference/identity
+[identity-api]: /api-reference/identity
+[identity-required-details]: /identity/required-details#required-institution-details
+[identity-onboarding-decision]: /identity/statuses#onboarding-decision
+[institution-member-roles]: /identity/institution-types#member-roles
+[identity-status]: /identity/statuses
+[Account]: /api-reference/accounts
+[Add Account Members]: /api-reference/endpoints/account-members/add-account-members
+[Remove Account Members]: /api-reference/endpoints/account-members/delete-account-member
+[account-api]: /api-reference/accounts
+
+[Profile]: /api-reference/profiles
+[crypto-brokerage-fix]: /fix
+[crypto-brokerage-websocket]: /api/websocket
+[crypto-brokerage-fiat-crypto-subledger]: /crypto-brokerage/ledger-type#fiat-and-crypto-subledger
+[crypto-brokerage-fiat-crypto-omnibus]: /crypto-brokerage/ledger-type#fiat-and-crypto-omnibus
+[order-api]: /api-reference/orders
+[fiat-transfers-quickstart]: /developer/fiat-transfers/quickstart
+[fiat-transfers-api]: /api-reference/fiat-transfers
+
+[dashboard-signup]: /dashboard/account
+[dashboard-create-api-key]: /dashboard/admin/api
+[webhook]: /webhooks
+[webhook-event]: /api-reference/events
+[support]: https://support.paxos.com
+
+
+
+
+This guide walks through setting up a [Fiat and Crypto Subledger][crypto-brokerage-fiat-crypto-subledger] crypto brokerage integration for institutions,
+creating an Institution [Identity] and a related [Account] and [Profile] to book orders using the [Order API][order-api]. First, we will
+create an [Identity] to represent the institution's KYC information on the Paxos Platform. Then we will create an [Account][account-api] which sets
+up the structure of the brokerage account. Then we will create a [Profile] that represents the institution's fiat and crypto asset holdings. Then we will integrate with the [Order][order-api] API to
 set up a simple Buy, Hold and Sell integration. This guide should take around 30 minutes.
 
 ## Prerequisites
- - Sign up to the [Paxos Dashboard](/guides/dashboard/account) in Sandbox
- - Reach out to [Support](https://support.paxos.com) to provision access to the [Identity API](/api-reference/endpoints/identity)
+ - Sign up to the [Paxos Dashboard][dashboard-signup] in Sandbox
+ - Reach out to [Support][support] to provision access to the [Identity API][identity-api]
 
 ## Authenticate in Sandbox
-Create an [API Key](/guides/dashboard/admin/api) on the Sandbox [Paxos Dashboard](/guides/dashboard/account) with the following scopes to access the [Identity](/api-reference/endpoints/identity),
-[Account](/api-reference/endpoints/accounts) and [Order](/api-reference/endpoints/orders) APIs needed for this guide
+Create an [API Key][dashboard-create-api-key] on the Sandbox [Paxos Dashboard][dashboard-signup] with the following scopes to access the [Identity][identity-api],
+[Account][account-api] and [Order][order-api] APIs needed for this guide
  - `identity:read_identity`
  - `identity:read_account`
  - `identity:write_identity`
@@ -55,18 +89,18 @@ Include the Authorization header with the bearer token on all API requests `-H "
 
 Institution identities are used to represent all non-person entities. Details for institution identity type are recorded in institution_details. An institution identity also has institution_members associated with it. This defines persons or other entities that have some relationship to the institution.
 
-For detailed information about institution types, subtypes, and required fields, please refer to the [Institution Required Details](/guides/identity/required-details#required-institution-details) documentation.
+For detailed information about institution types, subtypes, and required fields, please refer to the [Institution Required Details][identity-required-details] documentation.
 
 ### ➊ Creating Person Identities for Institution Members
 
-Before creating an institution identity, you need to create person identities that will be associated with the [institution as members](/guides/identity/institution-types#member-roles) (e.g.
+Before creating an institution identity, you need to create person identities that will be associated with the [institution as members][institution-member-roles] (e.g.
 beneficial owners, authorized users, management control persons, etc.). 
 You'll need to create at least one person identity, but typically you'll create multiple identities for different roles within the institution.
 
 <Tip>
 
  
-The required fields for each [institution member role](/guides/identity/institution-types#member-roles) are different. Please reach out to [Support](https://support.paxos.com) for more information.
+The required fields for each [institution member role][institution-member-roles] are different. Please reach out to [Support][support] for more information.
 </Tip>
 
 ```shell
@@ -128,7 +162,7 @@ Check the response to find the `identity_id` of the newly created person identit
 ### ➋ Creating an Institution Identity
 
 To create an institution identity, you'll need to provide:
-- The details of the institution according to the [Institution Required Details](/guides/identity/required-details#required-institution-details)
+- The details of the institution according to the [Institution Required Details][identity-required-details]
 - Information about institution members and their roles
 
 Here's an example of creating a institution (see API documentation for full request details):
@@ -182,18 +216,18 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities" \
 ```
 
 <Tip>
-The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details](/guides/identity/required-details#required-institution-details) documentation for complete requirements.
+The above example is a simplified version. For production use, you'll need to provide additional details based on your institution type. Refer to the [Institution Required Details][identity-required-details] documentation for complete requirements.
 </Tip>
 
 <Warning>
-The `cip_id` of an [Identity](/api-reference/endpoints/identity) is required to be unique. If a `409 duplicate cip_id` error occurs,
+The `cip_id` of an [Identity] is required to be unique. If a `409 duplicate cip_id` error occurs,
 handle it by either:
  - Refusing to support crypto brokerage services for institutions that have a duplicate `cip_id`
- - If they are confirmed to be the same [Identity](/api-reference/endpoints/identity), create a new [Account](/api-reference/endpoints/accounts) to represent each institution account.
+ - If they are confirmed to be the same [Identity], create a new [Account] to represent each institution account.
 </Warning>
 
-Check the response to find the `identity_id` of the newly created [Identity](/api-reference/endpoints/identity) and notice the status of the [Identity](/api-reference/endpoints/identity) is `PENDING`.
-Paxos will make an [Onboarding Decision](/guides/identity/statuses#onboarding-decision) and asynchronously update the status to either `DENIED` or `APPROVED`.
+Check the response to find the `identity_id` of the newly created [Identity] and notice the status of the [Identity] is `PENDING`.
+Paxos will make an [Onboarding Decision][identity-onboarding-decision] and asynchronously update the status to either `DENIED` or `APPROVED`.
 
 ```json
 {
@@ -209,19 +243,19 @@ Paxos will make an [Onboarding Decision](/guides/identity/statuses#onboarding-de
 ```
 
 <Info>
-An [Identity](/api-reference/endpoints/identity) might stay in `PENDING` due to being deemed high risk by Paxos. This [Identity](/api-reference/endpoints/identity) will be
-required to undergo [Enhanced Due Diligence](/guides/identity/edd). See [how to automate document collection](/guides/identity/edd) to
+An [Identity] might stay in `PENDING` due to being deemed high risk by Paxos. This [Identity] will be
+required to undergo [Enhanced Due Diligence]. See [how to automate document collection][edd-guide] to
 allow `HIGH` risk customers to onboard to Paxos.
 </Info>
 
 ### ➌ Wait for the Identity to be Approved
 <Warning>
-You'll need to reach out to [Support](https://support.paxos.com) as by default the institution will be stuck in `PENDING` due to
+You'll need to reach out to [Support] as by default the institution will be stuck in `PENDING` due to
 waiting for document verification, depending on your integration type document verification may not be required - but it
 is by default.
 </Warning>
 
-You can check the status of the institution identity by calling the [Get Identity](/api-reference/endpoints/identity/get-identity) endpoint:
+You can check the status of the institution identity by calling the [Get Identity] endpoint:
 
 ```shell
 # Check identity status
@@ -230,14 +264,14 @@ curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{instituti
 ```
 
 <Tip>
- - Use a [Webhook](/guides/webhooks) integration to asynchronously process [`identity.approved`](/api-reference/webhooks) and [`identity.denied`](/api-reference/webhooks)
+ - Use a [Webhook][webhook] integration to asynchronously process [`identity.approved`][webhook-event] and [`identity.denied`][webhook-event]
 events to notify users when they have been onboarded to Paxos.
 </Tip>
 
 ### ➍ Creating an Account and Profile
 
-Now we are ready to make an [Account](/api-reference/endpoints/accounts) and [Profile](/api-reference/endpoints/profiles) for the institution [Identity](/api-reference/endpoints/identity). An [Account](/api-reference/endpoints/accounts) logically relates to an institution's brokerage account,
-an [Identity](/api-reference/endpoints/identity) therefore can have one or many [Accounts](/api-reference/endpoints/accounts).
+Now we are ready to make an [Account] and [Profile] for the institution [Identity]. An [Account] logically relates to an institution's brokerage account,
+an [Identity] therefore can have one or many [Accounts][account-api].
 
 ```shell
 # Create account and profile
@@ -264,20 +298,20 @@ curl --location "https://api.sandbox.paxos.com/v2/profiles?account_id={account_i
 
 ## Booking an Order
 
-We will use the [Order](/api-reference/endpoints/orders) API to create buy and sell orders. We recommend also
-taking a look at the [FIX](/guides/crypto-brokerage/fix) and [WebSocket](/api-reference/websockets/overview) solutions and using the best combination of APIs
+We will use the [Order][order-api] API to create buy and sell orders. We recommend also
+taking a look at the [FIX][crypto-brokerage-fix] and [WebSocket][crypto-brokerage-websocket] solutions and using the best combination of APIs
 for the specific use case.
 
 ### ➊ Fund the Account
 
-In a complete integration, follow the [Fiat Transfers Funding Flow](/guides/developer/fiat-transfers/quickstart) guide to learn how to fund institution assets using
-a [Fiat Deposit](/api-reference/endpoints/fiat-transfers).
+In a complete integration, follow the [Fiat Transfers Funding Flow][fiat-transfers-quickstart] guide to learn how to fund institution assets using
+a [Fiat Deposit][fiat-transfers-api].
 
-For this guide, we will use the sandbox-only Test Funds feature in [Dashboard](https://dashboard.sandbox.paxos.com/) to fund the [Identity](/api-reference/endpoints/identity) with $10,000 USD. First,
+For this guide, we will use the sandbox-only Test Funds feature in [Dashboard](https://dashboard.sandbox.paxos.com/) to fund the [Identity] with $10,000 USD. First,
 navigate to the [Dashboard Landing Page](https://dashboard.sandbox.paxos.com/) and locate the `Fund` button.
 ![Fund button in Dashboard](/images/identity-guide-fund-account-button.png)
 
-Then select the [Profile](/api-reference/endpoints/profiles) related to the [Account](/api-reference/endpoints/accounts) created and fund for $10,000 USD
+Then select the [Profile] related to the [Account] created and fund for $10,000 USD
 ![Funding the Account](/images/identity-guide-fund-account.png)
 
 ### ➋ Creating an Order

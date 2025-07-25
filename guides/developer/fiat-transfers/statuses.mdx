@@ -3,13 +3,17 @@ title: 'Statuses'
 description: Learn more about Fiat Transfers statuses.
 ---
 
-import FiatTransfersTip from '/snippets/fiat-transfers-tip.mdx';
+[create-fiat-account]: /api-reference/endpoints/fiat-transfers/create-fiat-account
+[create-fiat-Withdrawal]: /api-reference/endpoints/fiat-transfers/create-fiat-withdrawal
+[list-transfers]: /api-reference/endpoints/transfers/list-transfers
+
+<Description description={frontMatter.description}/>
 
 The Fiat Transfers workflow includes five (5) statuses:
 
-- `PENDING`: Initial state. The [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) or [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal) request is under review. 
-- `APPROVED`: The [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) request passed internal review. Can be used for withdrawals.
-- `REJECTED`: The [Create Fiat Account](/api-reference/endpoints/fiat-transfers/create-fiat-account) request did not pass internal review. Cannot be used for withdrawals.
+- `PENDING`: Initial state. The [Create Fiat Account][create-fiat-account] or [Create Fiat Withdrawal][create-fiat-Withdrawal] request is under review. 
+- `APPROVED`: The [Create Fiat Account][create-fiat-account] request passed internal review. Can be used for withdrawals.
+- `REJECTED`: The [Create Fiat Account][create-fiat-account] request did not pass internal review. Cannot be used for withdrawals.
 - `COMPLETED`: For deposits, the corresponding `profile_id` has been credited. For withdrawals, the transfer has been sent to the external bank account.
 - `FAILED`: The deposit or withdrawal did not pass internal requirements.
 
