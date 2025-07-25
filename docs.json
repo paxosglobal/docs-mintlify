@@ -794,18 +794,6 @@
         ]
       },
       {
-        "tab": "Cookbook",
-        "groups": [
-          {
-            "group": "Cookbook",
-            "pages": [
-              "cookbook/overview",
-              "cookbook/third-party-brokerage-enrollment"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "Previews",
         "hidden": true,
         "groups": [
