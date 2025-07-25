@@ -436,11 +436,6 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Changelog",
-          "href": "/changelog/updates",
-          "icon": "book-open-cover"
-        },
-        {
           "anchor": "Status",
           "href": "https://status.paxos.com/",
           "icon": "signal-bars"
