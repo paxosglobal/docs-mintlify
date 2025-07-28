@@ -251,27 +251,24 @@
         "tab": "Dashboard Guide",
         "groups": [
           {
-            "group": "Paxos Dashboard",
+            "group": "Overview",
             "pages": [
-              "guides/dashboard/index",
-              "guides/dashboard/migrate-to-dashboard",
+              "guides/dashboard/index"
+            ]
+          },
+          {
+            "group": "Get Started",
+            "pages": [
+              "guides/dashboard/account",
+              "guides/dashboard/signin",
+              "guides/dashboard/onboard",
               {
-                "group": "About the Paxos Dashboard",
+                "group": "Manage Account",
                 "pages": [
                   "guides/dashboard/transactions",
                   "guides/dashboard/instructions",
                   "guides/dashboard/addresses",
-                  "guides/dashboard/fiat",
-                  "guides/dashboard/organization",
-                  "guides/dashboard/roles"
-                ]
-              },
-              {
-                "group": "Account",
-                "pages": [
-                  "guides/dashboard/signin",
-                  "guides/dashboard/account",
-                  "guides/dashboard/onboard"
+                  "guides/dashboard/fiat"
                 ]
               }
             ]
