@@ -565,10 +565,130 @@
         ]
       }
     },
+    "/v2/identity/identities/controls": {
+      "get": {
+        "summary": "List Identity Controls",
+        "description": "List control settings and available actions for multiple identities. Results can be filtered by control states and paginated.",
+        "operationId": "ListIdentityControls",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListIdentityControlsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity_ids",
+            "description": "Filter by specific identity IDs. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "frozen",
+            "description": "Filter by frozen status.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "dormant",
+            "description": "Filter by dormant status.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "closed",
+            "description": "Filter by closed status.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "denied",
+            "description": "Filter by denied status.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 100.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order for the results. Defaults to DESC by created_at time.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["DESC", "ASC"]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ]
+      }
+    },
     "/v2/identity/identities/{id}/freeze": {
       "put": {
         "summary": "Freeze Identity",
-        "description": "Freeze an identity to temporarily restrict all actions. Frozen identities cannot perform any operations until unfrozen.",
+        "description": "Freeze an APPROVED identity to temporarily restrict all actions. Frozen identities cannot perform any operations until unfrozen. This action is mutually exclusive with deny, dormant, and close states.",
         "operationId": "FreezeIdentity",
         "responses": {
           "200": {
@@ -605,7 +725,17 @@
             }
           }
         ],
-        "tags": ["Identity Controls"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FreezeIdentityRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "tags": ["Identities"],
         "security": [
           {
             "OAuth2": ["identity:write_identity"]
@@ -616,7 +746,7 @@
     "/v2/identity/identities/{id}/close": {
       "put": {
         "summary": "Close Identity",
-        "description": "Permanently close an identity. Closed identities cannot be reopened and all actions are permanently restricted.",
+        "description": "Permanently close an APPROVED identity. Closed identities cannot be reopened and all actions are permanently restricted. This action is mutually exclusive with deny, freeze, and dormant states.",
         "operationId": "CloseIdentity",
         "responses": {
           "200": {
@@ -663,7 +793,7 @@
           },
           "required": false
         },
-        "tags": ["Identity Controls"],
+        "tags": ["Identities"],
         "security": [
           {
             "OAuth2": ["identity:write_identity"]
@@ -673,8 +803,8 @@
     },
     "/v2/identity/identities/{id}/dormant": {
       "put": {
-        "summary": "Set Identity Dormant",
-        "description": "Mark an identity as dormant. Dormant identities have limited functionality and may require reactivation before full operations can resume.",
+        "summary": "Mark Dormant Identity",
+        "description": "Mark an APPROVED identity as dormant. Dormant identities have limited functionality and may require reactivation before full operations can resume. This action is mutually exclusive with deny, freeze, and close states.",
         "operationId": "SetIdentityDormant",
         "responses": {
           "200": {
@@ -711,7 +841,75 @@
             }
           }
         ],
-        "tags": ["Identity Controls"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DormantIdentityRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "tags": ["Identities"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    },
+    "/v2/identity/identities/{id}/deny": {
+      "put": {
+        "summary": "Deny Identity",
+        "description": "Deny a PENDING identity, preventing approval and restricting all operations. Denied identities cannot perform any actions and may require resubmission of verification documents. This action is mutually exclusive with freeze, dormant, and close states.",
+        "operationId": "DenyIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DenyIdentityRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "tags": ["Identities"],
         "security": [
           {
             "OAuth2": ["identity:write_identity"]
@@ -879,6 +1077,26 @@
             }
           }
         }
+      },
+      "TooManyRequests": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_too_many_requests"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_internal_server_error"
+            }
+          }
+        }
       }
     },
     "schemas": {
@@ -889,6 +1107,20 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Identity"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "ListIdentityControlsResponse": {
+        "type": "object",
+        "properties": {
+          "identity_controls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityControlsItem"
             }
           },
           "next_page_cursor": {
@@ -953,6 +1185,10 @@
             "additionalProperties": {
               "type": "string"
             }
+          },
+          "controls": {
+            "$ref": "#/components/schemas/IdentityControls",
+            "description": "Current control state and action restrictions applied to this identity"
           }
         }
       },
@@ -998,34 +1234,48 @@
       "UpdateIdentityRequest": {
         "type": "object",
         "properties": {
-          "trigger_kyc_refresh": {
-            "type": "boolean",
-            "description": "Trigger a KYC refresh for this identity"
-          },
-          "disable": {
-            "type": "boolean", 
-            "description": "Disable this identity"
-          },
           "person_details": {
             "$ref": "#/components/schemas/PersonDetailsInput"
-          },
-          "institution_details": {
-            "$ref": "#/components/schemas/InstitutionDetailsInput"
-          },
-          "tax_details": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TaxDetailInput"
-            }
-          },
-          "customer_due_diligence": {
-            "$ref": "#/components/schemas/CustomerDueDiligenceInput"
           },
           "metadata": {
             "type": "object",
             "additionalProperties": {
               "type": "string"
             }
+          },
+          "controls": {
+            "$ref": "#/components/schemas/UpdateIdentityControlsRequest",
+            "description": "User-initiated control actions including freeze, dormant status, closure, and available action restrictions"
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetailsInput"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "A user-facing ID to prevent duplicate identity creation. Unique for all identities created by the same API user."
+          },
+          "tax_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetailInput"
+            },
+            "description": "List of tax details associated with the identity"
+          },
+          "set_tax_details_not_required": {
+            "type": "boolean",
+            "description": "Set to true if tax details are not legally required."
+          },
+          "customer_due_diligence": {
+            "$ref": "#/components/schemas/CustomerDueDiligenceInput"
+          },
+          "is_merchant": {
+            "type": "boolean",
+            "description": "Set to true to indicate that this identity is a merchant."
+          },
+          "last_kyc_refresh_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Set to the timestamp the identity has last undergone a periodic kyc refresh. If unset, the update is not for periodic kyc refresh. RFC3339 format, like YYYY-MM-DDTHH:MM:SS.sssZ. ex: 2006-01-02T15:04:05Z."
           }
         }
       },
@@ -1378,58 +1628,198 @@
       "IdentityStatusDetails": {
         "type": "object",
         "properties": {
-          "available_actions": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": ["CRYPTO_WITHDRAWAL", "CRYPTO_DEPOSITS", "FIAT_WITHDRAWAL", "FIAT_DEPOSITS", "CONVERSION", "TRADING", "SETTLEMENT"]
-            },
-            "description": "List of actions currently available for this identity"
-          },
           "pending_verifications": {
-            "$ref": "#/components/schemas/PendingVerifications"
+            "$ref": "#/components/schemas/PendingVerificationsDetail",
+            "description": "Available when status is PENDING"
+          },
+          "pending_edd": {
+            "$ref": "#/components/schemas/PendingEddDetail",
+            "description": "Available when status is PENDING"
+          },
+          "pending_member_approvals": {
+            "$ref": "#/components/schemas/PendingMemberApprovalsDetail",
+            "description": "Available when status is PENDING for institutions"
+          },
+          "failed_verifications": {
+            "$ref": "#/components/schemas/FailedVerificationsDetail",
+            "description": "Available when status is DENIED or DISABLED"
+          },
+          "prohibited_risk_rating": {
+            "$ref": "#/components/schemas/ProhibitedRiskRatingDetail",
+            "description": "Available when status is DENIED or DISABLED"
+          },
+          "failed_controls": {
+            "$ref": "#/components/schemas/FailedControlsDetail",
+            "description": "Available when status is DENIED or DISABLED"
+          },
+          "failed_members": {
+            "$ref": "#/components/schemas/FailedMembersDetail",
+            "description": "Available when status is DISABLED for institutions"
           }
-        }
+        },
+        "description": "Detailed status information with nested message/metadata structure for each status type"
       },
-      "PendingVerifications": {
+      "PendingVerificationsDetail": {
         "type": "object",
+        "required": ["message"],
         "properties": {
           "message": {
             "type": "string",
             "description": "Human-readable message about pending verifications"
           },
           "metadata": {
-            "$ref": "#/components/schemas/PendingVerificationsMetadata"
+            "type": "object",
+            "properties": {
+              "statuses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["IDV", "AML", "TAX", "CDD", "SANCTIONS", "PEP", "ADVERSE_MEDIA"]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["PENDING"]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Optional structured data - only included when there are specific verification statuses to report"
           }
         }
       },
-      "PendingVerificationsMetadata": {
+      "PendingEddDetail": {
         "type": "object",
+        "required": ["message"],
         "properties": {
-          "verification_statuses": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/VerificationStatus"
-            }
+          "message": {
+            "type": "string",
+            "description": "Human-readable message about pending EDD"
           }
         }
       },
-      "VerificationStatus": {
+      "PendingMemberApprovalsDetail": {
         "type": "object",
+        "required": ["message"],
         "properties": {
-          "id": {
+          "message": {
             "type": "string",
-            "description": "Unique identifier for the verification"
+            "description": "Human-readable message about pending member approvals"
           },
-          "type": {
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "pending_members": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Optional structured data - only included when there are specific member approval details to report"
+          }
+        }
+      },
+      "FailedVerificationsDetail": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
             "type": "string",
-            "enum": ["IDV", "AML", "TAX", "CDD"],
-            "description": "Type of verification"
+            "description": "Human-readable message about failed verifications"
           },
-          "status": {
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "statuses": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["IDV", "AML", "TAX", "CDD", "SANCTIONS", "PEP", "ADVERSE_MEDIA"]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["FAILED", "DENIED"]
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Optional structured data - only included when there are specific verification failure details to report"
+          }
+        }
+      },
+      "ProhibitedRiskRatingDetail": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
             "type": "string",
-            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"],
-            "description": "Status of this specific verification"
+            "description": "Human-readable message about prohibited risk rating"
+          }
+        }
+      },
+      "FailedControlsDetail": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Human-readable message about failed controls"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "dormant": {
+                "type": "boolean",
+                "description": "Whether the identity is marked as dormant"
+              },
+              "frozen": {
+                "type": "boolean",
+                "description": "Whether the identity is frozen"
+              },
+              "closed": {
+                "type": "boolean",
+                "description": "Whether the identity is permanently closed"
+              },
+              "denied": {
+                "type": "boolean",
+                "description": "Whether the identity has been denied"
+              },
+              "admin_controls": {
+                "$ref": "#/components/schemas/AdminControls",
+                "description": "Controls applied by Paxos administrators for regulatory or risk management purposes"
+              }
+            },
+            "description": "Optional structured data - mirrors the controls object structure (excluding available_actions)"
+          }
+        }
+      },
+      "FailedMembersDetail": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Human-readable message about failed members"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "failed_members": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Optional structured data - only included when there are specific failed member details to report"
           }
         }
       },
@@ -1456,34 +1846,34 @@
             "type": "boolean",
             "description": "Whether the identity is permanently closed"
           },
-          "paxos_controls": {
-            "$ref": "#/components/schemas/PaxosControls",
-            "description": "Controls applied by Paxos for regulatory or risk management purposes"
+          "denied": {
+            "type": "boolean",
+            "description": "Whether the identity has been denied"
+          },
+          "admin_controls": {
+            "$ref": "#/components/schemas/AdminControls",
+            "description": "Controls applied by Paxos administrators for regulatory or risk management purposes"
           }
         }
       },
-      "PaxosControls": {
+      "AdminControls": {
         "type": "object",
         "properties": {
           "dormant": {
             "type": "boolean",
-            "description": "Whether Paxos has marked the identity as dormant"
+            "description": "Whether Paxos administrators have marked the identity as dormant"
           },
           "frozen": {
             "type": "boolean",
-            "description": "Whether Paxos has frozen the identity"
+            "description": "Whether Paxos administrators have frozen the identity"
           },
           "closed": {
             "type": "boolean",
-            "description": "Whether Paxos has closed the identity"
+            "description": "Whether Paxos administrators have closed the identity"
           },
-          "closure_reason": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"]
-            },
-            "description": "Reasons for closure if the identity is closed"
+          "denied": {
+            "type": "boolean",
+            "description": "Whether Paxos administrators have denied the identity"
           }
         }
       },
@@ -1492,30 +1882,79 @@
         "properties": {
           "frozen": {
             "type": "boolean",
-            "description": "Set the frozen status of the identity"
+            "description": "Set the frozen status of the identity (mutually exclusive with dormant, closed, denied)"
           },
           "dormant": {
             "type": "boolean",
-            "description": "Set the dormant status of the identity"
+            "description": "Set the dormant status of the identity (mutually exclusive with frozen, closed, denied)"
           },
           "closed": {
             "type": "boolean",
-            "description": "Close the identity permanently (cannot be undone)"
+            "description": "Close the identity permanently (cannot be undone, mutually exclusive with frozen, dormant, denied)"
           },
-          "closure_reason": {
+          "denied": {
+            "type": "boolean",
+            "description": "Deny the identity (cannot be undone without resubmission, mutually exclusive with frozen, dormant, closed)"
+          },
+          "available_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["CRYPTO_WITHDRAWAL", "CRYPTO_DEPOSITS", "FIAT_WITHDRAWAL", "FIAT_DEPOSITS", "CONVERSION", "TRADING", "SETTLEMENT"]
+            },
+            "description": "List of actions currently available for this identity"
+          },
+          "reason": {
             "type": "string",
-            "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"],
-            "description": "Reason for closing the identity (required if closed=true)"
+            "description": "Freetext reason for the control action"
           }
         }
       },
       "CloseIdentityRequest": {
         "type": "object",
         "properties": {
-          "closure_reason": {
+          "reason": {
             "type": "string",
-            "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"],
-            "description": "Reason for closing the identity"
+            "description": "Freetext reason for closing the identity"
+          }
+        }
+      },
+      "DenyIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason for denying the identity"
+          }
+        }
+      },
+      "FreezeIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason for freezing the identity"
+          }
+        }
+      },
+      "DormantIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason for setting the identity as dormant"
+          }
+        }
+      },
+      "IdentityControlsItem": {
+        "type": "object",
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "The identity ID"
+          },
+          "identity_controls": {
+            "$ref": "#/components/schemas/IdentityControls"
           }
         }
       }
