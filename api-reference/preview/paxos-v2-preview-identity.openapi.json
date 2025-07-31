@@ -79,8 +79,8 @@
         },
         "parameters": [
           {
-            "name": "summary_status",
-            "description": "Optionally filter by summary status.",
+            "name": "status",
+            "description": "Optionally filter by status.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -616,10 +616,14 @@
             "enum": ["PERSON", "INSTITUTION"],
             "description": "The type of identity"
           },
-          "summary_status": {
+          "status": {
             "type": "string",
             "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
             "description": "Overall status of the identity verification"
+          },
+          "status_details": {
+            "$ref": "#/components/schemas/IdentityStatusDetails",
+            "description": "Detailed status information including verification statuses"
           },
           "person_details": {
             "$ref": "#/components/schemas/PersonDetails"
@@ -1070,6 +1074,56 @@
             "enum": ["LOW", "MEDIUM", "HIGH"]
           }
         }
+      },
+      "IdentityStatusDetails": {
+        "type": "object",
+        "properties": {
+          "pending_verifications": {
+            "$ref": "#/components/schemas/PendingVerifications"
+          }
+        }
+      },
+      "PendingVerifications": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Human-readable message about pending verifications"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/PendingVerificationsMetadata"
+          }
+        }
+      },
+      "PendingVerificationsMetadata": {
+        "type": "object",
+        "properties": {
+          "verification_statuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerificationStatus"
+            }
+          }
+        }
+      },
+      "VerificationStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the verification"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["IDV", "AML", "TAX", "CDD"],
+            "description": "Type of verification"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"],
+            "description": "Status of this specific verification"
+          }
+        }
       }
     },
     "examples": {
@@ -1117,7 +1171,7 @@
               "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
               "ref_id": "already_used_ref_id",
               "identity_type": "PERSON",
-              "summary_status": "PENDING"
+              "status": "PENDING"
             }
           }
         }
