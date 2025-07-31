@@ -564,6 +564,264 @@
           }
         ]
       }
+    },
+    "/v2/identity/identities/{id}/freeze": {
+      "put": {
+        "summary": "Freeze Identity",
+        "description": "Freeze an identity to temporarily restrict all actions. Frozen identities cannot perform any operations until unfrozen.",
+        "operationId": "FreezeIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    },
+    "/v2/identity/identities/{id}/close": {
+      "put": {
+        "summary": "Close Identity",
+        "description": "Permanently close an identity. Closed identities cannot be reopened and all actions are permanently restricted.",
+        "operationId": "CloseIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloseIdentityRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    },
+    "/v2/identity/identities/{id}/dormant": {
+      "put": {
+        "summary": "Set Identity Dormant",
+        "description": "Mark an identity as dormant. Dormant identities have limited functionality and may require reactivation before full operations can resume.",
+        "operationId": "SetIdentityDormant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    },
+    "/v2/identity/identities/{id}/controls": {
+      "get": {
+        "summary": "Get Identity Controls",
+        "description": "Get the current control settings and available actions for an identity.",
+        "operationId": "GetIdentityControls",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityControls"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Identity Controls",
+        "description": "Update control settings for an identity including frozen, dormant, and closed states.",
+        "operationId": "UpdateIdentityControls",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityControls"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIdentityControlsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -576,6 +834,48 @@
             "scopes": {
               "identity:read_identity": "Read identity data",
               "identity:write_identity": "Create and manage identities"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_bad_request"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_unauthenticated"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_forbidden"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_not_found"
             }
           }
         }
@@ -1078,6 +1378,14 @@
       "IdentityStatusDetails": {
         "type": "object",
         "properties": {
+          "available_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["CRYPTO_WITHDRAWAL", "CRYPTO_DEPOSITS", "FIAT_WITHDRAWAL", "FIAT_DEPOSITS", "CONVERSION", "TRADING", "SETTLEMENT"]
+            },
+            "description": "List of actions currently available for this identity"
+          },
           "pending_verifications": {
             "$ref": "#/components/schemas/PendingVerifications"
           }
@@ -1122,6 +1430,92 @@
             "type": "string",
             "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"],
             "description": "Status of this specific verification"
+          }
+        }
+      },
+      "IdentityControls": {
+        "type": "object",
+        "properties": {
+          "available_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["CRYPTO_WITHDRAWAL", "CRYPTO_DEPOSITS", "FIAT_WITHDRAWAL", "FIAT_DEPOSITS", "CONVERSION", "TRADING", "SETTLEMENT"]
+            },
+            "description": "List of actions currently available for this identity"
+          },
+          "dormant": {
+            "type": "boolean",
+            "description": "Whether the identity is marked as dormant"
+          },
+          "frozen": {
+            "type": "boolean",
+            "description": "Whether the identity is frozen"
+          },
+          "closed": {
+            "type": "boolean",
+            "description": "Whether the identity is permanently closed"
+          },
+          "paxos_controls": {
+            "$ref": "#/components/schemas/PaxosControls",
+            "description": "Controls applied by Paxos for regulatory or risk management purposes"
+          }
+        }
+      },
+      "PaxosControls": {
+        "type": "object",
+        "properties": {
+          "dormant": {
+            "type": "boolean",
+            "description": "Whether Paxos has marked the identity as dormant"
+          },
+          "frozen": {
+            "type": "boolean",
+            "description": "Whether Paxos has frozen the identity"
+          },
+          "closed": {
+            "type": "boolean",
+            "description": "Whether Paxos has closed the identity"
+          },
+          "closure_reason": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"]
+            },
+            "description": "Reasons for closure if the identity is closed"
+          }
+        }
+      },
+      "UpdateIdentityControlsRequest": {
+        "type": "object",
+        "properties": {
+          "frozen": {
+            "type": "boolean",
+            "description": "Set the frozen status of the identity"
+          },
+          "dormant": {
+            "type": "boolean",
+            "description": "Set the dormant status of the identity"
+          },
+          "closed": {
+            "type": "boolean",
+            "description": "Close the identity permanently (cannot be undone)"
+          },
+          "closure_reason": {
+            "type": "string",
+            "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"],
+            "description": "Reason for closing the identity (required if closed=true)"
+          }
+        }
+      },
+      "CloseIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "closure_reason": {
+            "type": "string",
+            "enum": ["REGULATORY_COMPLIANCE", "RISK_MANAGEMENT", "CUSTOMER_REQUEST", "ACCOUNT_VIOLATION", "SUSPICIOUS_ACTIVITY"],
+            "description": "Reason for closing the identity"
           }
         }
       }
