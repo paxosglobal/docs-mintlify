@@ -809,6 +809,13 @@
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
               "directory": "api-reference/preview"
             }
+          },
+          {
+            "group": "Identity Previews",
+            "openapi": {
+              "source": "api-reference/preview/paxos-v2-preview-identity.openapi.json",
+              "directory": "api-reference/preview"
+            }
           }
         ]
       },

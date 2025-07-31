@@ -1,0 +1,1142 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos Identity API",
+    "version": "v2-preview"
+  },
+  "security": [
+    {
+      "OAuth2": ["identity:read_identity", "identity:write_identity"]
+    }
+  ],
+  "paths": {
+    "/v2/identity/identities": {
+      "get": {
+        "summary": "List Identities",
+        "description": "Fetch a list of Identities according to the given filters.\n\nResults can be paginated using the next_page_cursor.\nThe maximum page size is 100.",
+        "operationId": "ListIdentities",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListIdentitiesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "summary_status",
+            "description": "Optionally filter by summary status.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"]
+              }
+            }
+          },
+          {
+            "name": "identity_type",
+            "description": "Optionally filter by identity type.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["PERSON", "INSTITUTION"]
+              }
+            }
+          },
+          {
+            "name": "created_at.lt",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.lte",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.eq",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gte",
+            "description": "Include timestamps greater than or equal to gte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_at.gt",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "updated_at.lt",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "updated_at.lte",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "updated_at.eq",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "updated_at.gte",
+            "description": "Include timestamps greater than or equal to gte. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "updated_at.gt",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 100.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order for the results. Defaults to DESC by created_at time.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["DESC", "ASC"]
+            }
+          },
+          {
+            "name": "order_by",
+            "description": "Field to sort by. Defaults to created_at.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["created_at", "updated_at"]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identities"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Identity",
+        "description": "Creates a new Person or Institution Identity. An Identity starts in a `PENDING` status and will transition to `APPROVED`, `DENIED`, or stay in `PENDING` after Paxos' compliance review.\n\nFor sandbox environments, you can control the identity status using the sandbox set identity status endpoint.",
+        "operationId": "CreateIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already Exists",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_already_exists"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIdentityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identities"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    },
+    "/v2/identity/identities/{id}": {
+      "get": {
+        "summary": "Get Identity",
+        "description": "Get an Identity by ID.",
+        "operationId": "GetIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_not_found"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_details",
+            "description": "Include encrypted person/institution details in the response.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "include_institution_members",
+            "description": "Include institution members in the response (only applicable for institution identities).",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "tags": ["Identities"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Identity",
+        "description": "Update an Identity. This endpoint performs delta updates - only the fields that are provided will be updated.\n\nYou can use this endpoint to:\n- Trigger KYC refresh for identities\n- Disable an identity\n- Update identity details",
+        "operationId": "UpdateIdentity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_bad_request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_unauthenticated"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_not_found"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_too_many_requests"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/examples/Problem_internal_server_error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The Identity ID",
+            "in": "path", 
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIdentityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identities"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "identity:read_identity": "Read identity data",
+              "identity:write_identity": "Create and manage identities"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ListIdentitiesResponse": {
+        "type": "object",
+        "properties": {
+          "identities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Identity"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "Identity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the identity"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "The customer ID associated with this identity"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "External reference ID provided by the client"
+          },
+          "identity_type": {
+            "type": "string",
+            "enum": ["PERSON", "INSTITUTION"],
+            "description": "The type of identity"
+          },
+          "summary_status": {
+            "type": "string",
+            "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
+            "description": "Overall status of the identity verification"
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/PersonDetails"
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetails"
+          },
+          "tax_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetail"
+            }
+          },
+          "customer_due_diligence": {
+            "$ref": "#/components/schemas/CustomerDueDiligence"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "description": "The customer ID to associate with this identity"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "External reference ID for idempotency"
+          },
+          "identity_type": {
+            "type": "string",
+            "enum": ["PERSON", "INSTITUTION"],
+            "description": "The type of identity to create"
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/PersonDetailsInput"
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetailsInput"
+          },
+          "tax_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetailInput"
+            }
+          },
+          "customer_due_diligence": {
+            "$ref": "#/components/schemas/CustomerDueDiligenceInput"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateIdentityRequest": {
+        "type": "object",
+        "properties": {
+          "trigger_kyc_refresh": {
+            "type": "boolean",
+            "description": "Trigger a KYC refresh for this identity"
+          },
+          "disable": {
+            "type": "boolean", 
+            "description": "Disable this identity"
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/PersonDetailsInput"
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetailsInput"
+          },
+          "tax_details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetailInput"
+            }
+          },
+          "customer_due_diligence": {
+            "$ref": "#/components/schemas/CustomerDueDiligenceInput"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PersonDetails": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "email_address": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "country_of_citizenship": {
+            "type": "string"
+          },
+          "country_of_birth": {
+            "type": "string"
+          },
+          "ssn": {
+            "type": "string"
+          },
+          "occupation": {
+            "type": "string"
+          },
+          "identity_verification_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          },
+          "aml_screening_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          }
+        }
+      },
+      "PersonDetailsInput": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "middle_name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressInput"
+          },
+          "email_address": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "country_of_citizenship": {
+            "type": "string"
+          },
+          "country_of_birth": {
+            "type": "string"
+          },
+          "ssn": {
+            "type": "string"
+          },
+          "occupation": {
+            "type": "string"
+          }
+        }
+      },
+      "InstitutionDetails": {
+        "type": "object",
+        "properties": {
+          "legal_name": {
+            "type": "string"
+          },
+          "doing_business_as_name": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "incorporation_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "country_of_formation": {
+            "type": "string"
+          },
+          "industry_type": {
+            "type": "string"
+          },
+          "legal_entity_type": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "business_description": {
+            "type": "string"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InstitutionMember"
+            }
+          },
+          "identity_verification_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          },
+          "aml_screening_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          }
+        }
+      },
+      "InstitutionDetailsInput": {
+        "type": "object",
+        "properties": {
+          "legal_name": {
+            "type": "string"
+          },
+          "doing_business_as_name": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressInput"
+          },
+          "incorporation_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "country_of_formation": {
+            "type": "string"
+          },
+          "industry_type": {
+            "type": "string"
+          },
+          "legal_entity_type": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "business_description": {
+            "type": "string"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InstitutionMemberInput"
+            }
+          }
+        }
+      },
+      "InstitutionMember": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "ownership_percentage": {
+            "type": "number"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "ssn": {
+            "type": "string"
+          },
+          "is_control_person": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InstitutionMemberInput": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "ownership_percentage": {
+            "type": "number"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressInput"
+          },
+          "ssn": {
+            "type": "string"
+          },
+          "is_control_person": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "AddressInput": {
+        "type": "object",
+        "properties": {
+          "street_address": {
+            "type": "string"
+          },
+          "street_address_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "TaxDetail": {
+        "type": "object",
+        "properties": {
+          "tax_id": {
+            "type": "string"
+          },
+          "tax_id_type": {
+            "type": "string",
+            "enum": ["SSN", "EIN", "ITIN"]
+          },
+          "country": {
+            "type": "string"
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          }
+        }
+      },
+      "TaxDetailInput": {
+        "type": "object",
+        "properties": {
+          "tax_id": {
+            "type": "string"
+          },
+          "tax_id_type": {
+            "type": "string",
+            "enum": ["SSN", "EIN", "ITIN"]
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerDueDiligence": {
+        "type": "object",
+        "properties": {
+          "source_of_funds": {
+            "type": "string"
+          },
+          "purpose_of_account": {
+            "type": "string"
+          },
+          "expected_activity_level": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH"]
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": ["PENDING", "APPROVED", "DENIED", "ERROR"]
+          }
+        }
+      },
+      "CustomerDueDiligenceInput": {
+        "type": "object",
+        "properties": {
+          "source_of_funds": {
+            "type": "string"
+          },
+          "purpose_of_account": {
+            "type": "string"
+          },
+          "expected_activity_level": {
+            "type": "string",
+            "enum": ["LOW", "MEDIUM", "HIGH"]
+          }
+        }
+      }
+    },
+    "examples": {
+      "Problem_bad_request": {
+        "value": {
+          "type": "about:blank",
+          "title": "Bad Request",
+          "status": 400,
+          "detail": "Invalid request format or missing required fields"
+        }
+      },
+      "Problem_unauthenticated": {
+        "value": {
+          "type": "about:blank",
+          "title": "Unauthorized",
+          "status": 401,
+          "detail": "no authorization header set"
+        }
+      },
+      "Problem_forbidden": {
+        "value": {
+          "type": "about:blank",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "user account is disabled"
+        }
+      },
+      "Problem_not_found": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "identity not found"
+        }
+      },
+      "Problem_already_exists": {
+        "value": {
+          "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
+          "title": "Already Exists",
+          "status": 409,
+          "detail": "identity already exists with ref_id 'already_used_ref_id'",
+          "meta": {
+            "existing": {
+              "id": "54385e67-d7ef-40d1-b488-ceda6dd9b264",
+              "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
+              "ref_id": "already_used_ref_id",
+              "identity_type": "PERSON",
+              "summary_status": "PENDING"
+            }
+          }
+        }
+      },
+      "Problem_too_many_requests": {
+        "value": {
+          "type": "about:blank",
+          "title": "Too Many Requests",
+          "status": 429,
+          "detail": "Too many requests"
+        }
+      },
+      "Problem_internal_server_error": {
+        "value": {
+          "type": "about:blank",
+          "title": "Internal Server Error",
+          "status": 500
+        }
+      }
+    }
+  }
+}
