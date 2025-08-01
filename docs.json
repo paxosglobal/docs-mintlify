@@ -261,16 +261,7 @@
             "pages": [
               "guides/dashboard/account",
               "guides/dashboard/signin",
-              "guides/dashboard/onboard",
-              {
-                "group": "Manage Account",
-                "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat"
-                ]
-              }
+              "guides/dashboard/onboard"             
             ]
           },
           {
@@ -289,14 +280,31 @@
             ]
           },
           {
+            "group": "Fund Management",
+            "pages": [
+                  "guides/dashboard/transactions",
+                  "guides/dashboard/instructions",
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/fiat"
+            ]
+          },
+          {
             "group": "Administration",
             "pages": [
-              "guides/dashboard/admin/entity",
+              {
+                "group": "Manage Account",
+                "pages": [
+                  "guides/dashboard/admin/account-recovery",
+                  "guides/dashboard/admin/manage-passkeys"
+                ]
+              },
               "guides/dashboard/admin/team",
+              "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
-              "guides/dashboard/admin/reports",
               "guides/dashboard/travel-rule",
-              "guides/dashboard/admin/approvals"
+              "guides/dashboard/admin/approvals",
+              "guides/dashboard/admin/reports"
+
             ]
           },
           {
