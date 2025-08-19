@@ -1115,17 +1115,9 @@
         }
       },
       "ListIdentityControlsResponse": {
-        "type": "object",
-        "properties": {
-          "identity_controls": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IdentityControlsItem"
-            }
-          },
-          "next_page_cursor": {
-            "type": "string"
-          }
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/IdentityControlsItem"
         }
       },
       "Identity": {
@@ -1190,7 +1182,124 @@
             "$ref": "#/components/schemas/IdentityControls",
             "description": "Current control state and action restrictions applied to this identity"
           }
-        }
+        },
+        "examples": [
+          {
+            "id": "01HZ8X9K2FGHJKPQRSTVWXYZ01",
+            "customer_id": "cust_01HZ8X9K2FGHJKPQRSTVWXYZ02",
+            "ref_id": "user-123-2024",
+            "identity_type": "PERSON",
+            "status": "PENDING",
+            "status_details": {
+              "pending_verifications": {
+                "message": "Identity verification is in progress",
+                "metadata": {
+                  "statuses": [
+                    {"type": "IDV", "status": "PENDING"},
+                    {"type": "AML", "status": "PENDING"}
+                  ]
+                }
+              }
+            },
+            "created_at": "2024-07-31T10:30:00Z",
+            "updated_at": "2024-07-31T10:30:00Z",
+            "metadata": {
+              "source": "web_portal",
+              "region": "US"
+            },
+            "controls": {
+              "available_actions": ["CRYPTO_DEPOSITS", "FIAT_DEPOSITS"],
+              "dormant": false,
+              "frozen": false,
+              "closed": false,
+              "denied": false,
+              "admin_controls": {
+                "frozen": false,
+                "dormant": false,
+                "closed": false,
+                "denied": false
+              }
+            }
+          },
+          {
+            "id": "01HZ8X9K2FGHJKPQRSTVWXYZ03",
+            "customer_id": "cust_01HZ8X9K2FGHJKPQRSTVWXYZ04",
+            "ref_id": "company-456-2024",
+            "identity_type": "INSTITUTION",
+            "status": "DISABLED",
+            "status_details": {
+              "failed_controls": {
+                "message": "Identity has been closed by administrator due to compliance requirements",
+                "metadata": {
+                  "dormant": false,
+                  "frozen": false,
+                  "closed": true,
+                  "denied": false,
+                  "admin_controls": {
+                    "frozen": false,
+                    "dormant": false,
+                    "closed": true,
+                    "denied": false
+                  }
+                }
+              }
+            },
+            "created_at": "2024-07-25T14:15:00Z",
+            "updated_at": "2024-07-30T16:45:00Z",
+            "metadata": {
+              "source": "api",
+              "region": "EU"
+            },
+            "controls": {
+              "available_actions": [],
+              "dormant": false,
+              "frozen": false,
+              "closed": true,
+              "denied": false,
+              "admin_controls": {
+                "frozen": false,
+                "dormant": false,
+                "closed": true,
+                "denied": false
+              }
+            }
+          },
+          {
+            "id": "01HZ8X9K2FGHJKPQRSTVWXYZ05",
+            "customer_id": "cust_01HZ8X9K2FGHJKPQRSTVWXYZ06",
+            "ref_id": "trader-789-2024",
+            "identity_type": "PERSON",
+            "status": "DENIED",
+            "status_details": {
+              "failed_verifications": {
+                "message": "Identity verification failed due to document issues",
+                "metadata": {
+                  "statuses": [
+                    {"type": "IDV", "status": "FAILED"}
+                  ]
+                }
+              }
+            },
+            "created_at": "2024-07-28T09:20:00Z",
+            "updated_at": "2024-07-31T11:00:00Z",
+            "metadata": {
+              "source": "mobile_app"
+            },
+            "controls": {
+              "available_actions": [],
+              "dormant": false,
+              "frozen": false,
+              "closed": false,
+              "denied": true,
+              "admin_controls": {
+                "frozen": false,
+                "dormant": false,
+                "closed": false,
+                "denied": true
+              }
+            }
+          }
+        ]
       },
       "CreateIdentityRequest": {
         "type": "object",
