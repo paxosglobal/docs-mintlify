@@ -46,8 +46,7 @@ function getRedirectPath() {
         const tag = segments[0];
 
         return "/api-reference/endpoints/" +
-          cleanString(tag).replace(/-+/g, "-") +
-          "/overview";
+          cleanString(tag).replace(/-+/g, "-");
       }
     }
   } catch (e) {
