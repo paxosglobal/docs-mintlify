@@ -259,29 +259,17 @@
         "tab": "Dashboard Guide",
         "groups": [
           {
-            "group": "Paxos Dashboard",
+            "group": "Overview",
             "pages": [
-              "guides/dashboard/index",
-              "guides/dashboard/migrate-to-dashboard",
-              {
-                "group": "About the Paxos Dashboard",
-                "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat",
-                  "guides/dashboard/organization",
-                  "guides/dashboard/roles"
-                ]
-              },
-              {
-                "group": "Account",
-                "pages": [
-                  "guides/dashboard/signin",
-                  "guides/dashboard/account",
-                  "guides/dashboard/onboard"
-                ]
-              }
+              "guides/dashboard/index"
+            ]
+          },
+          {
+            "group": "Get Started",
+            "pages": [
+              "guides/dashboard/account",
+              "guides/dashboard/signin",
+              "guides/dashboard/onboard"             
             ]
           },
           {
@@ -300,14 +288,31 @@
             ]
           },
           {
+            "group": "Fund Management",
+            "pages": [
+                  "guides/dashboard/transactions",
+                  "guides/dashboard/instructions",
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/fiat"
+            ]
+          },
+          {
             "group": "Administration",
             "pages": [
-              "guides/dashboard/admin/entity",
+              {
+                "group": "Manage Account",
+                "pages": [
+                  "guides/dashboard/admin/account-recovery",
+                  "guides/dashboard/admin/manage-passkeys"
+                ]
+              },
               "guides/dashboard/admin/team",
+              "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
-              "guides/dashboard/admin/reports",
               "guides/dashboard/travel-rule",
-              "guides/dashboard/admin/approvals"
+              "guides/dashboard/admin/approvals",
+              "guides/dashboard/admin/reports"
+
             ]
           },
           {
