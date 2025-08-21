@@ -14,6 +14,7 @@ The TransactionType denotes the specific purpose of the transaction.
 | ORDER | UNRESERVE | A transaction to unreserve funds for trading. For example, a limit order has been canceled. |
 | QUOTE_EXECUTION | COLLECT_FROM_EXECUTOR | A record of transaction indicating a credit of the account. |
 | QUOTE_EXECUTION | FUND_EXECUTOR | A record of transaction indicating a debit  of the account. |
+| SWAP | SWAP_TX | A 1:1 conversion of a USD or a stablecoin from one type (in the DEBIT Direction) to another (in the CREDIT Direction) in the same account (no movement) |
 | TRANSFER | DEPOSIT_COMPLETION | A transaction to complete a deposit, resulting in funds being credited. |
 | TRANSFER | DEPOSIT_CREATION | A transaction to deposit funds into the Paxos platform. |
 | TRANSFER | DEPOSIT_FAILURE | A transaction to reserve the funds of a failed deposit into pending debit where they can move off the Paxos platform back to their source. |
