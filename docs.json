@@ -714,7 +714,8 @@
                 "group": "API Credentials",
                 "pages": [
                   "api-reference/endpoints/api-credentials/overview",
-                  "api-reference/endpoints/api-credentials/list-api-credentials"
+                  "api-reference/endpoints/api-credentials/list-api-credentials",
+                  "api-reference/endpoints/api-credentials/archive-api-credentials"
                 ]
               }
             ]
