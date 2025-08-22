@@ -4864,7 +4864,7 @@
     "/transfer/fiat-accounts": {
       "get": {
         "summary": "List Fiat Accounts",
-        "description": "{AM TEST} List all Fiat Accounts, optionally filtering and paging the results.\nThe response includes an abbreviated `FiatAccount` object:\n\n- Beneficiary name and address details are excluded.\n- Only the last four (**4**) digits of the account number are included.\n\nUse [Get Fiat Account](#operation/GetFiatAccount) to retrieve the complete `FiatAccount` object.\n\nThe paginated results default to the maximum limit of 1,000 Fiat Accounts, unless otherwise specified with the `limit` parameter.\nEvery paginated response contains a `next_page` field until the last page is reached.\nPass the `next_page` value into the `page_cursor` field of the next request to retrieve the next page of results.",
+        "description": "{AM TEST} !! List all Fiat Accounts, optionally filtering and paging the results.\nThe response includes an abbreviated `FiatAccount` object:\n\n- Beneficiary name and address details are excluded.\n- Only the last four (**4**) digits of the account number are included.\n\nUse [Get Fiat Account](#operation/GetFiatAccount) to retrieve the complete `FiatAccount` object.\n\nThe paginated results default to the maximum limit of 1,000 Fiat Accounts, unless otherwise specified with the `limit` parameter.\nEvery paginated response contains a `next_page` field until the last page is reached.\nPass the `next_page` value into the `page_cursor` field of the next request to retrieve the next page of results.",
         "operationId": "ListFiatAccounts",
         "responses": {
           "200": {
