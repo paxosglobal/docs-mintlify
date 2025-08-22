@@ -1,10 +1,7 @@
-export const BestPracticeRefId = () => (
-  <Tip>
-    <p><strong>Best Practice</strong></p>
-    <p>Whenever possible, include your own unique identifier in the request using <code>ref_id</code>.
-    Doing so helps to protect against submitting the same request twice, as the second request with the same <code>ref_id</code> will be rejected with <code>409 already exists</code>.
-    The <code>ref_id</code> can also be used in many query parameters.</p>
-  </Tip>
-);
+<Tip>
+**Best Practice**
 
-export default BestPracticeRefId;
+Whenever possible, include your own unique identifier in the request using `ref_id`.
+Doing so helps to protect against submitting the same request twice, as the second request with the same `ref_id` will be rejected with `409 already exists`.
+The `ref_id` can also be used in many query parameters.
+</Tip>

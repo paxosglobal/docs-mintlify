@@ -11,6 +11,14 @@
   "favicon": "/favicon.ico",
   "redirects": [
     {
+      "source": "/blockchains",
+      "destination": "/guides/developer/blockchains"
+    },
+    {
+      "source": "/faq",
+      "destination": "/guides/developer/faq"
+    },
+    {
       "source": "/identity/:slug*",
       "destination": "/guides/identity/:slug*"
     },
@@ -119,13 +127,9 @@
             "group": "Get Started",
             "pages": [
               "guides/developer/account",
-              "guides/developer/authenticate",
-              "guides/developer/sandbox",
               "guides/developer/credentials",
-              "guides/developer/request-signing",
+              "guides/developer/authenticate",
               "guides/developer/request"
-              
-
             ]
           },
           {
@@ -232,10 +236,12 @@
           {
             "group": "Additional Guides",
             "pages": [
+              "guides/developer/ai-assisted-development",
               "guides/developer/blockchains",
               "guides/developer/request-signing",
               "guides/developer/rate-limits",
               "guides/developer/reports",
+              "guides/developer/sandbox",
               "guides/developer/faq"
             ]
           },
@@ -243,7 +249,8 @@
             "group": "Versioning",
             "pages": [
               "guides/developer/breaking-change/policy",
-              "guides/developer/api-migrate"
+              "guides/developer/api-migrate",
+              "changelog"
             ]
           }
         ]
@@ -252,29 +259,17 @@
         "tab": "Dashboard Guide",
         "groups": [
           {
-            "group": "Paxos Dashboard",
+            "group": "Overview",
             "pages": [
-              "guides/dashboard/index",
-              {
-                "group": "About the Paxos Dashboard",
-                "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat",
-                  "guides/dashboard/organization",
-                  "guides/dashboard/roles",
-                  "guides/dashboard/fees"
-                ]
-              },
-              {
-                "group": "Account",
-                "pages": [
-                  "guides/dashboard/signin",
-                  "guides/dashboard/account",
-                  "guides/dashboard/onboard"
-                ]
-              }
+              "guides/dashboard/index"
+            ]
+          },
+          {
+            "group": "Get Started",
+            "pages": [
+              "guides/dashboard/account",
+              "guides/dashboard/signin",
+              "guides/dashboard/onboard"             
             ]
           },
           {
@@ -293,15 +288,31 @@
             ]
           },
           {
+            "group": "Fund Management",
+            "pages": [
+                  "guides/dashboard/transactions",
+                  "guides/dashboard/instructions",
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/fiat"
+            ]
+          },
+          {
             "group": "Administration",
             "pages": [
-              "guides/dashboard/admin/entity",
+              {
+                "group": "Manage Account",
+                "pages": [
+                  "guides/dashboard/admin/account-recovery",
+                  "guides/dashboard/admin/manage-passkeys"
+                ]
+              },
               "guides/dashboard/admin/team",
+              "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
-              "guides/dashboard/admin/reports",
               "guides/dashboard/travel-rule",
-              "guides/dashboard/admin/roles",
-              "guides/dashboard/admin/approvals"
+              "guides/dashboard/admin/approvals",
+              "guides/dashboard/admin/reports"
+
             ]
           },
           {
@@ -316,8 +327,7 @@
           {
             "group": "Resources",
             "pages": [
-              "guides/dashboard/passkeys",
-              "guides/dashboard/migrate-to-dashboard"
+              "guides/dashboard/passkeys"
             ]
           }
         ]
@@ -332,12 +342,17 @@
             ]
           },
           {
+            "group": "Quickstart",
+            "pages": [
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+          {
             "group": "PayPal USD (PYUSD)",
             "pages": [
               "guides/stablecoin/pyusd/index",
               "guides/stablecoin/pyusd/mainnet",
-              "guides/stablecoin/pyusd/testnet",
-              "guides/stablecoin/integrate-pyusd"
+              "guides/stablecoin/pyusd/testnet"
             ]
           },
           {
@@ -350,14 +365,6 @@
             ]
           },
           {
-            "group": "Pax Dollar (USDP)",
-            "pages": [
-              "guides/stablecoin/usdp/index",
-              "guides/stablecoin/usdp/mainnet",
-              "guides/stablecoin/usdp/testnet"
-            ]
-          },
-          {
             "group": "Lift Dollar (USDL)",
             "pages": [
               "guides/stablecoin/usdl/index",
@@ -366,6 +373,23 @@
             ]
           },
           {
+            "group": "Pax Dollar (USDP)",
+            "pages": [
+              "guides/stablecoin/usdp/index",
+              "guides/stablecoin/usdp/mainnet",
+              "guides/stablecoin/usdp/testnet"
+            ]
+          },
+          {
+            "group": "PayPal USD (PYUSD)",
+            "pages": [
+              "guides/stablecoin/pyusd/index",
+              "guides/stablecoin/pyusd/mainnet",
+              "guides/stablecoin/pyusd/testnet",
+              "guides/stablecoin/integrate-pyusd"
+            ]
+          },
+           {
             "group": "Other Stablecoins",
             "pages": [
               "guides/stablecoin/busd"
@@ -676,8 +700,21 @@
               {
                 "group": "Events",
                 "pages": [
+                  "api-reference/endpoints/events/overview",
                   "api-reference/endpoints/events/list-events",
                   "api-reference/endpoints/events/get-event"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "API Credentials",
+            "pages": [
+              {
+                "group": "API Credentials",
+                "pages": [
+                  "api-reference/endpoints/api-credentials/overview",
+                  "api-reference/endpoints/api-credentials/list-api-credentials"
                 ]
               }
             ]
@@ -765,18 +802,6 @@
                   }
                 ]
               }
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Cookbook",
-        "groups": [
-          {
-            "group": "Cookbook",
-            "pages": [
-              "cookbook/overview",
-              "cookbook/third-party-brokerage-enrollment"
             ]
           }
         ]

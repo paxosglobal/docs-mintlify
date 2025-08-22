@@ -3,7 +3,7 @@ title: 'Configure API Credentials'
 description: Create and update an OAuth2 client.
 ---
 
-import { ApiCredentialsIntro } from '/snippets/api-credentials-intro.mdx';
+import ApiCredentialsIntro from '/snippets/api-credentials-intro.mdx';
 import Scopes from '/snippets/scopes.mdx';
 
 
@@ -11,14 +11,17 @@ import Scopes from '/snippets/scopes.mdx';
 
 Once the credentials are activated, most users find success using one of the libraries on the [OAuth2 website](https://oauth.net/code) for authentication.
 
-> To add or modify API Credentials, you'll need a [Developer] or other role with appropriate permissions. Contact your [Entity Manager] for help.
+> To add or modify API Credentials, you'll need a [Developer](/guides/dashboard/roles#developer) or other role with appropriate permissions. Contact your [Entity Manager](/guides/dashboard/roles#entity-manager) for help.
 
 ## Add API Credentials
 
 1. Log in to your Dashboard account and go to [API Management](https://dashboard.paxos.com/admin/api).
 1. Click **API Credentials**.
 1. Create a **Label** for your API credentials.
-1. Select the **Scopes** for your **Client ID**. For example, the following scopes (space delimited) should be adequate to [mint], [redeem] and [convert] Paxos-issued stablecoins:<br/><br/><Scopes />
+1. Select the **Scopes** for your **Client ID**. For example, the following scopes (space delimited) should be adequate to [mint](/guides/dashboard/mint), [redeem](/guides/dashboard/redeem) and [convert](/guides/dashboard/convert) Paxos-issued stablecoins:
+
+<Scopes />
+
 1. Optional: Add **Allowable IP** addresses. If you have a single IP address, you can configure a CIDR entry to specify a single IP with 32 fixed bits by appending `/32` to the address. For example, using `000.000.0.000/32` will allow only the IP address `000.000.0.000`.
 1. Optional: Enable **Request Signing**.
 1. Click **Create Credentials**.

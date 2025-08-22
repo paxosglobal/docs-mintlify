@@ -22,7 +22,7 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 ## ➋ Deposit USD
 
 Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the minting process to be associated with.
-See the [First API Request] guide for help retrieving Profile IDs.
+See the [First API Request](/guides/developer/request) guide for help retrieving Profile IDs.
 You can also use the [Fiat Transfers funding flow](/api-reference/endpoints/fiat-transfers) if you've already set up a Fiat Account.
 
 ```shell highlight={2}
@@ -37,8 +37,8 @@ curl --request POST \
 
 ## ➌ Convert USD to Stablecoin
 
-See the [convert stablecoin] guide for details on using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to mint a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins).
-Once the conversion is [`SETTLED`], use [List Profile Balances] to check updated balances.
+See the [convert stablecoin](/guides/developer/convert) guide for details on using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to mint a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins).
+Once the conversion is [`SETTLED`](/guides/developer/convert#stablecoin-conversion-statuses), use [List Profile Balances](/api-reference/endpoints/profiles/list-profile-balances) to check updated balances.
 To check balances of the assets you are interested in, include the `assets` query parameter in the request.
 
 ```shell highlight={1}

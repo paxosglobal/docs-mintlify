@@ -3,6 +3,25 @@ title: "Changelog"
 description: "Product updates and announcements"
 rss: true
 ---
+<Update label="August 15, 2025" description="Docs, v2 API">
+    **Crypto Deposits and Withdrawals (Stellar PYUSD)**: Updated API documentation to clarify trustline requirements for PYUSD transfers on Stellar network. Documentation now includes:
+    - Trustline requirement details - destination addresses must have an established trustline with the PYUSD issuer
+    - Step-by-step instructions for establishing trustlines using Stellar wallets or SDK
+    - Verification methods for checking trustline status via blockchain explorers, Horizon API, or Stellar SDK
+</Update>
+
+<Update label="July 31, 2025" description="v2 API">
+    **V2 API**: Adds `status`, `created_at`, and `updated_at` to `ListAPICredentials` responses. Support for filtering by `status` also added.
+</Update>
+
+<Update label="July 25, 2025" description="v2 API">
+    **V2 API**: Adds optional `recipient_metadata` field to CreateInternalTransfer.
+</Update>
+
+<Update label="July 21, 2025" description="v2 API">
+    **V2 API**: Adds ListAPICredentials endpoint. Lists all API credentials that have been created.
+    **V2 API**: Add optional ids filter to ListProfiles to support filtering by specific profile IDs.
+</Update>
 
 <Update label="June 18, 2025" description="v2 API">
 

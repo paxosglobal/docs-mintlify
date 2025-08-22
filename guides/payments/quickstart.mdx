@@ -3,14 +3,11 @@ title: 'Stablecoin Pay-ins Quickstart'
 description: Accept stablecoin pay-ins with real-time settlement. Issue on-chain refunds.
 ---
 
-import { PaymentsGetKeys } from '/snippets/payments-get-keys.mdx';
-import { PaymentsConnectorTip } from '/snippets/payments-connector-tip.mdx';
-import { BestPracticeRefId } from '/snippets/best-practice-ref-id.mdx';
-import { PaymentsCreateProfile } from '/snippets/payments-create-profile.mdx';
-import { PaymentsPhantomWallet } from '/snippets/payments-phantom-wallet.mdx';
+import PaymentsConnectorTip from '/snippets/payments-connector-tip.mdx';
+import BestPracticeRefId from '/snippets/best-practice-ref-id.mdx';
+import PaymentsPhantomWallet from '/snippets/payments-phantom-wallet.mdx';
 
-
-This guides walks you through the steps to set up a basic payments workflow using the Paxos Platform, including [configuring a stablecoin pay-in workflow] and [setting up a refund workflow].
+This guides walks you through the steps to set up a basic payments workflow using the Paxos Platform, including [configuring a stablecoin pay-in workflow](/guides/payments/quickstart#payment-workflow) and [setting up a refund workflow](/guides/payments/quickstart#refunds).
 Once completed, similar, more robust, workflows can be implemented in production.
 If you already have sandbox access, this guide should take less than one hour to complete.
 
@@ -19,13 +16,87 @@ If you already have sandbox access, this guide should take less than one hour to
 - Paxos may need to enable some API functionality described in the payments guides. Contact [Support](https://support.paxos.com) with any access issues.
 - If you need a developer sandbox account, [contact us](https://support.paxos.com/hc/en-us) before continuing.
 - The API endpoints require authentication with a **Client ID** and **Secret**.
-Each **Client ID** has a specific set of allowed scopes to access API endpoints.
+- Each **Client ID** has a specific set of allowed scopes to access API endpoints.
 
-<PaymentsGetKeys />
+<Accordion title="Example: Sandbox Credentials" id="generate-keys">
+
+[Log in](https://dashboard.sandbox.paxos.com) to your sandbox account and go to [**Settings** > **API Management**](https://dashboard.sandbox.paxos.com/admin/api).
+Either select an existing **Client ID** or create a new one.
+
+<Tip>
+**Best Practice**
+
+Always store the **Client ID** and **Client Secret** in a safe place.
+The secret must be reset if forgotten.
+</Tip>
+
+To complete the steps in this guide, ensure the following scopes are enabled for the client (scopes may be updated at any time):
+
+```
+funding:read_profile \
+funding:write_profile \
+transfer:read_transfer \
+transfer:write_crypto_withdrawal \
+transfer:write_deposit_address
+```
+
+Include the client (`client_id`) and secret (`client_secret`) in the authentication request to https://oauth.sandbox.paxos.com/oauth2/token:
+
+```shell
+curl --location "https://oauth.sandbox.paxos.com/oauth2/token" \
+--form grant_type=client_credentials \
+--form client_id={client_id} \
+--form client_secret={client_secret} \
+--form scope="funding:read_profile funding:write_profile transfer:read_transfer transfer:write_crypto_withdrawal transfer:write_deposit_address"
+```
+
+Confirm the response includes the requisite scopes and save the `access_token` to use in the request authorization header (`-H "Authorization: Bearer access_token"`).
+
+```json
+{
+ "access_token": "access_token",
+ "expires_in": 3599,
+ "scope": "funding:read_profile funding:write_profile transfer:read_transfer transfer:write_crypto_withdrawal transfer:write_deposit_address",
+ "token_type": "bearer"
+}
+```
+
+</Accordion>
 - To follow along with this guide, [create a new Profile](/api-reference/endpoints/profiles/create-profile) to represent the Seller.
-However, any existing Profile can be used when setting up simple [pay-in] and [refund] workflows.
-Learn more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).<PaymentsCreateProfile />
-- To represent the Buyer in this guide, send enough testnet tokens to pay network fees, along with one of the [supported testnet stablecoins](/guides/payments/faq#supported-assets), to an off-platform wallet.<PaymentsPhantomWallet />
+However, any existing Profile can be used when setting up simple [pay-in](/guides/payments/quickstart#payment-workflow) and [refund](/guides/payments/quickstart#refunds) workflows.
+Learn more about [user onboarding requirements](/guides/payments/faq#seller-onboarding).
+
+<Accordion title="Example: Seller Profile" id="create-profile">
+
+Use [Create Profile](/api-reference/endpoints/profiles/create-profile) to represent the seller.
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/profiles' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}' \
+--data '{
+  "nickname": "Seller A",
+  "description": "Stablecoin Pay-in and Refunds."
+}'
+```
+
+Save the `id` (`profile_id`) from the response, it will be used throughout this guide.
+
+```json
+{
+    "id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
+    "nickname": "Seller A",
+    "type": "NORMAL"
+}
+```
+
+Use [List Profiles](/api-reference/endpoints/profiles/list-profiles) to retrieve the Profile ID when needed.
+
+</Accordion>
+- To represent the Buyer in this guide, send enough testnet tokens to pay network fees, along with one of the [supported testnet stablecoins](/guides/payments/faq#supported-assets), to an off-platform wallet.
+
+<PaymentsPhantomWallet />
 ## Set Up Stablecoin Pay-in Workflow
 
 To accept a pay-in on the Paxos Platform, first use [Create Deposit Address](/api-reference/endpoints/deposit-addresses/create-deposit-address) to add a new wallet address on the public blockchain.
@@ -52,7 +123,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer {access_token}' \
 --data '{
-    {/* highlight-start */}
+ 
     "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
     "crypto_network": "SOLANA",
     "ref_id": "da_73bcbb08-db06-4308-b0c2-2a6398012f8b",
@@ -124,7 +195,6 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was converted to 
             "id": "9d93693f-5157-49f4-ae44-4a7a8eae3d73",
             "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
             "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
-            {/* highlight-start */}
             "amount": "7.06",
             "total": "7.06",
             "fee": "0",
@@ -149,26 +219,26 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was converted to 
 
 ### 4. Move USD to Bank Account
 
-To manage on-platform cash balances, use the [Fiat Transfers] APIs to batch withdraw USD to any designated bank account as needed.
+To manage on-platform cash balances, use the [Fiat Transfers](/api-reference/endpoints/fiat-transfers) APIs to batch withdraw USD to any designated bank account as needed.
 Learn more in the [fiat transfers guide](/guides/developer/fiat-transfers).
 
-> If you need to [create a fiat account] Paxos may need to enable some API functionality.
+> If you need to [create a fiat account](/api-reference/endpoints/fiat-transfers/create-fiat-account) Paxos may need to enable some API functionality.
 C> ontact [Support](https://support.paxos.com/hc/en-us) for assistance.
 
 ## Set Up a Refund Workflow
 
-To process stablecoin refunds on the Paxos Platform, first [fund your account with USD](/guides/payments/quickstart#refund-fund-account) then use  [Create Crypto Withdrawal] to initiate a stablecoin refund to the Buyer.
+To process stablecoin refunds on the Paxos Platform, first [fund your account with USD](/guides/payments/quickstart#refund-fund-account) then use  [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to initiate a stablecoin refund to the Buyer.
 Once a refund is complete, the transaction shows up in the [List Transfers](/api-reference/endpoints/transfers/list-transfers) monitoring and reconciliation polling request.
 
 ### 1. Add USD to a Refund Account
 
-Production implementations can use the [Fiat Transfers] APIs to send USD to a destination on the Paxos Platform, which is out of scope for this guide.
+Production implementations can use the [Fiat Transfers](/api-reference/endpoints/fiat-transfers) APIs to send USD to a destination on the Paxos Platform, which is out of scope for this guide.
 The [fiat transfers guide](/guides/developer/fiat-transfers) provides step-by-step instructions on setting up fiat movements.
 
-> If you need to [create a fiat account] Paxos may need to enable some API functionality.
+> If you need to [create a fiat account](/api-reference/endpoints/fiat-transfers/create-fiat-account) Paxos may need to enable some API functionality.
 > Contact [Support](https://support.paxos.com/hc/en-us) for assistance.
 
-For simplicity, this guide uses [Create Sandbox Deposit] to simulate funding the designated Seller Profile with USD.
+For simplicity, this guide uses [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to simulate funding the designated Seller Profile with USD.
 Include the Seller's Profile ID (`profile_id`) as a path parameter, as well as the deposit `asset` and `amount` as query parameters.
 
 ```shell
@@ -192,7 +262,7 @@ A successful response only includes the system-generated `activity_id`.
 
 ### 1.1 Sandbox Only: Check USD Deposit
 
-To confirm the USD deposit, use [List Profile Balances].
+To confirm the USD deposit, use [List Profile Balances](/api-reference/endpoints/profiles/list-profile-balances).
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/eb1dbb95-8e22-471b-9ded-40bbfe309037/balances?assets=USD' \
@@ -218,7 +288,7 @@ The Profile USD balance is now `107.06`, reflecting both the previously received
 
 ### 2. Initiate a Stablecoin Refund
 
-Use [Create Crypto Withdrawal] to send stablecoin to the Buyer's designated wallet address.
+Use [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to send stablecoin to the Buyer's designated wallet address.
 The request must include one of [supported stablecoins](/guides/payments/faq#supported-assets) networks.
 
 <Tip>
@@ -330,7 +400,7 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was sent to the B
 
 ### 3.1 Sandbox Only: Check USD Withdrawal
 
-To confirm USD was used to fund the crypto withdrawal, use [List Profile Balances].
+To confirm USD was used to fund the crypto withdrawal, use [List Profile Balances](/api-reference/endpoints/profiles/list-profile-balances).
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/profiles/eb1dbb95-8e22-471b-9ded-40bbfe309037/balances?assets=USD' \
