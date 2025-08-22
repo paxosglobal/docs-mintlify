@@ -2,7 +2,6 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Paxos Documentation",
-  "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json", 
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
