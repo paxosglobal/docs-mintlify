@@ -306,12 +306,20 @@
                   "guides/dashboard/admin/manage-passkeys"
                 ]
               },
-              "guides/dashboard/admin/team",
+              {
+                "group": "Manage Team",
+                "pages": [
+                  "guides/dashboard/admin/team",
+                  "guides/dashboard/roles"             
+                ]
+              },
+              "guides/dashboard/organization",
               "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
               "guides/dashboard/admin/reports"
+
 
             ]
           },
