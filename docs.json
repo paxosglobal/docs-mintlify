@@ -284,7 +284,8 @@
             "group": "Stablecoin Operations",
             "pages": [
               "guides/dashboard/mint",
-              "guides/dashboard/redeem"
+              "guides/dashboard/redeem",
+              "guides/dashboard/paxg"
             ]
           },
           {
