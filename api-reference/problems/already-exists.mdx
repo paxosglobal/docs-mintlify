@@ -1,0 +1,36 @@
+---
+title: 409 - Rejected
+---
+
+An Already Exists error is returned on operations which violate an at-most-once or uniqueness constraint.
+
+For example, an Already Exists error will be returned if:
+
+- Create Order is called with an already-used `ref_id`
+- Create Profile is called with an already-existing profile nickname
+- Accept Quote is called on a quote which has already been accepted
+
+An Already Exists error has the following "meta" fields:
+
+- `existing`: The existing record which is the subject of the conflict (for example, the existing order with the same `ref_id`)
+
+An Already Exists error may be benign if the client is retrying an earlier attempted operation which the client believes may have failed.
+
+However, if the request is not a retry, then resolving the error requires changing the request to avoid the conflict.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "nickname already exists",
+  "meta": {
+    "existing": {
+      "id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+      "nickname": "existing nickname"
+    }
+  },
+  "status": 409,
+  "title": "Already Exists",
+  "type": "https://developer.paxos.com/docs/v2/problems/already-exists"
+}
+```
+</CodeGroup>
