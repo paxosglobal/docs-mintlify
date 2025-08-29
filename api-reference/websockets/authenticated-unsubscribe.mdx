@@ -1,0 +1,222 @@
+---
+title: "Unsubscribe"
+description: "Remove active subscriptions from market data and execution data channels"
+asyncapi: "/api-reference/websocket-asyncapi.json /authenticated.unsubscribe"
+---
+
+## Overview
+
+The unsubscribe operation allows you to stop receiving data streams for specific channels. You can unsubscribe from multiple channels in a single request.
+
+## Request Format
+
+Send a JSON message with channels to unsubscribe from:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+## Response Format
+
+The server confirms each unsubscription request:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+## Parameter Matching
+
+⚠️ **Important**: Channel parameters must exactly match the original subscription.
+
+### Correct Unsubscribe
+If you subscribed with:
+```json
+{
+  "type": "market_data",
+  "params": { "market": "BTCUSD" }
+}
+```
+
+You must unsubscribe with identical parameters:
+```json
+{
+  "type": "market_data",
+  "params": { "market": "BTCUSD" }
+}
+```
+
+## Multiple Unsubscriptions
+
+Unsubscribe from multiple channels simultaneously:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": { "market": "BTCUSD" }
+    },
+    {
+      "type": "market_data",
+      "params": { "market": "ETHUSD" }
+    },
+    {
+      "type": "execution_data",
+      "params": { "market": "BTCUSD" }
+    }
+  ]
+}
+```
+
+## Error Handling
+
+Failed unsubscription attempts return error codes:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": false,
+      "error": "NO_EFFECT_ACTION"
+    }
+  ]
+}
+```
+
+### Common Errors
+
+- `NO_EFFECT_ACTION` - Not currently subscribed to this channel
+- `UNKNOWN_CHANNEL` - Invalid channel type
+- `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` - Invalid parameters
+- `MALFORMED_REQUEST` - Invalid JSON structure
+
+## Usage Example
+
+```javascript
+// Unsubscribe from BTCUSD market data
+const unsubscribeMessage = {
+  type: "unsubscribe",
+  channels: [
+    {
+      type: "market_data",
+      params: {
+        market: "BTCUSD"
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(unsubscribeMessage));
+
+// Handle response
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  
+  if (message.type === 'unsubscribe') {
+    message.channels.forEach(channel => {
+      if (channel.success) {
+        console.log(`Successfully unsubscribed from ${channel.type}`);
+      } else {
+        console.error(`Failed to unsubscribe: ${channel.error}`);
+      }
+    });
+  }
+});
+```
+
+## Clean Subscription Management
+
+```javascript
+class SubscriptionManager {
+  constructor(ws) {
+    this.ws = ws;
+    this.activeSubscriptions = new Set();
+  }
+
+  subscribe(channel, params) {
+    const key = `${channel}:${JSON.stringify(params)}`;
+    
+    if (this.activeSubscriptions.has(key)) {
+      console.log('Already subscribed to', key);
+      return;
+    }
+
+    const message = {
+      type: "subscribe",
+      channels: [{ type: channel, params }]
+    };
+
+    this.ws.send(JSON.stringify(message));
+    this.activeSubscriptions.add(key);
+  }
+
+  unsubscribe(channel, params) {
+    const key = `${channel}:${JSON.stringify(params)}`;
+    
+    if (!this.activeSubscriptions.has(key)) {
+      console.log('Not subscribed to', key);
+      return;
+    }
+
+    const message = {
+      type: "unsubscribe",
+      channels: [{ type: channel, params }]
+    };
+
+    this.ws.send(JSON.stringify(message));
+    this.activeSubscriptions.delete(key);
+  }
+
+  unsubscribeAll() {
+    const channels = [];
+    
+    this.activeSubscriptions.forEach(key => {
+      const [channel, paramsStr] = key.split(':');
+      channels.push({
+        type: channel,
+        params: JSON.parse(paramsStr)
+      });
+    });
+
+    if (channels.length > 0) {
+      const message = {
+        type: "unsubscribe",
+        channels
+      };
+
+      this.ws.send(JSON.stringify(message));
+      this.activeSubscriptions.clear();
+    }
+  }
+}
+```
+
+## Important Notes
+
+- Unsubscribing stops data flow immediately
+- Parameters must match exactly - even parameter order matters in some cases
+- Unsubscribing from a non-existent subscription returns `NO_EFFECT_ACTION`
+- All subscriptions are automatically cleared when the WebSocket connection closes
+
+> See the [Subscription List](/api-reference/websockets/authenticated-subscription-list) endpoint to query active subscriptions before unsubscribing.

@@ -1,0 +1,299 @@
+---
+title: "Subscription List"
+description: "Query all active subscriptions for the current WebSocket connection"
+asyncapi: "/api-reference/websocket-asyncapi.json /authenticated.subscription_list"
+---
+
+## Overview
+
+The subscription list operation returns all currently active subscriptions for your WebSocket connection. Use this to verify active channels or before performing bulk unsubscribe operations.
+
+## Request Format
+
+Send a simple JSON message to query subscriptions:
+
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+## Response Format
+
+The server returns all active subscriptions with their parameters:
+
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+### Empty Response
+
+If no active subscriptions exist:
+
+```json
+{
+  "type": "subscription_list",
+  "channels": []
+}
+```
+
+## Usage Examples
+
+### Basic Query
+
+```javascript
+// Request subscription list
+const listMessage = {
+  type: "subscription_list"
+};
+
+ws.send(JSON.stringify(listMessage));
+
+// Handle response
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  
+  if (message.type === 'subscription_list') {
+    console.log(`Active subscriptions: ${message.channels.length}`);
+    
+    message.channels.forEach(channel => {
+      console.log(`- ${channel.type}: ${JSON.stringify(channel.params)}`);
+    });
+  }
+});
+```
+
+### Subscription Verification
+
+```javascript
+class ConnectionManager {
+  constructor(ws) {
+    this.ws = ws;
+    this.expectedSubscriptions = new Set();
+  }
+
+  async verifySubscriptions() {
+    return new Promise((resolve) => {
+      // Request current subscriptions
+      this.ws.send(JSON.stringify({ type: "subscription_list" }));
+      
+      // Set up one-time listener
+      const handler = (data) => {
+        const message = JSON.parse(data);
+        
+        if (message.type === 'subscription_list') {
+          this.ws.removeListener('message', handler);
+          
+          // Compare actual vs expected
+          const actual = new Set(
+            message.channels.map(ch => 
+              `${ch.type}:${JSON.stringify(ch.params)}`
+            )
+          );
+          
+          const missing = [...this.expectedSubscriptions]
+            .filter(sub => !actual.has(sub));
+          
+          const unexpected = [...actual]
+            .filter(sub => !this.expectedSubscriptions.has(sub));
+          
+          resolve({
+            isValid: missing.length === 0 && unexpected.length === 0,
+            missing,
+            unexpected,
+            actual: message.channels
+          });
+        }
+      };
+      
+      this.ws.on('message', handler);
+    });
+  }
+
+  addExpectedSubscription(type, params) {
+    const key = `${type}:${JSON.stringify(params)}`;
+    this.expectedSubscriptions.add(key);
+  }
+}
+
+// Usage
+const manager = new ConnectionManager(ws);
+
+manager.addExpectedSubscription('market_data', { market: 'BTCUSD' });
+manager.addExpectedSubscription('execution_data', { market: 'BTCUSD' });
+
+const verification = await manager.verifySubscriptions();
+
+if (!verification.isValid) {
+  console.log('Subscription mismatch detected');
+  
+  if (verification.missing.length > 0) {
+    console.log('Missing subscriptions:', verification.missing);
+    // Resubscribe to missing channels
+  }
+  
+  if (verification.unexpected.length > 0) {
+    console.log('Unexpected subscriptions:', verification.unexpected);
+    // Optionally unsubscribe from unexpected channels
+  }
+}
+```
+
+### Bulk Operations
+
+```javascript
+class BulkSubscriptionManager {
+  constructor(ws) {
+    this.ws = ws;
+  }
+
+  async getCurrentSubscriptions() {
+    return new Promise((resolve) => {
+      this.ws.send(JSON.stringify({ type: "subscription_list" }));
+      
+      const handler = (data) => {
+        const message = JSON.parse(data);
+        if (message.type === 'subscription_list') {
+          this.ws.removeListener('message', handler);
+          resolve(message.channels);
+        }
+      };
+      
+      this.ws.on('message', handler);
+    });
+  }
+
+  async unsubscribeAll() {
+    const channels = await this.getCurrentSubscriptions();
+    
+    if (channels.length === 0) {
+      console.log('No active subscriptions');
+      return;
+    }
+
+    const unsubscribeMessage = {
+      type: "unsubscribe",
+      channels: channels
+    };
+
+    this.ws.send(JSON.stringify(unsubscribeMessage));
+    console.log(`Unsubscribed from ${channels.length} channels`);
+  }
+
+  async switchMarkets(oldMarket, newMarket) {
+    const channels = await this.getCurrentSubscriptions();
+    
+    // Find channels for old market
+    const oldChannels = channels.filter(ch => 
+      ch.params && ch.params.market === oldMarket
+    );
+    
+    if (oldChannels.length === 0) {
+      console.log(`No subscriptions found for ${oldMarket}`);
+      return;
+    }
+
+    // Unsubscribe from old market
+    this.ws.send(JSON.stringify({
+      type: "unsubscribe",
+      channels: oldChannels
+    }));
+
+    // Subscribe to new market with same channel types
+    const newChannels = oldChannels.map(ch => ({
+      type: ch.type,
+      params: { market: newMarket }
+    }));
+
+    this.ws.send(JSON.stringify({
+      type: "subscribe",
+      channels: newChannels
+    }));
+
+    console.log(`Switched from ${oldMarket} to ${newMarket}`);
+  }
+}
+
+// Usage
+const bulkManager = new BulkSubscriptionManager(ws);
+
+// Switch all BTCUSD subscriptions to ETHUSD
+await bulkManager.switchMarkets('BTCUSD', 'ETHUSD');
+
+// Clear all subscriptions before disconnect
+await bulkManager.unsubscribeAll();
+```
+
+## Use Cases
+
+### Connection Recovery
+Query subscriptions after reconnection to verify state:
+
+```javascript
+ws.on('open', async () => {
+  console.log('Connected - verifying subscriptions');
+  
+  const listMessage = { type: "subscription_list" };
+  ws.send(JSON.stringify(listMessage));
+  
+  // Resubscribe if needed based on response
+});
+```
+
+### Debugging
+Log active subscriptions for troubleshooting:
+
+```javascript
+setInterval(() => {
+  ws.send(JSON.stringify({ type: "subscription_list" }));
+}, 30000); // Check every 30 seconds
+```
+
+### Clean Shutdown
+Ensure all subscriptions are cleared before closing:
+
+```javascript
+async function cleanShutdown(ws) {
+  // Get current subscriptions
+  const channels = await getCurrentSubscriptions(ws);
+  
+  if (channels.length > 0) {
+    // Unsubscribe from all
+    ws.send(JSON.stringify({
+      type: "unsubscribe",
+      channels: channels
+    }));
+    
+    // Wait for confirmation
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  
+  // Close connection
+  ws.close();
+}
+```
+
+## Important Notes
+
+- The subscription list reflects the current state at the moment of the query
+- Response includes full channel configuration including all parameters
+- Use the exact channel configuration from this response when unsubscribing
+- No error responses - the operation always succeeds
+
+> See the [Developer Guide](/guides/developer/websocket-authenticated) for complete connection management examples.

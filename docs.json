@@ -222,6 +222,7 @@
                 ]
               },
               "guides/crypto-brokerage/websocket",
+              "guides/developer/websocket-authenticated",
               "guides/crypto-brokerage/orders-precision-rounding",
               "guides/crypto-brokerage/commissions-rebates",
               "guides/crypto-brokerage/ledger-type",
@@ -755,6 +756,15 @@
                 "pages": [
                   "api-reference/websockets/market-data-stablecoin",
                   "api-reference/websockets/market-data-stablecoin-market"
+                ]
+              },
+              {
+                "group": "Authenticated API",
+                "pages": [
+                  "api-reference/websockets/authenticated-overview",
+                  "api-reference/websockets/authenticated-subscribe",
+                  "api-reference/websockets/authenticated-unsubscribe",
+                  "api-reference/websockets/authenticated-subscription-list"
                 ]
               }
             ]

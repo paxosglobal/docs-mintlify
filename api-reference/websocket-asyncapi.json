@@ -3,7 +3,7 @@
   "info": {
     "title": "Paxos WebSocket API",
     "version": "1.0.0",
-    "description": "Event-driven connectivity for payments and trading. Secure, real-time market and execution data feeds via public WebSocket connections.",
+    "description": "Event-driven connectivity for payments and trading. Secure, real-time market and execution data feeds via public and authenticated WebSocket connections.",
     "contact": {
       "name": "Paxos Support",
       "url": "https://paxos.com/support"
@@ -96,6 +96,52 @@
           "$ref": "#/components/parameters/market"
         }
       }
+    },
+    "/authenticated": {
+      "address": "/",
+      "messages": {
+        "subscribe.request": {
+          "$ref": "#/components/messages/SubscribeRequest"
+        },
+        "subscribe.response": {
+          "$ref": "#/components/messages/SubscribeResponse"
+        },
+        "unsubscribe.request": {
+          "$ref": "#/components/messages/UnsubscribeRequest"
+        },
+        "unsubscribe.response": {
+          "$ref": "#/components/messages/UnsubscribeResponse"
+        },
+        "subscription_list.request": {
+          "$ref": "#/components/messages/SubscriptionListRequest"
+        },
+        "subscription_list.response": {
+          "$ref": "#/components/messages/SubscriptionListResponse"
+        },
+        "market_data.stream": {
+          "$ref": "#/components/messages/AuthenticatedMarketData"
+        },
+        "execution_data.stream": {
+          "$ref": "#/components/messages/AuthenticatedExecutionData"
+        },
+        "error": {
+          "$ref": "#/components/messages/ErrorMessage"
+        }
+      },
+      "description": "Authenticated WebSocket connection for bidirectional communication and streaming data. Requires Bearer token authentication with exchange:read_aggregated_marketdata_stream scope.",
+      "bindings": {
+        "ws": {
+          "headers": {
+            "type": "object",
+            "properties": {
+              "Authorization": {
+                "type": "string",
+                "description": "Bearer token from OAuth2 authentication"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "operations": {
@@ -180,6 +226,45 @@
       "messages": [
         {
           "$ref": "#/channels/~1marketdata~1stablecoin~1{market}/messages/subscribe.message"
+        }
+      ]
+    },
+    "/authenticated.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1authenticated"
+      },
+      "summary": "Subscribe to authenticated market data channels",
+      "description": "Subscribe to one or more data channels using authenticated WebSocket connection. Requires exchange:read_aggregated_marketdata_stream scope.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1authenticated/messages/subscribe.request"
+        }
+      ]
+    },
+    "/authenticated.unsubscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1authenticated"
+      },
+      "summary": "Unsubscribe from authenticated market data channels",
+      "description": "Unsubscribe from one or more data channels on the authenticated WebSocket connection.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1authenticated/messages/unsubscribe.request"
+        }
+      ]
+    },
+    "/authenticated.subscription_list": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1authenticated"
+      },
+      "summary": "Get list of active subscriptions",
+      "description": "Retrieve the list of currently active subscriptions for the authenticated WebSocket connection.",
+      "messages": [
+        {
+          "$ref": "#/channels/~1authenticated/messages/subscription_list.request"
         }
       ]
     }
@@ -297,6 +382,250 @@
               "market": "USDCUSD",
               "price": "1.0001",
               "timestamp": "2024-11-04T18:11:09.042391267Z"
+            }
+          }
+        ]
+      },
+      "SubscribeRequest": {
+        "name": "SubscribeRequest",
+        "title": "Subscribe Request",
+        "summary": "Request to subscribe to data channels",
+        "description": "Subscribe to one or more market data or execution data channels",
+        "payload": {
+          "$ref": "#/components/schemas/SubscribeRequestPayload"
+        },
+        "examples": [
+          {
+            "name": "Subscribe to BTCUSD market data",
+            "payload": {
+              "type": "subscribe",
+              "channels": [
+                {
+                  "type": "market_data",
+                  "params": {
+                    "market": "BTCUSD"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "SubscribeResponse": {
+        "name": "SubscribeResponse",
+        "title": "Subscribe Response",
+        "summary": "Response to subscribe request",
+        "description": "Confirmation of subscription status for requested channels",
+        "payload": {
+          "$ref": "#/components/schemas/SubscribeResponsePayload"
+        },
+        "examples": [
+          {
+            "name": "Successful subscription",
+            "payload": {
+              "type": "subscribe",
+              "channels": [
+                {
+                  "type": "market_data",
+                  "success": true
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "UnsubscribeRequest": {
+        "name": "UnsubscribeRequest",
+        "title": "Unsubscribe Request",
+        "summary": "Request to unsubscribe from data channels",
+        "description": "Unsubscribe from one or more market data or execution data channels",
+        "payload": {
+          "$ref": "#/components/schemas/UnsubscribeRequestPayload"
+        },
+        "examples": [
+          {
+            "name": "Unsubscribe from BTCUSD market data",
+            "payload": {
+              "type": "unsubscribe",
+              "channels": [
+                {
+                  "type": "market_data",
+                  "params": {
+                    "market": "BTCUSD"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "UnsubscribeResponse": {
+        "name": "UnsubscribeResponse",
+        "title": "Unsubscribe Response",
+        "summary": "Response to unsubscribe request",
+        "description": "Confirmation of unsubscription status for requested channels",
+        "payload": {
+          "$ref": "#/components/schemas/UnsubscribeResponsePayload"
+        },
+        "examples": [
+          {
+            "name": "Successful unsubscription",
+            "payload": {
+              "type": "unsubscribe",
+              "channels": [
+                {
+                  "type": "market_data",
+                  "success": true
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "SubscriptionListRequest": {
+        "name": "SubscriptionListRequest",
+        "title": "Subscription List Request",
+        "summary": "Request list of active subscriptions",
+        "description": "Get the list of all currently active subscriptions for this connection",
+        "payload": {
+          "$ref": "#/components/schemas/SubscriptionListRequestPayload"
+        },
+        "examples": [
+          {
+            "name": "Request subscription list",
+            "payload": {
+              "type": "subscription_list"
+            }
+          }
+        ]
+      },
+      "SubscriptionListResponse": {
+        "name": "SubscriptionListResponse",
+        "title": "Subscription List Response",
+        "summary": "List of active subscriptions",
+        "description": "Response containing all currently active subscriptions",
+        "payload": {
+          "$ref": "#/components/schemas/SubscriptionListResponsePayload"
+        },
+        "examples": [
+          {
+            "name": "Active subscriptions",
+            "payload": {
+              "type": "subscription_list",
+              "channels": [
+                {
+                  "type": "market_data",
+                  "params": {
+                    "market": "BTCUSD"
+                  }
+                },
+                {
+                  "type": "execution_data",
+                  "params": {
+                    "market": "ETHUSD"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "AuthenticatedMarketData": {
+        "name": "AuthenticatedMarketData",
+        "title": "Authenticated Market Data Stream",
+        "summary": "Real-time market data updates",
+        "description": "Streaming market data updates for subscribed markets",
+        "payload": {
+          "$ref": "#/components/schemas/AuthenticatedMarketDataPayload"
+        },
+        "examples": [
+          {
+            "name": "Market data snapshot",
+            "payload": {
+              "channel": "market_data",
+              "payload": {
+                "market": "BTCUSD",
+                "type": "SNAPSHOT",
+                "time": "2024-01-15T10:30:00.123456789Z",
+                "bids": [
+                  {
+                    "price": "50000.00",
+                    "amount": "1.5"
+                  }
+                ],
+                "asks": [
+                  {
+                    "price": "50100.00",
+                    "amount": "2.0"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Market data update",
+            "payload": {
+              "channel": "market_data",
+              "payload": {
+                "market": "BTCUSD",
+                "type": "UPDATE",
+                "time": "2024-01-15T10:30:01.234567890Z",
+                "bids": [
+                  {
+                    "price": "50001.00",
+                    "amount": "0.5"
+                  }
+                ],
+                "asks": []
+              }
+            }
+          }
+        ]
+      },
+      "AuthenticatedExecutionData": {
+        "name": "AuthenticatedExecutionData",
+        "title": "Authenticated Execution Data Stream",
+        "summary": "Real-time execution data",
+        "description": "Streaming execution data for subscribed markets",
+        "payload": {
+          "$ref": "#/components/schemas/AuthenticatedExecutionDataPayload"
+        },
+        "examples": [
+          {
+            "name": "Execution data",
+            "payload": {
+              "channel": "execution_data",
+              "payload": {
+                "market": "BTCUSD",
+                "price": "50000.00",
+                "amount": "0.5",
+                "executed_at": "2024-01-15T10:30:00.123456789Z"
+              }
+            }
+          }
+        ]
+      },
+      "ErrorMessage": {
+        "name": "ErrorMessage",
+        "title": "Error Message",
+        "summary": "Error response",
+        "description": "Error message for invalid requests or system errors",
+        "payload": {
+          "$ref": "#/components/schemas/ErrorPayload"
+        },
+        "examples": [
+          {
+            "name": "Unknown action error",
+            "payload": {
+              "type": "error",
+              "error": "UNKNOWN_ACTION"
+            }
+          },
+          {
+            "name": "Malformed request error",
+            "payload": {
+              "type": "error",
+              "error": "MALFORMED_REQUEST"
             }
           }
         ]
@@ -468,6 +797,304 @@
             "type": "string",
             "description": "Amount at this price level",
             "example": "0.7755"
+          }
+        }
+      },
+      "SubscribeRequestPayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "channels"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["subscribe"],
+            "description": "Message type"
+          },
+          "channels": {
+            "type": "array",
+            "description": "List of channels to subscribe to",
+            "items": {
+              "$ref": "#/components/schemas/ChannelSubscription"
+            }
+          }
+        }
+      },
+      "SubscribeResponsePayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "channels"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["subscribe"],
+            "description": "Message type"
+          },
+          "channels": {
+            "type": "array",
+            "description": "Subscription results for each channel",
+            "items": {
+              "$ref": "#/components/schemas/ChannelSubscriptionResult"
+            }
+          }
+        }
+      },
+      "UnsubscribeRequestPayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "channels"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["unsubscribe"],
+            "description": "Message type"
+          },
+          "channels": {
+            "type": "array",
+            "description": "List of channels to unsubscribe from",
+            "items": {
+              "$ref": "#/components/schemas/ChannelSubscription"
+            }
+          }
+        }
+      },
+      "UnsubscribeResponsePayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "channels"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["unsubscribe"],
+            "description": "Message type"
+          },
+          "channels": {
+            "type": "array",
+            "description": "Unsubscription results for each channel",
+            "items": {
+              "$ref": "#/components/schemas/ChannelSubscriptionResult"
+            }
+          }
+        }
+      },
+      "SubscriptionListRequestPayload": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["subscription_list"],
+            "description": "Message type"
+          }
+        }
+      },
+      "SubscriptionListResponsePayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "channels"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["subscription_list"],
+            "description": "Message type"
+          },
+          "channels": {
+            "type": "array",
+            "description": "List of active channel subscriptions",
+            "items": {
+              "$ref": "#/components/schemas/ChannelSubscription"
+            }
+          }
+        }
+      },
+      "ChannelSubscription": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["market_data", "execution_data"],
+            "description": "Channel type"
+          },
+          "params": {
+            "type": "object",
+            "description": "Channel-specific parameters",
+            "properties": {
+              "market": {
+                "type": "string",
+                "description": "Market symbol (e.g., BTCUSD, ETHUSD)",
+                "example": "BTCUSD"
+              }
+            }
+          }
+        }
+      },
+      "ChannelSubscriptionResult": {
+        "type": "object",
+        "required": [
+          "type",
+          "success"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["market_data", "execution_data"],
+            "description": "Channel type"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the subscription was successful"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error code if success is false",
+            "enum": [
+              "UNKNOWN_ACTION",
+              "INTERNAL_SERVER_ERROR",
+              "MALFORMED_REQUEST",
+              "NO_EFFECT_ACTION",
+              "UNKNOWN_CHANNEL",
+              "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+            ]
+          }
+        }
+      },
+      "AuthenticatedMarketDataPayload": {
+        "type": "object",
+        "required": [
+          "channel",
+          "payload"
+        ],
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": ["market_data"],
+            "description": "Channel identifier"
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "market",
+              "type",
+              "time"
+            ],
+            "properties": {
+              "market": {
+                "type": "string",
+                "description": "Market symbol",
+                "example": "BTCUSD"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["UPDATE", "SNAPSHOT"],
+                "description": "Message type - SNAPSHOT for full book state, UPDATE for incremental changes"
+              },
+              "time": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp in RFC3339Nano format",
+                "example": "2024-01-15T10:30:00.123456789Z"
+              },
+              "bids": {
+                "type": "array",
+                "description": "Bid price levels",
+                "items": {
+                  "$ref": "#/components/schemas/PriceLevel"
+                }
+              },
+              "asks": {
+                "type": "array",
+                "description": "Ask price levels",
+                "items": {
+                  "$ref": "#/components/schemas/PriceLevel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticatedExecutionDataPayload": {
+        "type": "object",
+        "required": [
+          "channel",
+          "payload"
+        ],
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": ["execution_data"],
+            "description": "Channel identifier"
+          },
+          "payload": {
+            "type": "object",
+            "required": [
+              "market",
+              "price",
+              "amount",
+              "executed_at"
+            ],
+            "properties": {
+              "market": {
+                "type": "string",
+                "description": "Market symbol",
+                "example": "BTCUSD"
+              },
+              "price": {
+                "type": "string",
+                "description": "Execution price",
+                "example": "50000.00"
+              },
+              "amount": {
+                "type": "string",
+                "description": "Execution amount",
+                "example": "0.5"
+              },
+              "executed_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Execution timestamp in RFC3339Nano format",
+                "example": "2024-01-15T10:30:00.123456789Z"
+              }
+            }
+          }
+        }
+      },
+      "ErrorPayload": {
+        "type": "object",
+        "required": [
+          "type",
+          "error"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["error"],
+            "description": "Message type"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error code",
+            "enum": [
+              "UNKNOWN_ACTION",
+              "INTERNAL_SERVER_ERROR",
+              "MALFORMED_REQUEST",
+              "NO_EFFECT_ACTION",
+              "UNKNOWN_CHANNEL",
+              "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+            ]
           }
         }
       }

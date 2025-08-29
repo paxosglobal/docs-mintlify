@@ -1,0 +1,475 @@
+---
+title: "Authenticated API Overview"
+description: "Bidirectional WebSocket API with authentication for real-time market data streaming"
+---
+
+## Introduction
+
+The authenticated WebSocket API provides secure, bidirectional communication for real-time market data streaming. Unlike the public WebSocket feeds, this API requires OAuth2 authentication and supports request-response operations alongside streaming data.
+
+## Key Features
+
+### Bidirectional Communication
+- **Request-Response**: Send commands and receive confirmations
+- **Streaming Data**: Receive continuous market updates
+- **Session Management**: Query and modify subscriptions in real-time
+
+### Advanced Capabilities
+- **Time-Based Synchronization**: Consistent order book state using timestamps
+- **Bulk Operations**: Subscribe/unsubscribe multiple channels simultaneously
+- **Connection State**: Query active subscriptions at any time
+- **Error Handling**: Structured error responses with actionable codes
+
+## Authentication
+
+### Required Scope
+`exchange:read_aggregated_marketdata_stream`
+
+### Connection Flow
+
+➊ **Obtain OAuth2 Token**
+```bash
+POST https://oauth.sandbox.paxos.com/oauth2/token
+```
+
+➋ **Connect with Bearer Token**
+```javascript
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: {
+    'Authorization': `Bearer ${accessToken}`
+  }
+});
+```
+
+> Tokens expire after 1 hour. Plan for token refresh in long-running applications.
+
+## Message Protocol
+
+All communication uses JSON messages with a consistent structure:
+
+### Request Messages
+```json
+{
+  "type": "<operation>",
+  // operation-specific fields
+}
+```
+
+### Response Messages
+```json
+{
+  "type": "<operation>",
+  "success": true|false,
+  "error": "<error_code>" // if applicable
+}
+```
+
+### Streaming Messages
+```json
+{
+  "channel": "<channel_type>",
+  "payload": {
+    // channel-specific data
+  }
+}
+```
+
+## Available Operations
+
+### Subscribe
+Request real-time data streams for specific markets and channels.
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    { "type": "market_data", "params": { "market": "BTCUSD" } }
+  ]
+}
+```
+
+[View Full Documentation →](/api-reference/websockets/authenticated-subscribe)
+
+### Unsubscribe
+Stop receiving data for specific channels.
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    { "type": "market_data", "params": { "market": "BTCUSD" } }
+  ]
+}
+```
+
+[View Full Documentation →](/api-reference/websockets/authenticated-unsubscribe)
+
+### Subscription List
+Query all active subscriptions for the current connection.
+
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+[View Full Documentation →](/api-reference/websockets/authenticated-subscription-list)
+
+## Data Channels
+
+### Market Data Channel
+
+Provides order book snapshots and real-time updates.
+
+**Snapshot Message**:
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "SNAPSHOT",
+    "time": "2024-01-15T10:30:00.123456789Z",
+    "bids": [{ "price": "50000.00", "amount": "1.5" }],
+    "asks": [{ "price": "50001.00", "amount": "1.0" }]
+  }
+}
+```
+
+**Update Message**:
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "UPDATE",
+    "time": "2024-01-15T10:30:01.234567890Z",
+    "bids": [{ "price": "50000.50", "amount": "0" }],
+    "asks": []
+  }
+}
+```
+
+> `amount: "0"` indicates price level removal
+
+### Execution Data Channel
+
+Streams real-time trade executions.
+
+```json
+{
+  "channel": "execution_data",
+  "payload": {
+    "market": "BTCUSD",
+    "price": "50000.00",
+    "amount": "0.5",
+    "executed_at": "2024-01-15T10:30:00.123456789Z"
+  }
+}
+```
+
+## Time-Based Synchronization
+
+The authenticated API uses a sophisticated synchronization mechanism to ensure order book consistency:
+
+### How It Works
+
+1. **Immediate Streaming**: Server sends UPDATE messages immediately upon subscription
+2. **Snapshot Generation**: Server prepares a complete order book snapshot
+3. **Time-Based Reconciliation**: Client uses timestamps to merge updates with snapshot
+
+### Implementation Strategy
+
+```javascript
+// Pseudocode for synchronization
+class OrderBookSync {
+  handleMessage(message) {
+    if (message.payload.type === 'SNAPSHOT') {
+      // 1. Store snapshot time
+      this.snapshotTime = message.payload.time;
+      
+      // 2. Build order book from snapshot
+      this.orderBook = buildFromSnapshot(message.payload);
+      
+      // 3. Apply buffered updates newer than snapshot
+      this.buffer
+        .filter(update => update.time > this.snapshotTime)
+        .forEach(update => this.applyUpdate(update));
+      
+      // 4. Clear buffer
+      this.buffer = [];
+    } else if (message.payload.type === 'UPDATE') {
+      if (!this.snapshotTime) {
+        // Buffer until snapshot arrives
+        this.buffer.push(message.payload);
+      } else if (message.payload.time > this.snapshotTime) {
+        // Apply directly
+        this.applyUpdate(message.payload);
+      }
+      // Discard updates older than snapshot
+    }
+  }
+}
+```
+
+### Benefits
+- **No data loss** during snapshot generation
+- **Consistent state** regardless of message arrival order
+- **Efficient recovery** from connection interruptions
+
+## Error Handling
+
+The API provides structured error responses:
+
+### Error Response Format
+```json
+{
+  "type": "error",
+  "error": "<ERROR_CODE>"
+}
+```
+
+### Error Codes
+
+| Code | Description | Action |
+|------|-------------|--------|
+| `UNKNOWN_ACTION` | Invalid operation type | Check message `type` field |
+| `MALFORMED_REQUEST` | Invalid JSON | Validate JSON syntax |
+| `UNKNOWN_CHANNEL` | Invalid channel type | Use `market_data` or `execution_data` |
+| `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` | Invalid parameters | Verify market symbol |
+| `NO_EFFECT_ACTION` | Redundant operation | Already subscribed/unsubscribed |
+| `INTERNAL_SERVER_ERROR` | Server error | Retry with backoff |
+
+## Performance Guidelines
+
+### Message Processing
+- Process messages asynchronously
+- Implement efficient data structures
+- Monitor processing queue depth
+
+### Connection Management
+- Handle automatic disconnection for slow clients
+- Implement reconnection with exponential backoff
+- Maintain subscription state across reconnections
+
+### Resource Optimization
+```javascript
+// Example: Buffered processing
+class BufferedProcessor {
+  constructor(maxBuffer = 10000) {
+    this.buffer = [];
+    this.maxBuffer = maxBuffer;
+  }
+
+  addMessage(message) {
+    if (this.buffer.length >= this.maxBuffer) {
+      // Drop oldest messages to prevent memory issues
+      this.buffer.splice(0, 100);
+    }
+    this.buffer.push(message);
+    this.processNext();
+  }
+
+  async processNext() {
+    if (this.processing || this.buffer.length === 0) return;
+    
+    this.processing = true;
+    const batch = this.buffer.splice(0, 100);
+    
+    for (const msg of batch) {
+      await this.handleMessage(msg);
+    }
+    
+    this.processing = false;
+    
+    // Continue if more messages
+    if (this.buffer.length > 0) {
+      setImmediate(() => this.processNext());
+    }
+  }
+}
+```
+
+## Connection Lifecycle
+
+### Establishment
+1. Obtain OAuth2 token with required scope
+2. Create WebSocket connection with Bearer token
+3. Handle connection confirmation
+
+### Active Session
+1. Subscribe to desired channels
+2. Process streaming messages
+3. Manage subscriptions dynamically
+4. Handle errors and reconnections
+
+### Termination
+1. Query active subscriptions
+2. Unsubscribe from all channels
+3. Close WebSocket connection
+4. Clean up resources
+
+## Complete Example
+
+```javascript
+class PaxosAuthenticatedWebSocket {
+  constructor(token, isProduction = false) {
+    this.token = token;
+    this.wsUrl = isProduction 
+      ? 'wss://ws.paxos.com/' 
+      : 'wss://ws.sandbox.paxos.com/';
+    this.ws = null;
+    this.subscriptions = new Map();
+  }
+
+  connect() {
+    return new Promise((resolve, reject) => {
+      this.ws = new WebSocket(this.wsUrl, {
+        headers: { 'Authorization': `Bearer ${this.token}` }
+      });
+
+      this.ws.on('open', () => {
+        console.log('Authenticated connection established');
+        resolve();
+      });
+
+      this.ws.on('message', (data) => {
+        this.handleMessage(JSON.parse(data));
+      });
+
+      this.ws.on('error', reject);
+      
+      this.ws.on('close', (code, reason) => {
+        console.log(`Connection closed: ${code} - ${reason}`);
+        this.handleDisconnect();
+      });
+    });
+  }
+
+  subscribe(channel, params) {
+    const message = {
+      type: 'subscribe',
+      channels: [{ type: channel, params }]
+    };
+    
+    this.ws.send(JSON.stringify(message));
+    
+    const key = `${channel}:${JSON.stringify(params)}`;
+    this.subscriptions.set(key, { channel, params });
+  }
+
+  handleMessage(message) {
+    switch (message.type) {
+      case 'subscribe':
+        this.handleSubscribeResponse(message);
+        break;
+      case 'error':
+        this.handleError(message);
+        break;
+      default:
+        if (message.channel) {
+          this.handleStreamingData(message);
+        }
+    }
+  }
+
+  handleSubscribeResponse(message) {
+    message.channels.forEach(ch => {
+      if (ch.success) {
+        console.log(`Subscribed to ${ch.type}`);
+      } else {
+        console.error(`Subscription failed: ${ch.error}`);
+      }
+    });
+  }
+
+  handleStreamingData(message) {
+    // Process based on channel type
+    if (message.channel === 'market_data') {
+      this.processMarketData(message.payload);
+    } else if (message.channel === 'execution_data') {
+      this.processExecutionData(message.payload);
+    }
+  }
+
+  handleError(message) {
+    console.error(`API Error: ${message.error}`);
+  }
+
+  handleDisconnect() {
+    // Implement reconnection logic
+    console.log('Disconnected - implement reconnection');
+  }
+
+  processMarketData(data) {
+    // Implement order book management
+    console.log('Market data:', data.market, data.type);
+  }
+
+  processExecutionData(data) {
+    // Implement execution processing
+    console.log('Execution:', data.market, data.price, data.amount);
+  }
+}
+
+// Usage
+async function main() {
+  const client = new PaxosAuthenticatedWebSocket('YOUR_TOKEN');
+  
+  await client.connect();
+  
+  // Subscribe to market data
+  client.subscribe('market_data', { market: 'BTCUSD' });
+  client.subscribe('execution_data', { market: 'BTCUSD' });
+}
+
+main().catch(console.error);
+```
+
+## Migration from Public API
+
+### Key Differences
+
+| Feature | Public API | Authenticated API |
+|---------|------------|-------------------|
+| Authentication | None | OAuth2 Bearer token |
+| Communication | Unidirectional | Bidirectional |
+| Subscription Management | URL-based | Message-based |
+| Error Handling | Connection errors only | Structured error codes |
+| Rate Limits | Standard | Enhanced for authenticated users |
+
+### Migration Steps
+
+1. **Obtain API credentials** with required scope
+2. **Update connection code** to include authentication
+3. **Replace URL-based subscriptions** with message-based
+4. **Implement message handlers** for responses
+5. **Add error handling** for operation failures
+6. **Test thoroughly** in Sandbox environment
+
+## Best Practices
+
+### Security
+- Store tokens securely
+- Implement token refresh before expiration
+- Use Production tokens only in production environment
+- Monitor for authentication failures
+
+### Reliability
+- Implement automatic reconnection
+- Maintain subscription state
+- Buffer messages during processing
+- Handle all error codes gracefully
+
+### Performance
+- Process messages asynchronously
+- Implement efficient data structures
+- Monitor system resources
+- Optimize for your use case
+
+## Next Steps
+
+- [Developer Guide](/guides/developer/websocket-authenticated) - Complete implementation tutorial
+- [Subscribe Operation](/api-reference/websockets/authenticated-subscribe) - Detailed subscription documentation
+- [Market Data REST API](/api-reference/endpoints/market-data/overview) - Historical data access
+
+> Questions? Contact [Support](https://support.paxos.com).

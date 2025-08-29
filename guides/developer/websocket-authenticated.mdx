@@ -1,0 +1,763 @@
+---
+title: 'Authenticated WebSocket API'
+description: 'Real-time market data streaming with authentication and bidirectional communication'
+---
+
+Build applications with secure, real-time market data streaming using the Paxos authenticated WebSocket API. This guide demonstrates authentication, subscription management, and time-based synchronization for order book updates.
+
+> This guide should take less than 30 minutes to complete.
+
+## Prerequisites
+
+Before connecting to the authenticated WebSocket API, you need:
+
+- **API Credentials** with the `exchange:read_aggregated_marketdata_stream` scope
+- **WebSocket client library** for your programming language
+- **JSON parsing capability** for message handling
+
+> See [Authentication](/guides/developer/authenticate) to set up API credentials.
+
+## ➊ Authenticate and Get Access Token
+
+The authenticated WebSocket API requires Bearer token authentication. First, obtain an access token using OAuth2.
+
+### Sandbox
+```bash
+curl -X POST https://oauth.sandbox.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+### Production
+```bash
+curl -X POST https://oauth.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+**Response:**
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires_in": 3600,
+  "token_type": "bearer",
+  "scope": "exchange:read_aggregated_marketdata_stream"
+}
+```
+
+> Store the `access_token` for WebSocket connection. Tokens expire after 1 hour.
+
+## ➋ Connect to WebSocket
+
+Establish a WebSocket connection with the Bearer token in the Authorization header.
+
+### JavaScript Example
+```javascript
+const WebSocket = require('ws');
+
+const token = 'YOUR_ACCESS_TOKEN'; // From step 1
+const wsUrl = 'wss://ws.sandbox.paxos.com/'; // or wss://ws.paxos.com/ for production
+
+const ws = new WebSocket(wsUrl, {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+ws.on('open', () => {
+  console.log('Connected to Paxos WebSocket');
+});
+
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  console.log('Received:', message);
+});
+
+ws.on('error', (error) => {
+  console.error('WebSocket error:', error);
+});
+
+ws.on('close', (code, reason) => {
+  console.log(`Connection closed: ${code} - ${reason}`);
+});
+```
+
+### Python Example
+```python
+import websocket
+import json
+
+token = 'YOUR_ACCESS_TOKEN'  # From step 1
+ws_url = 'wss://ws.sandbox.paxos.com/'  # or wss://ws.paxos.com/ for production
+
+def on_message(ws, message):
+    data = json.loads(message)
+    print(f"Received: {data}")
+
+def on_error(ws, error):
+    print(f"Error: {error}")
+
+def on_close(ws, close_status_code, close_msg):
+    print(f"Connection closed: {close_status_code} - {close_msg}")
+
+def on_open(ws):
+    print("Connected to Paxos WebSocket")
+
+ws = websocket.WebSocketApp(
+    ws_url,
+    header={'Authorization': f'Bearer {token}'},
+    on_open=on_open,
+    on_message=on_message,
+    on_error=on_error,
+    on_close=on_close
+)
+
+ws.run_forever()
+```
+
+> If you receive a 403 Forbidden error, verify your token includes the required scope.
+
+## ➌ Subscribe to Market Data
+
+Send a subscribe message to receive real-time market data for specific markets.
+
+### Subscribe Request
+```javascript
+const subscribeMessage = {
+  type: "subscribe",
+  channels: [
+    {
+      type: "market_data",
+      params: {
+        market: "BTCUSD"
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(subscribeMessage));
+```
+
+### Subscribe Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+You can subscribe to multiple markets in a single request:
+
+```javascript
+const multiSubscribe = {
+  type: "subscribe",
+  channels: [
+    {
+      type: "market_data",
+      params: { market: "BTCUSD" }
+    },
+    {
+      type: "market_data",
+      params: { market: "ETHUSD" }
+    },
+    {
+      type: "execution_data",
+      params: { market: "BTCUSD" }
+    }
+  ]
+};
+```
+
+## ➍ Handle Streaming Data
+
+After subscribing, you receive streaming updates for your subscribed channels.
+
+### Market Data Stream
+
+Market data arrives in two formats: `SNAPSHOT` and `UPDATE`.
+
+**SNAPSHOT Message:**
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "SNAPSHOT",
+    "time": "2024-01-15T10:30:00.123456789Z",
+    "bids": [
+      { "price": "50000.00", "amount": "1.5" },
+      { "price": "49999.00", "amount": "2.0" }
+    ],
+    "asks": [
+      { "price": "50001.00", "amount": "1.0" },
+      { "price": "50002.00", "amount": "0.5" }
+    ]
+  }
+}
+```
+
+**UPDATE Message:**
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "UPDATE",
+    "time": "2024-01-15T10:30:01.234567890Z",
+    "bids": [
+      { "price": "50000.50", "amount": "0.75" }
+    ],
+    "asks": [
+      { "price": "50001.50", "amount": "0" }
+    ]
+  }
+}
+```
+
+> An `amount` of "0" means remove that price level from the order book.
+
+### Execution Data Stream
+
+```json
+{
+  "channel": "execution_data",
+  "payload": {
+    "market": "BTCUSD",
+    "price": "50000.00",
+    "amount": "0.5",
+    "executed_at": "2024-01-15T10:30:00.123456789Z"
+  }
+}
+```
+
+## ➎ Implement Time-Based Synchronization
+
+The authenticated API uses timestamps for order book synchronization. This ensures data consistency even when snapshots arrive after initial updates.
+
+### Implementation Pattern
+
+```javascript
+class OrderBookManager {
+  constructor() {
+    this.orderBook = { bids: {}, asks: {} };
+    this.updateBuffer = [];
+    this.snapshotTime = null;
+  }
+
+  handleMessage(message) {
+    if (message.channel !== 'market_data') return;
+    
+    const { type, time, bids = [], asks = [] } = message.payload;
+    
+    if (type === 'SNAPSHOT') {
+      this.processSnapshot(time, bids, asks);
+    } else if (type === 'UPDATE') {
+      this.processUpdate(time, bids, asks);
+    }
+  }
+
+  processSnapshot(time, bids, asks) {
+    // Store snapshot time
+    this.snapshotTime = time;
+    
+    // Build order book from snapshot
+    this.orderBook = {
+      bids: this.arrayToMap(bids),
+      asks: this.arrayToMap(asks)
+    };
+    
+    // Apply buffered updates newer than snapshot
+    const relevantUpdates = this.updateBuffer.filter(
+      update => update.time > time
+    );
+    
+    relevantUpdates.forEach(update => {
+      this.applyUpdate(update.bids, update.asks);
+    });
+    
+    // Clear buffer
+    this.updateBuffer = [];
+    
+    console.log('Order book synchronized at', time);
+  }
+
+  processUpdate(time, bids, asks) {
+    if (!this.snapshotTime) {
+      // Buffer updates until snapshot arrives
+      this.updateBuffer.push({ time, bids, asks });
+      return;
+    }
+    
+    if (time <= this.snapshotTime) {
+      // Discard updates older than snapshot
+      return;
+    }
+    
+    // Apply update to order book
+    this.applyUpdate(bids, asks);
+  }
+
+  applyUpdate(bids, asks) {
+    // Update bids
+    bids.forEach(({ price, amount }) => {
+      if (amount === "0") {
+        delete this.orderBook.bids[price];
+      } else {
+        this.orderBook.bids[price] = amount;
+      }
+    });
+    
+    // Update asks
+    asks.forEach(({ price, amount }) => {
+      if (amount === "0") {
+        delete this.orderBook.asks[price];
+      } else {
+        this.orderBook.asks[price] = amount;
+      }
+    });
+  }
+
+  arrayToMap(levels) {
+    const map = {};
+    levels.forEach(({ price, amount }) => {
+      if (amount !== "0") {
+        map[price] = amount;
+      }
+    });
+    return map;
+  }
+
+  getTopOfBook() {
+    const bidPrices = Object.keys(this.orderBook.bids).sort((a, b) => b - a);
+    const askPrices = Object.keys(this.orderBook.asks).sort((a, b) => a - b);
+    
+    return {
+      bestBid: bidPrices[0] ? {
+        price: bidPrices[0],
+        amount: this.orderBook.bids[bidPrices[0]]
+      } : null,
+      bestAsk: askPrices[0] ? {
+        price: askPrices[0],
+        amount: this.orderBook.asks[askPrices[0]]
+      } : null
+    };
+  }
+}
+
+// Usage
+const orderBookManager = new OrderBookManager();
+
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  orderBookManager.handleMessage(message);
+  
+  // Display top of book
+  const top = orderBookManager.getTopOfBook();
+  console.log('Best Bid:', top.bestBid, 'Best Ask:', top.bestAsk);
+});
+```
+
+## ➏ Manage Subscriptions
+
+### List Active Subscriptions
+
+Query your current subscriptions:
+
+```javascript
+const listMessage = {
+  type: "subscription_list"
+};
+
+ws.send(JSON.stringify(listMessage));
+```
+
+**Response:**
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": { "market": "BTCUSD" }
+    },
+    {
+      "type": "execution_data",
+      "params": { "market": "BTCUSD" }
+    }
+  ]
+}
+```
+
+### Unsubscribe from Channels
+
+Remove subscriptions you no longer need:
+
+```javascript
+const unsubscribeMessage = {
+  type: "unsubscribe",
+  channels: [
+    {
+      type: "market_data",
+      params: { market: "BTCUSD" }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(unsubscribeMessage));
+```
+
+> Parameters must exactly match the original subscription.
+
+## Error Handling
+
+The API returns standardized error codes for invalid operations:
+
+```json
+{
+  "type": "error",
+  "error": "UNKNOWN_CHANNEL"
+}
+```
+
+### Error Codes
+
+| Code | Description | Resolution |
+|------|-------------|------------|
+| `UNKNOWN_ACTION` | Request type not recognized | Check message `type` field |
+| `MALFORMED_REQUEST` | Invalid JSON structure | Validate JSON syntax |
+| `UNKNOWN_CHANNEL` | Invalid channel type | Use `market_data` or `execution_data` |
+| `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` | Invalid channel parameters | Verify market symbol exists |
+| `NO_EFFECT_ACTION` | Duplicate subscription | Already subscribed to this channel |
+| `INTERNAL_SERVER_ERROR` | Server error | Retry with exponential backoff |
+
+### Connection Error Handling
+
+```javascript
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
+const baseDelay = 1000; // 1 second
+
+function connect() {
+  const ws = new WebSocket(wsUrl, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+
+  ws.on('open', () => {
+    console.log('Connected successfully');
+    reconnectAttempts = 0; // Reset counter on successful connection
+    
+    // Resubscribe to channels
+    resubscribeToChannels(ws);
+  });
+
+  ws.on('close', (code) => {
+    if (code === 1008) {
+      console.error('Authentication failed - check token and scope');
+      return;
+    }
+    
+    if (reconnectAttempts < maxReconnectAttempts) {
+      const delay = baseDelay * Math.pow(2, reconnectAttempts);
+      console.log(`Reconnecting in ${delay}ms...`);
+      
+      setTimeout(() => {
+        reconnectAttempts++;
+        connect();
+      }, delay);
+    } else {
+      console.error('Max reconnection attempts reached');
+    }
+  });
+
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+
+  return ws;
+}
+```
+
+## Performance Considerations
+
+### Message Processing
+
+- Process messages asynchronously to avoid blocking the WebSocket connection
+- Implement efficient data structures for order book management
+- Monitor message queue depth to detect processing bottlenecks
+
+### Rate Limiting
+
+- The server automatically disconnects slow clients unable to keep up with message flow
+- Implement buffering and batch processing for high-volume streams
+- Consider subscribing only to markets you actively use
+
+### Memory Management
+
+```javascript
+class RateLimitedOrderBook {
+  constructor(maxBufferSize = 10000) {
+    this.maxBufferSize = maxBufferSize;
+    this.messageBuffer = [];
+    this.processing = false;
+  }
+
+  addMessage(message) {
+    if (this.messageBuffer.length >= this.maxBufferSize) {
+      console.warn('Buffer full - dropping oldest messages');
+      this.messageBuffer.splice(0, 100); // Remove oldest 100 messages
+    }
+    
+    this.messageBuffer.push(message);
+    
+    if (!this.processing) {
+      this.processMessages();
+    }
+  }
+
+  async processMessages() {
+    this.processing = true;
+    
+    while (this.messageBuffer.length > 0) {
+      const batch = this.messageBuffer.splice(0, 100);
+      
+      for (const message of batch) {
+        await this.processMessage(message);
+      }
+      
+      // Yield to event loop
+      await new Promise(resolve => setImmediate(resolve));
+    }
+    
+    this.processing = false;
+  }
+
+  async processMessage(message) {
+    // Process individual message
+    // Implementation depends on your use case
+  }
+}
+```
+
+## Complete Example
+
+Here's a complete working example that connects, subscribes, and maintains an order book:
+
+```javascript
+const WebSocket = require('ws');
+
+class PaxosWebSocketClient {
+  constructor(token, isProduction = false) {
+    this.token = token;
+    this.wsUrl = isProduction 
+      ? 'wss://ws.paxos.com/' 
+      : 'wss://ws.sandbox.paxos.com/';
+    this.orderBooks = {};
+    this.ws = null;
+  }
+
+  connect() {
+    return new Promise((resolve, reject) => {
+      this.ws = new WebSocket(this.wsUrl, {
+        headers: { 'Authorization': `Bearer ${this.token}` }
+      });
+
+      this.ws.on('open', () => {
+        console.log('Connected to Paxos WebSocket');
+        resolve();
+      });
+
+      this.ws.on('message', (data) => {
+        this.handleMessage(JSON.parse(data));
+      });
+
+      this.ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+        reject(error);
+      });
+
+      this.ws.on('close', (code, reason) => {
+        console.log(`Connection closed: ${code} - ${reason}`);
+      });
+    });
+  }
+
+  subscribe(market) {
+    const message = {
+      type: 'subscribe',
+      channels: [
+        {
+          type: 'market_data',
+          params: { market }
+        }
+      ]
+    };
+
+    this.ws.send(JSON.stringify(message));
+    
+    // Initialize order book for this market
+    if (!this.orderBooks[market]) {
+      this.orderBooks[market] = new OrderBook(market);
+    }
+  }
+
+  handleMessage(message) {
+    // Handle subscription responses
+    if (message.type === 'subscribe') {
+      console.log('Subscription response:', message);
+      return;
+    }
+
+    // Handle errors
+    if (message.type === 'error') {
+      console.error('Error:', message.error);
+      return;
+    }
+
+    // Handle market data
+    if (message.channel === 'market_data') {
+      const market = message.payload.market;
+      if (this.orderBooks[market]) {
+        this.orderBooks[market].update(message.payload);
+        
+        // Display current spread
+        const spread = this.orderBooks[market].getSpread();
+        console.log(`${market} Spread: Bid ${spread.bid} - Ask ${spread.ask}`);
+      }
+    }
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+    }
+  }
+}
+
+class OrderBook {
+  constructor(market) {
+    this.market = market;
+    this.bids = {};
+    this.asks = {};
+    this.snapshotTime = null;
+    this.updateBuffer = [];
+  }
+
+  update(payload) {
+    const { type, time, bids = [], asks = [] } = payload;
+
+    if (type === 'SNAPSHOT') {
+      this.handleSnapshot(time, bids, asks);
+    } else if (type === 'UPDATE') {
+      this.handleUpdate(time, bids, asks);
+    }
+  }
+
+  handleSnapshot(time, bids, asks) {
+    this.snapshotTime = time;
+    
+    // Clear and rebuild order book
+    this.bids = {};
+    this.asks = {};
+    
+    bids.forEach(({ price, amount }) => {
+      if (amount !== "0") this.bids[price] = amount;
+    });
+    
+    asks.forEach(({ price, amount }) => {
+      if (amount !== "0") this.asks[price] = amount;
+    });
+    
+    // Apply buffered updates newer than snapshot
+    const relevantUpdates = this.updateBuffer.filter(u => u.time > time);
+    relevantUpdates.forEach(update => {
+      this.applyUpdate(update.bids, update.asks);
+    });
+    
+    this.updateBuffer = [];
+    console.log(`${this.market} order book synchronized`);
+  }
+
+  handleUpdate(time, bids, asks) {
+    if (!this.snapshotTime) {
+      this.updateBuffer.push({ time, bids, asks });
+      return;
+    }
+    
+    if (time <= this.snapshotTime) return;
+    
+    this.applyUpdate(bids, asks);
+  }
+
+  applyUpdate(bids, asks) {
+    bids.forEach(({ price, amount }) => {
+      if (amount === "0") {
+        delete this.bids[price];
+      } else {
+        this.bids[price] = amount;
+      }
+    });
+    
+    asks.forEach(({ price, amount }) => {
+      if (amount === "0") {
+        delete this.asks[price];
+      } else {
+        this.asks[price] = amount;
+      }
+    });
+  }
+
+  getSpread() {
+    const bidPrices = Object.keys(this.bids).sort((a, b) => parseFloat(b) - parseFloat(a));
+    const askPrices = Object.keys(this.asks).sort((a, b) => parseFloat(a) - parseFloat(b));
+    
+    return {
+      bid: bidPrices[0] || 'N/A',
+      ask: askPrices[0] || 'N/A'
+    };
+  }
+}
+
+// Usage
+async function main() {
+  const token = 'YOUR_ACCESS_TOKEN';
+  const client = new PaxosWebSocketClient(token, false); // false for sandbox
+  
+  try {
+    await client.connect();
+    
+    // Subscribe to markets
+    client.subscribe('BTCUSD');
+    client.subscribe('ETHUSD');
+    
+    // Keep connection alive
+    process.on('SIGINT', () => {
+      console.log('Shutting down...');
+      client.disconnect();
+      process.exit();
+    });
+  } catch (error) {
+    console.error('Failed to connect:', error);
+  }
+}
+
+main();
+```
+
+## Next Steps
+
+- Explore [Market Data REST endpoints](/api-reference/endpoints/market-data/overview) for historical data
+- Review [WebSocket API Reference](/api-reference/websockets/overview) for complete specifications
+- Implement [Order Management](/guides/crypto-brokerage/orders-vs-hrq) for trading functionality
+
+> Questions? Contact [Support](https://support.paxos.com).

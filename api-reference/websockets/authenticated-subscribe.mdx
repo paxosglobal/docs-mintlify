@@ -1,0 +1,160 @@
+---
+title: "Subscribe"
+description: "Subscribe to real-time market data and execution data channels"
+asyncapi: "/api-reference/websocket-asyncapi.json /authenticated.subscribe"
+---
+
+## Overview
+
+The subscribe operation allows you to request real-time data streams for specific markets. You can subscribe to multiple channels and markets in a single request.
+
+## Channel Types
+
+### Market Data
+Provides real-time order book updates with snapshots and incremental changes.
+
+```json
+{
+  "type": "market_data",
+  "params": {
+    "market": "BTCUSD"
+  }
+}
+```
+
+### Execution Data
+Streams real-time trade execution information.
+
+```json
+{
+  "type": "execution_data",
+  "params": {
+    "market": "ETHUSD"
+  }
+}
+```
+
+## Request Format
+
+Send a JSON message with the following structure:
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+## Response Format
+
+The server responds with a confirmation for each requested channel:
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+## Multiple Subscriptions
+
+Subscribe to multiple channels in a single request:
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": { "market": "BTCUSD" }
+    },
+    {
+      "type": "market_data",
+      "params": { "market": "ETHUSD" }
+    },
+    {
+      "type": "execution_data",
+      "params": { "market": "BTCUSD" }
+    }
+  ]
+}
+```
+
+## Error Handling
+
+If a subscription fails, the response includes an error code:
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": false,
+      "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+    }
+  ]
+}
+```
+
+### Common Errors
+
+- `UNKNOWN_CHANNEL` - Invalid channel type specified
+- `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` - Invalid market or missing parameters
+- `NO_EFFECT_ACTION` - Already subscribed to this channel
+- `MALFORMED_REQUEST` - Invalid JSON structure
+
+## Usage Example
+
+```javascript
+// Subscribe to BTCUSD market data
+const subscribeMessage = {
+  type: "subscribe",
+  channels: [
+    {
+      type: "market_data",
+      params: {
+        market: "BTCUSD"
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(subscribeMessage));
+
+// Handle response
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  
+  if (message.type === 'subscribe') {
+    message.channels.forEach(channel => {
+      if (channel.success) {
+        console.log(`Successfully subscribed to ${channel.type}`);
+      } else {
+        console.error(`Failed to subscribe: ${channel.error}`);
+      }
+    });
+  }
+});
+```
+
+## Important Notes
+
+- Subscriptions persist for the duration of the WebSocket connection
+- Duplicate subscriptions return a `NO_EFFECT_ACTION` error
+- After subscribing to market_data, you'll receive a SNAPSHOT followed by UPDATE messages
+- The server begins streaming immediately upon successful subscription
+
+> See the [Developer Guide](/guides/developer/websocket-authenticated) for complete implementation examples.

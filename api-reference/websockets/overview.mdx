@@ -8,11 +8,21 @@ tags:
 ---
 
 
-Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections. The WebSocket API offers three main data feeds:
+Paxos provides secure, real-time market and execution data feeds via both public and authenticated [WebSocket](https://websocket.spec.whatwg.org) connections. 
+
+## Public WebSocket API
+The public WebSocket API offers three main data feeds:
 
 - **[Execution Data Feed](#execution-data-feed)** - Real-time execution data for market trades
 - **[Market Data Feed](#market-data-feed)** - Order book updates with initial snapshots and real-time updates  
 - **[Stablecoin Market Price Feed](#stablecoin-feed)** - Market index price updates for external stablecoins
+
+## Authenticated WebSocket API
+The authenticated WebSocket API provides bidirectional communication for authorized clients:
+
+- **[Authenticated Market Data](#authenticated-api)** - Subscribe to real-time market data with time-based synchronization
+- **[Authenticated Execution Data](#authenticated-api)** - Subscribe to real-time execution data streams
+- **Request-Response Operations** - Subscribe, unsubscribe, and list active subscriptions
 
 > See the Websocket [trading](/guides/crypto-brokerage/websocket) and [stablecoin payments](/guides/payments/websocket) guides for a hands-on introduction.
 
@@ -84,3 +94,67 @@ The stablecoin market price feed provides real-time market index price updates f
 - **Real-time Updates**: Price updates are pushed as they occur
 
 This feed is particularly useful for applications requiring accurate, real-time stablecoin pricing information.
+
+## Authenticated API
+
+The authenticated WebSocket API requires Bearer token authentication with the `exchange:read_aggregated_marketdata_stream` scope. This API provides bidirectional communication for subscribing to and managing real-time data feeds.
+
+### Authentication
+
+➊ **Get OAuth2 Credentials**
+```bash
+POST https://oauth.sandbox.paxos.com/oauth2/token
+# or
+POST https://oauth.paxos.com/oauth2/token
+```
+
+Form data:
+- `grant_type`: "client_credentials"
+- `client_id`: Your client ID
+- `client_secret`: Your client secret  
+- `scope`: "exchange:read_aggregated_marketdata_stream"
+
+➋ **Connect with Bearer Token**
+
+Include the access token in the WebSocket connection request:
+```
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+### Message Flow
+
+The authenticated API uses JSON messages for all communication:
+
+1. **Subscribe** - Request subscriptions to market_data or execution_data channels
+2. **Unsubscribe** - Remove active subscriptions
+3. **Subscription List** - Query current active subscriptions
+4. **Streaming Data** - Receive real-time updates for subscribed channels
+
+### Time-Based Synchronization
+
+The authenticated market data feed uses timestamps for synchronization:
+
+- **Initial State**: Server immediately starts streaming UPDATE messages with timestamps
+- **Snapshot Delivery**: SNAPSHOT message arrives with book state at timestamp T
+- **Client Processing**:
+  - Build order book from SNAPSHOT
+  - Apply buffered UPDATEs where `UPDATE.time > SNAPSHOT.time`
+  - Discard UPDATEs where `UPDATE.time <= SNAPSHOT.time`
+
+This approach ensures data consistency even when snapshots arrive after initial updates.
+
+### Error Handling
+
+The API returns standardized error codes:
+- `UNKNOWN_ACTION` - Unrecognized request type
+- `MALFORMED_REQUEST` - Invalid JSON or request structure
+- `UNKNOWN_CHANNEL` - Invalid channel type
+- `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` - Invalid channel parameters
+- `NO_EFFECT_ACTION` - Action would have no effect (e.g., duplicate subscription)
+- `INTERNAL_SERVER_ERROR` - Server-side error
+
+### Performance Considerations
+
+- Slow clients unable to consume messages fast enough will be automatically disconnected
+- Maintain efficient message processing to avoid connection drops
+- Use appropriate buffering strategies for high-volume data streams
