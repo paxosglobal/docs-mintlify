@@ -475,24 +475,6 @@ ws.on('message', (data) => {
 });
 ```
 
-## Best Practices
-
-### Connection Management
-- Implement automatic reconnection with exponential backoff
-- Monitor connection health with periodic heartbeats
-- Handle token expiration and refresh
-
-### Performance Optimization
-- Process messages asynchronously to avoid blocking
-- Batch UI updates to prevent excessive rendering
-- Use efficient data structures for order book management
-
-### Production Considerations
-- Log all errors and disconnections for monitoring
-- Implement circuit breakers for system resilience
-- Monitor message latency and processing times
-- Set up alerts for connection issues
-
 ## Next Steps
 
 - Review the [Order Routing Market Data](/api-reference/websockets/order-routing-market-data) reference
