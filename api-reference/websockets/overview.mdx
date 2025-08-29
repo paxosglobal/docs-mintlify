@@ -7,8 +7,21 @@ tags:
   - WebSocket
 ---
 
+## WebSocket API Options
 
-Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections. The WebSocket API offers three main data feeds:
+Paxos offers two WebSocket API solutions for different use cases:
+
+### Public WebSocket API
+Open access to real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections. Ideal for DMA (Direct Market Access) to itBit and general market data consumption. No authentication required.
+
+### Order Routing WebSocket API  
+Authenticated, bidirectional WebSocket API exclusively for Order Routing platform customers. Provides request-response operations and streaming data with OAuth2 authentication. [Learn more](/api-reference/websockets/order-routing-overview).
+
+> Order Routing customers should use the authenticated [Order Routing WebSocket API](/api-reference/websockets/order-routing-overview) for enhanced functionality and authorized access.
+
+## Public WebSocket API
+
+The public WebSocket API offers three main data feeds:
 
 - **[Execution Data Feed](#execution-data-feed)** - Real-time execution data for market trades
 - **[Market Data Feed](#market-data-feed)** - Order book updates with initial snapshots and real-time updates  

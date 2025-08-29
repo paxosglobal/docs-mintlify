@@ -222,6 +222,7 @@
                 ]
               },
               "guides/crypto-brokerage/websocket",
+              "guides/crypto-brokerage/order-routing-websocket",
               "guides/crypto-brokerage/orders-precision-rounding",
               "guides/crypto-brokerage/commissions-rebates",
               "guides/crypto-brokerage/ledger-type",
@@ -737,24 +738,37 @@
             "pages": [
               "api-reference/websockets/overview",
               {
-                "group": "Execution Data",
+                "group": "Public WebSocket API",
                 "pages": [
-                  "api-reference/websockets/execution-data",
-                  "api-reference/websockets/execution-data-market"
+                  {
+                    "group": "Execution Data",
+                    "pages": [
+                      "api-reference/websockets/execution-data",
+                      "api-reference/websockets/execution-data-market"
+                    ]
+                  },
+                  {
+                    "group": "Market Data",
+                    "pages": [
+                      "api-reference/websockets/market-data",
+                      "api-reference/websockets/market-data-market"
+                    ]
+                  },
+                  {
+                    "group": "Stablecoin Data",
+                    "pages": [
+                      "api-reference/websockets/market-data-stablecoin",
+                      "api-reference/websockets/market-data-stablecoin-market"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Market Data",
+                "group": "Order Routing WebSocket API",
                 "pages": [
-                  "api-reference/websockets/market-data",
-                  "api-reference/websockets/market-data-market"
-                ]
-              },
-              {
-                "group": "Stablecoin Data",
-                "pages": [
-                  "api-reference/websockets/market-data-stablecoin",
-                  "api-reference/websockets/market-data-stablecoin-market"
+                  "api-reference/websockets/order-routing-overview",
+                  "api-reference/websockets/order-routing-market-data",
+                  "api-reference/websockets/order-routing-execution-data"
                 ]
               }
             ]

@@ -1,0 +1,133 @@
+---
+title: Order Routing WebSocket API
+description: Authenticated real-time market data for Order Routing platform customers.
+tags:
+  - Order Routing
+  - WebSocket
+  - Market Data
+---
+
+The Order Routing WebSocket API provides authenticated, real-time streaming market data and execution data to authorized Order Routing platform customers. This API uses a bidirectional WebSocket connection for both request-response operations and streaming data delivery.
+
+> This API is available only to Order Routing customers on the allow list. For public market data access or DMA (Direct Market Access) to itBit, use the [public WebSocket API](/api-reference/websockets/overview).
+
+## Connection
+
+### Endpoints
+
+**Production:** `wss://ws.paxos.com/`  
+**Sandbox:** `wss://ws.sandbox.paxos.com/`
+
+### Authentication
+
+Authentication is performed during the WebSocket handshake. You must provide valid OAuth2 credentials in the Authorization Bearer header.
+
+> You must include the `exchange:read_aggregated_marketdata_stream` scope. Without this scope, the WebSocket route responds with `403 Forbidden`.
+
+## ➊ Get OAuth2 Credentials
+
+Request an access token using your client credentials:
+
+### Sandbox
+```bash
+curl -X POST https://oauth.sandbox.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+### Production
+```bash
+curl -X POST https://oauth.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+### Response
+```json
+{
+  "access_token": "{your_bearer_token}",
+  "expires_in": 3600,
+  "token_type": "bearer",
+  "scope": "exchange:read_aggregated_marketdata_stream"
+}
+```
+
+## ➋ Establish WebSocket Connection
+
+Use the access token as the Bearer token when establishing the WebSocket connection:
+
+```javascript
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: {
+    'Authorization': 'Bearer {your_bearer_token}'
+  }
+});
+```
+
+## Connection Lifecycle
+
+1. Client establishes WebSocket connection with authentication
+2. Server maintains connection with automatic ping/pong heartbeat
+3. Client subscribes/unsubscribes to data channels (e.g., BTCUSD market data)
+4. Server streams data to subscribed channels
+5. Connection closes on client disconnect or server shutdown
+
+## Message Format
+
+All messages are JSON-encoded with a consistent structure:
+
+```json
+{
+  "type": "<message_type>",
+  ... // additional fields based on message type
+}
+```
+
+## Available Operations
+
+### Subscribe to Channels
+Subscribe to one or more data channels for real-time updates.
+
+### Unsubscribe from Channels  
+Unsubscribe from channels to stop receiving updates.
+
+### List Active Subscriptions
+Get the list of active subscriptions for your connection.
+
+## Data Channels
+
+The Order Routing WebSocket API supports two types of streaming data channels:
+
+### Market Data Channel
+Real-time order book updates with snapshots and incremental changes.
+
+### Execution Data Channel
+Real-time trade execution information for market trades.
+
+> See the detailed channel documentation for message formats and subscription parameters.
+
+## Error Handling
+
+The API uses standardized error codes:
+
+| Error Code | Description |
+|------------|-------------|
+| `UNKNOWN_ACTION` | The requested action type is not recognized |
+| `INTERNAL_SERVER_ERROR` | An unexpected server error occurred |
+| `MALFORMED_REQUEST` | The request JSON is invalid or cannot be parsed |
+| `NO_EFFECT_ACTION` | The action would have no effect (e.g., duplicate subscription) |
+| `UNKNOWN_CHANNEL` | The requested channel type is not recognized |
+| `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` | Invalid or missing channel parameters |
+
+## Rate Limits and Performance
+
+- Slow clients unable to consume messages fast enough will be automatically disconnected
+- Ensure your application can process messages efficiently to maintain connection stability
+
+> Questions? Contact [Support](https://support.paxos.com).
