@@ -78,39 +78,192 @@ const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
 4. Server streams data to subscribed channels
 5. Connection closes on client disconnect or server shutdown
 
-## Message Format
+## Quick Start Example
 
-All messages are JSON-encoded with a consistent structure:
+Here's a minimal example to get you started:
 
+```javascript
+// 1. Connect with authentication
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: { 'Authorization': 'Bearer {your_token}' }
+});
+
+// 2. Subscribe to market data on connection
+ws.on('open', () => {
+  ws.send(JSON.stringify({
+    type: 'subscribe',
+    channels: [{
+      type: 'market_data',
+      params: { market: 'BTCUSD' }
+    }]
+  }));
+});
+
+// 3. Handle incoming messages
+ws.on('message', (data) => {
+  const msg = JSON.parse(data);
+  
+  if (msg.type === 'subscribe') {
+    console.log('Subscription confirmed:', msg.channels[0].success);
+  } else if (msg.channel === 'market_data') {
+    console.log('Market data:', msg.payload);
+  }
+});
+```
+
+## Operations & Message Formats
+
+### Subscribe Operation
+
+Subscribe to one or more data channels for real-time updates.
+
+**Request:**
 ```json
 {
-  "type": "<message_type>",
-  ... // additional fields based on message type
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
 }
 ```
 
-## Available Operations
+**Response:**
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    },
+    {
+      "type": "execution_data",
+      "success": true
+    }
+  ]
+}
+```
 
-### Subscribe to Channels
-Subscribe to one or more data channels for real-time updates.
+### Unsubscribe Operation
 
-### Unsubscribe from Channels  
-Unsubscribe from channels to stop receiving updates.
+Stop receiving updates from specific channels.
 
-### List Active Subscriptions
-Get the list of active subscriptions for your connection.
+**Request:**
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+### List Subscriptions Operation
+
+Get all active subscriptions for your connection.
+
+**Request:**
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+**Response:**
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
 
 ## Data Channels
 
 The Order Routing WebSocket API supports two types of streaming data channels:
 
 ### Market Data Channel
-Real-time order book updates with snapshots and incremental changes.
+Provides real-time order book updates with initial snapshots and incremental changes.
+
+- **Channel type:** `market_data`
+- **Initial message:** Full order book snapshot
+- **Subsequent messages:** Incremental updates
+- **[View detailed documentation →](/api-reference/websockets/order-routing-market-data)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "UPDATE",
+    "time": "2024-01-15T10:30:01.456Z",
+    "bids": [{"price": "50000.00", "amount": "1.5"}],
+    "asks": [{"price": "50100.00", "amount": "2.0"}]
+  }
+}
+```
 
 ### Execution Data Channel
-Real-time trade execution information for market trades.
+Provides real-time trade execution notifications.
 
-> See the detailed channel documentation for message formats and subscription parameters.
+- **Channel type:** `execution_data`
+- **Message frequency:** On each trade execution
+- **[View detailed documentation →](/api-reference/websockets/order-routing-execution-data)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "execution_data",
+  "payload": {
+    "market": "BTCUSD",
+    "price": "50000.00",
+    "amount": "0.5",
+    "executed_at": "2024-01-15T10:30:00.123Z"
+  }
+}
+```
 
 ## Error Handling
 
