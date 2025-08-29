@@ -107,6 +107,7 @@ ws.send(JSON.stringify(subscribeMessage));
 class OrderBookManager {
   constructor() {
     this.orderBooks = new Map();
+    this.updateBuffers = new Map(); // Buffer updates per market
   }
 
   handleMessage(message) {
@@ -118,8 +119,19 @@ class OrderBookManager {
         // Initialize order book with snapshot
         this.initializeOrderBook(market, payload);
       } else if (payload.type === 'UPDATE') {
-        // Apply incremental update
-        this.updateOrderBook(market, payload);
+        // Check if we have received snapshot for this market
+        const orderBook = this.orderBooks.get(market);
+        
+        if (!orderBook || !orderBook.snapshotTime) {
+          // Buffer updates until snapshot arrives
+          if (!this.updateBuffers.has(market)) {
+            this.updateBuffers.set(market, []);
+          }
+          this.updateBuffers.get(market).push(payload);
+        } else {
+          // Apply incremental update
+          this.updateOrderBook(market, payload);
+        }
       }
     }
   }
@@ -141,7 +153,21 @@ class OrderBookManager {
     });
 
     this.orderBooks.set(market, orderBook);
-    console.log(`Order book initialized for ${market}`);
+    console.log(`Order book initialized for ${market} at ${snapshot.time}`);
+    
+    // Apply buffered updates that occurred after snapshot time
+    const bufferedUpdates = this.updateBuffers.get(market) || [];
+    const validUpdates = bufferedUpdates.filter(update => 
+      update.time > snapshot.time
+    );
+    
+    console.log(`Applying ${validUpdates.length} buffered updates for ${market}`);
+    validUpdates.forEach(update => {
+      this.updateOrderBook(market, update);
+    });
+    
+    // Clear the buffer for this market
+    this.updateBuffers.delete(market);
   }
 
   updateOrderBook(market, update) {
@@ -255,6 +281,7 @@ class OrderRoutingWebSocket {
       : 'wss://ws.paxos.com/';
     this.ws = null;
     this.orderBooks = new Map();
+    this.updateBuffers = new Map(); // Buffer updates per market
     this.reconnectDelay = 5000;
   }
 
@@ -331,8 +358,77 @@ class OrderRoutingWebSocket {
   }
 
   processMarketData(data) {
-    // Process order book updates
-    console.log(`Market data update for ${data.market}:`, data.type);
+    const market = data.market;
+    
+    if (data.type === 'SNAPSHOT') {
+      // Initialize order book from snapshot
+      const orderBook = {
+        bids: new Map(),
+        asks: new Map(),
+        snapshotTime: data.time
+      };
+      
+      data.bids.forEach(level => {
+        orderBook.bids.set(level.price, level.amount);
+      });
+      
+      data.asks.forEach(level => {
+        orderBook.asks.set(level.price, level.amount);
+      });
+      
+      this.orderBooks.set(market, orderBook);
+      console.log(`Order book initialized for ${market} at ${data.time}`);
+      
+      // Apply any buffered updates after snapshot time
+      const bufferedUpdates = this.updateBuffers.get(market) || [];
+      const validUpdates = bufferedUpdates.filter(update => 
+        update.time > data.time
+      );
+      
+      validUpdates.forEach(update => this.applyUpdate(market, update));
+      this.updateBuffers.delete(market);
+      
+    } else if (data.type === 'UPDATE') {
+      const orderBook = this.orderBooks.get(market);
+      
+      if (!orderBook || !orderBook.snapshotTime) {
+        // Buffer updates until snapshot arrives
+        if (!this.updateBuffers.has(market)) {
+          this.updateBuffers.set(market, []);
+        }
+        this.updateBuffers.get(market).push(data);
+      } else {
+        // Apply update to existing order book
+        this.applyUpdate(market, data);
+      }
+    }
+  }
+  
+  applyUpdate(market, update) {
+    const orderBook = this.orderBooks.get(market);
+    if (!orderBook) return;
+    
+    // Apply bid updates
+    if (update.bids) {
+      update.bids.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.bids.delete(level.price);
+        } else {
+          orderBook.bids.set(level.price, level.amount);
+        }
+      });
+    }
+    
+    // Apply ask updates
+    if (update.asks) {
+      update.asks.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.asks.delete(level.price);
+        } else {
+          orderBook.asks.set(level.price, level.amount);
+        }
+      });
+    }
   }
 
   processExecution(execution) {
