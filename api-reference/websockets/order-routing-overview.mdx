@@ -1,0 +1,281 @@
+---
+title: Order Routing WebSocket API
+description: Authenticated real-time market data for Order Routing platform customers.
+tags:
+  - Order Routing
+  - WebSocket
+  - Market Data
+---
+
+The Order Routing WebSocket API provides authenticated, real-time streaming market data and execution data to authorized Order Routing platform customers. This API uses a bidirectional WebSocket connection for both request-response operations and streaming data delivery.
+
+> This API is available only to Order Routing customers on the allow list. For public market data access or DMA (Direct Market Access) to itBit, use the [public WebSocket API](/api-reference/websockets/overview).
+
+## Connection
+
+### Endpoints
+
+**Production:** `wss://ws.paxos.com/`  
+**Sandbox:** `wss://ws.sandbox.paxos.com/`
+
+### Authentication
+
+Authentication is performed during the WebSocket handshake. You must provide valid OAuth2 credentials in the Authorization Bearer header.
+
+> You must include the `exchange:read_aggregated_marketdata_stream` scope. Without this scope, the WebSocket route responds with `403 Forbidden`.
+
+## ➊ Get OAuth2 Credentials
+
+Request an access token using your client credentials:
+
+### Sandbox
+```bash
+curl -X POST https://oauth.sandbox.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+### Production
+```bash
+curl -X POST https://oauth.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+### Response
+```json
+{
+  "access_token": "{your_bearer_token}",
+  "expires_in": 3600,
+  "token_type": "bearer",
+  "scope": "exchange:read_aggregated_marketdata_stream"
+}
+```
+
+## ➋ Establish WebSocket Connection
+
+Use the access token as the Bearer token when establishing the WebSocket connection:
+
+```javascript
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: {
+    'Authorization': 'Bearer {your_bearer_token}'
+  }
+});
+```
+
+## Connection Lifecycle
+
+1. Client establishes WebSocket connection with authentication
+2. Server maintains connection with automatic ping/pong heartbeat
+3. Client subscribes/unsubscribes to data channels (e.g., BTCUSD market data)
+4. Server streams data to subscribed channels
+5. Connection closes on client disconnect or server shutdown
+
+## Quick Start Example
+
+Here's a minimal example to get you started:
+
+```javascript
+// 1. Connect with authentication
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: { 'Authorization': 'Bearer {your_token}' }
+});
+
+// 2. Subscribe to market data on connection
+ws.on('open', () => {
+  ws.send(JSON.stringify({
+    type: 'subscribe',
+    channels: [{
+      type: 'market_data',
+      params: { market: 'BTCUSD' }
+    }]
+  }));
+});
+
+// 3. Handle incoming messages
+ws.on('message', (data) => {
+  const msg = JSON.parse(data);
+  
+  if (msg.type === 'subscribe') {
+    console.log('Subscription confirmed:', msg.channels[0].success);
+  } else if (msg.channel === 'market_data') {
+    console.log('Market data:', msg.payload);
+  }
+});
+```
+
+## Operations & Message Formats
+
+### Subscribe Operation
+
+Subscribe to one or more data channels for real-time updates.
+
+**Request:**
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    },
+    {
+      "type": "execution_data",
+      "success": true
+    }
+  ]
+}
+```
+
+### Unsubscribe Operation
+
+Stop receiving updates from specific channels.
+
+**Request:**
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+### List Subscriptions Operation
+
+Get all active subscriptions for your connection.
+
+**Request:**
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+**Response:**
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+## Data Channels
+
+The Order Routing WebSocket API supports two types of streaming data channels:
+
+### Market Data Channel
+Provides real-time order book updates with initial snapshots and incremental changes.
+
+- **Channel type:** `market_data`
+- **Initial message:** Full order book snapshot
+- **Subsequent messages:** Incremental updates
+- **[View detailed documentation →](/api-reference/websockets/order-routing-market-data)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "UPDATE",
+    "time": "2024-01-15T10:30:01.456Z",
+    "bids": [{"price": "50000.00", "amount": "1.5"}],
+    "asks": [{"price": "50100.00", "amount": "2.0"}]
+  }
+}
+```
+
+### Execution Data Channel
+Provides real-time trade execution notifications.
+
+- **Channel type:** `execution_data`
+- **Message frequency:** On each trade execution
+- **[View detailed documentation →](/api-reference/websockets/order-routing-execution-data)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "execution_data",
+  "payload": {
+    "market": "BTCUSD",
+    "price": "50000.00",
+    "amount": "0.5",
+    "executed_at": "2024-01-15T10:30:00.123Z"
+  }
+}
+```
+
+## Error Handling
+
+The API uses standardized error codes:
+
+| Error Code | Description |
+|------------|-------------|
+| `UNKNOWN_ACTION` | The requested action type is not recognized |
+| `INTERNAL_SERVER_ERROR` | An unexpected server error occurred |
+| `MALFORMED_REQUEST` | The request JSON is invalid or cannot be parsed |
+| `NO_EFFECT_ACTION` | The action would have no effect (e.g., duplicate subscription) |
+| `UNKNOWN_CHANNEL` | The requested channel type is not recognized |
+| `UNKNOWN_CHANNEL_PARAMS_CONFIGURATION` | Invalid or missing channel parameters |
+
+> Questions? Contact [Support](https://support.paxos.com).

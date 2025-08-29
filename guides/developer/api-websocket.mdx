@@ -3,10 +3,24 @@ title: 'WebSocket API Reference'
 description: Event-driven connectivity for payments and trading.
 ---
 
-Paxos provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections
-The [Stablecoin Market Price Feed](#stablecoin-feed) streams event-driven updates for the market index price for external stablecoins.
-The [Market Data Feed](/api-reference/websockets/overview#market-data-feed) streams event-driven updates for the entire order book or for a single market.
-The [Execution Data Feed](/api-reference/websockets/overview#execution-data-feed) streams event information for all markets or for a single market.
+## WebSocket API Options
+
+Paxos offers two WebSocket API solutions:
+
+### Public WebSocket API
+Provides secure, real-time market and execution data feeds via public [WebSocket](https://websocket.spec.whatwg.org) connections. No authentication required. Ideal for DMA to itBit and general market data consumption.
+
+### Order Routing WebSocket API
+Authenticated, bidirectional WebSocket API for Order Routing platform customers. Requires OAuth2 authentication with the `exchange:read_aggregated_marketdata_stream` scope. [Learn more](/api-reference/websockets/order-routing-overview).
+
+> Order Routing customers should use the [Order Routing WebSocket API](/guides/crypto-brokerage/order-routing-websocket) for enhanced functionality.
+
+## Public WebSocket Feeds
+
+The public WebSocket API provides:
+- The [Stablecoin Market Price Feed](#stablecoin-feed) streams event-driven updates for the market index price for external stablecoins.
+- The [Market Data Feed](/api-reference/websockets/overview#market-data-feed) streams event-driven updates for the entire order book or for a single market.
+- The [Execution Data Feed](/api-reference/websockets/overview#execution-data-feed) streams event information for all markets or for a single market.
 
 > See the Websocket [trading](/guides/crypto-brokerage/websocket) and [stablecoin payments](/guides/payments/websocket) guides for a hands-on introduction.
 

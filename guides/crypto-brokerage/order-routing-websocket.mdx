@@ -1,0 +1,482 @@
+---
+title: Order Routing WebSocket Integration
+description: Step-by-step guide to integrate with the Order Routing WebSocket API.
+---
+
+This guide walks you through integrating with the Paxos Order Routing WebSocket API to receive real-time market data and execution updates. The Order Routing WebSocket API requires authentication and is available only to authorized Order Routing platform customers.
+
+> Before starting, ensure you have Order Routing platform access and valid OAuth2 credentials with the `exchange:read_aggregated_marketdata_stream` scope.
+
+## ➊ Authenticate and Get Access Token
+
+First, obtain an OAuth2 access token using your client credentials.
+
+### Sandbox Environment
+```bash
+curl -X POST https://oauth.sandbox.paxos.com/oauth2/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials" \
+  -d "client_id={your_client_id}" \
+  -d "client_secret={your_client_secret}" \
+  -d "scope=exchange:read_aggregated_marketdata_stream"
+```
+
+Save the `access_token` from the response. You'll use this as the Bearer token for the WebSocket connection.
+
+## ➋ Establish WebSocket Connection
+
+Connect to the WebSocket server using your preferred WebSocket client library.
+
+### JavaScript/Node.js Example
+```javascript
+const WebSocket = require('ws');
+
+const token = '{your_access_token}';
+const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+ws.on('open', () => {
+  console.log('Connected to Order Routing WebSocket');
+});
+
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  console.log('Received:', message);
+});
+
+ws.on('error', (error) => {
+  console.error('WebSocket error:', error);
+});
+
+ws.on('close', () => {
+  console.log('WebSocket connection closed');
+});
+```
+
+### Python Example
+```python
+import asyncio
+import websockets
+import json
+
+async def connect_websocket():
+    token = '{your_access_token}'
+    uri = 'wss://ws.sandbox.paxos.com/'
+    headers = {
+        'Authorization': f'Bearer {token}'
+    }
+    
+    async with websockets.connect(uri, extra_headers=headers) as websocket:
+        print('Connected to Order Routing WebSocket')
+        
+        # Handle incoming messages
+        async for message in websocket:
+            data = json.loads(message)
+            print('Received:', data)
+
+asyncio.run(connect_websocket())
+```
+
+## ➌ Subscribe to Market Data
+
+Once connected, subscribe to market data channels to receive order book updates.
+
+```javascript
+// Subscribe to BTCUSD market data
+const subscribeMessage = {
+  type: 'subscribe',
+  channels: [
+    {
+      type: 'market_data',
+      params: {
+        market: 'BTCUSD'
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(subscribeMessage));
+```
+
+### Handle Market Data Messages
+
+```javascript
+class OrderBookManager {
+  constructor() {
+    this.orderBooks = new Map();
+    this.updateBuffers = new Map(); // Buffer updates per market
+  }
+
+  handleMessage(message) {
+    if (message.channel === 'market_data') {
+      const payload = message.payload;
+      const market = payload.market;
+      
+      if (payload.type === 'SNAPSHOT') {
+        // Initialize order book with snapshot
+        this.initializeOrderBook(market, payload);
+      } else if (payload.type === 'UPDATE') {
+        // Check if we have received snapshot for this market
+        const orderBook = this.orderBooks.get(market);
+        
+        if (!orderBook || !orderBook.snapshotTime) {
+          // Buffer updates until snapshot arrives
+          if (!this.updateBuffers.has(market)) {
+            this.updateBuffers.set(market, []);
+          }
+          this.updateBuffers.get(market).push(payload);
+        } else {
+          // Apply incremental update
+          this.updateOrderBook(market, payload);
+        }
+      }
+    }
+  }
+
+  initializeOrderBook(market, snapshot) {
+    const orderBook = {
+      bids: new Map(),
+      asks: new Map(),
+      snapshotTime: snapshot.time
+    };
+
+    // Load bids and asks from snapshot
+    snapshot.bids.forEach(level => {
+      orderBook.bids.set(level.price, level.amount);
+    });
+    
+    snapshot.asks.forEach(level => {
+      orderBook.asks.set(level.price, level.amount);
+    });
+
+    this.orderBooks.set(market, orderBook);
+    console.log(`Order book initialized for ${market} at ${snapshot.time}`);
+    
+    // Apply buffered updates that occurred after snapshot time
+    const bufferedUpdates = this.updateBuffers.get(market) || [];
+    const validUpdates = bufferedUpdates.filter(update => 
+      update.time > snapshot.time
+    );
+    
+    console.log(`Applying ${validUpdates.length} buffered updates for ${market}`);
+    validUpdates.forEach(update => {
+      this.updateOrderBook(market, update);
+    });
+    
+    // Clear the buffer for this market
+    this.updateBuffers.delete(market);
+  }
+
+  updateOrderBook(market, update) {
+    const orderBook = this.orderBooks.get(market);
+    if (!orderBook) return;
+
+    // Apply bid updates
+    if (update.bids) {
+      update.bids.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.bids.delete(level.price);
+        } else {
+          orderBook.bids.set(level.price, level.amount);
+        }
+      });
+    }
+
+    // Apply ask updates
+    if (update.asks) {
+      update.asks.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.asks.delete(level.price);
+        } else {
+          orderBook.asks.set(level.price, level.amount);
+        }
+      });
+    }
+  }
+}
+```
+
+## ➍ Subscribe to Execution Data
+
+Subscribe to execution data to receive real-time trade notifications.
+
+```javascript
+// Subscribe to execution data
+const subscribeExecution = {
+  type: 'subscribe',
+  channels: [
+    {
+      type: 'execution_data',
+      params: {
+        market: 'BTCUSD'
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(subscribeExecution));
+
+// Handle execution messages
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  
+  if (message.channel === 'execution_data') {
+    const execution = message.payload;
+    console.log(`Trade executed: ${execution.amount} ${execution.market} @ ${execution.price}`);
+    
+    // Process execution data
+    processExecution(execution);
+  }
+});
+
+function processExecution(execution) {
+  // Your custom logic
+  // - Update volume metrics
+  // - Trigger trading signals
+  // - Log to database
+}
+```
+
+## ➎ Manage Subscriptions
+
+### List Active Subscriptions
+```javascript
+const listSubscriptions = {
+  type: 'subscription_list'
+};
+
+ws.send(JSON.stringify(listSubscriptions));
+```
+
+### Unsubscribe from Channels
+```javascript
+const unsubscribe = {
+  type: 'unsubscribe',
+  channels: [
+    {
+      type: 'market_data',
+      params: {
+        market: 'BTCUSD'
+      }
+    }
+  ]
+};
+
+ws.send(JSON.stringify(unsubscribe));
+```
+
+## Complete Integration Example
+
+```javascript
+const WebSocket = require('ws');
+
+class OrderRoutingWebSocket {
+  constructor(token, sandbox = true) {
+    this.token = token;
+    this.uri = sandbox 
+      ? 'wss://ws.sandbox.paxos.com/' 
+      : 'wss://ws.paxos.com/';
+    this.ws = null;
+    this.orderBooks = new Map();
+    this.updateBuffers = new Map(); // Buffer updates per market
+    this.reconnectDelay = 5000;
+  }
+
+  connect() {
+    this.ws = new WebSocket(this.uri, {
+      headers: {
+        'Authorization': `Bearer ${this.token}`
+      }
+    });
+
+    this.ws.on('open', () => {
+      console.log('Connected to Order Routing WebSocket');
+      this.subscribeToMarkets(['BTCUSD', 'ETHUSD']);
+    });
+
+    this.ws.on('message', (data) => {
+      this.handleMessage(JSON.parse(data));
+    });
+
+    this.ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+
+    this.ws.on('close', () => {
+      console.log('Connection closed, reconnecting...');
+      setTimeout(() => this.connect(), this.reconnectDelay);
+    });
+  }
+
+  subscribeToMarkets(markets) {
+    const channels = [];
+    
+    markets.forEach(market => {
+      channels.push({
+        type: 'market_data',
+        params: { market }
+      });
+      channels.push({
+        type: 'execution_data',
+        params: { market }
+      });
+    });
+
+    const subscribeMessage = {
+      type: 'subscribe',
+      channels
+    };
+
+    this.ws.send(JSON.stringify(subscribeMessage));
+  }
+
+  handleMessage(message) {
+    // Handle subscription responses
+    if (message.type === 'subscribe') {
+      message.channels.forEach(channel => {
+        if (channel.success) {
+          console.log(`Subscribed to ${channel.type}`);
+        } else {
+          console.error(`Failed to subscribe: ${channel.error}`);
+        }
+      });
+      return;
+    }
+
+    // Handle market data
+    if (message.channel === 'market_data') {
+      this.processMarketData(message.payload);
+    }
+
+    // Handle execution data
+    if (message.channel === 'execution_data') {
+      this.processExecution(message.payload);
+    }
+  }
+
+  processMarketData(data) {
+    const market = data.market;
+    
+    if (data.type === 'SNAPSHOT') {
+      // Initialize order book from snapshot
+      const orderBook = {
+        bids: new Map(),
+        asks: new Map(),
+        snapshotTime: data.time
+      };
+      
+      data.bids.forEach(level => {
+        orderBook.bids.set(level.price, level.amount);
+      });
+      
+      data.asks.forEach(level => {
+        orderBook.asks.set(level.price, level.amount);
+      });
+      
+      this.orderBooks.set(market, orderBook);
+      console.log(`Order book initialized for ${market} at ${data.time}`);
+      
+      // Apply any buffered updates after snapshot time
+      const bufferedUpdates = this.updateBuffers.get(market) || [];
+      const validUpdates = bufferedUpdates.filter(update => 
+        update.time > data.time
+      );
+      
+      validUpdates.forEach(update => this.applyUpdate(market, update));
+      this.updateBuffers.delete(market);
+      
+    } else if (data.type === 'UPDATE') {
+      const orderBook = this.orderBooks.get(market);
+      
+      if (!orderBook || !orderBook.snapshotTime) {
+        // Buffer updates until snapshot arrives
+        if (!this.updateBuffers.has(market)) {
+          this.updateBuffers.set(market, []);
+        }
+        this.updateBuffers.get(market).push(data);
+      } else {
+        // Apply update to existing order book
+        this.applyUpdate(market, data);
+      }
+    }
+  }
+  
+  applyUpdate(market, update) {
+    const orderBook = this.orderBooks.get(market);
+    if (!orderBook) return;
+    
+    // Apply bid updates
+    if (update.bids) {
+      update.bids.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.bids.delete(level.price);
+        } else {
+          orderBook.bids.set(level.price, level.amount);
+        }
+      });
+    }
+    
+    // Apply ask updates
+    if (update.asks) {
+      update.asks.forEach(level => {
+        if (level.amount === '0') {
+          orderBook.asks.delete(level.price);
+        } else {
+          orderBook.asks.set(level.price, level.amount);
+        }
+      });
+    }
+  }
+
+  processExecution(execution) {
+    // Process trade executions
+    console.log(`Execution: ${execution.amount} ${execution.market} @ ${execution.price}`);
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+    }
+  }
+}
+
+// Usage
+const client = new OrderRoutingWebSocket('{your_access_token}', true);
+client.connect();
+```
+
+## Error Handling
+
+Handle errors gracefully and implement appropriate retry logic:
+
+```javascript
+ws.on('message', (data) => {
+  const message = JSON.parse(data);
+  
+  if (message.type === 'error') {
+    switch (message.error) {
+      case 'UNKNOWN_CHANNEL':
+        console.error('Invalid channel type requested');
+        break;
+      case 'MALFORMED_REQUEST':
+        console.error('Invalid JSON in request');
+        break;
+      case 'INTERNAL_SERVER_ERROR':
+        console.error('Server error, reconnecting...');
+        reconnect();
+        break;
+      default:
+        console.error('Unknown error:', message.error);
+    }
+  }
+});
+```
+
+## Next Steps
+
+- Review the [Order Routing Market Data](/api-reference/websockets/order-routing-market-data) reference
+- Explore the [Order Routing Execution Data](/api-reference/websockets/order-routing-execution-data) reference
+- Contact [Support](https://support.paxos.com) for production access
