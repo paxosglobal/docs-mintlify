@@ -176,8 +176,6 @@ async function main() {
         }
         console.log('');
       }
-      
-      console.log(`💡 To fix these issues, run: node add-oauth-scopes.js`);
       process.exit(1);
     }
     
