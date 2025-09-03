@@ -1,0 +1,27 @@
+name: Validate OAuth Scopes
+
+on:
+  pull_request:
+    paths:
+      - 'api-reference/endpoints/**/*.mdx'
+  push:
+    branches:
+      - main
+    paths:
+      - 'api-reference/endpoints/**/*.mdx'
+
+jobs:
+  validate-scopes:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Validate OAuth scopes
+        run: node .github/scripts/validate-oauth-scopes.js
