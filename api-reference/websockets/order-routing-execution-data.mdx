@@ -1,0 +1,208 @@
+---
+title: Order Routing Execution Data
+description: Real-time trade execution information for Order Routing platform.
+tags:
+  - Order Routing
+  - Execution Data
+  - WebSocket
+---
+
+The Execution Data channel provides real-time trade execution information for authorized Order Routing customers. Subscribe to receive notifications as trades execute on the platform.
+
+## Subscribe to Execution Data
+
+### Request
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+### Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "execution_data",
+      "success": true
+    }
+  ]
+}
+```
+
+### Error Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "execution_data",
+      "success": false,
+      "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+    }
+  ]
+}
+```
+
+## Execution Message Format
+
+Each trade execution generates a message with the following format:
+
+```json
+{
+  "channel": "execution_data",
+  "payload": {
+    "market": "BTCUSD",
+    "price": "50000.00",
+    "amount": "0.5",
+    "executed_at": "2024-01-15T10:30:00.123456789Z"
+  }
+}
+```
+
+### Message Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `market` | string | The market pair (e.g., "BTCUSD") |
+| `price` | string | Execution price as a decimal string |
+| `amount` | string | Executed amount as a decimal string |
+| `executed_at` | string | Timestamp in RFC3339Nano format |
+
+## Multiple Market Subscriptions
+
+Subscribe to multiple markets simultaneously:
+
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+## Processing Execution Data
+
+### Real-time Updates
+- Messages are sent immediately when trades execute
+- No messages during idle periods with no trading activity
+- All executions are delivered in chronological order
+
+### Example Implementation
+
+```javascript
+class ExecutionMonitor {
+  constructor() {
+    this.executions = [];
+    this.volumeByMarket = new Map();
+  }
+
+  handleExecution(message) {
+    const execution = message.payload;
+    
+    // Store execution
+    this.executions.push(execution);
+    
+    // Update volume tracking
+    const currentVolume = this.volumeByMarket.get(execution.market) || 0;
+    const executionVolume = parseFloat(execution.price) * parseFloat(execution.amount);
+    this.volumeByMarket.set(execution.market, currentVolume + executionVolume);
+    
+    // Process execution
+    this.processExecution(execution);
+  }
+
+  processExecution(execution) {
+    console.log(`Trade executed in ${execution.market}:`,
+      `${execution.amount} @ ${execution.price}`,
+      `at ${execution.executed_at}`);
+    
+    // Your custom logic here
+    // - Update charts
+    // - Trigger alerts
+    // - Calculate metrics
+  }
+
+  getRecentExecutions(market, count = 10) {
+    return this.executions
+      .filter(e => e.market === market)
+      .slice(-count);
+  }
+
+  getTotalVolume(market) {
+    return this.volumeByMarket.get(market) || 0;
+  }
+}
+```
+
+## Unsubscribe
+
+To stop receiving execution data:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+## List Active Subscriptions
+
+Get all active execution data subscriptions:
+
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+### Response
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "execution_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+> Questions? Contact [Support](https://support.paxos.com).

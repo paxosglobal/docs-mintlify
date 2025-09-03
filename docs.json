@@ -23,6 +23,10 @@
       "destination": "/guides/identity/:slug*"
     },
     {
+      "source": "/docs/v2/problems/:slug*",
+      "destination": "/api-reference/problems/:slug*"
+    },
+    {
       "source": "/developer/:slug*",
       "destination": "/guides/developer/:slug*"
     },
@@ -218,6 +222,7 @@
                 ]
               },
               "guides/crypto-brokerage/websocket",
+              "guides/crypto-brokerage/order-routing-websocket",
               "guides/crypto-brokerage/orders-precision-rounding",
               "guides/crypto-brokerage/commissions-rebates",
               "guides/crypto-brokerage/ledger-type",
@@ -284,7 +289,8 @@
             "group": "Stablecoin Operations",
             "pages": [
               "guides/dashboard/mint",
-              "guides/dashboard/redeem"
+              "guides/dashboard/redeem",
+              "guides/dashboard/paxg"
             ]
           },
           {
@@ -306,12 +312,20 @@
                   "guides/dashboard/admin/manage-passkeys"
                 ]
               },
-              "guides/dashboard/admin/team",
+              {
+                "group": "Manage Team",
+                "pages": [
+                  "guides/dashboard/admin/team",
+                  "guides/dashboard/roles"             
+                ]
+              },
+              "guides/dashboard/organization",
               "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
               "guides/dashboard/admin/reports"
+
 
             ]
           },
@@ -725,24 +739,37 @@
             "pages": [
               "api-reference/websockets/overview",
               {
-                "group": "Execution Data",
+                "group": "Public WebSocket API",
                 "pages": [
-                  "api-reference/websockets/execution-data",
-                  "api-reference/websockets/execution-data-market"
+                  {
+                    "group": "Execution Data",
+                    "pages": [
+                      "api-reference/websockets/execution-data",
+                      "api-reference/websockets/execution-data-market"
+                    ]
+                  },
+                  {
+                    "group": "Market Data",
+                    "pages": [
+                      "api-reference/websockets/market-data",
+                      "api-reference/websockets/market-data-market"
+                    ]
+                  },
+                  {
+                    "group": "Stablecoin Data",
+                    "pages": [
+                      "api-reference/websockets/market-data-stablecoin",
+                      "api-reference/websockets/market-data-stablecoin-market"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Market Data",
+                "group": "Order Routing WebSocket API",
                 "pages": [
-                  "api-reference/websockets/market-data",
-                  "api-reference/websockets/market-data-market"
-                ]
-              },
-              {
-                "group": "Stablecoin Data",
-                "pages": [
-                  "api-reference/websockets/market-data-stablecoin",
-                  "api-reference/websockets/market-data-stablecoin-market"
+                  "api-reference/websockets/order-routing-overview",
+                  "api-reference/websockets/order-routing-market-data",
+                  "api-reference/websockets/order-routing-execution-data"
                 ]
               }
             ]
@@ -803,6 +830,15 @@
                   }
                 ]
               }
+            ]
+          },
+          {
+            "group": "Problems",
+            "pages": [
+              "api-reference/problems/expired",
+              "api-reference/problems/insufficient-funds",
+              "api-reference/problems/rejected",
+              "api-reference/problems/already-exists"
             ]
           }
         ]

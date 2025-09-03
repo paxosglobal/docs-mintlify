@@ -1,0 +1,33 @@
+---
+title: 403 - Insufficient Funds
+---
+
+An Insufficient Funds error is returned on operations which require funding when the needed funds are not present in the profile funding the transaction.
+
+For example, creating an order to buy \$100 of BTC will result in an Insufficient Funds error if the profile has an available balance less than \$100.
+
+An Insufficient Funds error has the following "meta" fields:
+
+- `profile_id`: The ID of the profile funding the transaction.
+- `asset`: The asset needed to fund the transaction.
+- `available`: The amount of the needed asset in the profile's current available balance.
+- `needed`: The amount of the needed asset required to fund the transaction.
+
+To resolve an Insufficient Funds error, assets of the needed kind should be transferred to the profile identified.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "insufficient USD funds in profile b7b77d82-e6a7-4ae9-9904-36231aedf985: 50 needed, 100 available",
+  "meta": {
+    "asset": "USD",
+    "available": "50",
+    "needed": "100",
+    "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985"
+  },
+  "status": 403,
+  "title": "Insufficient Funds",
+  "type": "https://developer.paxos.com/docs/v2/problems/insufficient-funds"
+}
+```
+</CodeGroup>

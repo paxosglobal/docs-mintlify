@@ -1,0 +1,239 @@
+---
+title: Order Routing Market Data
+description: Real-time order book updates for Order Routing platform.
+tags:
+  - Order Routing
+  - Market Data
+  - WebSocket
+---
+
+The Market Data channel provides real-time order book updates for authorized Order Routing customers. Subscribe to receive full order book snapshots followed by incremental updates.
+
+## Subscribe to Market Data
+
+### Request
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+### Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": true
+    }
+  ]
+}
+```
+
+### Error Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "success": false,
+      "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+    }
+  ]
+}
+```
+
+## Message Types
+
+### SNAPSHOT Message
+
+The initial message after subscription contains the full order book state:
+
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "SNAPSHOT",
+    "time": "2024-01-15T10:30:00.123456789Z",
+    "bids": [
+      {
+        "price": "50000.00",
+        "amount": "1.5"
+      },
+      {
+        "price": "49999.50",
+        "amount": "2.0"
+      }
+    ],
+    "asks": [
+      {
+        "price": "50100.00",
+        "amount": "2.0"
+      },
+      {
+        "price": "50101.00",
+        "amount": "1.5"
+      }
+    ]
+  }
+}
+```
+
+### UPDATE Message
+
+Incremental changes to the order book:
+
+```json
+{
+  "channel": "market_data",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "UPDATE",
+    "time": "2024-01-15T10:30:01.456789012Z",
+    "bids": [
+      {
+        "price": "50000.00",
+        "amount": "0"
+      }
+    ],
+    "asks": [
+      {
+        "price": "50100.50",
+        "amount": "3.5"
+      }
+    ]
+  }
+}
+```
+
+## Processing Updates
+
+### Update Rules
+- When `amount = 0`: Remove the price level from the order book
+- When `amount > 0`: Add or update the price level with the new amount
+- Bids are sorted in descending price order
+- Asks are sorted in ascending price order
+
+## Snapshot Synchronization
+
+The API uses timestamp-based synchronization to ensure order book consistency:
+
+### ➊ Initial Subscription
+Upon subscribing, you immediately receive UPDATE messages with timestamps while the server prepares the SNAPSHOT.
+
+### ➋ Buffer Updates
+Buffer all received UPDATE messages until the SNAPSHOT arrives.
+
+### ➌ Process Snapshot
+When the SNAPSHOT arrives with timestamp T:
+- Build the order book from the SNAPSHOT
+- Apply buffered UPDATEs where `UPDATE.time > SNAPSHOT.time`
+- Discard UPDATEs where `UPDATE.time <= SNAPSHOT.time`
+
+### ➍ Continue Processing
+Apply subsequent UPDATE messages incrementally to maintain the order book.
+
+> A SNAPSHOT message is sent exactly once after subscribing to a channel.
+
+## Example Implementation
+
+```javascript
+class OrderBook {
+  constructor() {
+    this.bids = new Map();
+    this.asks = new Map();
+    this.updateBuffer = [];
+    this.snapshotTime = null;
+  }
+
+  handleMessage(message) {
+    if (message.payload.type === 'SNAPSHOT') {
+      this.processSnapshot(message.payload);
+    } else if (message.payload.type === 'UPDATE') {
+      if (!this.snapshotTime) {
+        // Buffer updates until snapshot arrives
+        this.updateBuffer.push(message.payload);
+      } else {
+        this.processUpdate(message.payload);
+      }
+    }
+  }
+
+  processSnapshot(snapshot) {
+    // Clear and rebuild order book
+    this.bids.clear();
+    this.asks.clear();
+    this.snapshotTime = snapshot.time;
+
+    // Load snapshot data
+    snapshot.bids.forEach(level => {
+      this.bids.set(level.price, level.amount);
+    });
+    snapshot.asks.forEach(level => {
+      this.asks.set(level.price, level.amount);
+    });
+
+    // Apply buffered updates after snapshot time
+    this.updateBuffer
+      .filter(update => update.time > this.snapshotTime)
+      .forEach(update => this.processUpdate(update));
+    
+    this.updateBuffer = [];
+  }
+
+  processUpdate(update) {
+    // Process bid updates
+    if (update.bids) {
+      update.bids.forEach(level => {
+        if (level.amount === "0") {
+          this.bids.delete(level.price);
+        } else {
+          this.bids.set(level.price, level.amount);
+        }
+      });
+    }
+
+    // Process ask updates
+    if (update.asks) {
+      update.asks.forEach(level => {
+        if (level.amount === "0") {
+          this.asks.delete(level.price);
+        } else {
+          this.asks.set(level.price, level.amount);
+        }
+      });
+    }
+  }
+}
+```
+
+## Unsubscribe
+
+To stop receiving market data updates:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+> Questions? Contact [Support](https://support.paxos.com).

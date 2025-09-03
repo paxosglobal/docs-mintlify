@@ -1,0 +1,27 @@
+---
+title: 403 - Expired
+---
+
+An Expired error is returned in response to operations acting on some resource that has expired.
+
+For example, attempting to accept a time-limited quote after the quote has expired results in an Expired error.
+
+An Expired error has the following "meta" fields:
+
+- `expired_at`: The time at which the resource expired.
+
+An expired resource will not become unexpired. The `expired_at` data is informational, for display to the end-user to give more informative feedback on why their request could not be completed.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "offer expired at 0001-01-01T00:00:00Z",
+  "meta": {
+    "expired_at": "0001-01-01T00:00:00Z"
+  },
+  "status": 403,
+  "title": "Expired",
+  "type": "https://developer.paxos.com/docs/v2/problems/expired"
+}
+```
+</CodeGroup>
