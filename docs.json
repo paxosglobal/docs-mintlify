@@ -140,13 +140,7 @@
             "group": "Identity",
             "pages": [
               "guides/identity/index",
-              {
-                "group": "Getting Started",
-                "pages": [
-                  "guides/identity/person-crypto-brokerage",
-                  "guides/identity/institution-crypto-brokerage"
-                ]
-              },
+
               {
                 "group": "Manage Lifecycle",
                 "pages": [
@@ -154,14 +148,9 @@
                   "guides/identity/kyc-refresh"
                 ]
               },
-              {
-                "group": "Advanced",
-                "pages": [
-                  "guides/identity/statuses",
-                  "guides/identity/required-details",
-                  "guides/identity/institution-types"
-                ]
-              }
+              "guides/identity/statuses",
+              "guides/identity/required-details",
+              "guides/identity/institution-types"
             ]
           },
           {
