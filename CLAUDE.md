@@ -168,3 +168,34 @@ curl -X POST https://api.paxos.com/v2/profiles \
 4. Ensure endpoint category has `overview.mdx` file
 5. Add any business context or usage notes if needed
 6. Cross-reference related webhooks or websocket events
+
+## UX Guidelines
+
+### Navigation 
+- Structure sidebar with clear section names and related tasks grouped together. 
+- Place beginner-friendly topics first (e.g., overview, quick start).
+- Organize by user journey (e.g., Create Account > Access Account > Complete Onboarding).
+- Prefer action verbs over UI terms (e.g. Create Account instead of Sign Up).
+- Organize docs around what users want to achieve (create account, manage funds).
+- Break long, mixed sections into smaller, focused ones to reduce cognitive load.
+- Limit nesting to 2-3 levels so content is easy to scan.
+- Place advanced/administrative tasks later in the hierarchy. 
+
+### Content
+- Keep sentences short and scannable. Avoid multi-paragraph blocks. 
+- Place the most important info first in each section.
+- Separate multiple flow options into tabs. This lets users focus on what they need.
+
+### Visuals 
+- Embed videos in the page instead of linking them, so users can watch without leaving the doc.
+- Keep demos short (30-60 sec).
+- Use screenshots to show key actions and make instructions easy to follow.
+- Use diagrams to show processes at a glance.
+
+### Callouts
+- Avoid long callouts that restate details already covered in a dedicated guide.
+- Place help or support callouts after the main content.
+
+
+
+
