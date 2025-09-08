@@ -897,12 +897,6 @@
           },
           "destination": {
             "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
           }
         }
       },
