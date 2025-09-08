@@ -10012,7 +10012,7 @@
             "status": {
               "$ref": "#/components/schemas/IdentityStatus"
             },
-            "status_details"cle: {
+            "status_details": {
                 "$ref": "#/components/schemas/IdentityStatus"
               },
             "user_disabled": {
