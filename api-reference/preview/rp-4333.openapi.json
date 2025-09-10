@@ -1029,7 +1029,25 @@
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/IdentityControl"
-        }
+        },
+        "example": [
+          {
+            "control": "CLIENT_DISABLED",
+            "reason": "some client-set reason"
+          },
+          {
+            "control": "ADMIN_DISABLED",
+            "reason": "some admin-set reason"
+          },
+          {
+            "control": "ADMIN_FROZEN",
+            "reason": "some admin-set reason"
+          },
+          {
+            "control": "DORMANT",
+            "reason": "some reason"
+          }
+        ]
       },
       "UpdateIdentityControlsRequest": {
         "type": "object",
