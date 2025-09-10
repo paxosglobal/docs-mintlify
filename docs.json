@@ -834,7 +834,6 @@
       },
       {
         "tab": "Previews",
-        "hidden": true,
         "groups": [
           {
             "group": "Previews",
@@ -846,6 +845,13 @@
             "group": "Orchestration Previews",
             "openapi": {
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
+              "directory": "api-reference/preview"
+            }
+          },
+          {
+            "group": "RP-4333 Identity Previews",
+            "openapi": {
+              "source": "api-reference/preview/rp-4333.openapi.json",
               "directory": "api-reference/preview"
             }
           }
