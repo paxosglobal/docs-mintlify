@@ -848,6 +848,13 @@
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
               "directory": "api-reference/preview"
             }
+          },
+          {
+            "group": "Identity Previews",
+            "openapi": {
+              "source": "api-reference/preview/paxos-v2-preview-identity.openapi.json",
+              "directory": "api-reference/preview"
+            }
           }
         ]
       },
@@ -912,7 +919,10 @@
     }
   },
   "api": {
-    "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json"
+    "openapi": {
+      "source": "api-reference/temp-api-spec.json",
+      "directory": "api-reference"
+    }
   },
   "contextual": {
     "options": ["copy", "view", "claude", "chatgpt"]
