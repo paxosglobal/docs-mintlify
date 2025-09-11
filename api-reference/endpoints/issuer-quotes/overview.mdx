@@ -1,0 +1,13 @@
+---
+title: "Overview"
+description: "Issuer Quotes are 'held rates' offered by Paxos to mint or redeem Paxos-issued assets at a specific price within a period of time."
+---
+
+For example, the option to buy PAXG within the next 5 seconds for $3,000.
+
+The typical Issuer Quotes workflow is as follows:
+
+1. Call [Create Issuer Quote](/api-reference/endpoints/issuer-quotes/create-issuer-quote) to get a quote for the asset you want to mint or redeem to a specific profile.
+1. Call [Create Issuer Quote Execution](/api-reference/endpoints/issuer-quotes/create-issuer-quote-execution) with the quote ID and profile ID.
+
+You can call [List Issuer Quote Executions](/api-reference/endpoints/issuer-quotes/list-issuer-quote-executions) to review or construct reports on issuer quote execution activity.
