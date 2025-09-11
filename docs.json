@@ -673,7 +673,7 @@
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote",
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote-execution"
                 ]
-              },
+              }
             ]
           },
           {
