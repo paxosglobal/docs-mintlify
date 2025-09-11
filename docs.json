@@ -669,7 +669,7 @@
                 "group": "Issuer Quotes",
                 "pages": [
                   "api-reference/endpoints/issuer-quotes/overview",
-                  "api-reference/endpoints/issuer-quotes/list-issuer-quotes",
+                  "api-reference/endpoints/issuer-quotes/list-issuer-quote-executions",
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote",
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote-execution"
                 ]
