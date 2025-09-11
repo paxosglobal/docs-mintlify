@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Paxos Identity API",
-    "version": "identity control preview"
+    "version": "https://github.com/paxosglobal/docs-mintlify/pull/86"
   },
   "tags": [
     {
@@ -70,9 +70,9 @@
     },
     "/v2/identity/identities/{identity_id}/controls": {
       "get": {
-        "summary": "Get Identity Controls",
-        "description": "Get the current control settings for an identity.",
-        "operationId": "GetIdentityControls",
+        "summary": "List Identity Controls",
+        "description": "List the current control settings for an identity.",
+        "operationId": "ListIdentityControls",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -115,10 +115,72 @@
           }
         ]
       },
-      "put": {
-        "summary": "Update Identity Controls",
-        "description": "Update control settings for an identity including frozen, dormant, and closed states.",
-        "operationId": "UpdateIdentityControls",
+      "post": {
+        "summary": "Create Identity Control",
+        "description": "Create a new control setting for an identity.",
+        "operationId": "CreateIdentityControl",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityControl"
+                },
+                "example": {
+                  "control": "FROZEN",
+                  "set_by": "client",
+                  "reason_code": "CUSTOMER_REQUESTED",
+                  "reason": "Customer requested temporary account freeze"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity_id",
+            "description": "The Identity ID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIdentityControlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Identity Control",
+        "description": "Delete/unset a specific control on an identity.",
+        "operationId": "DeleteIdentityControl",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -158,7 +220,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateIdentityControlsRequest"
+                "$ref": "#/components/schemas/DeleteIdentityControlRequest"
               }
             }
           },
@@ -378,20 +440,22 @@
           "status_details": {
             "active_controls": [
               {
-                "control": "CLIENT_DISABLED",
-                "reason": "some client-set reason"
+                "control": "FROZEN",
+                "set_by": "client",
+                "reason_code": "CUSTOMER_REQUESTED",
+                "reason": "Pending customer verification"
               },
               {
-                "control": "ADMIN_DISABLED",
-                "reason": "some admin-set reason"
+                "control": "FROZEN",
+                "set_by": "paxos",
+                "reason_code": "SANCTIONS_PEP_OR_NN",
+                "reason": "Potential PEP match requires review"
               },
               {
-                "control": "ADMIN_FROZEN",
-                "reason": "some admin-set reason"
-              },
-              {
-                "control": "DORMANT",
-                "reason": "some reason"
+                "control": "CLOSED",
+                "set_by": "client",
+                "reason_code": "DORMANT",
+                "reason": "Account inactive for extended period"
               }
             ],
             "pending_requirements": [
@@ -993,18 +1057,25 @@
       "IdentityControlType": {
         "type": "string",
         "enum": [
-          "CLIENT_DISABLED",
-          "ADMIN_DISABLED",
-          "ADMIN_FROZEN",
-          "DORMANT"
+          "FROZEN",
+          "CLOSED"
         ]
       },
       "ClientIdentityControlType": {
         "type": "string",
         "enum": [
-          "CLIENT_DISABLED",
-          "DORMANT"
+          "FROZEN",
+          "CLOSED"
         ]
+      },
+      "IdentityControlReasonCode": {
+        "type": "string",
+        "enum": [
+          "DORMANT",
+          "CUSTOMER_REQUESTED",
+          "SANCTIONS_PEP_OR_NN"
+        ],
+        "description": "Standardized reason codes for identity control actions"
       },
       "IdentityControlAction": {
         "type": "string",
@@ -1019,9 +1090,17 @@
           "control": {
             "$ref": "#/components/schemas/IdentityControlType"
           },
+          "set_by": {
+            "type": "string",
+            "enum": ["paxos", "client"],
+            "description": "Who set this control - either 'paxos' or 'client'"
+          },
+          "reason_code": {
+            "$ref": "#/components/schemas/IdentityControlReasonCode"
+          },
           "reason": {
             "type": "string",
-            "description": "Reason why this identity control was set"
+            "description": "Additional details about why this identity control was set"
           }
         }
       },
@@ -1032,38 +1111,49 @@
         },
         "example": [
           {
-            "control": "CLIENT_DISABLED",
-            "reason": "some client-set reason"
+            "control": "FROZEN",
+            "set_by": "client",
+            "reason_code": "CUSTOMER_REQUESTED",
+            "reason": "Customer requested temporary account freeze"
           },
           {
-            "control": "ADMIN_DISABLED",
-            "reason": "some admin-set reason"
+            "control": "FROZEN",
+            "set_by": "paxos",
+            "reason_code": "SANCTIONS_PEP_OR_NN",
+            "reason": "Account flagged for sanctions screening"
           },
           {
-            "control": "ADMIN_FROZEN",
-            "reason": "some admin-set reason"
-          },
-          {
-            "control": "DORMANT",
-            "reason": "some reason"
+            "control": "CLOSED",
+            "set_by": "client",
+            "reason_code": "DORMANT",
+            "reason": "No activity for 12 months"
           }
         ]
       },
-      "UpdateIdentityControlsRequest": {
+      "CreateIdentityControlRequest": {
         "type": "object",
         "properties": {
           "control": {
             "$ref": "#/components/schemas/ClientIdentityControlType"
           },
-          "action": {
-            "$ref": "#/components/schemas/IdentityControlAction"
+          "reason_code": {
+            "$ref": "#/components/schemas/IdentityControlReasonCode"
           },
           "reason": {
             "type": "string",
-            "description": "Freetext reason for setting or clearing the control"
+            "description": "Additional free text details about the reason for setting the control"
           }
         },
-        "required": ["control", "action"]
+        "required": ["control", "reason_code"]
+      },
+      "DeleteIdentityControlRequest": {
+        "type": "object",
+        "properties": {
+          "control": {
+            "$ref": "#/components/schemas/ClientIdentityControlType"
+          }
+        },
+        "required": ["control"]
       },
       "IdentityPendingRequirementType": {
         "type": "string",
