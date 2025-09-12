@@ -919,6 +919,9 @@
       "linkedin": "https://www.linkedin.com/company/paxos"
     }
   },
+  "api": {
+    "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json"
+  },
   "contextual": {
     "options": ["copy", "view", "claude", "chatgpt"]
   }
