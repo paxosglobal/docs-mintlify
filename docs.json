@@ -2,7 +2,6 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Paxos Documentation",
-  "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json", 
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -664,6 +663,15 @@
                   "api-reference/endpoints/pricing/list-prices",
                   "api-reference/endpoints/pricing/list-tickers",
                   "api-reference/endpoints/pricing/list-historical-prices"
+                ]
+              },
+              {
+                "group": "Issuer Quotes",
+                "pages": [
+                  "api-reference/endpoints/issuer-quotes/overview",
+                  "api-reference/endpoints/issuer-quotes/list-issuer-quote-executions",
+                  "api-reference/endpoints/issuer-quotes/create-issuer-quote",
+                  "api-reference/endpoints/issuer-quotes/create-issuer-quote-execution"
                 ]
               }
             ]
