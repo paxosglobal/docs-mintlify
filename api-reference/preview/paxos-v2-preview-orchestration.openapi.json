@@ -1,249 +1,19 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Paxos Orchestration API",
-    "version": "v2-preview"
+    "title": "/orchestrationpb/orchestration_public.proto",
+    "version": "version not set"
   },
-  "security": [
+  "tags": [
     {
-      "OAuth2": ["orchestration:read_orchestration", "orchestration:write_orchestration", "orchestration:read_orchestration_rule", "orchestration:write_orchestration_rule"]
+      "name": "OrchestrationPublic"
     }
   ],
   "paths": {
-    "/v2/orchestration/rules": {
-      "get": {
-        "summary": "List Orchestration Rules",
-        "description": "List all orchestration rules, optionally filtering and paging the results.\n\nBy default, orchestration rules are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 rules which were created.\n\nThe paginated results default to display up to 100 rules, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nRules can be filtered by:\n- Profile ID (`profile_id`)\n- Status (`status`)\n- Source asset (`source_asset`)\n- Destination asset (`destination_asset`)",
-        "operationId": "ListOrchestrationRules",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListOrchestrationRulesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_bad_request"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_unauthenticated"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_forbidden"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_too_many_requests"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_internal_server_error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "profile_id",
-            "description": "Optional filter by profile ID",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "description": "Optional filter by statuses",
-            "in": "query",
-            "required": false,
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["ACTIVE", "DELETED"]
-              }
-            }
-          },
-          {
-            "name": "source_asset",
-            "description": "Optional filter by source asset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "destination_asset",
-            "description": "Optional filter by destination asset",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 1000.",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "order",
-            "description": "Sort order for the results. Defaults to DESC by created_at time.",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["DESC", "ASC"]
-            }
-          },
-          {
-            "name": "page_cursor",
-            "description": "Optional Cursor for getting the next page of results.",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": ["Orchestration Rules"],
-        "security": [
-          {
-            "OAuth2": ["orchestration:read_orchestration_rule"]
-          }
-        ]
-      },
-      "post": {
-        "summary": "Create Orchestration Rule",
-        "description": "Creates a long-lived orchestration rule that automatically triggers orchestrations\nwhen matching deposits are received.\n\nThe rule will:\n1. Generate deposit instructions for the rule\n2. Monitor incoming deposits to those instructions\n3. Automatically execute orchestrations to the configured destination\n\nSupported Sources:\n- Crypto Deposit\n- Fiat Deposit\n\nSupported Destinations:\n- Crypto Address on a Network\n- Bank Account\n- Profile Id\n\nA request to create an orchestration rule can fail with:\n - [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists)\n   if a rule with the same ref_id already exists.",
-        "operationId": "CreateOrchestrationRule",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateOrchestrationRuleResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_bad_request"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_unauthenticated"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_forbidden"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_too_many_requests"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_internal_server_error"
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateOrchestrationRuleRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "tags": ["Orchestration Rules"],
-        "security": [
-          {
-            "OAuth2": ["orchestration:write_orchestration_rule"]
-          }
-        ]
-      }
-    },
-    "/v2/orchestration/orchestrations": {
+    "/orchestration/orchestrations": {
       "get": {
         "summary": "List Orchestrations",
-        "description": "List all orchestrations, optionally filtering and paging the results.\n\nBy default, orchestrations are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 orchestrations which\nwere created.\n\nThe paginated results default to display up to 100 orchestrations, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nWhen filtering by profile IDs using the `profile_ids` parameter, there is a limit of 100 profiles\nthat can be specified in a single request.\n\nOrchestrations are provided for various operations including:\n- Deposits to a paxos-platform crypto address or bank account\n- Withdrawals to a customer-owned crypto address or bank account\n- Conversions from one asset to another\n- Orchestrated workflows involving some or all of the above\n- Invocation of an Orchestration Rule\n",
+        "description": "List all orchestrations, optionally filtering and paging the results.\n\nBy default, orchestrations are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 orchestrations which\nwere created.\n\nThe paginated results default to display up to 100 orchestrations, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nWhen filtering by profile IDs using the `profile_ids` parameter, there is a limit of 100 profiles\nthat can be specified in a single request.\n\nOrchestrations are provided for various operations including:\n- Deposits to a paxos-platform crypto address or bank account\n- Withdrawals to a customer-owned crypto address or bank account\n- Conversions from one asset to another\n- Orchestrated workflows involving some or all of the above\n- Invocation of an Orchestration Rule",
         "operationId": "ListOrchestrations",
         "responses": {
           "200": {
@@ -255,62 +25,12 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_bad_request"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_unauthenticated"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_forbidden"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too Many Requests",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_too_many_requests"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/examples/Problem_internal_server_error"
-                }
-              }
-            }
           }
         },
         "parameters": [
           {
-            "name": "orchestration_rule_ids",
-            "description": "Optionally filter by the initiating orchestration_rule_ids.",
+            "name": "orchestration_rule_id",
+            "description": "Optionally filter by the initiating orchestration rule ids. There is a limit of 100 orchestration rule ids that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -322,8 +42,8 @@
             }
           },
           {
-            "name": "source_assets",
-            "description": "Optionally filter by source assets",
+            "name": "source_asset",
+            "description": "Optionally filter by source assets. There is a limit of 100 source assets that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -335,8 +55,8 @@
             }
           },
           {
-            "name": "destination_assets",
-            "description": "Optionally filter by destination assets",
+            "name": "destination_asset",
+            "description": "Optionally filter by destination assets. There is a limit of 100 destination assets ids that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -348,8 +68,8 @@
             }
           },
           {
-            "name": "statuses",
-            "description": "Optionally filter by statuses.",
+            "name": "status",
+            "description": "Optionally filter by statuses. There is a limit of 100 statuses that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -427,7 +147,10 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["DESC", "ASC"]
+              "enum": [
+                "DESC",
+                "ASC"
+              ]
             }
           },
           {
@@ -440,8 +163,8 @@
             }
           },
           {
-            "name": "orchestration_ids",
-            "description": "Optionally filter by a list of orchestration IDs.",
+            "name": "orchestration_id",
+            "description": "Optionally filter by a list of orchestration IDs. There is a limit of 100 orchestration ids that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -453,8 +176,8 @@
             }
           },
           {
-            "name": "profile_ids",
-            "description": "Optionally filter by the target profiles. Limit 100.",
+            "name": "profile_id",
+            "description": "Optionally filter by the target profiles. There is a limit of 100 profiles that can be specified in a single request.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -466,16 +189,20 @@
             }
           }
         ],
-        "tags": ["Orchestrations"],
+        "tags": [
+          "Orchestrations"
+        ],
         "security": [
           {
-            "OAuth2": ["orchestration:read_orchestration"]
+            "OAuth2": [
+              "orchestration:read_orchestration"
+            ]
           }
         ]
       },
       "post": {
         "summary": "Create Orchestration",
-        "description": "Creates an orchestration rule that will be triggered by deposits to a source resource.\nThe orchestration defines how assets should be moved from a source to a destination,\npotentially including conversions between different asset types.\n\nA request to create an orchestration can fail with one of the following\ntypes of errors:\n - [Insufficient Funds](https://developer.paxos.com/docs/v2/problems/insufficient-funds)\n   if the Profile (`profile_id`) has insufficient available balance to\n   fund the execution.\n - [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists)\n   if an orchestration with the same external ID (`ref_id`) has already been created.\n",
+        "description": "Creates an orchestration rule that will be triggered by deposits to a source resource.\nThe orchestration defines how assets should be moved from a source to a destination,\npotentially including conversions between different asset types.\n\nA request to create an orchestration can fail with one of the following\ntypes of errors:\n - [Insufficient Funds](https://developer.paxos.com/docs/v2/problems/insufficient-funds)\n   if the Profile (`profile_id`) has insufficient available balance to\n   fund the execution.\n - [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists)\n   if an orchestration with the same external ID (`ref_id`) has already been created.",
         "operationId": "CreateOrchestration",
         "responses": {
           "200": {
@@ -499,61 +226,255 @@
           },
           "required": true
         },
-        "tags": ["Orchestrations"],
+        "tags": [
+          "Orchestrations"
+        ],
         "security": [
           {
-            "OAuth2": ["orchestration:write_orchestration"]
+            "OAuth2": [
+              "orchestration:write_orchestration"
+            ]
+          }
+        ]
+      }
+    },
+    "/orchestration/orchestrations/{id}": {
+      "get": {
+        "summary": "Get Orchestration",
+        "description": "Retreives a specific orchestration using its orchestration ID.",
+        "operationId": "GetOrchestration",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Orchestration"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Orchestrations"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:read_orchestration"
+            ]
+          }
+        ]
+      }
+    },
+    "/orchestration/rules": {
+      "get": {
+        "summary": "List Orchestration Rules",
+        "description": "List all orchestration rules, optionally filtering and paging the results.\n\nBy default, orchestration rules are returned in reverse chronological (descending)\norder by creation time. If no query parameters are supplied,\nthe response will include up to the last 100 rules which were created.\n\nThe paginated results default to display up to 100 rules, unless\notherwise specified with the `limit` parameter. The maximum `limit` value is 1000.\nEvery paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new\nrequest to retrieve the next page of results.\n\nRules can be filtered by:\n- Profile ID (`profile_id`)\n- Status (`status`)\n- Source asset (`source_asset`)\n- Destination asset (`destination_asset`)",
+        "operationId": "ListOrchestrationRules",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOrchestrationRulesResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "profile_id",
+            "description": "Optional filter by profile ID",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "description": "Optional filter by statuses\n\n - ACTIVE: The rule is active, deposits matching the `source_asset` and `source` of this rule start a conversion and\nsubsequent delivery of the `destination_asset` to the specified `destination`.\n - DELETED: The rule has been deleted, newly deposited `source_assets` to the `source` of this rule will not be converted.\nThe deposited `source_asset` is still going to be credited to the Profile specified by `profile_id`.\n - PENDING: The rule creation is pending approval(s) before the rule becomes ACTIVE.\n - REJECTED: The rule creation has been rejected during the approval process.\n - CANCELLED: The rule creation has been cancelled before it could be approved.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACTIVE",
+                  "DELETED",
+                  "PENDING",
+                  "REJECTED",
+                  "CANCELLED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "source_asset",
+            "description": "Optional filter by source asset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination_asset",
+            "description": "Optional filter by destination asset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 1000.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order for the results. Defaults to DESC by created_at time.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DESC",
+                "ASC"
+              ]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional Cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Orchestration Rules"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:read_orchestration_rule"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Orchestration Rule",
+        "description": "Creates a long-lived orchestration rule that automatically triggers orchestrations\nwhen matching deposits are received.\n\nThe rule will:\n1. Generate deposit instructions for the rule\n2. Monitor incoming deposits to those instructions\n3. Automatically execute orchestrations to the configured destination\n\nSupported Sources:\n- Crypto Deposit\n- Fiat Deposit\n\nSupported Destinations:\n- Crypto Address on a Network\n- Bank Account\n- Profile Id\n\nA request to create an orchestration rule can fail with:\n - [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists)\n   if a rule with the same ref_id already exists.",
+        "operationId": "CreateOrchestrationRule",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrchestrationRuleResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRuleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Orchestration Rules"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:write_orchestration_rule"
+            ]
+          }
+        ]
+      }
+    },
+    "/orchestration/rules/{id}": {
+      "delete": {
+        "summary": "Delete Orchestration Rule",
+        "description": "Deletes (deactivates) an orchestration rule by setting its status to DELETED.\nThis is a soft delete operation - the rule will no longer trigger new orchestrations\nbut existing orchestrations created by this rule will continue to be processed.\n\nThe request accepts a single rule ID and will delete the specified rule.\nThe successfully deleted rule is returned in the response with updated DELETED status.",
+        "operationId": "DeleteOrchestrationRule",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteOrchestrationRuleResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The ID of the orchestration rule to delete",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Orchestration Rules"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:write_orchestration_rule"
+            ]
           }
         ]
       }
     }
   },
   "components": {
-    "securitySchemes": {
-      "OAuth2": {
-        "type": "oauth2",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
-            "scopes": {
-              "orchestration:read_orchestration": "Read orchestration data",
-              "orchestration:write_orchestration": "Create and manage orchestrations",
-              "orchestration:read_orchestration_rule": "Read orchestration rule data",
-              "orchestration:write_orchestration_rule": "Create and manage orchestration rules"
-            }
-          }
-        }
-      }
-    },
     "schemas": {
-      "OrchestrationCryptoSource": {
-        "type": "object",
-        "properties": {
-          "address_id": {
-            "type": "string"
-          },
-          "address": {
-            "type": "string"
-          },
-          "network": {
-            "type": "string"
-          }
-        }
-      },
-      "OrchestrationFiatSource": {
-        "type": "object",
-        "properties": {
-          "deposit_instructions_id": {
-            "type": "string"
-          },
-          "memo": {
-            "type": "string"
-          }
-        }
-      },
       "TransferDetailsTransferStatus": {
         "type": "string",
-        "enum": ["PENDING", "PROCESSING", "COMPLETED", "FAILED"],
+        "enum": [
+          "PENDING",
+          "PROCESSING",
+          "COMPLETED",
+          "FAILED"
+        ],
         "description": " - PENDING: PENDING: a transfer is planned, but its resource_id is not yet known.\n - PROCESSING: PROCESSING: a transfer with `resource_id` is being processed. resource_id is\nguaranteed to be set if the status is PROCESSING.\n - COMPLETED: COMPLETED: a transfer with `resource_id` has successfully completed.\n - FAILED: FAILED: a transfer with `resource_id` has failed."
       },
       "CreateOrchestrationRequest": {
@@ -657,10 +578,149 @@
           }
         }
       },
+      "CreateOrchestrationRuleRequest": {
+        "type": "object",
+        "properties": {
+          "ref_id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestCryptoDestination": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          },
+          "crypto_address_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestCryptoSource": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestProfileDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestFiatDestination": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestFiatSource": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "account_type": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestSource": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestFiatSource"
+          }
+        }
+      },
+      "CreateOrchestrationRuleResponse": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "$ref": "#/components/schemas/OrchestrationRule"
+          }
+        }
+      },
+      "DeleteOrchestrationRuleResponse": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "$ref": "#/components/schemas/OrchestrationRule"
+          }
+        }
+      },
       "FailReason": {
         "type": "object",
         "properties": {
           "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "ListOrchestrationRulesResponse": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationRule"
+            }
+          },
+          "next_page_cursor": {
             "type": "string"
           }
         }
@@ -762,6 +822,20 @@
           }
         }
       },
+      "OrchestrationCryptoSource": {
+        "type": "object",
+        "properties": {
+          "address_id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
       "OrchestrationDestination": {
         "type": "object",
         "properties": {
@@ -787,6 +861,17 @@
           }
         }
       },
+      "OrchestrationFiatSource": {
+        "type": "object",
+        "properties": {
+          "deposit_instructions_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          }
+        }
+      },
       "OrchestrationProfileDestination": {
         "type": "object",
         "properties": {
@@ -799,209 +884,6 @@
         "type": "object",
         "properties": {
           "profile_id": {
-            "type": "string"
-          }
-        }
-      },
-      "OrchestrationSource": {
-        "type": "object",
-        "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/OrchestrationCryptoSource"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/OrchestrationFiatSource"
-          },
-          "profile": {
-            "$ref": "#/components/schemas/OrchestrationProfileSource"
-          }
-        }
-      },
-      "OrchestrationStatus": {
-        "type": "string",
-        "enum": ["PROCESSING", "COMPLETED", "FAILED"],
-        "description": "Status represents the current state of an orchestration."
-      },
-      "SortOrder": {
-        "type": "string",
-        "enum": ["DESC", "ASC"]
-      },
-      "TimestampFilter": {
-        "type": "object",
-        "properties": {
-          "lt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`."
-          },
-          "lte": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
-          },
-          "eq": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`."
-          },
-          "gte": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Include timestamps greater than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
-          },
-          "gt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`."
-          }
-        }
-      },
-      "TransferDetails": {
-        "type": "object",
-        "properties": {
-          "transfer_id": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/TransferDetailsTransferStatus"
-          }
-        },
-        "description": "TransferDetails refers to a specific Transfer and encodes its current status."
-      },
-      "CreateOrchestrationRuleRequest": {
-        "type": "object",
-        "properties": {
-          "ref_id": {
-            "type": "string"
-          },
-          "nickname": {
-            "type": "string"
-          },
-          "profile_id": {
-            "type": "string"
-          },
-          "identity_id": {
-            "type": "string"
-          },
-          "account_id": {
-            "type": "string"
-          },
-          "source_asset": {
-            "type": "string"
-          },
-          "destination_asset": {
-            "type": "string"
-          },
-          "source": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSource"
-          },
-          "destination": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
-          }
-        }
-      },
-      "CreateOrchestrationRuleRequestSource": {
-        "type": "object",
-        "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSourceCryptoSource"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSourceFiatSource"
-          }
-        },
-        "description": "The source resource of an orchestration rule. Deposits to this resource will trigger\ninvocations of the rule. Each invocation will create an \"Orchestration\"."
-      },
-      "CreateOrchestrationRuleRequestSourceCryptoSource": {
-        "type": "object",
-        "properties": {
-          "network": {
-            "type": "string"
-          }
-        },
-        "description": "A request for deposit instructions for a given crypto network. If set, a paxos-owned\ndeposit address will be auto-generated and returned in SourceDepositInstructions\non the response."
-      },
-      "CreateOrchestrationRuleRequestSourceFiatSource": {
-        "type": "object",
-        "properties": {
-          "network": {
-            "type": "string"
-          },
-          "account_type": {
-            "type": "string"
-          }
-        },
-        "description": "A request for deposit instructions of fiat on a given fiat network. If set, Paxos\nbanking details will be sent in SourceDepositInstructions on the response."
-      },
-      "CreateOrchestrationRuleRequestDestination": {
-        "type": "object",
-        "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationCryptoDestination"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationFiatDestination"
-          },
-          "profile": {
-            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestinationProfileDestination"
-          }
-        },
-        "description": "A request to send funds to a destination resource at the end of an orchestrated conversion\nflow."
-      },
-      "CreateOrchestrationRuleRequestDestinationCryptoDestination": {
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "string"
-          },
-          "network": {
-            "type": "string"
-          },
-          "crypto_address_id": {
-            "type": "string"
-          }
-        },
-        "title": "A customer-owned crypto address and crypto network"
-      },
-      "CreateOrchestrationRuleRequestDestinationFiatDestination": {
-        "type": "object",
-        "properties": {
-          "bank_account_id": {
-            "type": "string"
-          },
-          "memo": {
-            "type": "string"
-          }
-        },
-        "description": "A customer-owned bank account. Must have previously created using CreateFiatAccount."
-      },
-      "CreateOrchestrationRuleRequestDestinationProfileDestination": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "type": "string"
-          }
-        },
-        "description": "A customer profile. Can be the same profile as the rule, or a different profile for\ninternal-transfers."
-      },
-      "CreateOrchestrationRuleResponse": {
-        "type": "object",
-        "properties": {
-          "rule": {
-            "$ref": "#/components/schemas/OrchestrationRule"
-          }
-        }
-      },
-      "ListOrchestrationRulesResponse": {
-        "type": "object",
-        "properties": {
-          "rules": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrchestrationRule"
-            }
-          },
-          "next_page_cursor": {
             "type": "string"
           }
         }
@@ -1048,26 +930,7 @@
           }
         }
       },
-      "OrchestrationRuleStatus": {
-        "type": "string",
-        "enum": ["ACTIVE", "DELETED"],
-        "description": " - ACTIVE: The rule is currently active and will process incoming deposits\n - DELETED: The rule has been deleted and will not process incoming deposits"
-      },
-      "OrchestrationRuleDestination": {
-        "type": "object",
-        "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/OrchestrationRuleDestinationCryptoDestination"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/OrchestrationRuleDestinationFiatDestination"
-          },
-          "profile": {
-            "$ref": "#/components/schemas/OrchestrationRuleDestinationProfileDestination"
-          }
-        }
-      },
-      "OrchestrationRuleDestinationCryptoDestination": {
+      "OrchestrationRuleCryptoDestination": {
         "type": "object",
         "properties": {
           "address": {
@@ -1078,7 +941,35 @@
           }
         }
       },
-      "OrchestrationRuleDestinationFiatDestination": {
+      "OrchestrationRuleCryptoSource": {
+        "type": "object",
+        "properties": {
+          "address_id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "network": {
+            "type": "string"
+          }
+        }
+      },
+      "OrchestrationRuleDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationRuleCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationRuleFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationRuleProfileDestination"
+          }
+        }
+      },
+      "OrchestrationRuleFiatDestination": {
         "type": "object",
         "properties": {
           "fiat_account_id": {
@@ -1089,40 +980,7 @@
           }
         }
       },
-      "OrchestrationRuleDestinationProfileDestination": {
-        "type": "object",
-        "properties": {
-          "profile_id": {
-            "type": "string"
-          }
-        }
-      },
-      "OrchestrationRuleSource": {
-        "type": "object",
-        "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/OrchestrationRuleSourceCrypto"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/OrchestrationRuleSourceFiat"
-          },
-          "profile": {
-            "$ref": "#/components/schemas/OrchestrationRuleSourceProfile"
-          }
-        }
-      },
-      "OrchestrationRuleSourceCrypto": {
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "string"
-          },
-          "network": {
-            "type": "string"
-          }
-        }
-      },
-      "OrchestrationRuleSourceFiat": {
+      "OrchestrationRuleFiatSource": {
         "type": "object",
         "properties": {
           "deposit_instructions_id": {
@@ -1139,7 +997,7 @@
           }
         }
       },
-      "OrchestrationRuleSourceProfile": {
+      "OrchestrationRuleProfileDestination": {
         "type": "object",
         "properties": {
           "profile_id": {
@@ -1147,71 +1005,110 @@
           }
         }
       },
-      "DepositInstructions": {
+      "OrchestrationRuleProfileSource": {
         "type": "object",
         "properties": {
-          "crypto": {
-            "$ref": "#/components/schemas/DepositInstructionsCryptoDepositInstructions"
-          },
-          "fiat": {
-            "$ref": "#/components/schemas/DepositInstructionsFiatDepositInstructions"
-          }
-        },
-        "title": "A wrapper message for either fiat or crypto deposit instructions"
-      },
-      "DepositInstructionsCryptoDepositInstructions": {
-        "type": "object",
-        "properties": {
-          "address_id": {
-            "type": "string",
-            "description": "the ID of Paxos deposit address for the operation. It can additionally be queried\nusing ListDepositAddresses."
-          },
-          "address": {
-            "type": "string",
-            "title": "the raw Paxos-owned crypto address on a blockchain"
-          },
-          "network": {
-            "type": "string",
-            "title": "the crypto network of the deposit address"
+          "profile_id": {
+            "type": "string"
           }
         }
       },
-      "DepositInstructionsFiatDepositInstructions": {
+      "OrchestrationRuleSource": {
         "type": "object",
         "properties": {
-          "id": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationRuleCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationRuleFiatSource"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationRuleProfileSource"
+          }
+        }
+      },
+      "OrchestrationRuleStatus": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "DELETED",
+          "PENDING",
+          "REJECTED",
+          "CANCELLED"
+        ],
+        "description": " - ACTIVE: The rule is active, deposits matching the `source_asset` and `source` of this rule start a conversion and\nsubsequent delivery of the `destination_asset` to the specified `destination`.\n - DELETED: The rule has been deleted, newly deposited `source_assets` to the `source` of this rule will not be converted.\nThe deposited `source_asset` is still going to be credited to the Profile specified by `profile_id`.\n - PENDING: The rule creation is pending approval(s) before the rule becomes ACTIVE.\n - REJECTED: The rule creation has been rejected during the approval process.\n - CANCELLED: The rule creation has been cancelled before it could be approved."
+      },
+      "OrchestrationSource": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/OrchestrationCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/OrchestrationFiatSource"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/OrchestrationProfileSource"
+          }
+        }
+      },
+      "OrchestrationStatus": {
+        "type": "string",
+        "enum": [
+          "PROCESSING",
+          "COMPLETED",
+          "FAILED"
+        ],
+        "description": "Status represents the current state of an orchestration."
+      },
+      "SortOrder": {
+        "type": "string",
+        "enum": [
+          "DESC",
+          "ASC"
+        ]
+      },
+      "TimestampFilter": {
+        "type": "object",
+        "properties": {
+          "lt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps strictly less than lt. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "lte": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps less than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "eq": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps exactly equal to eq. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "gte": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps greater than or equal to lte. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          },
+          "gt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Include timestamps strictly greater than gt. RFC3339 format, like `2006-01-02T15:04:05Z`."
+          }
+        }
+      },
+      "TransferDetails": {
+        "type": "object",
+        "properties": {
+          "transfer_id": {
             "type": "string"
           },
-          "bank_name": {
-            "type": "string"
-          },
-          "bank_country": {
-            "type": "string"
-          },
-          "bank_address": {
-            "type": "string"
-          },
-          "routing_number_type": {
-            "$ref": "#/components/schemas/FiatDepositInstructionsRoutingNumberType"
-          },
-          "routing_number": {
-            "type": "string"
-          },
-          "recipient_name": {
-            "type": "string"
-          },
-          "recipient_address": {
-            "type": "string"
-          },
-          "account_number": {
-            "type": "string"
+          "status": {
+            "$ref": "#/components/schemas/TransferDetailsTransferStatus"
           }
         },
-        "description": "A simplified version of V2 transfers FiatDepositInstructions. Used only for the new\norchestration endpoints."
-      },
-      "FiatDepositInstructionsRoutingNumberType": {
-        "type": "string",
-        "enum": ["ABA", "SWIFT"]
+        "description": "TransferDetails refers to a specific Transfer and encodes its current status."
       }
     },
     "examples": {
@@ -1330,7 +1227,7 @@
           }
         }
       },
-      "Problem_already_exists_quote": {
+      "Problem_already_exists_quote_execution": {
         "value": {
           "type": "https://developer.paxos.com/docs/v2/problems/already-exists",
           "title": "Already Exists",
