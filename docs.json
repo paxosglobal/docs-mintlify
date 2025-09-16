@@ -839,9 +839,15 @@
             "group": "2025-09-16",
             "openapi": {
               "source": "api-reference/preview/2025-09-16.openapi.json",
-              "directory": "api-reference/preview/2025-09-12"
+              "directory": "api-reference/preview/2025-09-16"
             }
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Old Previews",
+        "hidden": true,
+        "groups": [
           {
             "group": "2025-09-12 Pair",
             "openapi": {
