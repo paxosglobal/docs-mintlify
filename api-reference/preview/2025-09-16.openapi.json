@@ -683,19 +683,19 @@
             ],
             "pending_requirements": [
               {
-                "requirement": "PENDING_ID_VERIFICATION",
-                "message": "ID Verification"
+                "requirement_type": "ID_VERIFICATION",
+                "message": "Pending ID Verification"
               },
               {
-                "requirement": "PENDING_SANCTIONS_SCREENING",
-                "message": "Sanctions Screening"
+                "requirement_type": "SANCTIONS_SCREENING",
+                "message": "Pending Sanctions Screening"
               },
               {
-                "requirement": "PENDING_ADDITIONAL_SCREENING",
-                "message": "PEP/Adverse Media Screening"
+                "requirement_type": "ADDITIONAL_SCREENING",
+                "message": "Pending PEP/Adverse Media Screening"
               },
               {
-                "requirement": "PENDING_MEMBERS",
+                "requirement_type": "MEMBERS",
                 "message": "Pending members",
                 "metadata": {
                   "f190b163-208f-4d73-8deb-000000000001": "PENDING"
@@ -704,22 +704,22 @@
             ],
             "failed_requirements": [
               {
-                "requirement": "FAILED_ENHANCED_DUE_DILIGENCE",
-                "message": "Enhanced Due Diligence"
+                "requirement_type": "ENHANCED_DUE_DILIGENCE",
+                "message": "Failed Enhanced Due Diligence checks"
               },
               {
-                "requirement": "FAILED_RISK_AWARENESS_ASSESSMENT",
-                "message": "Risk Awareness Assessment"
+                "requirement_type": "RISK_AWARENESS_ASSESSMENT",
+                "message": "Failed Risk Awareness Assessment"
               },
               {
-                "requirement": "DISABLED_MEMBERS",
+                "requirement_type": "DISABLED_MEMBERS",
                 "message": "Disabled members",
                 "metadata": {
                   "f190b163-208f-4d73-8deb-000000000002": "DISABLED"
                 }
               },
               {
-                "requirement": "RISK_RATING",
+                "requirement_type": "RISK_RATING",
                 "message": "Jurisdiction not supported by Paxos"
               }
             ]
@@ -1426,52 +1426,24 @@
         },
         "required": ["id"]
       },
-      "IdentityPendingRequirementType": {
+      "IdentityRequirementType": {
         "type": "string",
         "enum": [
-          "PENDING_ID_VERIFICATION",
-          "PENDING_SANCTIONS_SCREENING",
-          "PENDING_ADDITIONAL_SCREENING",
-          "PENDING_ENHANCED_DUE_DILIGENCE",
-          "PENDING_RISK_AWARENESS_ASSESSMENT",
-          "PENDING_MEMBERS"
-        ]
-      },
-      "IdentityFailedRequirementType": {
-        "type": "string",
-        "enum": [
-          "FAILED_ID_VERIFICATION",
-          "FAILED_SANCTIONS_SCREENING",
-          "FAILED_ADDITIONAL_SCREENING",
-          "FAILED_ENHANCED_DUE_DILIGENCE",
-          "FAILED_RISK_AWARENESS_ASSESSMENT",
-          "DISABLED_MEMBERS",
-          "EXPIRED_KYC_REFRESH",
+          "ID_VERIFICATION",
+          "SANCTIONS_SCREENING",
+          "ADDITIONAL_SCREENING",
+          "ENHANCED_DUE_DILIGENCE",
+          "RISK_AWARENESS_ASSESSMENT",
+          "MEMBERS",
+          "KYC_REFRESH",
           "RISK_RATING"
         ]
       },
-      "IdentityPendingRequirement": {
+      "IdentityRequirement": {
         "type": "object",
         "properties": {
-          "requirement": {
-            "$ref": "#/components/schemas/IdentityPendingRequirementType"
-          },
-          "message": {
-            "type": "string"
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "IdentityFailedRequirement": {
-        "type": "object",
-        "properties": {
-          "requirement": {
-            "$ref": "#/components/schemas/IdentityFailedRequirementType"
+          "requirement_type": {
+            "$ref": "#/components/schemas/IdentityRequirementType"
           },
           "message": {
             "type": "string"
@@ -1493,13 +1465,13 @@
           "pending_requirements": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/IdentityPendingRequirement"
+              "$ref": "#/components/schemas/IdentityRequirement"
             }
           },
           "failed_requirements": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/IdentityFailedRequirement"
+              "$ref": "#/components/schemas/IdentityRequirement"
             }
           }
         }
