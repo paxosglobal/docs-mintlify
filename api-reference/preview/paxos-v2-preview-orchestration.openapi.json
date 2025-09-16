@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "/orchestrationpb/orchestration_public.proto",
-    "version": "version not set"
+    "title": "Paxos Orchestration API",
+    "version": "v2-preview"
   },
   "tags": [
     {
@@ -22,6 +22,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ListOrchestrationsResponse"
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "orchestrations": [
+                        {
+                          "id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
+                          "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c",
+                          "identity_id": "f1f8651f-cece-4310-92c0-9cbb9d1b3601",
+                          "account_id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
+                          "ref_id": "082d38c8-c7b1-4a3b-bdf9-b3a428c1ce80",
+                          "source_asset": "PYUSD",
+                          "destination_asset": "USD",
+                          "source_amount": "1.5",
+                          "source_transfer": {
+                            "transfer_id": "35e3d34d-5552-4185-9583-d6b2856291c0",
+                            "status": "COMPLETED"
+                          },
+                          "destination_transfer": {
+                            "transfer_id": "91252ea9-1659-4ca2-9e3a-310612e44233",
+                            "status": "PROCESSING"
+                          },
+                          "status": "PROCESSING",
+                          "source": {
+                            "profile": {
+                              "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c"
+                            }
+                          },
+                          "destination": {
+                            "crypto": {
+                              "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+                              "network": "ethereum"
+                            }
+                          },
+                          "created_at": "2024-03-20T10:00:00Z",
+                          "updated_at": "2024-03-20T10:05:00Z",
+                          "metadata": {
+                            "purpose": "conversion"
+                          }
+                        }
+                      ],
+                      "next_page_cursor": "next_page_token_123"
+                    }
+                  }
                 }
               }
             }
@@ -211,6 +255,45 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Orchestration"
+                },
+                "examples": {
+                  "response": {
+                    "value": {
+                      "id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
+                      "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c",
+                      "identity_id": "f1f8651f-cece-4310-92c0-9cbb9d1b3601",
+                      "account_id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
+                      "ref_id": "082d38c8-c7b1-4a3b-bdf9-b3a428c1ce80",
+                      "source_asset": "PYUSD",
+                      "destination_asset": "USD",
+                      "source_amount": "1.5",
+                      "source_transfer": {
+                        "transfer_id": "35e3d34d-5552-4185-9583-d6b2856291c0",
+                        "status": "PENDING"
+                      },
+                      "destination_transfer": {
+                        "transfer_id": "91252ea9-1659-4ca2-9e3a-310612e44233",
+                        "status": "PENDING"
+                      },
+                      "status": "PROCESSING",
+                      "source": {
+                        "profile": {
+                          "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c"
+                        }
+                      },
+                      "destination": {
+                        "crypto": {
+                          "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+                          "network": "ethereum"
+                        }
+                      },
+                      "created_at": "2024-03-20T10:00:00Z",
+                      "updated_at": "2024-03-20T10:00:00Z",
+                      "metadata": {
+                        "purpose": "conversion"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -221,6 +304,33 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateOrchestrationRequest"
+              },
+              "examples": {
+                "create_orchestration": {
+                  "value": {
+                    "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c",
+                    "identity_id": "f1f8651f-cece-4310-92c0-9cbb9d1b3601",
+                    "account_id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
+                    "ref_id": "082d38c8-c7b1-4a3b-bdf9-b3a428c1ce80",
+                    "source_asset": "PYUSD",
+                    "destination_asset": "USD",
+                    "source_amount": "1.5",
+                    "source": {
+                      "profile": {
+                        "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c"
+                      }
+                    },
+                    "destination": {
+                      "crypto": {
+                        "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+                        "network": "ethereum"
+                      }
+                    },
+                    "metadata": {
+                      "purpose": "conversion"
+                    }
+                  }
+                }
               }
             }
           },
@@ -759,7 +869,7 @@
           },
           "ref_id": {
             "type": "string",
-            "description": "A client or system-specified unique identifier for the orchestration - used for idempotency\nprotection. Retries of a request should use the same ref_id to avoid duplicate transactions.\nFor system-initiated orchestrations generated by invocation of an orchestration rule, the\nref_id is generated the system."
+            "description": "A client or system-specified unique identifier for the orchestration - used for idempotency\nprotection. Retries of a request should use the same ref_id to avoid duplicate transactions.\n\nFor system-initiated orchestrations generated by invocation of an orchestration rule, the\nref_id is generated by the system."
           },
           "source_asset": {
             "type": "string"
@@ -809,7 +919,7 @@
             "title": "Metadata associated with the orchestration"
           }
         },
-        "description": "Orchestrations can be created directly via the CreateOrchestration endpoint, or indirectly\nby an incoming deposit which matches an OrchestrationRule previously defined with the\nCreateOrchestrationRule endpoint."
+        "description": "An orchestration represents an intent to move a source asset via a source rail to a destination\nasset via a destination rail. If source asset differs from destination asset, it signals a conversion.\n\nOrchestrations can be created directly via the CreateOrchestration endpoint, or indirectly\nby an incoming deposit which matches an OrchestrationRule previously defined with the\nCreateOrchestrationRule endpoint."
       },
       "OrchestrationCryptoDestination": {
         "type": "object",
@@ -1477,5 +1587,15 @@
         }
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "https://api.paxos.com/v2",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.sandbox.paxos.com/v2",
+      "description": "Sandbox"
+    }
+  ]
 }
