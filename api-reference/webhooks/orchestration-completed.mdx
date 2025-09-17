@@ -1,0 +1,15 @@
+---
+title: "orchestration.completed"
+description: "Webhook triggered when an orchestration completes successfully"
+openapi: "webhooks-openapi.json webhook orchestration.completed"
+---
+
+Triggered when an orchestration is COMPLETED and all transfers have been successfully executed.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/endpoints/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`orchestration_status_change`](/api-reference/events/orchestration-status-change-object) object with orchestration status details.
