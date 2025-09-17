@@ -1,12 +1,18 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Orchestration",
-    "version": "V2-Preview"
+    "title": "Paxos Orchestration API",
+    "version": "2.0.0",
+    "description": "The Orchestration API allows you to create and manage orchestrations that define how assets should be moved from a source to a destination,\npotentially including conversions between different asset types.\n"
   },
   "tags": [
     {
-      "name": "OrchestrationPublic"
+      "name": "Orchestrations",
+      "description": "Operations for managing orchestrations"
+    },
+    {
+      "name": "Orchestration Rules",
+      "description": "Operations for managing orchestration rules"
     }
   ],
   "paths": {
@@ -1586,16 +1592,42 @@
           "detail": "no marketable orders may be submitted at this time"
         }
       }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "Paxos APIs use OAuth 2 with the client credentials grant flow.\n\n**Token URLs:**\n- Production: https://oauth.paxos.com/oauth2/token\n- Sandbox: https://oauth.sandbox.paxos.com/oauth2/token\n",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "orchestration:read_orchestration": "Read orchestration data",
+              "orchestration:write_orchestration": "Create and manage orchestrations",
+              "orchestration:read_orchestration_rule": "Read orchestration rules",
+              "orchestration:write_orchestration_rule": "Create and delete orchestration rules"
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
     {
-      "url": "https://api.sandbox.paxos.com/v2",
-      "description": "Sandbox"
+      "url": "https://api.paxos.com/v2",
+      "description": "Production server"
     },
     {
-      "url": "https://api.paxos.com/v2",
-      "description": "Production"
+      "url": "https://api-sandbox.paxos.com/v2",
+      "description": "Sandbox server"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Orchestrations",
+      "tags": [
+        "Orchestrations",
+        "Orchestration Rules"
+      ]
     }
   ]
 }
