@@ -852,6 +852,25 @@
                     ]
                   }
                 ]
+              },
+              {
+                "group": "Orchestrations",
+                "pages": [
+                  {
+                    "group": "Hooks",
+                    "pages": [
+                      "api-reference/webhooks/orchestration-processing",
+                      "api-reference/webhooks/orchestration-completed",
+                      "api-reference/webhooks/orchestration-failed"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "api-reference/events/orchestration-status-change-object"
+                    ]
+                  }
+                ]
               }
             ]
           },
