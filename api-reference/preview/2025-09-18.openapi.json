@@ -683,19 +683,19 @@
             ],
             "pending_requirements": [
               {
-                "requirement_type": "ID_VERIFICATION",
+                "type": "ID_VERIFICATION",
                 "message": "Pending ID Verification"
               },
               {
-                "requirement_type": "SANCTIONS_SCREENING",
+                "type": "SANCTIONS_SCREENING",
                 "message": "Pending Sanctions Screening"
               },
               {
-                "requirement_type": "ADDITIONAL_SCREENING",
+                "type": "ADDITIONAL_SCREENING",
                 "message": "Pending PEP/Adverse Media Screening"
               },
               {
-                "requirement_type": "MEMBERS",
+                "type": "MEMBERS",
                 "message": "Pending members",
                 "metadata": {
                   "f190b163-208f-4d73-8deb-000000000001": "PENDING"
@@ -704,22 +704,22 @@
             ],
             "failed_requirements": [
               {
-                "requirement_type": "ENHANCED_DUE_DILIGENCE",
+                "type": "ENHANCED_DUE_DILIGENCE",
                 "message": "Failed Enhanced Due Diligence checks"
               },
               {
-                "requirement_type": "RISK_AWARENESS_ASSESSMENT",
+                "type": "RISK_AWARENESS_ASSESSMENT",
                 "message": "Failed Risk Awareness Assessment"
               },
               {
-                "requirement_type": "DISABLED_MEMBERS",
+                "type": "DISABLED_MEMBERS",
                 "message": "Disabled members",
                 "metadata": {
                   "f190b163-208f-4d73-8deb-000000000002": "DISABLED"
                 }
               },
               {
-                "requirement_type": "RISK_RATING",
+                "type": "RISK_RATING",
                 "message": "Jurisdiction not supported by Paxos"
               }
             ]
@@ -1435,7 +1435,7 @@
       "IdentityRequirement": {
         "type": "object",
         "properties": {
-          "requirement_type": {
+          "type": {
             "$ref": "#/components/schemas/IdentityRequirementType"
           },
           "message": {
