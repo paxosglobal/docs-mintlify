@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Paxos Identity API",
-    "version": "2025-09-16"
+    "version": "2025-09-18"
   },
   "tags": [
     {
@@ -330,8 +330,8 @@
             }
           },
           {
-            "name": "include_archived",
-            "description": "Include archived controls in the response.",
+            "name": "include_deleted",
+            "description": "Include deleted controls in the response.",
             "in": "query",
             "required": false,
             "schema": {
@@ -666,7 +666,7 @@
             "active_controls": [
               {
                 "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
-                "control_type": "DISABLED",
+                "type": "CLOSED",
                 "controlled_by": "CLIENT",
                 "reason_code": "END_USER_REQUESTED",
                 "reason": "some client-set reason",
@@ -674,7 +674,7 @@
               },
               {
                 "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
-                "control_type": "DISABLED",
+                "type": "CLOSED",
                 "controlled_by": "PAXOS",
                 "reason_code": "OTHER",
                 "reason": "some admin-set reason",
@@ -1296,7 +1296,7 @@
       "IdentityControlType": {
         "type": "string",
         "enum": [
-          "DISABLED",
+          "CLOSED",
           "FROZEN",
           "DORMANT"
         ]
@@ -1311,7 +1311,7 @@
       "ClientIdentityControlType": {
         "type": "string",
         "enum": [
-          "DISABLED",
+          "CLOSED",
           "DORMANT"
         ]
       },
@@ -1330,7 +1330,7 @@
           "id": {
             "type": "string"
           },
-          "control_type": {
+          "type": {
             "$ref": "#/components/schemas/IdentityControlType"
           },
           "controlled_by": {
@@ -1347,11 +1347,6 @@
             "type": "string",
             "format": "date-time",
             "description": "Time this identity control was created"
-          },
-          "archived_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Time this identity control was deleted"
           }
         }
       },
@@ -1363,7 +1358,7 @@
         "example": [
           {
             "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
-            "control_type": "DISABLED",
+            "type": "CLOSED",
             "controlled_by": "CLIENT",
             "reason_code": "END_USER_REQUESTED",
             "reason": "some client-set reason",
@@ -1371,7 +1366,7 @@
           },
           {
             "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
-            "control_type": "DISABLED",
+            "type": "CLOSED",
             "controlled_by": "PAXOS",
             "reason_code": "OTHER",
             "reason": "some admin-set reason",
@@ -1379,28 +1374,26 @@
           },
           {
             "id": "173fdece-0792-4833-a6bb-232b461a9fa4",
-            "control_type": "FROZEN",
+            "type": "FROZEN",
             "controlled_by": "PAXOS",
             "reason_code": "SANCTIONS",
             "reason": "some admin-set reason",
-            "created_at": "2006-01-02T15:04:05Z",
-            "archived_at": "2006-01-02T15:04:05Z"
+            "created_at": "2006-01-02T15:04:05Z"
           },
           {
             "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
-            "control_type": "DORMANT",
+            "type": "DORMANT",
             "controlled_by": "CLIENT",
             "reason_code": "DORMANT",
             "reason": "some reason",
-            "created_at": "2006-01-02T15:04:05Z",
-            "archived_at": "2006-01-02T15:04:05Z"
+            "created_at": "2006-01-02T15:04:05Z"
           }
         ]
       },
       "CreateIdentityControlRequest": {
         "type": "object",
         "properties": {
-          "control_type": {
+          "type": {
             "$ref": "#/components/schemas/ClientIdentityControlType"
           },
           "reason_code": {
@@ -1411,7 +1404,7 @@
             "description": "Freetext reason for setting or clearing the control"
           }
         },
-        "required": ["control_type", "reason_code"]
+        "required": ["type", "reason_code"]
       },
       "DeleteIdentityControlRequest": {
         "type": "object",
