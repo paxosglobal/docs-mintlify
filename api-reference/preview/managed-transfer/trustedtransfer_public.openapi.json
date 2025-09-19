@@ -1,0 +1,808 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos API",
+    "version": "2.0",
+    "description": "<p>Welcome to Paxos APIs. At Paxos, our mission is to enable the movement of any asset, any time, in a trustworthy way. These APIs serve that mission by making it easier than ever for you to directly integrate our product capabilities into your application, leveraging the speed, stability, and security of the Paxos platform.</p> <p>The documentation that follows gives you access to our Crypto Brokerage, Trading, and Exchange products. It includes APIs for market data, orders, and the held rate quote flow.</p> <p>To test in our sandbox environment, <a href=\"https://account.sandbox.paxos.com\" target=\"_blank\">sign up</a> for an account. For more information about Paxos and our APIs, visit <a href=\"https://www.paxos.com/\" target=\"_blank\">Paxos.com</a>.</p>\n",
+    "x-logo": {
+      "url": "/docs/paxos.svg",
+      "backgroundColor": "#FFFFFF",
+      "altText": "Paxos logo"
+    }
+  },
+  "tags": [
+    {
+      "name": "Profiles",
+      "description": "Profiles hold asset balances, and every Paxos transaction is on a particular profile.\nDepending on your integration type, Profiles may be used to reflect both corporate balances or individual user balances.\nThere are two types of Profiles:\n- `DEFAULT` Profiles are system-generated.\n- `NORMAL` Profiles are created using the [Create Profile](#operation/CreateProfile) endpoint and are the only type of Profile you can create.\n"
+    },
+    {
+      "name": "Quotes",
+      "description": "Quotes are \"held rates\" offered by Paxos to buy or sell assets at a specific\nprice within a period of time - for example, the option to buy BTC within\nthe next 30 seconds for $8,000.\n\nThe typical Quotes workflow is as follows:\n\n1. Call [List Quotes](#operation/ListQuotes) to get the latest available\n   quoted prices for the assets you want to buy or sell.\n1. Present the offered price to one or more end-users, with a timer\n   indicating the time to expiration.\n1. If a user accepts the price, call [Create Quote Execution](#operation/CreateQuoteExecution) with the amount to buy or sell.\n1. Call [Get Quote Execution](#operation/GetQuoteExecution) to monitor\n   for completion and know when the funds from the execution are available.\n\nIt's important to show end-users the latest available price. If you cache\nprices to show them to multiple users, you should refresh the cache once\nper second.\n\nYou can call [List Quote Executions](#operation/ListQuoteExecutions) to\nreview or construct reports on quote execution activity.\n"
+    },
+    {
+      "name": "Quote Executions",
+      "description": "Quote Executions buy or sell assets using a Quote obtained from\nthe [Quotes](#tag/Quotes) flow.\n"
+    },
+    {
+      "name": "Orders",
+      "description": "<p>There are three types of orders: market, limit and post-only.</p>\n<p>Market orders guarantee execution at a variable price and quantity. Limit orders guarantee price and quantity at the time of execution but do not guarantee execution. Post-only is an order type that will only be placed on the order book if it is the maker side of a trade.</p>\n"
+    },
+    {
+      "name": "Market Data",
+      "description": "Market data provides various parameters of the order book and historical order data.\n"
+    },
+    {
+      "name": "Pricing",
+      "description": "Pricing provides historical data related to charting of asset prices.\n\nNote: Some Pricing API markets may be unavailable for trading.\n"
+    },
+    {
+      "name": "Issuer Quotes",
+      "description": "Issuer Quotes are \"held rates\" offered by Paxos to mint or redeem Paxos-issued assets at a specific price within a period of time - for example, the option to buy PAXG within the next 5 seconds for $3,000.\n\nThe typical Issuer Quotes workflow is as follows:\n\n1. Call [Create Issuer Quote](#operation/CreateIssuerQuote) to get a quote for the asset you want to mint or redeem to a specific profile.\n1. Call [Create Issuer Quote Execution](#operation/CreateIssuerQuoteExecution) with the quote ID and profile ID.\n\nYou can call [List Issuer Quote Executions](#operation/ListIssuerQuoteExecutions) to review or construct reports on issuer quote execution activity.\n"
+    },
+    {
+      "name": "Identity",
+      "description": "An Identity represents a person or institution who is able to take actions on the Paxos Platform. Depending on \nyour integration type you might not need to create Identities for your end users. \n\nIdentities must pass a set of verifications and checks before they're able to transact on the Platform. Learn more\nabout getting started with Identity and managing their onboarding lifecycle in the [Identity Developer Guide](https://docs.paxos.com/identity).\n"
+    },
+    {
+      "name": "Institution Members",
+      "description": "Institution Members allow you to associate persons with an institution on our Platform.\nEach institution can have multiple members, with each member representing the relationship to a person identity.\n\nWhen creating an institution identity, you must designate at least one institution member.\nThis requirement ensures we have complete information about the institution's ownership structure\nand key personnel, which is necessary to onboard institutions.\n"
+    },
+    {
+      "name": "Accounts",
+      "description": "Accounts connect Identities (persons or institutions) to Profiles (asset balances).\nKey features include:\n\n- **Balance Management**: Track and manage profile balances via [Subledgering](https://docs.paxos.com/crypto-brokerage/ledger-type#fiat-and-crypto-subledger)\n- **Joint Account Support**: Link multiple Identities to a single Account for shared on platform balance\n\nAccounts are required for all Identity API integrations.\n"
+    },
+    {
+      "name": "Account Members",
+      "description": "Account Members allow you to associate an Identity with an Account on our Platform.\nEach Account can be linked to multiple Identities, which supports Joint Accounts (where two Identities have the ability\nto transact against a single Profile)  \n\nAccount members are effectively immutable. In order to update an account member,\nclients should remove then re-add the account member with the desired state.\n\nThe API requires clients to have write access on the account and all identities\nassociated with the account.\n"
+    },
+    {
+      "name": "Identity Documents",
+      "description": "The Identity Documents API allows clients to send documents to Paxos to validate identities\nduring the KYC process. Files can be updated multiple times by re-sending the document type\nfor processing.\n\nWe currently accept the following file formats:\n- <code>pdf</code>\n- <code>jpg</code>\n- <code>png</code>\n\nSteps to upload a document are as follows:\n1. Send a <code>PUT</code> request to <code>/identity/identities/{id}/documents</code> to get\n  the upload URL.\n1. Send your document to the provided URL via a PUT request. Take the following example using curl:\n  <code>$ curl --upload-file Proof_of_residence.jpg $URI </code>\n\nUploaded document metadata will be available via <code>GET</code> request to <code>/identity/identities/{id}/documents</code>\n"
+    },
+    {
+      "name": "Fiat Transfers",
+      "description": "The Fiat Transfers API allows clients to deposit and withdraw fiat via the following Fiat Networks: Wire (Fedwire and SWIFT) and CUBIX. The supported asset is USD.\n\nThe full set of Fiat Transfers API endpoints is:\n- For Deposits:\n  - [Create Fiat Deposit Instructions](#operation/CreateFiatDepositInstructions)\n  - [List Fiat Deposit Instructions](#operation/ListFiatDepositInstructions)\n  - [Get Fiat Deposit Instructions](#operation/GetFiatDepositInstructions)\n- For Withdrawals:\n  - [Create Fiat Account](#operation/CreateFiatAccount)\n  - [List Fiat Accounts](#operation/ListFiatAccounts)\n  - [Get Fiat Account](#operation/GetFiatAccount)\n  - [Delete Fiat Account](#operation/DeleteFiatAccount)\n  - [Update Fiat Account](#operation/UpdateFiatAccount)\n  - [Create Fiat Withdrawal](#operation/CreateFiatWithdrawal)\n"
+    },
+    {
+      "name": "Stablecoin Conversion",
+      "description": "<p>Convert between fiat and stablecoin using <a href=\"#operation/CreateStablecoinConversion\">Create Stablecoin Conversion</a> and check the status of a <a href=\"#operation/GetStablecoinConversion\">single conversion</a> or retrieve a <a href=\"#operation/ListStablecoinConversions\">list of conversions</a>.</p>\n",
+      "externalDocs": {
+        "description": "Learn more about stablecoin conversions →",
+        "url": "https://docs.paxos.com/developer/convert"
+      }
+    },
+    {
+      "name": "Transfers",
+      "description": "Each deposit to and withdrawal from a Paxos account is a Transfer.\nA Transfer is associated with a particular Profile, and increases or\ndecreases the available balance of a single asset in that Profile.\n"
+    },
+    {
+      "name": "Tax Forms",
+      "description": "All tax forms are associated to a single account_id.\nAn account_id can have multiple tax forms associated with it.\nUS 1099-B and 1099-Misc tax forms for the previous fiscal year will be available in February of the current calendar year.\nPrevious years tax forms are also available by request.\n"
+    },
+    {
+      "name": "Crypto Deposits",
+      "description": "For [Paxos Global PTE Ltd](https://help.paxos.com/hc/en-us/articles/9647005243284) users, update or reject a crypto deposit that does not contain the required [travel rule](https://help.paxos.com/hc/en-us/articles/25928845778068) information.\nDeposits with the `NEEDS_INFO` status require additional sender information before they can be processed.\n- For individuals, both first and last name are required.\n- For institutions, the institution name is required.\n\nIf a deposit is rejected, the funds will no longer be available.\n",
+      "externalDocs": {
+        "description": "Learn more about travel rule udpates →",
+        "url": "https://help.paxos.com/hc/en-us/articles/25422999706900"
+      }
+    },
+    {
+      "name": "Settlement",
+      "description": "Use the Settlements API to facilitate simultaneous exchange of pre-funded assets. Automate a variety of use cases that require two-party approval, including net settlement of over-the-counter trades, withdrawal requests for tri-party collateral, payment requests, and bilateral settlement for marketplace end users.\n\nThe simple request-and-approval workflow supports both one-directional and bidirectional transactions to allow a user to receive an asset (for example, send USDP) or simultaneously send and receive assets (for example, send USD and receive BTC and ETH). Only when all parties are in agreement and assets are fully funded does the Settlements API allow for change of custody. Upon completion, all settled assets are immediately available for trading, transferring, withdrawal or other supported activities.\n\nThe Source Profile initiates the transaction for the Target Profile to approve. The `DIRECTION` of each asset is always relative to the Source Profile and only the owner of the Source Profile can cancel a transaction if it hasn't been approved by the Target Profile.\n",
+      "externalDocs": {
+        "description": "Learn more about the Settlement APIs →",
+        "url": "https://docs.paxos.com/settlements"
+      }
+    },
+    {
+      "name": "Paxos Transfers",
+      "description": "Move assets between two Entities belonging to the same Organization or to a different Organization on the Paxos platform.\n\n> Transferring USD between Entities is prohibited in some jurisdictions. Contact [Support](https://support.paxos.com/) if you run into any problems with this restriction.\n\nEnsure the destination [Profile](https://docs.paxos.com/dashboard/organization#profile) already exists before beginning the transfer. This may require contacting someone outside your Organization to get the destination Profile ID.\n"
+    },
+    {
+      "name": "Monitoring Addresses",
+      "description": "A Monitoring Address is a blockchain address that Paxos monitors daily for eligible stablecoin activity and determines the amount of rewards your organization will earn. We recommend adding any addresses you expect to hold, receive, or mint Paxos stablecoins as a monitoring address in order to receive rewards for all of your qualifying on-chain activity. \n\n> Monitoring addresses must be added by month end (`23:59 UTC+0`) in order to earn rewards for that month. Addresses added after month end will start earning rewards for the following month.\n\n*These endpoints are only relevant for Global Dollar Network (GDN) partners.*\n"
+    },
+    {
+      "name": "Payout Address",
+      "description": "Endpoints working with Payout Address. These endpoints are only relevant for Global Dollar Network (GDN) partners."
+    },
+    {
+      "name": "Statements",
+      "description": "A Statement summarizes all eligible stablecoin rewards for a given organization over a fixed time period. It aggregates earned reward types (e.g., custody, mint, acceptance) and records whether the statement was paid.\n\nStatements are generated monthly and are immutable. Revised statements will be issued as a new statement with a unique ID. Statements can be used to reconcile balances or for accounting and accounts receivable purposes.\n\n*These endpoints are only relevant for Global Dollar Network (GDN) partners.*\n"
+    },
+    {
+      "name": "Payments",
+      "description": "Payments represent actual transfers of rewards to the payout address associated with a given statement. Payments are made on-chain to a specified payout address. Payments tie 1:1 with a statement amount.\n\nUse the `ref_id` to link payments to statements. \n\n> Some fields (e.g., `account_id`, `profile_id`) are populated for consistency but are not relevant to reward-specific flows.\n\n*These endpoints are only relevant for Global Dollar Network (GDN) partners.*\n"
+    },
+    {
+      "name": "API Credentials",
+      "description": "API credentials allow programmatic access to Paxos APIs. These endpoints enable you to manage and view your API credentials.\n"
+    },
+    {
+      "name": "Events",
+      "description": "The Events API allows you to fetch events that occurred on the Paxos platform with the full event payload. This REST API can be used as part of your webhook integrations (including rebuilding your event history should your webhook consumer exceed its retries), or standalone by polling for events related to your identities.\n"
+    },
+    {
+      "name": "Event Types",
+      "description": "<div style=\"max-width:100%; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;\">\n  <div style=\"padding:0 0 24px;\">\n    <div style=\"display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:24px;\">\n      <!-- identity.documents_required -->\n      <div id=\"event-identity-documents-required\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-documents-required\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.documents_required</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-documents-required\" style=\"color:inherit; text-decoration:none;\">object: identity_documents_required</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity requires additional documents, use the <a href=\"#tag/Identity-Documents\">UploadDocument</a> endpoint to upload all required documents.\n          </p>\n        </div>\n      </div>\n      <!-- identity.approved -->\n      <div id=\"event-identity-approved\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-approved\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.approved</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-summary-status-change\" style=\"color:inherit; text-decoration:none;\">object: identity_summary_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity is <code>APPROVED</code>\n          </p>\n        </div>\n      </div>\n      <!-- identity.denied -->\n      <div id=\"event-identity-denied\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-denied\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.denied</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-summary-status-change\" style=\"color:inherit; text-decoration:none;\">object: identity_summary_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity is <code>DENIED</code>\n          </p>\n        </div>\n      </div>\n      <!-- identity.disabled -->\n      <div id=\"event-identity-disabled\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-disabled\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.disabled</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-summary-status-change\" style=\"color:inherit; text-decoration:none;\">object: identity_summary_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity is <code>DISABLED</code>\n          </p>\n        </div>\n      </div>\n      <!-- identity.kyc_refresh.started -->\n      <div id=\"event-identity-kyc-refresh-started\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-kyc-refresh-started\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.kyc_refresh.started</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-kyc-refresh\" style=\"color:inherit; text-decoration:none;\">object: identity_kyc_refresh</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity is required to undergo its periodic <a href=\"https://docs.paxos.com/identity/kyc-refresh\">KYC refresh</a>.\n          </p>\n        </div>\n      </div>\n      <!-- identity.kyc_refresh.completed -->\n      <div id=\"event-identity-kyc-refresh-completed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-kyc-refresh-completed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.kyc_refresh.completed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-kyc-refresh\" style=\"color:inherit; text-decoration:none;\">object: identity_kyc_refresh</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity has successfully completed its periodic <a href=\"https://docs.paxos.com/identity/kyc-refresh\">KYC refresh</a>.\n          </p>\n        </div>\n      </div>\n      <!-- identity.kyc_refresh.expired -->\n      <div id=\"event-identity-kyc-refresh-expired\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-identity-kyc-refresh-expired\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">identity.kyc_refresh.expired</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-identity-kyc-refresh\" style=\"color:inherit; text-decoration:none;\">object: identity_kyc_refresh</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Identity has not completed its required <a href=\"https://docs.paxos.com/identity/kyc-refresh\">KYC refresh</a> within the designated timeframe.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_deposit.pending -->\n      <div id=\"event-transfer-crypto-deposit-pending\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-deposit-pending\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_deposit.pending</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto deposit detected on-chain and is <code>PENDING</code> confirmation.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_deposit.completed -->\n      <div id=\"event-transfer-crypto-deposit-completed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-deposit-completed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_deposit.completed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto deposit is <code>COMPLETED</code> and funds are available on platform.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_deposit.failed -->\n      <div id=\"event-transfer-crypto-deposit-failed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-deposit-failed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_deposit.failed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto deposit has <code>FAILED</code> or been cancelled.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_withdrawal.pending -->\n      <div id=\"event-transfer-crypto-withdrawal-pending\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-withdrawal-pending\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_withdrawal.pending</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto withdrawal has been initiated and is <code>PENDING</code> on-chain processing.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_withdrawal.completed -->\n      <div id=\"event-transfer-crypto-withdrawal-completed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-withdrawal-completed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_withdrawal.completed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto withdrawal is <code>COMPLETED</code> and has been sent to the destination address.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.crypto_withdrawal.failed -->\n      <div id=\"event-transfer-crypto-withdrawal-failed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-crypto-withdrawal-failed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.crypto_withdrawal.failed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Crypto withdrawal has <code>FAILED</code> or been cancelled.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_deposit.pending -->\n      <div id=\"event-transfer-act-deposit-pending\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-deposit-pending\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_deposit.pending</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat deposit via DBS has been initiated and is <code>PENDING</code> processing.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_deposit.completed -->\n      <div id=\"event-transfer-act-deposit-completed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-deposit-completed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_deposit.completed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat deposit via DBS is <code>COMPLETED</code> and funds are available on platform.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_deposit.failed -->\n      <div id=\"event-transfer-act-deposit-failed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-deposit-failed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_deposit.failed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat deposit via DBS has <code>FAILED</code> or been cancelled.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_withdrawal.pending -->\n      <div id=\"event-transfer-act-withdrawal-pending\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-withdrawal-pending\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_withdrawal.pending</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat withdrawal via DBS has been initiated and is <code>PENDING</code> processing.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_withdrawal.completed -->\n      <div id=\"event-transfer-act-withdrawal-completed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-withdrawal-completed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_withdrawal.completed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat withdrawal via DBS is <code>COMPLETED</code> and has been sent to the destination account.\n          </p>\n        </div>\n      </div>\n      <!-- transfer.act_withdrawal.failed -->\n      <div id=\"event-transfer-act-withdrawal-failed\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 2px 5px rgba(0,0,0,0.03); transition:transform 0.15s ease, box-shadow 0.15s ease;\">\n        <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n          <div style=\"display:flex; align-items:center; justify-content:space-between;\">\n            <h3 style=\"margin:0; font-size:15px; color:#1a1f36; font-weight:600;\">\n              <a href=\"#event-transfer-act-withdrawal-failed\" style=\"color:inherit; text-decoration:none;\">\n                <code style=\"font-family:monospace; font-weight:500;\">transfer.act_withdrawal.failed</code>\n              </a>\n            </h3>\n            <span style=\"font-size:12px; color:#697386; background:#e3e8ee; padding:2px 8px; border-radius:12px;\">\n              <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">object: transfer_status_change</a>\n            </span>\n          </div>\n        </div>\n        <div style=\"padding:16px; background:white;\">\n          <p style=\"margin:0; font-size:14px; color:#4f566b; line-height:1.6;\">\n            Fiat withdrawal via DBS has <code>FAILED</code> or been cancelled.\n          </p>\n        </div>\n      </div>\n    </div>\n    <div style=\"background:#f8fafc; border:1px solid #e3e8ee; border-radius:8px; padding:16px; margin-top:24px;\">\n      <p style=\"margin:0; font-size:13px; color:#697386; line-height:1.5; display:flex; align-items:flex-start;\">\n        <span>\n          <strong>Note:</strong> We may add additional event types at any time. Your implementation should handle unexpected event types gracefully.\n        </span>\n      </p>\n    </div>\n  </div>\n</div>\n"
+    },
+    {
+      "name": "Event Objects",
+      "description": "<div style=\"max-width:100%; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;\">\n  <p style=\"font-size:14px; line-height:1.5; color:#4f566b; margin-bottom:20px;\">\n    The following object schemas describe the structure of data that accompanies each event type.\n  </p>\n  <!-- identity_documents_required -->\n  <div style=\"margin-bottom:32px;\">\n    <div id=\"object-identity-documents-required\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.05);\">\n      <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n        <h3 style=\"margin:0; font-size:16px; color:#1a1f36; font-weight:600;\">\n          <a href=\"#object-identity-documents-required\" style=\"color:inherit; text-decoration:none;\">\n            <code>identity_documents_required</code>\n          </a>\n        </h3>\n      </div>\n      <div>\n        <table style=\"margin-left: 12px; border-collapse:collapse; font-size:14px; line-height:1.5;\">\n          <thead>\n            <tr style=\"text-align:left; border-bottom:1px solid #e3e8ee;\">\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:30%;\">Field</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:20%;\">Type</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500;\">Description</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Unique identifier for this event object</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">identity_id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Identifier for the identity requiring documents</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">required_documents</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">list enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                List of <a href=\"https://docs.paxos.com/api/v2#tag/Identity-Documents/operation/ListIdentityDocuments\" style=\"color:#635bff; text-decoration:none; font-weight:500;\">required document types</a>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n  <!-- identity_summary_status_change -->\n  <div style=\"margin-bottom:32px;\">\n    <div id=\"object-identity-summary-status-change\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.05);\">\n      <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n        <h3 style=\"margin:0; font-size:16px; color:#1a1f36; font-weight:600;\">\n          <a href=\"#object-identity-summary-status-change\" style=\"color:inherit; text-decoration:none;\">\n            <code>identity_summary_status_change</code>\n          </a>\n        </h3>\n      </div>\n      <div>\n        <table style=\"margin-left: 12px; border-collapse:collapse; font-size:14px; line-height:1.5;\">\n          <thead>\n            <tr style=\"text-align:left; border-bottom:1px solid #e3e8ee;\">\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:30%;\">Field</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:20%;\">Type</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500;\">Description</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Unique identifier for this event object</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">identity_id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Identifier for the affected identity</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">old_summary_status</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Previous status:\n                <span style=\"display:block; margin-top:4px;\">\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">PENDING</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">ERROR</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">APPROVED</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">DENIED</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">DISABLED</code>\n                </span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">new_summary_status</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                New status:\n                <span style=\"display:block; margin-top:4px;\">\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">PENDING</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">ERROR</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">APPROVED</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">DENIED</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">DISABLED</code>\n                </span>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n  <!-- identity_kyc_refresh -->\n  <div style=\"margin-bottom:32px;\">\n    <div id=\"object-identity-kyc-refresh\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.05);\">\n      <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n        <h3 style=\"margin:0; font-size:16px; color:#1a1f36; font-weight:600;\">\n          <a href=\"#object-identity-kyc-refresh\" style=\"color:inherit; text-decoration:none;\">\n            <code>identity_kyc_refresh</code>\n          </a>\n        </h3>\n      </div>\n      <div>\n        <table style=\"margin-left: 12px; border-collapse:collapse; font-size:14px; line-height:1.5;\">\n          <thead>\n            <tr style=\"text-align:left; border-bottom:1px solid #e3e8ee;\">\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:30%;\">Field</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:20%;\">Type</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500;\">Description</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Unique identifier for this event object</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">identity_id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Identifier for the affected identity</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">last_kyc_refresh_date</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Datetime</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Date of the most recent completed KYC refresh\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional)</span>\n              </td>\n            </tr>\n            <tr>\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">next_kyc_refresh_date</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">Datetime</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Scheduled date for the next KYC refresh\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional)</span>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n  <!-- transfer_status_change -->\n  <div style=\"margin-bottom:32px;\">\n    <div id=\"object-transfer-status-change\" style=\"border:1px solid #e3e8ee; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.05);\">\n      <div style=\"background:#f7fafc; padding:16px; border-bottom:1px solid #e3e8ee;\">\n        <h3 style=\"margin:0; font-size:16px; color:#1a1f36; font-weight:600;\">\n          <a href=\"#object-transfer-status-change\" style=\"color:inherit; text-decoration:none;\">\n            <code>transfer_status_change</code>\n          </a>\n        </h3>\n      </div>\n      <div>\n        <table style=\"margin-left: 12px; border-collapse:collapse; font-size:14px; line-height:1.5;\">\n          <thead>\n            <tr style=\"text-align:left; border-bottom:1px solid #e3e8ee;\">\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:30%;\">Field</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500; width:20%;\">Type</th>\n              <th style=\"padding:12px 16px; color:#697386; font-weight:500;\">Description</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">UUID</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">The Paxos transfer ID. You can call the <a href=\"#tag/Transfers/operation/GetTransfer\">GetTransfer</a> endpoint with this ID to get more details about it.</td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">type</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Type of transfer:\n                <span style=\"display:block; margin-top:4px;\">\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">CRYPTO_DEPOSIT</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">CRYPTO_WITHDRAWAL</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">ACT_DEPOSIT</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">ACT_WITHDRAWAL</code>\n                </span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">status</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Status of transfer:\n                <span style=\"display:block; margin-top:4px;\">\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">PENDING</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">COMPLETED</code>\n                  <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:12px; margin-right:4px; margin-bottom:4px; display:inline-block;\">FAILED</code>\n                </span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">ref_id</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">string</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                The client-specified ID of the transfer for replay protection and lookup.\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional)</span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">crypto_network</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">enum</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Cryptocurrency network (e.g. <code>ETHEREUM</code>, <code>BASE</code>, <code>SOLANA</code>)\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional, present for crypto transfers)</span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">crypto_tx_hash</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">string</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                On-chain transaction hash\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional, present for crypto transfers when available)</span>\n              </td>\n            </tr>\n            <tr style=\"border-bottom:1px solid #f2f2f2;\">\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">crypto_tx_index</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">string</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                The output index or output address\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional, present for crypto transfers when available)</span>\n              </td>\n            </tr>\n            <tr>\n              <td style=\"padding:12px 16px; color:#1a1f36; vertical-align:top;\">\n                <code style=\"font-family:monospace; background:#f7fafc; padding:2px 4px; border-radius:3px; font-size:13px;\">memo</code>\n              </td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">string</td>\n              <td style=\"padding:12px 16px; color:#4f566b; vertical-align:top;\">\n                Memo associated with the transfer as an identifier\n                <span style=\"display:block; font-size:12px; color:#697386;\">(optional, present for fiat transfers when available)</span>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n  </div>\n\n  \n</div>\n"
+    }
+  ],
+  "paths": {
+    "/transfer/managed/deposit-intents": {
+      "get": {
+        "summary": "List Managed Deposit Intents",
+        "operationId": "ListTrustedDepositIntents",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTrustedDepositIntentsResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity_id",
+            "description": "The Paxos ID of the Identity associated with the transfer.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profile_ids",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Managed Transfers"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:read_managedtransfer"
+            ]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Managed Deposit Intent",
+        "description": "This is the first step in the process of a managed deposit.",
+        "operationId": "CreateTrustedDepositIntent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTrustedDepositIntentResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrustedDepositIntentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Managed Transfers"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_managedtransfer"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/managed/withdrawal-intents": {
+      "post": {
+        "summary": "Create Managed Withdrawal Intent",
+        "operationId": "CreateTrustedWithdrawalIntent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTrustedWithdrawalIntentResponse"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrustedWithdrawalIntentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Managed Transfers"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_managedtransfer"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/managed/withdrawal-intents/{id}": {
+      "get": {
+        "summary": "Get Managed Withdrawal Intent",
+        "operationId": "GetTrustedWithdrawalIntent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTrustedWithdrawalIntentResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Managed Transfers"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:read_managedtransfer"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/managed/withdrawal-intents/{id}/execute": {
+      "post": {
+        "summary": "Execute Managed Withdrawal Intent",
+        "operationId": "ExecuteTrustedWithdrawalIntent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecuteTrustedWithdrawalIntentResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrustedTransferPublicExecuteTrustedWithdrawalIntentBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Managed Transfers"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_managedtransfer"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TrustedTransferPublicExecuteTrustedWithdrawalIntentBody": {
+        "type": "object",
+        "properties": {
+          "auth_token": {
+            "type": "string",
+            "title": "Use the value from https://docs.meshconnect.com/guides/web-sdk#linkpayload-properties > AccessTokenPayload.AccountToken.accessToken"
+          },
+          "broker_type": {
+            "type": "string",
+            "description": "Use the value from AccessTokenPayload.brokerType."
+          },
+          "broker_name": {
+            "type": "string",
+            "title": "Use the value from AccessTokenPayload.brokerName"
+          },
+          "mfaCode": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "asset": {
+            "type": "string",
+            "title": "i.e. symbol.  E.g. ETH.  Used as input to Mesh's v1/transfers/managed/address/get"
+          },
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "ref_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTrustedDepositIntentRequest": {
+        "type": "object",
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "The Paxos ID of the Identity associated with the transfer."
+          },
+          "profile_id": {
+            "type": "string",
+            "description": "The target Profile of the transfer."
+          },
+          "source_integration_id": {
+            "type": "string",
+            "description": "The broker/exchange/wallet from which the deposit will originate.\nValid values are: `Binance`, `Coinbase`, ..."
+          },
+          "destination_crypto_networks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CryptoNetwork"
+            },
+            "description": "Possible network to accept the deposit on."
+          }
+        }
+      },
+      "CreateTrustedDepositIntentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the trusted deposit intent."
+          },
+          "link_token": {
+            "type": "string",
+            "description": "The link token used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+          },
+          "client_id": {
+            "type": "string",
+            "description": "The client id used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+          }
+        }
+      },
+      "CreateTrustedWithdrawalIntentRequest": {
+        "type": "object",
+        "properties": {
+          "identity_id": {
+            "type": "string"
+          },
+          "target_integration_id": {
+            "type": "string",
+            "description": "The broker/exchange/wallet from which the deposit will originate.\nValid values are: `Binance`, `Coinbase`, ..."
+          }
+        }
+      },
+      "CreateTrustedWithdrawalIntentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the trusted withdrawal intent."
+          },
+          "link_token": {
+            "type": "string",
+            "description": "The link token used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+          },
+          "client_id": {
+            "type": "string",
+            "description": "The client id used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+          }
+        }
+      },
+      "CryptoNetwork": {
+        "type": "string",
+        "enum": [
+          "BITCOIN",
+          "ETHEREUM",
+          "BITCOIN_CASH",
+          "LITECOIN",
+          "SOLANA",
+          "POLYGON_POS",
+          "BASE",
+          "ARBITRUM_ONE",
+          "STELLAR",
+          "INK",
+          "XLAYER"
+        ],
+        "description": "A CryptoNetwork is a blockchain transmitting cryptocurrencies.\n\n - STELLAR: @hidden\n - XLAYER: @hidden"
+      },
+      "ExecuteTrustedWithdrawalIntentResponse": {
+        "type": "object",
+        "properties": {
+          "destination_address": {
+            "type": "string"
+          },
+          "destination_crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "destination_minimum_deposit_amount": {
+            "type": "string"
+          },
+          "destination_broker_response_status": {
+            "type": "string"
+          },
+          "transfer_id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "string"
+          }
+        }
+      },
+      "GetTrustedWithdrawalIntentResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/TrustedWithdrawalStatus"
+          },
+          "destination_broker_type": {
+            "type": "string"
+          },
+          "destination_broker_name": {
+            "type": "string"
+          },
+          "transfer_id": {
+            "type": "string",
+            "title": "The caller can use as input to https://docs.paxos.com/api-reference/endpoints/transfers/get-transfer"
+          }
+        }
+      },
+      "ListTrustedDepositIntentsResponse": {
+        "type": "object",
+        "properties": {
+          "deposit_intents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrustedDepositIntents"
+            }
+          }
+        }
+      },
+      "TrustedDepositAttempt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TrustedDepositAttemptStatus"
+          },
+          "destination_crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "tx_hash": {
+            "type": "string"
+          },
+          "destination_address": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "transfer_id": {
+            "type": "string",
+            "description": "This field is populated when the status is SUBMITTED_TRANSFER_TO_PROFILE.  The caller can use this as input to https://docs.paxos.com/api-reference/endpoints/transfers/get-transfer."
+          }
+        }
+      },
+      "TrustedDepositAttemptStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED_TRANSFER_TO_PROFILE",
+          "UNMATCHED"
+        ]
+      },
+      "TrustedDepositIntentStatus": {
+        "type": "string",
+        "enum": [
+          "AWAITING_TRANSACTION_INFO",
+          "TIMED_OUT_RECEIVING_TRANSACTION_INFO"
+        ]
+      },
+      "TrustedDepositIntents": {
+        "type": "object",
+        "properties": {
+          "trusted_deposit_intent_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TrustedDepositIntentStatus"
+          },
+          "matched_deposit": {
+            "$ref": "#/components/schemas/TrustedDepositAttempt"
+          },
+          "other_deposit_attempts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrustedDepositAttempt"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TrustedWithdrawalStatus": {
+        "type": "string",
+        "enum": [
+          "FAILED_TO_OBTAIN_DESTINATION_ADDRESS",
+          "SUBMITTED_TRANSFER"
+        ]
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "description": "An absolute URI that identifies the problem type.  When dereferenced,\nit SHOULD provide human-readable documentation for the problem type\n(e.g., using HTML).\n",
+            "default": "about:blank",
+            "example": "https://api.paxos.com/v2/problems/insufficient_funds"
+          },
+          "title": {
+            "type": "string",
+            "description": "A short, summary of the problem type. Written in english and readable\nfor engineers (usually not suited for non technical stakeholders and\nnot localized); example: Service Unavailable\n",
+            "example": "Insufficient Funds"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The HTTP status code generated by the origin server for this occurrence\nof the problem.\n",
+            "minimum": 100,
+            "maximum": 600,
+            "exclusiveMaximum": true,
+            "example": 403
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human readable explanation specific to this occurrence of the\nproblem.\n",
+            "example": "Not enough funds in account."
+          },
+          "meta": {
+            "type": "object",
+            "description": "Additional structured metadata about the error.\n"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "description": "Paxos APIs use [OAuth 2](https://tools.ietf.org/html/rfc6749) with the [client credentials](https://tools.ietf.org/html/rfc6749#section-4.4) grant flow.\n\n**Token URLs:**\n- Production: https://oauth.paxos.com/oauth2/token\n- Sandbox: https://oauth.sandbox.paxos.com/oauth2/token\n\nLearn more in the [API credentials guide →](https://docs.paxos.com/developer/credentials)\n",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "conversion:read_conversion_stablecoin": "Retrieve stablecoin conversion details",
+              "conversion:write_conversion_stablecoin": "Create or cancel a stablecoin conversion",
+              "exchange:historical_prices": "Retrieve marketnaverage prices at a certain time increment",
+              "exchange:read_order": "Retrieve order or order execution details",
+              "exchange:read_quote": "Retrieve quote details for buying or selling an asset",
+              "exchange:read_quote_execution": "Retrieve quote execution details",
+              "exchange:write_quote_execution": "Create a quote execution for buying or selling an asset",
+              "exchange:write_order": "Create or cancel an order for buying or selling an asset",
+              "fee:write_crypto_withdrawal_fee": "Create a guaranteed fee for crypto withdrawal",
+              "funding:read_profile": "Retrieve Profile details and deposit funds in Sandbox",
+              "funding:write_profile": "Create a Profile",
+              "identity:read_account": "Retrieve Account details",
+              "identity:read_identity": "Retrieve Identity details or documents",
+              "identity:write_account": "Create or update Account and Account Members",
+              "identity:write_identity": "Create or update Identity details and set Sandbox Identify Status",
+              "settlement:read_transaction": "Retrieve settlement transaction details",
+              "settlement:write_transaction": "Create, affirm or cancel a settlement transaction",
+              "tax:read_tax_form": "Retrieve tax details",
+              "tax:read_tax_lot": "Retrieve tax lot details",
+              "tax:write_tax_lot": "Update the given tax-lot ID",
+              "transfer:read_deposit_address": "Retrieve deposit address details",
+              "transfer:read_fiat_account": "Retrieve Fiat Account details",
+              "transfer:read_fiat_deposit_instructions": "Retrieve fiat deposit instruction details",
+              "transfer:read_transfer": "Retrieve transfer details",
+              "transfer:read_transfer_limit": "Retrieve limits for the given transaction type",
+              "transfer:reject_crypto_deposit": "Reject a crypto deposit (travel rule)",
+              "transfer:update_crypto_deposit": "Provide required travel-rule details",
+              "transfer:write_crypto_withdrawal": "Withdraw asset to a specified destination address",
+              "transfer:write_deposit_address": "Create an deposit address on a blockchain network",
+              "transfer:write_fiat_account": "Create, update or delete a Fiat Account",
+              "transfer:write_fiat_deposit_instructions": "Create, update or delete fiat deposit instructions",
+              "transfer:write_internal_transfer": "Transfer assets between two Profiles",
+              "transfer:write_sandbox_fiat_deposit": "Initiate a test fiat deposit in the Sandbox environment",
+              "transfer:write_fiat_withdrawal": "Withdraw fiat to the given destination",
+              "events:read_event": "Retrieve events"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Deposits and Withdrawals",
+      "tags": [
+        "Transfers",
+        "Fiat Transfers",
+        "Deposit Addresses",
+        "Crypto Deposits",
+        "Crypto Withdrawals",
+        "Fees",
+        "Internal Transfers",
+        "Paxos Transfers",
+        "Limits"
+      ]
+    },
+    {
+      "name": "Identity",
+      "tags": [
+        "Identity",
+        "Institution Members",
+        "Accounts",
+        "Account Members",
+        "Identity Documents"
+      ]
+    },
+    {
+      "name": "API Credentials",
+      "tags": [
+        "API Credentials"
+      ]
+    },
+    {
+      "name": "Profiles",
+      "tags": [
+        "Profiles"
+      ]
+    },
+    {
+      "name": "Sandbox",
+      "tags": [
+        "Sandbox Deposits",
+        "Sandbox Identity",
+        "Sandbox Fiat Transfers"
+      ]
+    },
+    {
+      "name": "Settlements",
+      "tags": [
+        "Settlement"
+      ]
+    },
+    {
+      "name": "Stablecoin Conversion",
+      "tags": [
+        "Stablecoin Conversion"
+      ]
+    },
+    {
+      "name": "Taxes",
+      "tags": [
+        "Tax Forms"
+      ]
+    },
+    {
+      "name": "Trading",
+      "tags": [
+        "Market Data",
+        "Orders",
+        "Quotes",
+        "Quote Executions",
+        "Pricing",
+        "Issuer Quotes"
+      ]
+    },
+    {
+      "name": "Rewards",
+      "tags": [
+        "Monitoring Addresses",
+        "Statements",
+        "Payments"
+      ]
+    },
+    {
+      "name": "Events",
+      "tags": [
+        "Events",
+        "Event Types",
+        "Event Objects"
+      ]
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.paxos.com/v2",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.sandbox.paxos.com/v2",
+      "description": "Sandbox"
+    }
+  ]
+}
