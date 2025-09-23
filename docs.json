@@ -836,11 +836,50 @@
         "tab": "Previews",
         "groups": [
           {
-            "group": "2025-09-18",
+            "group": "2025-09-22",
             "openapi": {
-              "source": "api-reference/preview/2025-09-18.openapi.json",
-              "directory": "api-reference/preview/2025-09-18"
-            }
+              "source": "api-reference/preview/2025-09-22/identity.openapi.json",
+              "directory": "api-reference/preview/2025-09-22"
+            },
+            "pages": [
+              {
+                "group": "Events",
+                "pages": [
+                  {
+                    "group": "Events",
+                    "pages": [
+                      "api-reference/preview/2025-09-22/endpoints/events/overview",
+                      "api-reference/preview/2025-09-22/endpoints/events/list-events",
+                      "api-reference/preview/2025-09-22/endpoints/events/get-event"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  {
+                    "group": "Identity",
+                    "pages": [
+                      {
+                        "group": "Hooks",
+                        "pages": [
+                          "api-reference/preview/2025-09-22/webhooks/identity-approved",
+                          "api-reference/preview/2025-09-22/webhooks/identity-denied",
+                          "api-reference/preview/2025-09-22/webhooks/identity-disabled"
+                        ]
+                      },
+                      {
+                        "group": "Objects",
+                        "pages": [
+                          "api-reference/preview/2025-09-22/events/identity-status-change-object"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -848,6 +887,13 @@
         "tab": "Old Previews",
         "hidden": true,
         "groups": [
+          {
+            "group": "2025-09-18",
+            "openapi": {
+              "source": "api-reference/preview/2025-09-18.openapi.json",
+              "directory": "api-reference/preview/2025-09-18"
+            }
+          },
           {
             "group": "2025-09-16",
             "openapi": {
