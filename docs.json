@@ -848,8 +848,6 @@
                   {
                     "group": "Events",
                     "pages": [
-                      "api-reference/preview/2025-09-22/endpoints/events/overview",
-                      "api-reference/preview/2025-09-22/endpoints/events/list-events",
                       "api-reference/preview/2025-09-22/endpoints/events/get-event"
                     ]
                   }
