@@ -154,7 +154,7 @@
             "name": "identity_id",
             "description": "The Paxos ID of the Identity associated with the transfer.",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -385,7 +385,16 @@
           "account_id": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "auth_token",
+          "broker_type",
+          "broker_name",
+          "profile_id",
+          "asset",
+          "crypto_network",
+          "amount"
+        ]
       },
       "CreateTrustedDepositIntentRequest": {
         "type": "object",
@@ -409,7 +418,12 @@
             },
             "description": "Possible network to accept the deposit on."
           }
-        }
+        },
+        "required": [
+          "identity_id",
+          "profile_id",
+          "destination_crypto_networks"
+        ]
       },
       "CreateTrustedDepositIntentResponse": {
         "type": "object",
@@ -436,9 +450,13 @@
           },
           "target_integration_id": {
             "type": "string",
-            "description": "The broker/exchange/wallet from which the deposit will originate.\nValid values are: `Binance`, `Coinbase`, ..."
+            "description": "The broker/exchange/wallet to which the withdrawal will occur.\nValid values are: `Binance`, `Coinbase`, ..."
           }
-        }
+        },
+        "required": [
+          "identity_id",
+          "target_integration_id"
+        ]
       },
       "CreateTrustedWithdrawalIntentResponse": {
         "type": "object",
