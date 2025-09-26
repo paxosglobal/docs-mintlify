@@ -21,8 +21,9 @@ Paxos streamlines KYC Refresh using a webhook-based approach, which leverages [P
 
 Setup a [Webhook Consumer](/guides/webhooks/quickstart#consumer) to receive the following KYC refresh events for your end users:
 
-- [`identity.kyc_refresh.started`](/api-reference/events)
-- [`identity.kyc_refresh.completed`](/api-reference/events)
+- [`identity.kyc_refresh.started`](/api-reference/events/identity-kyc-refresh-object)
+- [`identity.kyc_refresh.completed`](/api-reference/events/identity-kyc-refresh-object)
+- [`identity.kyc_refresh.expired`](/api-reference/events/identity-kyc-refresh-object)
 
 <Tip>
   Use [Get Event](/api-reference/endpoints/events/get-event) to get additional information about the KYC refresh event (`last_kyc_refresh_date`, `next_kyc_refresh_date`, etc.).
