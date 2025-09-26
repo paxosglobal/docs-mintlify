@@ -288,9 +288,8 @@
                         }
                       },
                       "destination": {
-                        "crypto": {
-                          "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-                          "network": "ethereum"
+                        "fiat": {
+                          "bank_account_id": "7698b353-c1db-47fd-8978-b04ba12664b1"
                         }
                       },
                       "created_at": "2024-03-20T10:00:00Z",
@@ -314,7 +313,6 @@
               "examples": {
                 "create_orchestration": {
                   "value": {
-                    "profile_id": "1a763ac5-13d9-4568-bb8b-747c416b105c",
                     "identity_id": "f1f8651f-cece-4310-92c0-9cbb9d1b3601",
                     "account_id": "6506ad35-cad8-440f-b247-c4ec092c96fe",
                     "ref_id": "082d38c8-c7b1-4a3b-bdf9-b3a428c1ce80",
@@ -327,9 +325,8 @@
                       }
                     },
                     "destination": {
-                      "crypto": {
-                        "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
-                        "network": "ethereum"
+                      "fiat": {
+                        "bank_account_id": "7698b353-c1db-47fd-8978-b04ba12664b1"
                       }
                     },
                     "metadata": {
@@ -409,9 +406,6 @@
       "CreateOrchestrationRequest": {
         "type": "object",
         "properties": {
-          "profile_id": {
-            "type": "string"
-          },
           "identity_id": {
             "type": "string"
           },
@@ -433,9 +427,11 @@
             "title": "The available amount in the source profile"
           },
           "source": {
+            "description": "If not set, it uses the default profile id",
             "$ref": "#/components/schemas/CreateOrchestrationRequestSource"
           },
           "destination": {
+            "description": "If not set, it uses the default profile id",
             "$ref": "#/components/schemas/CreateOrchestrationRequestDestination"
           },
           "metadata": {
@@ -450,6 +446,9 @@
       "CreateOrchestrationRequestCryptoDestination": {
         "type": "object",
         "properties": {
+          "address_id": {
+            "type": "string"
+          },
           "address": {
             "type": "string"
           },
@@ -743,6 +742,9 @@
       "OrchestrationCryptoDestination": {
         "type": "object",
         "properties": {
+          "address_id": {
+            "type": "string"
+          },
           "address": {
             "type": "string"
           },
