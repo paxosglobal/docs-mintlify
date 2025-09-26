@@ -351,6 +351,12 @@
             ]
           },
           {
+            "group": "Bridged Stablecoins",
+            "pages": [
+              "guides/stablecoin/bridged-stablecoins"
+            ]
+          },
+          {
             "group": "PayPal USD (PYUSD)",
             "pages": [
               "guides/stablecoin/pyusd/index",

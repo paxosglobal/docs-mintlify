@@ -1,0 +1,136 @@
+---
+title: 'Bridged Stablecoin Standard Guide'
+description: This guide describes the process for third-party teams to deploy bridged forms of Paxos stablecoins on EVM blockchains using LayerZero's Omnichain Fungible Token (OFT) standard, with the option for Paxos to natively issue in the future.
+---
+This standard leverages LayerZero's cross-chain messaging protocol and OFT contracts to enable secure, efficient bridging of Paxos stablecoins across multiple blockchain networks while maintaining the ability to transition to native issuance when appropriate.
+
+## High Level Steps
+
+1. Third-party team deploys the bridged Paxos stablecoin token contract following Paxos specifications. (See [Token Deployment](#token-deployment))
+2. Third-party team deploys the LayerZero `OFTWrapper` contract that interfaces with the Paxos bridged token contract. (See [OFT Wrapper Implementation](#oft-wrapper-implementation))
+3. Third-party team utilizes a lock/unlock adapter for the native token.
+4. LayerZero endpoints handle cross-chain message passing and verification, ensuring secure token transfers between chains.
+5. The [Native Token Upgrade Process](#native-token-upgrade-process) will be followed if and when a joint decision is made by the third-party team and Paxos to upgrade to native issuance.
+6. The native token contract retains existing supply, holders, and bridging capabilities.
+
+## Token Deployment
+
+### Token Contract Requirements
+Paxos stablecoins are maintained in the [paxos-token-contracts](https://github.com/paxosglobal/paxos-token-contracts)
+repository. The repository contains Hardhat scripts to help with deployment. `PaxosTokenV2` leverages a separately deployed
+`SupplyControl` contract to control the token supply. Deploying both contracts is required to properly manage minting and burning.
+
+Deployed token requirements for native issuance eligibility:
+1. **Implement Paxos Token Standards**: Use the official Paxos token and `SupplyControl` implementations. Deployed bytecode must match exactly (excluding metadata changes).
+2. **Support Minter Pattern**: Allow the `OFTWrapper` to mint and burn tokens via `SupplyControl`.
+3. **Upgradeable Contracts**: Both `PaxosTokenV2` and `SupplyControl` must be upgradeable.
+4. **No Unauthorized Upgrades**: The contract should only ever be upgraded with Paxos's explicit consent. Failure to do so may make the token ineligible for the native token migration.
+
+Deployed token recommendations:
+1. **Use UUPSUpgradeable Proxy**: This proxy pattern is safer for upgrading and should be used for all new token deployments. See the [USDG contract](https://github.com/paxosglobal/paxos-token-contracts/blob/master/contracts/stablecoins/USDG.sol#L12) for usage.
+
+### Metadata Guidelines
+To avoid confusion between native and bridged stablecoins the metadata must clearly indicate that this is a bridged token
+supported by a third-party team.
+
+#### Token name
+The token name should follow the format: `Bridged <existing token name> (team name)`
+
+#### Token symbol
+The token symbol should contain the existing token symbol and an appropriate prefix or suffix to distinguish it from the
+native token.
+
+#### Decimals
+Must use same number of decimals as the native token.
+
+### Role Management
+All roles must be implemented.
+Token contract roles:
+1. **Admin**: Controls administrative functions and role assignments
+2. **Asset Protection**: Manages address restrictions per Paxos requirements
+3. **Pauser**: Can pause token transfers in emergencies and during the native token migration
+
+`SupplyControl` contract roles:
+1. **Admin**: Controls administrative functions and role assignments
+2. **Supply Controller**: Manages minting and burning (initially the OFT wrapper)
+3. **Supply Controller Manager**: Can add, update, and remove SupplyControllers
+
+## OFTWrapper Implementation
+
+The `OFTWrapper` serves as the connection between LayerZero's cross-chain messaging protocol and Paxos token contracts. This wrapper must implement specific functionality to support both normal operations and the eventual upgrade process. It's highly recommended to use the Paxos `OFTWrapper`
+implementation found in [cross-chain-contracts](https://github.com/paxosglobal/cross-chain-contracts). The repo contains
+scripts to help with deployment as well as setting up the LayerZero bridge.
+
+Once the OFTWrapper is deployed and the bridge is wired, make sure to also grant it mint permissions in `SupplyControl` by calling `addSupplyController`.
+
+If the third-party team wants to use a different OFT wrapper check with Paxos as this may make the token ineligible for the native token migration.
+
+## Native Token Upgrade Process
+Paxos will take ownership over the bridged token and bridge upon mutual agreement. When this happens the following will occur:
+1. The bridged token on Chain B is paused and the current supply is noted.
+2. The bridge is disabled by removing the current lock/unlock peer.
+3. Roles are transferred to Paxos for the token, `SupplyControl`, and `OFTWrapper`.
+4. Metadata is updated.
+5. Paxos will burn the locked tokens on the native chain (Chain A) using the current supply from Chain B.
+6. OFT peers are updated so that the `OFTWrapper` on Chain B points to the existing mint/burn `OFTWrapper` on Chain A
+instead of the lock/unlock wrapper.
+7. The token is now considered natively issued and is unpaused.
+
+## Security Considerations
+
+### Multi-Chain Security
+
+1. **Endpoint Security**: LayerZero endpoints must be properly configured and monitored
+2. **Rate Limiting**: Implement appropriate rate limits to prevent large-scale exploits
+3. **Cross-Chain Verification**: Rely on LayerZero's message verification system
+4. **Emergency Pause**: Maintain ability to pause bridging across all integrated chains
+
+### Upgrade Security
+
+1. **Token Pausing**: The token will be paused during the upgrade
+2. **Supply Verification**: The bridged supply will be thoroughly audited before upgrade
+3. **Role Transfer**: Roles will be validated to ensure all third-party access is revoked
+4. **Burn Verification**: The burn amount will be confirmed to exactly match the bridged supply
+
+## Implementation Checklist
+
+Before deploying bridged Paxos stablecoins:
+
+- Deploy token and `SupplyControl` contracts with correct parameters
+- Deploy `OFTWrapper` with correct LayerZero endpoint configuration
+- Grant `OFTWrapper` mint permissions on token contract
+- Configure rate limits appropriate for expected volume (recommended)
+- Verify LayerZero endpoint connections across all chains
+- Test cross-chain transfers on testnet
+- Implement monitoring for bridge operations
+- Document emergency procedures
+- Establish communication channels with Paxos team
+
+## Technical Requirements
+
+### Mainnet Deployment
+
+1. Deployed bytecode must exactly match all audited paxos contracts
+2. Deployed bytecode must exactly match testnet deployments
+3. All contracts must be verified on block explorers
+4. Compiler metadata must be preserved and available
+5. Multisig or governance controls must be documented
+
+## Monitoring
+
+Teams should monitor:
+- Bridge transaction volumes and patterns
+- Rate limit utilization
+- Failed or stuck transactions
+- LayerZero endpoint health
+- Token supply consistency across chains
+
+## Notice
+The Bridged Stablecoin Standard grants Paxos the option, but not the obligation, to obtain ownership of the token contract and upgrade to native issuance.
+The Bridged Stablecoin Standard must be incorporated prior to deployment and cannot be retroactively applied.
+The Bridged Stablecoin Standard is for informational purposes and will only apply should Paxos choose to upgrade a particular bridged stablecoin to native issuance.
+The Bridged Stablecoin Standard does not constitute an offer to upgrade a particular form of bridged stablecoin.
+Paxos's decision to upgrade a particular bridged stablecoin to native issuance may be subject to additional terms and conditions.
+Bridged tokens are not issued by Paxos and carry additional risks related to bridge security and cross-chain operations.
+
+Questions? Contact [Support](https://support.paxos.com).
