@@ -633,6 +633,9 @@
       "CreateOrchestrationRequestCryptoDestination": {
         "type": "object",
         "properties": {
+          "address_id": {
+            "type": "string"
+          },
           "address": {
             "type": "string"
           },
@@ -926,6 +929,9 @@
       "OrchestrationCryptoDestination": {
         "type": "object",
         "properties": {
+          "address_id": {
+            "type": "string"
+          },
           "address": {
             "type": "string"
           },
