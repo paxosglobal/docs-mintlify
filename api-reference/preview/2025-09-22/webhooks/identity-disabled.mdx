@@ -1,0 +1,16 @@
+---
+title: "identity.disabled"
+description: "Webhook triggered when an identity is disabled"
+openapi: "webhooks-openapi.json webhook identity.disabled"
+---
+
+Triggered when a previously approved identity is disabled.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/preview/2025-09-22/endpoints/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`identity_status_change`](/api-reference/preview/2025-09-22/events/identity-status-change-object) object with status transition details.
+
