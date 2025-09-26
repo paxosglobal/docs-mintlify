@@ -456,6 +456,13 @@
                 ]
               },
               {
+                "group": "Crypto Destination Addresses",
+                "pages": [
+                  "api-reference/endpoints/crypto-destination-addresses/list-crypto-destination-addresses",
+                  "api-reference/endpoints/crypto-destination-addresses/put-crypto-destination-address"
+                ]
+              },
+              {
                 "group": "Fees",
                 "pages": [
                   "api-reference/endpoints/fees/create-crypto-withdrawal-fee"
@@ -672,6 +679,14 @@
                   "api-reference/endpoints/issuer-quotes/list-issuer-quote-executions",
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote",
                   "api-reference/endpoints/issuer-quotes/create-issuer-quote-execution"
+                ]
+              },
+              {
+                "group": "Orchestration Rules",
+                "pages": [
+                  "api-reference/endpoints/orchestration-rules/list-orchestration-rules",
+                  "api-reference/endpoints/orchestration-rules/create-orchestration-rule",
+                  "api-reference/endpoints/orchestration-rules/delete-orchestration-rule"
                 ]
               }
             ]
