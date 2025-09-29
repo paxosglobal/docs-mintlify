@@ -847,6 +847,24 @@
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
               "directory": "api-reference/preview"
             }
+          },
+          {
+            "group": "Identity Controls",
+            "pages": [
+              "api-reference/preview/identity-controls",
+              {
+                "openapi": "get /v2/identity/controls",
+                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
+              },
+              {
+                "openapi": "post /v2/identity/controls",
+                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
+              },
+              {
+                "openapi": "delete /v2/identity/controls",
+                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
+              }
+            ]
           }
         ]
       },
