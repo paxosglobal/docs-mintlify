@@ -860,7 +860,7 @@
         "hidden": true,
         "groups": [
           {
-            "group": "Overview",
+            "group": "Previews",
             "pages": [
               "api-reference/preview/overview"
             ]
