@@ -1,0 +1,447 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos Identity Controls API",
+    "version": "v2-preview"
+  },
+  "security": [
+    {
+      "OAuth2": ["identity:read_identity", "identity:write_identity"]
+    }
+  ],
+  "paths": {
+    "/v2/identity/controls": {
+      "get": {
+        "summary": "List Identity Controls",
+        "description": "Identity Controls provide fine-grained control over identity activity and lifecycle states.\nGet the current control settings for an identity.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new request to retrieve the next page of results.",
+        "operationId": "ListIdentityControls",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListIdentityControlsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity_id",
+            "description": "The Identity ID",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_deleted",
+            "description": "Include deleted controls in the response.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100 if no limit is provided. Maximum 1000.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "order",
+            "description": "Return items in ascending (ASC) or descending (DESC) order. Defaults to DESC.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["DESC", "ASC"]
+            }
+          },
+          {
+            "name": "order_by",
+            "description": "The specific method by which the returned results will be ordered. Defaults to CREATED_AT.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["CREATED_AT"]
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional: Cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Identity Control",
+        "description": "Create a new control setting for an identity.",
+        "operationId": "CreateIdentityControl",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityControls"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIdentityControlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Identity Control",
+        "description": "Delete a control setting for an identity.",
+        "operationId": "DeleteIdentityControl",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityControls"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteIdentityControlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["Identity Controls"],
+        "security": [
+          {
+            "OAuth2": ["identity:write_identity"]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "identity:read_identity": "Read identity data",
+              "identity:write_identity": "Create and manage identities"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "IdentityControlType": {
+        "type": "string",
+        "enum": [
+          "CLOSED",
+          "DORMANT"
+        ],
+        "description": "The type of control applied to an identity.\n\n- `CLOSED`: Identity is closed and cannot perform any actions\n- `DORMANT`: Identity is dormant due to inactivity"
+      },
+      "IdentityControlController": {
+        "type": "string",
+        "enum": [
+          "PAXOS",
+          "CLIENT"
+        ],
+        "description": "Indicates who set the control.\n\n- `PAXOS`: Control was set by Paxos (e.g., for compliance or risk reasons)\n- `CLIENT`: Control was set by the client application"
+      },
+      "ClientIdentityControlType": {
+        "type": "string",
+        "enum": [
+          "CLOSED",
+          "DORMANT"
+        ],
+        "description": "Control types that can be set by clients."
+      },
+      "IdentityControlReasonCode": {
+        "type": "string",
+        "enum": [
+          "OTHER",
+          "DORMANT",
+          "END_USER_REQUESTED",
+          "COMPLIANCE"
+        ],
+        "description": "Reason code for why a control was applied.\n\n- `OTHER`: Miscellaneous reason\n- `DORMANT`: Identity is dormant due to inactivity\n- `END_USER_REQUESTED`: Control applied at the end user's request\n- `COMPLIANCE`: Control applied for compliance or regulatory reasons"
+      },
+      "IdentityControl": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this control"
+          },
+          "type": {
+            "$ref": "#/components/schemas/IdentityControlType"
+          },
+          "set_by": {
+            "$ref": "#/components/schemas/IdentityControlController"
+          },
+          "reason_code": {
+            "$ref": "#/components/schemas/IdentityControlReasonCode"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason why this identity control was set"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time this identity control was created"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time this identity control was deleted"
+          }
+        }
+      },
+      "ListIdentityControlsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityControl"
+            },
+            "description": "The list of identity controls."
+          },
+          "next_page_cursor": {
+            "type": "string",
+            "description": "Cursor token for fetching the next page. Empty if there are no more pages."
+          }
+        }
+      },
+      "IdentityControls": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/IdentityControl"
+        },
+        "example": [
+          {
+            "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+            "type": "CLOSED",
+            "set_by": "CLIENT",
+            "reason_code": "END_USER_REQUESTED",
+            "reason": "User requested account closure",
+            "created_at": "2006-01-02T15:04:05Z"
+          },
+          {
+            "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
+            "type": "CLOSED",
+            "set_by": "PAXOS",
+            "reason_code": "COMPLIANCE",
+            "reason": "Account flagged for compliance review",
+            "created_at": "2006-01-02T15:04:05Z"
+          },
+          {
+            "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
+            "type": "DORMANT",
+            "set_by": "CLIENT",
+            "reason_code": "DORMANT",
+            "reason": "No activity for 180 days",
+            "created_at": "2006-01-02T15:04:05Z",
+            "deleted_at": "2006-01-02T15:04:05Z"
+          }
+        ]
+      },
+      "CreateIdentityControlRequest": {
+        "type": "object",
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "The Identity ID"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ClientIdentityControlType"
+          },
+          "reason_code": {
+            "$ref": "#/components/schemas/IdentityControlReasonCode"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason for setting the control"
+          }
+        },
+        "required": ["identity_id", "type", "reason_code"]
+      },
+      "DeleteIdentityControlRequest": {
+        "type": "object",
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "The Identity ID"
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the identity control to delete"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason for clearing the control"
+          }
+        },
+        "required": ["identity_id", "id"]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_bad_request"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_unauthorized"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_forbidden"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/examples/Problem_not_found"
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "Problem_bad_request": {
+        "value": {
+          "type": "about:blank",
+          "title": "Bad Request",
+          "status": 400,
+          "detail": "Invalid request format or missing required fields"
+        }
+      },
+      "Problem_unauthorized": {
+        "value": {
+          "type": "about:blank",
+          "title": "Unauthorized",
+          "status": 401,
+          "detail": "no authorization header set"
+        }
+      },
+      "Problem_forbidden": {
+        "value": {
+          "type": "about:blank",
+          "title": "Forbidden",
+          "status": 403,
+          "detail": "user account is disabled"
+        }
+      },
+      "Problem_not_found": {
+        "value": {
+          "type": "about:blank",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "identity not found"
+        }
+      }
+    }
+  }
+}

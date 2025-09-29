@@ -871,6 +871,15 @@
               "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
               "directory": "api-reference/preview"
             }
+          },
+          {
+            "group": "Identity Control Previews",
+            "pages": [
+              "api-reference/preview/identity-controls/overview",
+              "api-reference/preview/identity-controls/list-identity-controls",
+              "api-reference/preview/identity-controls/create-identity-control",
+              "api-reference/preview/identity-controls/delete-identity-control"
+            ]
           }
         ]
       },
