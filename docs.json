@@ -228,12 +228,6 @@
             ]
           },
           {
-            "group": "Preview Features",
-            "pages": [
-              "guides/developer/identity-controls"
-            ]
-          },
-          {
             "group": "Additional Guides",
             "pages": [
               "guides/developer/ai-assisted-development",
@@ -840,31 +834,19 @@
       },
       {
         "tab": "Previews",
-        "hidden": true,
         "groups": [
           {
             "group": "Overview",
             "pages": [
-              "api-reference/preview/overview"
+              "api-reference/preview/overview.mdx"
             ]
           },
           {
-            "group": "Identity Controls",
-            "pages": [
-              "api-reference/preview/paxos-v2-preview-identity-controls/overview",
-              {
-                "openapi": "get /v2/identity/controls",
-                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
-              },
-              {
-                "openapi": "post /v2/identity/controls",
-                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
-              },
-              {
-                "openapi": "delete /v2/identity/controls",
-                "source": "api-reference/preview/paxos-v2-preview-identity-controls.openapi.json"
-              }
-            ]
+            "group": "Orchestration Previews",
+            "openapi": {
+              "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
+              "directory": "api-reference/preview"
+            }
           }
         ]
       },
