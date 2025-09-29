@@ -857,11 +857,12 @@
       },
       {
         "tab": "Previews",
+        "hidden": true,
         "groups": [
           {
             "group": "Overview",
             "pages": [
-              "api-reference/preview/overview.mdx"
+              "api-reference/preview/overview"
             ]
           },
           {
