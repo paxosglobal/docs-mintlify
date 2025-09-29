@@ -2,7 +2,6 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Paxos Documentation",
-  "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json", 
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -457,6 +456,13 @@
                 ]
               },
               {
+                "group": "Crypto Destination Addresses",
+                "pages": [
+                  "api-reference/endpoints/crypto-destination-addresses/list-crypto-destination-addresses",
+                  "api-reference/endpoints/crypto-destination-addresses/put-crypto-destination-address"
+                ]
+              },
+              {
                 "group": "Fees",
                 "pages": [
                   "api-reference/endpoints/fees/create-crypto-withdrawal-fee"
@@ -601,6 +607,14 @@
                   "api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion",
                   "api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion"
                 ]
+              },
+              {
+                "group": "Orchestration Rules",
+                "pages": [
+                  "api-reference/endpoints/orchestration-rules/list-orchestration-rules",
+                  "api-reference/endpoints/orchestration-rules/create-orchestration-rule",
+                  "api-reference/endpoints/orchestration-rules/delete-orchestration-rule"
+                ]
               }
             ]
           },
@@ -664,6 +678,15 @@
                   "api-reference/endpoints/pricing/list-prices",
                   "api-reference/endpoints/pricing/list-tickers",
                   "api-reference/endpoints/pricing/list-historical-prices"
+                ]
+              },
+              {
+                "group": "Issuer Quotes",
+                "pages": [
+                  "api-reference/endpoints/issuer-quotes/overview",
+                  "api-reference/endpoints/issuer-quotes/list-issuer-quote-executions",
+                  "api-reference/endpoints/issuer-quotes/create-issuer-quote",
+                  "api-reference/endpoints/issuer-quotes/create-issuer-quote-execution"
                 ]
               }
             ]

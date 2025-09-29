@@ -23,6 +23,10 @@ Status of transfer:
 **Available options:** `PENDING`, `COMPLETED`, `FAILED`
 </ResponseField>
 
+<ResponseField name="profile_id" type="string" required>
+The Profile ID associated with the transfer
+</ResponseField>
+
 <ResponseField name="ref_id" type="string">
 The client-specified ID of the transfer for replay protection and lookup. (optional)
 </ResponseField>
@@ -50,6 +54,7 @@ Memo associated with the transfer as an identifier (optional, present for fiat t
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "type": "CRYPTO_DEPOSIT",
   "status": "COMPLETED",
+  "profile_id": "e8c16069-8b01-4119-8ee0-08842e33b551",
   "ref_id": "my-deposit-123",
   "crypto_network": "ETHEREUM",
   "crypto_tx_hash": "0x1234567890abcdef...",
@@ -62,6 +67,7 @@ Memo associated with the transfer as an identifier (optional, present for fiat t
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "type": "ACT_WITHDRAWAL",
   "status": "PENDING",
+  "profile_id": "e8c16069-8b01-4119-8ee0-08842e33b551",
   "ref_id": "my-withdrawal-456",
   "memo": "Payment for services"
 }
