@@ -7,8 +7,8 @@ description: 'Identity Controls API reference'
 **Preview API**: The Identity Controls API is currently in preview and is subject to change. Production usage should account for potential breaking changes.
 </Note>
 
-The Identity Controls API provides programmatic management of identity lifecycle states and activity controls. This API replaces the 
-deprecated `user_disabled` and `admin_disabled` fields with a more flexible control system.
+The Identity Controls API provides management of various lifecycle actions on the Identity. This API replaces the
+deprecated `user_disabled` and `admin_disabled` fields on the Identity API and expands allowing finer grained reasons and new types (`DORMANT`) of controls.
 
 ## Available Endpoints
 
@@ -34,11 +34,15 @@ All endpoints require OAuth2 authentication with the following scopes:
 ## Control Types
 
 | Type | Description |
-| --- | --- | --- |
-| `CLOSED` | Identity has had their account closed, common reasons include `END_USER_REQUESTED` or `COMPLIANCE` |
-| `DORMANT` | Identity is dormant, |
+| --- | --- |
+| `CLOSED` | Identity is closed, common reasons include `END_USER_REQUESTED` or `COMPLIANCE` |
+| `DORMANT` | Identity is dormant due to inactivity |
+
+Being `CLOSED` or `DORMANT` will affect the Identity's ability to perform actions on the Platform.
 
 ## Control Ownership
+Controls created via `CreateIdentityControl` create will be `set_by:CLIENT` and you'll be able to delete these controls. 
+In some scenarios paxos will enforce an account closure or other type of control and you'll not be able to delete these controls.
 
 | Set By | Can Delete | Description |
 | --- | --- | --- |
@@ -61,31 +65,10 @@ All endpoints return controls in the following structure:
 }
 ```
 
-## Error Handling
+## Migration from Legacy Fields
 
-The API uses standard HTTP status codes and returns errors in Problem Details format (RFC 7807):
+Identity Controls replaces the deprecated `user_disabled` and `admin_disabled` boolean fields. Existing identities with these fields set will be automatically migrated to use Identity Controls. During the transition period, both the legacy fields and Identity Controls will be supported.
 
-```json
-{
-  "type": "about:blank",
-  "title": "Bad Request",
-  "status": 400,
-  "detail": "Invalid request format or missing required fields"
-}
-```
-
-## Rate Limits
-
-Standard Paxos API rate limits apply. See the [API Rate Limits](/api-reference/rate-limits) documentation for details.
-
-## Planned Enhancements
-
-We are considering the following improvements to better integrate Identity Controls across the platform:
-
-### List Identities Integration
-The List Identities API may be enhanced to:
-- **Return controls in response**: Include active controls directly in the identity list response
-- **Filter by control type**: Query identities by specific control types (e.g., `CLOSED`, `DORMANT`)
-- **Filter by reason code**: Find identities with specific reason codes (e.g., `END_USER_REQUESTED`, `COMPLIANCE`)
-
-This will enable more efficient querying of identities based on their control states without requiring separate API calls.
+**Migration mapping:**
+- `user_disabled: true` → Identity Control with `set_by: CLIENT` and `type: CLOSED`
+- `admin_disabled: true` → Identity Control with `set_by: PAXOS` and `type: CLOSED`

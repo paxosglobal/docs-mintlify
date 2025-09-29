@@ -13,7 +13,7 @@
     "/v2/identity/controls": {
       "get": {
         "summary": "List Identity Controls",
-        "description": "Identity Controls provide fine-grained control over identity activity and lifecycle states.\n\n**Migration from Legacy Fields:** The Identity Controls API replaces the deprecated `user_disabled` and `admin_disabled` boolean fields. Existing identities with these fields set will be automatically migrated to use Identity Controls. During the transition period, both the legacy fields and Identity Controls will be supported.\n\nGet the current control settings for an identity.\n\nThe paginated results default to display up to 100 controls, unless otherwise specified with the `limit` parameter. The maximum `limit` value is 1000. Every paginated response contains a `next_page_cursor` field until the last page is reached.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new request to retrieve the next page of results.",
+        "description": "Identity Controls provide fine-grained control over identity activity and lifecycle states.\nGet the current control settings for an identity.\n\nPass the `next_page_cursor` value into the `page_cursor` field of a new request to retrieve the next page of results.",
         "operationId": "ListIdentityControls",
         "responses": {
           "200": {
@@ -216,10 +216,10 @@
       "IdentityControlType": {
         "type": "string",
         "enum": [
-          "DISABLED",
+          "CLOSED",
           "DORMANT"
         ],
-        "description": "The type of control applied to an identity.\n\n- `DISABLED`: Identity is disabled and cannot perform any actions\n- `DORMANT`: Identity is dormant due to inactivity"
+        "description": "The type of control applied to an identity.\n\n- `CLOSED`: Identity is closed and cannot perform any actions\n- `DORMANT`: Identity is dormant due to inactivity"
       },
       "IdentityControlController": {
         "type": "string",
@@ -232,7 +232,7 @@
       "ClientIdentityControlType": {
         "type": "string",
         "enum": [
-          "DISABLED",
+          "CLOSED",
           "DORMANT"
         ],
         "description": "Control types that can be set by clients."
@@ -303,7 +303,7 @@
         "example": [
           {
             "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
-            "type": "DISABLED",
+            "type": "CLOSED",
             "set_by": "CLIENT",
             "reason_code": "END_USER_REQUESTED",
             "reason": "User requested account closure",
@@ -311,7 +311,7 @@
           },
           {
             "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
-            "type": "DISABLED",
+            "type": "CLOSED",
             "set_by": "PAXOS",
             "reason_code": "COMPLIANCE",
             "reason": "Account flagged for compliance review",
