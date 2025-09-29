@@ -1,0 +1,283 @@
+---
+title: 'Identity Controls'
+description: Manage identity lifecycle states and activity controls.
+---
+
+<Note>
+**Preview API**: Identity Controls is currently in preview and is subject to change. Production usage should account for potential breaking changes in future releases.
+</Note>
+
+Identity Controls provide fine-grained control over identity activity and lifecycle states. Use Identity Controls to:
+
+- Disable identities when end users request account closure
+- Mark identities as dormant after periods of inactivity
+- Respond to compliance requirements
+- Track control history with detailed reason codes
+
+## Control Ownership
+
+A critical distinction exists between who can manage controls:
+
+- **`CLIENT` controls**: You can create and delete these controls. These are controls set by your integration to manage your users' identity states.
+- **`PAXOS` controls**: These controls are set by Paxos for compliance, risk, or operational reasons. You **cannot delete** controls where `set_by` equals `PAXOS`. You can view these controls to understand why an identity may be restricted.
+
+> **Important**: Only controls with `set_by: CLIENT` can be deleted through the API. Paxos-enforced controls require resolution through Support.
+
+## Migration from Legacy Fields
+
+Identity Controls replace the deprecated `user_disabled` and `admin_disabled` boolean fields in the Identity object.
+
+**During the transition period:**
+- Both legacy fields and Identity Controls are supported
+- Existing identities with these fields will be automatically migrated to Identity Controls
+- New integrations should use Identity Controls exclusively
+
+**Migration mapping:**
+
+### `user_disabled` Migration
+When `user_disabled: true`, Paxos will migrate this to an Identity Control with:
+- `type`: `DISABLED`
+- `set_by`: `CLIENT`
+- `reason_code`: `OTHER`
+- No free-text reason
+
+### `admin_disabled` Migration
+When `admin_disabled: true`, Paxos will migrate this to an Identity Control with:
+- `type`: `DISABLED`
+- `set_by`: `PAXOS`
+- `reason_code`: `OTHER`
+- No free-text reason
+
+## Control Types
+
+Identity Controls support the following control types:
+
+| Control Type | Description | Behavior |
+| --- | --- | --- |
+| `DISABLED` | Identity is disabled | Identity cannot perform any actions. All API operations for this identity will be blocked. |
+| `DORMANT` | Identity is dormant | Identity is marked as inactive due to lack of activity. Can be reactivated by clearing the control. |
+
+## Reason Codes
+
+When setting a control, specify a reason code to categorize why the control was applied:
+
+| Reason Code | Description | Common Use Cases |
+| --- | --- | --- |
+| `END_USER_REQUESTED` | End user requested the action | Account closure requests, user-initiated deactivation |
+| `DORMANT` | Inactivity period expired | Automated dormancy after 180+ days of inactivity |
+| `COMPLIANCE` | Compliance or regulatory requirement | Sanctions screening, risk assessment, regulatory holds |
+| `OTHER` | Other reason | Miscellaneous reasons not covered by other codes |
+
+## Control Properties
+
+Each Identity Control includes:
+
+- **`id`**: Unique identifier for the control
+- **`type`**: Type of control (`DISABLED` or `DORMANT`)
+- **`set_by`**: Who set the control (`CLIENT` or `PAXOS`)
+- **`reason_code`**: Categorization of why the control was set
+- **`reason`**: Freetext explanation (optional but recommended)
+- **`created_at`**: When the control was created
+- **`deleted_at`**: When the control was deleted (null for active controls)
+
+## ➊ List Identity Controls
+
+Retrieve all active controls for an identity. Use `include_deleted=true` to include historical controls.
+
+The API supports cursor-based pagination with the following parameters:
+- `limit`: Number of results (default: 100, max: 1000)
+- `order`: Sort order - `ASC` or `DESC` (default: `DESC`)
+- `order_by`: Sort field - `CREATED_AT` (default: `CREATED_AT`)
+- `page_cursor`: Cursor for next page
+
+```bash
+curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id}&limit=100" \
+  -H "Authorization: Bearer {access_token}"
+```
+
+**Response:**
+```json
+{
+  "items": [
+    {
+      "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+      "type": "DISABLED",
+      "set_by": "CLIENT",
+      "reason_code": "END_USER_REQUESTED",
+      "reason": "User requested account closure",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "next_page_cursor": "eyJjcmVhdGVkX2F0IjoiMjAyNC0wMS0xNVQxMDozMDowMFoifQ=="
+}
+```
+
+To retrieve the next page, pass the `next_page_cursor` value:
+```bash
+curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id}&page_cursor=eyJjcmVhdGVkX2F0IjoiMjAyNC0wMS0xNVQxMDozMDowMFoifQ==" \
+  -H "Authorization: Bearer {access_token}"
+```
+
+## ➋ Create Identity Control
+
+Apply a control to an identity. Clients can only set `DISABLED` or `DORMANT` controls.
+
+```bash
+curl -X POST https://api.paxos.com/v2/identity/controls \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "type": "DISABLED",
+    "reason_code": "END_USER_REQUESTED",
+    "reason": "User requested account closure via support ticket #12345"
+  }'
+```
+
+**Response:**
+```json
+[
+  {
+    "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+    "type": "DISABLED",
+    "set_by": "CLIENT",
+    "reason_code": "END_USER_REQUESTED",
+    "reason": "User requested account closure via support ticket #12345",
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+]
+```
+
+## ➌ Delete Identity Control
+
+Remove a control to reactivate an identity.
+
+```bash
+curl -X DELETE https://api.paxos.com/v2/identity/controls \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+    "reason": "Account reactivation requested by user"
+  }'
+```
+
+The response returns the current list of active controls after deletion.
+
+## Common Workflows
+
+### Disable Identity for Account Closure
+
+When an end user requests account closure:
+
+```bash
+curl -X POST https://api.paxos.com/v2/identity/controls \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "type": "DISABLED",
+    "reason_code": "END_USER_REQUESTED",
+    "reason": "User requested account closure"
+  }'
+```
+
+### Mark Identity as Dormant
+
+After detecting 180+ days of inactivity:
+
+```bash
+curl -X POST https://api.paxos.com/v2/identity/controls \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "type": "DORMANT",
+    "reason_code": "DORMANT",
+    "reason": "No activity detected for 180 days"
+  }'
+```
+
+### Reactivate Dormant Identity
+
+To reactivate a dormant identity, delete the dormant control:
+
+```bash
+# First, list controls to get the control ID
+curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id}" \
+  -H "Authorization: Bearer {access_token}"
+
+# Then delete the control
+curl -X DELETE https://api.paxos.com/v2/identity/controls \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "id": "{control_id}",
+    "reason": "User logged in and requested reactivation"
+  }'
+```
+
+## Multiple Controls
+
+An identity can have multiple active controls simultaneously. For example:
+- A `DISABLED` control set by `CLIENT` for user-requested closure
+- A `DISABLED` control set by `PAXOS` for compliance review
+
+When multiple controls exist, the identity remains in the most restrictive state. All controls must be removed for the identity to become fully active again.
+
+## View Controls in Identity Status
+
+Identity Controls are also reflected in the Identity object's `status_details.active_controls` field:
+
+```json
+{
+  "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+  "status": "DISABLED",
+  "status_details": {
+    "active_controls": [
+      {
+        "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+        "type": "DISABLED",
+        "set_by": "CLIENT",
+        "reason_code": "END_USER_REQUESTED",
+        "reason": "User requested account closure",
+        "created_at": "2024-01-15T10:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+## Best Practices
+
+**Populate reason_code and reason to the best of your ability**: Always populate both `reason_code` and `reason` fields when creating controls. Providing clear context helps with compliance auditing and customer support. The more detailed the reason, the better the audit trail.
+
+**Understand Paxos controls**: You can view controls set by Paxos, including the reasons for administrative closures and compliance actions. This transparency helps you understand why an identity may be restricted and communicate appropriately with your users.
+
+**Use appropriate reason codes**: Select reason codes that accurately reflect why the control was applied. This enables better reporting and compliance tracking.
+
+**Track control history**: Use `include_deleted=true` when listing controls to view the full history of controls applied to an identity.
+
+**Handle multiple controls**: When an identity has multiple active controls, be prepared to remove each control individually based on your business logic. Remember that you can only delete `CLIENT` controls, not `PAXOS` controls.
+
+## Planned Enhancements
+
+### List Identities Integration
+We are considering enhancements to the List Identities API to better integrate with Identity Controls:
+- **Include controls in response**: Active controls will be returned directly in identity list responses
+- **Filter by control type**: Query identities by specific control types (`DISABLED`, `DORMANT`)
+- **Filter by reason code**: Find identities with specific reason codes (`END_USER_REQUESTED`, `COMPLIANCE`, etc.)
+
+These enhancements will enable more efficient identity management by reducing the need for separate API calls to check control states.
+
+## API Reference
+
+For complete API specifications, see:
+- [Identity Controls Overview](/api-reference/preview/paxos-v2-preview-identity-controls/overview)
+- [List Identity Controls](/api-reference/preview/paxos-v2-preview-identity-controls#get-/v2/identity/controls)
+- [Create Identity Control](/api-reference/preview/paxos-v2-preview-identity-controls#post-/v2/identity/controls)
+- [Delete Identity Control](/api-reference/preview/paxos-v2-preview-identity-controls#delete-/v2/identity/controls)
+
+> Questions? Contact [Support](https://support.paxos.com).
