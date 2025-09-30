@@ -227,7 +227,7 @@
           "PAXOS",
           "CLIENT"
         ],
-        "description": "Indicates who manages the control. The manager of a control may delete the control.\n\n- `PAXOS`: Control is managed by Paxos (e.g., for compliance or risk reasons) and cannot be deleted by the client.\n- `CLIENT`: Control is managed by the client and can be deleted by the client."
+        "description": "Indicates the manager or creator of the control. The manager of a control may delete the control.\n\n- `PAXOS`: Control is managed by Paxos (e.g., for compliance or risk reasons) and cannot be deleted by the client.\n- `CLIENT`: Control is managed by the client and can be deleted by the client."
       },
       "ClientIdentityControlType": {
         "type": "string",
@@ -256,6 +256,9 @@
           },
           "type": {
             "$ref": "#/components/schemas/IdentityControlType"
+          },
+          "set_by": {
+            "$ref": "#/components/schemas/IdentityControlManager"
           },
           "managed_by": {
             "$ref": "#/components/schemas/IdentityControlManager"
@@ -304,6 +307,7 @@
           {
             "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
             "type": "CLOSED",
+            "set_by": "CLIENT",
             "managed_by": "CLIENT",
             "reason_code": "END_USER_REQUESTED",
             "reason": "User requested account closure",
@@ -312,6 +316,7 @@
           {
             "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
             "type": "CLOSED",
+            "set_by": "PAXOS",
             "managed_by": "PAXOS",
             "reason_code": "COMPLIANCE",
             "reason": "Account flagged for compliance review",
@@ -320,6 +325,7 @@
           {
             "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
             "type": "DORMANT",
+            "set_by": "PAXOS",
             "managed_by": "CLIENT",
             "reason_code": "DORMANT",
             "reason": "No activity for 180 days",
