@@ -1,0 +1,108 @@
+---
+title: "identity_status_change"
+description: "Event object returned for identity status change events"
+openapi: "webhooks-openapi.json component schema IdentityStatusChangeObject"
+---
+
+This object is returned by the [Get Event API](/api-reference/preview/2025-09-22/endpoints/events/get-event) when the event type is `identity.approved`, `identity.denied`, or `identity.disabled`.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+Unique identifier for this event object
+</ResponseField>
+
+<ResponseField name="identity_id" type="string" required>
+Identifier for the affected identity
+</ResponseField>
+
+<ResponseField name="old_status" type="string" required>
+The previous status of the identity
+
+**Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
+</ResponseField>
+
+<ResponseField name="new_status" type="string" required>
+The new status of the identity
+
+**Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
+</ResponseField>
+
+<ResponseField name="status_details" type="object">
+Detailed info about the new status of the identity
+</ResponseField>
+
+<ResponseExample>
+
+```json Example
+{
+  "id": "d840cf31-352f-4190-a476-7522bf3eafda",
+  "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
+  "old_status": "PENDING",
+  "new_status": "DISABLED",
+  "status_details": {
+    "active_controls": [
+      {
+        "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+        "type": "CLOSED",
+        "controlled_by": "CLIENT",
+        "reason_code": "END_USER_REQUESTED",
+        "reason": "some client-set reason",
+        "created_at": "2006-01-02T15:04:05Z"
+      },
+      {
+        "id": "5f1eb60c-b292-482c-96fe-9e3e265abcd4",
+        "type": "CLOSED",
+        "controlled_by": "PAXOS",
+        "reason_code": "OTHER",
+        "reason": "some admin-set reason",
+        "created_at": "2006-01-02T15:04:05Z"
+      }
+    ],
+    "pending_requirements": [
+      {
+        "type": "ID_VERIFICATION",
+        "message": "Pending ID Verification"
+      },
+      {
+        "type": "SANCTIONS_SCREENING",
+        "message": "Pending Sanctions Screening"
+      },
+      {
+        "type": "ADDITIONAL_SCREENING",
+        "message": "Pending PEP/Adverse Media Screening"
+      },
+      {
+        "type": "MEMBERS",
+        "message": "Pending members",
+        "metadata": {
+          "f190b163-208f-4d73-8deb-000000000001": "PENDING"
+        }
+      }
+    ],
+    "failed_requirements": [
+      {
+        "type": "ENHANCED_DUE_DILIGENCE",
+        "message": "Failed Enhanced Due Diligence checks"
+      },
+      {
+        "type": "RISK_AWARENESS_ASSESSMENT",
+        "message": "Failed Risk Awareness Assessment"
+      },
+      {
+        "type": "DISABLED_MEMBERS",
+        "message": "Disabled members",
+        "metadata": {
+          "f190b163-208f-4d73-8deb-000000000002": "DISABLED"
+        }
+      },
+      {
+        "type": "RISK_RATING",
+        "message": "Jurisdiction not supported by Paxos"
+      }
+    ]
+  }
+}
+```
+
+</ResponseExample>
