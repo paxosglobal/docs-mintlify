@@ -6,80 +6,82 @@ description: Orchestrations power complex workflows.
 ## Understanding Orchestrations
 
 Orchestrations allow customers to perform complex actions by executing multi-step
-workflows to move between assets, networks, and rails. There are two types of Orchestrations
-ad-hoc, and rule-based. Rule-based orchestrations are based off a rule which is triggered
-upon deposit to a crypto address or a bank account. Ad-hoc orchestrations are one-off
-orchestrations that can be triggered to move funds from a profile to a number of destinations.
+workflows to move between assets, networks, and rails. There are two types of Orchestrations:
+ad-hoc, and rule-based. Ad-hoc orchestrations are one-off orchestrations that can be triggered
+to move funds from a profile to a number of destinations. Rule-based orchestrations are based
+off a rule which is triggered upon deposit to a crypto address or a bank account.
 
 As we'll show in the [mint](), [convert](), and [redeem]() pages these orchestrations can
 be harnessed to perform a number of operations.
 
 ## Orchestration Flow Diagram
 
-The following diagram illustrates all possible orchestration routes within the Paxos platform:
+The following diagram illustrates the possible orchestration routes within the Paxos platform:
 
 ```mermaid
-graph TB
-    %% Styling for dark/light mode compatibility
-    classDef external fill:#f9f9f9,stroke:#666,stroke-width:2px,color:#000
-    classDef internal fill:#f0f4f8,stroke:#4a5568,stroke-width:2px,color:#000
-    classDef managed fill:#faf5ef,stroke:#805ad5,stroke-width:2px,color:#000
-    classDef groupBox fill:transparent,stroke:#888,stroke-width:2px,stroke-dasharray:5
-    classDef ruleFlow stroke:#e53e3e,stroke-width:3px
-    classDef adhocFlow stroke:#3182ce,stroke-width:3px
+graph LR
+    %% Color scheme
+    classDef profile fill:#e6f7ed,stroke:#16a34a,stroke-width:2px,color:#15803d
+    classDef ruleSource fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+    classDef external fill:#e0e7ff,stroke:#3730a3,stroke-width:2px,color:#312e81
+    classDef apiCall fill:#f3f4f6,stroke:#6b7280,stroke-width:2px,color:#374151
+    classDef paxosBox fill:transparent,stroke:#16a34a,stroke-width:2px,stroke-dasharray:5
+    classDef externalBox fill:transparent,stroke:#3730a3,stroke-width:2px,stroke-dasharray:5
     
-    subgraph "EXTERNAL SOURCES (Trigger Rule-based Orchestrations)"
-        ExtFiat["🏦 Bank Deposit<br/>External Fiat"]:::external
-        ExtCrypto["🔗 Blockchain Deposit<br/>External Crypto"]:::external
+    subgraph triggers["EXTERNAL TRIGGERS"]
+        ExtFiat["🏦 Bank Deposit"]:::external
+        ExtCrypto["⛓ Blockchain Deposit"]:::external
     end
     
-    subgraph "PAXOS MANAGED (Deposit Instructions)"
-        FiatInstr["📋 Fiat Deposit<br/>Instructions"]:::managed
-        CryptoInstr["📋 Crypto Deposit<br/>Address"]:::managed
+    subgraph sources["SOURCES (Paxos Managed)"]
+        ProfileA["👤 Profile A"]:::profile
+        FiatInstr["📋 Fiat Deposit<br/>Instructions<br/>(Rule-based)"]:::ruleSource
+        CryptoInstr["📋 Crypto Deposit<br/>Address<br/>(Rule-based)"]:::ruleSource
     end
     
-    subgraph "INTERNAL PROFILES (Trigger Ad-hoc Orchestrations)"
-        Profile1["👤 Profile A"]:::internal
-        Profile2["👤 Profile B"]:::internal
-        Profile3["👤 Profile C"]:::internal
-    end
-    
-    subgraph "DESTINATIONS"
-        subgraph "Internal Destinations"
-            DestProfile1["👤 Profile A"]:::internal
-            DestProfile2["👤 Profile B"]:::internal
-            DestProfile3["👤 Profile C"]:::internal
+    subgraph destinations["DESTINATIONS"]
+        subgraph paxosDest["Paxos Managed"]
+            ProfileB["👤 Profile B"]:::profile
         end
         
-        subgraph "External Destinations"
-            DestExtFiat["🏦 Bank Account<br/>External Fiat"]:::external
-            DestExtCrypto["🔗 Blockchain Address<br/>External Crypto"]:::external
+        subgraph extDest["External"]
+            ExtBank["🏦 External Bank<br/>Account"]:::external
+            ExtCryptoAddr["⛓ External Crypto<br/>Address"]:::external
         end
     end
     
-    %% Rule-based flows (red/dashed)
-    ExtFiat -.->|"Rule-based<br/>Orchestration"| FiatInstr
-    ExtCrypto -.->|"Rule-based<br/>Orchestration"| CryptoInstr
-    FiatInstr -.->|"Auto-routes to<br/>profile if rule matches"| DestProfile1
-    FiatInstr -.->|" "| DestProfile2
-    CryptoInstr -.->|"Auto-routes to<br/>profile if rule matches"| DestProfile1
-    CryptoInstr -.->|" "| DestProfile2
+    %% API Calls
+    CreateRule["🔧 API: Create<br/>Orchestration Rule"]:::apiCall
+    CreateOrch["🔧 API: Create<br/>Orchestration"]:::apiCall
     
-    %% Ad-hoc flows (blue/solid)
-    Profile1 ==>|"Ad-hoc<br/>Orchestration"| DestProfile2
-    Profile1 ==>|" "| DestProfile3
-    Profile1 ==>|" "| DestExtFiat
-    Profile1 ==>|" "| DestExtCrypto
+    %% Rule creation flow
+    CreateRule ==>|"Creates"| FiatInstr
+    CreateRule ==>|"Creates"| CryptoInstr
     
-    Profile2 ==>|"Ad-hoc<br/>Orchestration"| DestProfile1
-    Profile2 ==>|" "| DestProfile3
-    Profile2 ==>|" "| DestExtFiat
-    Profile2 ==>|" "| DestExtCrypto
+    %% External triggers to rule-based sources
+    ExtFiat -.->|"Triggers if<br/>rule matches"| FiatInstr
+    ExtCrypto -.->|"Triggers if<br/>rule matches"| CryptoInstr
     
-    Profile3 ==>|"Ad-hoc<br/>Orchestration"| DestProfile1
-    Profile3 ==>|" "| DestProfile2
-    Profile3 ==>|" "| DestExtFiat
-    Profile3 ==>|" "| DestExtCrypto
+    %% Ad-hoc orchestration trigger
+    CreateOrch ==>|"Ad-hoc"| ProfileA
+    
+    %% All sources to all destinations
+    ProfileA --> ProfileB
+    ProfileA --> ExtBank
+    ProfileA --> ExtCryptoAddr
+    
+    FiatInstr --> ProfileB
+    FiatInstr --> ExtBank
+    FiatInstr --> ExtCryptoAddr
+    
+    CryptoInstr --> ProfileB
+    CryptoInstr --> ExtBank
+    CryptoInstr --> ExtCryptoAddr
+    
+    %% Style the subgraphs
+    class sources paxosBox
+    class paxosDest paxosBox
+    class extDest externalBox
 ```
 
 ### Key Points
