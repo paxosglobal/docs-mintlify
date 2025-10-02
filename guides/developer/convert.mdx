@@ -40,6 +40,8 @@ You can also use the [Fiat Transfers funding flow](/guides/developer/fiat-transf
 
 ### USD
 
+<Expandable title="Deposit USD In Sandbox">
+
 ```shell highlight={2}
 curl --request POST \
 --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
@@ -50,7 +52,11 @@ curl --request POST \
 }'
 ```
 
+</Expandable>
+
 ### USDG
+
+<Expandable title="Deposit USDG In Sandbox">
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840-4bae-bdd4-30688f0268fc/deposit' \
@@ -64,6 +70,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
 }'
 ```
 
+</Expandable>
+
 ## ➌ Request an Orchestration
 
 Request an orchestration using [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration).
@@ -72,6 +80,8 @@ Specify the following body parameters to execute a conversion from `source_asset
 For [Third-party integrations](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
 
 ### USDG → USD
+
+<Expandable title="USDG->USD Orchestration Request" defaultOpen="true">
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' \
@@ -96,10 +106,14 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' 
 }'
 ```
 
+</Expandable>
+
 The response returns an orchestration `id` for tracking.
 Initial status is `PROCESSING` during execution.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
 The `destination_asset` will be credited when the orchestration status transitions to `COMPLETED`.
+
+<Expandable title="USDG->USD Orchestration Response">
 
 ```json
 {
@@ -125,7 +139,11 @@ The `destination_asset` will be credited when the orchestration status transitio
 }
 ```
 
+</Expandable>
+
 ### USDG → PYUSD
+
+<Expandable title="USDG->PYUSD Orchestration Request" defaultOpen="true">
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' \
@@ -150,10 +168,14 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' 
 }'
 ```
 
+</Expandable>
+
 The response returns an orchestration `id` for tracking.
 Initial status is `PROCESSING` during execution.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
 The `destination_asset` will be credited when the orchestration status transitions to `COMPLETED`.
+
+<Expandable title="USDG->PYUSD Orchestration Response">
 
 ```json
 {
@@ -179,11 +201,15 @@ The `destination_asset` will be credited when the orchestration status transitio
 }
 ```
 
+</Expandable>
+
 ## ➍ Create an Orchestration Rule
 
 To create a persistent rule that is triggered by a deposit you can use [Create Orchestration Rules](/api-reference/endpoints/orchestration-rules/create-orchestration-rule).
 
 For example, to automatically convert USD deposits to USDG:
+
+<Expandable title="USDG->USD Orchestration Rule Request" defaultOpen="true">
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/orchestration/rules' \
@@ -209,7 +235,11 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/rules' \
 }'
 ```
 
+</Expandable>
+
 The response includes deposit instructions and the rule configuration:
+
+<Expandable title="USDG->USD Orchestration Rule Response">
 
 ```json
 {
@@ -239,17 +269,21 @@ The response includes deposit instructions and the rule configuration:
 }
 ```
 
+</Expandable>
+
 Deposits to the specified instructions automatically trigger orchestrations for conversion to the destination asset. Each triggered orchestration will include an `orchestration_rule_id` field referencing this rule.
 
 ## ➎ Monitor Orchestration Status
 
 <div style={{ display: 'flex', justifyContent: 'center' }}>
+
 ```mermaid
 stateDiagram-v2
     [*] --> PROCESSING: Orchestration Created
     PROCESSING --> COMPLETED: Success
     PROCESSING --> FAILED: Error
 ```
+
 </div>
 
 Orchestrations can exist in three states. To monitor them there's a few options.
@@ -262,6 +296,8 @@ Webhooks are triggered upon each status change in the orchestration lifecycle.
 
 The webhook payload contains an event ID that you use to fetch the full [`orchestration_status_change`](/api-reference/events/orchestration-status-change-object) event details:
 
+<Expandable title="Webhook Payload">
+
 ```json
 {
     "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
@@ -272,7 +308,11 @@ The webhook payload contains an event ID that you use to fetch the full [`orches
 }
 ```
 
+</Expandable>
+
 Fetch the event details to get the orchestration information:
+
+<Expandable title="Orchestration Status Change Event">
 
 ```json
 {
@@ -283,11 +323,15 @@ Fetch the event details to get the orchestration information:
 }
 ```
 
+</Expandable>
+
 > When orchestrations are triggered by a rule, the event object will include an `orchestration_rule_id` field linking back to the originating rule.
 
 ### Alternative: Polling with API
 
 Use [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations) to check orchestration status:
+
+<Expandable title="List Orchestration Request" defaultOpen="true">
 
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations?profile_id=0d3172c5-8840-4bae-bdd4-30688f0268fc&order=DESC' \
@@ -295,7 +339,11 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations?p
 --header 'Authorization: Bearer {access_token}'
 ```
 
+</Expandable>
+
 The response includes all orchestrations for the profile with their current status:
+
+<Expandable title="List Orchestration Response">
 
 ```json
 {
@@ -331,6 +379,8 @@ The response includes all orchestrations for the profile with their current stat
     "next_page_cursor": "..."
 }
 ```
+
+</Expandable>
 
 # Using Legacy API
 
