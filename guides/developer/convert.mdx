@@ -5,20 +5,29 @@ description: Implement guaranteed 1:1 conversions between USD and Paxos-issued s
 
 # Using Orchestration API
 
-Converting between assets has now become simpler and more powerful with the introduction of the [Orchestration API](/api-reference/endpoints/orchestration/create-orchestration), still no fees and now allowing conversion from asset to asset as well as USD.
-You can fetch all your conversion using [List Orchestration](/api-reference/endpoints/orchestration/list-orchestrations) and [lookup a single orchestration](/api-reference/endpoints/orchestration/get-orchestration). 
+Moving between assets is now simpler and more powerful with the [Orchestration API](/api-reference/endpoints/orchestrations-conversions/overview).
 
-You can also [Create Orchestration Rules](/api-reference/endpoints/orchestration-rules/create-orchestration-rule) that automatically trigger orchestrations when matching deposits are received.
+- [Create Orchestrations](/api-reference/endpoints/orchestration/create-orchestration) to convert from profile sources to crypto, fiat, or profile destinations
+- Retrieve orchestration history using [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations) or [Get Orchestration](/api-reference/endpoints/orchestration/get-orchestration) for individual details
+- [Create Orchestration Rules](/api-reference/endpoints/orchestration-rules/create-orchestration-rule) to automatically trigger conversions when matching deposits are received
+- Track orchestration status in real-time using [webhooks](/api-reference/events/orchestration-status-change-object) without polling
 
-Webhooks allow you to track your orchestration status by subscribing to the [orchestration status change webhook](/api-reference/events/orchestration-status-change-object).
-
-> If you've already authenticated and have USD and USDG balances in a Profile, skip ahead to the [request a conversion](#request-conversion) step.
+> If you've already authenticated and have USD and USDG balances in a Profile, skip ahead to the [request an orchestration](#➌-request-an-orchestration) step.
 
 ## ➊ Authenticate
 
 Include the following scopes when [authenticating](/guides/developer/authenticate):
+
+For orchestrations:
+
 ```shell
-conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin funding:read_profile
+orchestration:read_orchestration orchestration:write_orchestration funding:read_profile
+```
+
+For orchestration rules:
+
+```shell
+orchestration:read_orchestration_rule orchestration:write_orchestration_rule funding:read_profile
 ```
 
 > If you don't see all the scopes when [creating or editing API credentials](/guides/developer/credentials), contact [Support](https://support.paxos.com).
@@ -28,6 +37,7 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request](/guides/developer/request) guide for help retrieving Profile IDs.
 This guide also includes examples for the USDG → USD conversion, so if you are following along make sure you add some USDG to the Profile.
 You can also use the [Fiat Transfers funding flow](/guides/developer/fiat-transfers/quickstart#funding) if you've already set up a Fiat Account.
+
 ### USD
 
 ```shell highlight={2}
@@ -39,6 +49,7 @@ curl --request POST \
   "amount": "1000"
 }'
 ```
+
 ### USDG
 
 ```shell
@@ -57,7 +68,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
 
 Request an orchestration using [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration).
 
-Include the following body parameters in your request to convert the `source_asset` into the `destination_asset`.
+Specify the following body parameters to execute a conversion from `source_asset` to `destination_asset`.
 For [Third-party integrations](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
 
 ### USDG → USD
@@ -85,8 +96,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' 
 }'
 ```
 
-The acknowledgement response includes the `id`, which can be used to lookup the orchestration.
-The initial status will be `PROCESSING` as the orchestration executes.
+The response returns an orchestration `id` for tracking.
+Initial status is `PROCESSING` during execution.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
 The `destination_asset` will be credited when the orchestration status transitions to `COMPLETED`.
 
@@ -97,7 +108,6 @@ The `destination_asset` will be credited when the orchestration status transitio
     "source_asset": "USDG",
     "source_amount": "100",
     "destination_asset": "USD",
-    "destination_amount": "100",
     "status": "PROCESSING",
     "ref_id": "orch_usdg_usd_a284608c-4cf0-4605-ae0a-5c1f7ff109d3",
     "created_at": "2024-09-25T15:07:50.123456Z",
@@ -111,7 +121,7 @@ The `destination_asset` will be credited when the orchestration status transitio
             "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc"
         }
     },
-    ...
+    "updated_at": "2024-09-25T15:07:50.123456Z"
 }
 ```
 
@@ -140,8 +150,8 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations' 
 }'
 ```
 
-The acknowledgement response includes the `id`, which can be used to lookup the orchestration.
-The initial status will be `PROCESSING` as the orchestration executes.
+The response returns an orchestration `id` for tracking.
+Initial status is `PROCESSING` during execution.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
 The `destination_asset` will be credited when the orchestration status transitions to `COMPLETED`.
 
@@ -152,7 +162,6 @@ The `destination_asset` will be credited when the orchestration status transitio
     "source_asset": "USDG",
     "source_amount": "100",
     "destination_asset": "PYUSD",
-    "destination_amount": "100",
     "status": "PROCESSING",
     "ref_id": "orch_usdg_pyusd_8f91a9c5-0a6e-46dc-ad68-17bc8fb4eafb",
     "created_at": "2024-09-25T15:07:15.654321Z",
@@ -166,11 +175,11 @@ The `destination_asset` will be credited when the orchestration status transitio
             "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc"  
         }
     },
-    ...
+    "updated_at": "2024-09-25T15:07:15.654321Z"
 }
 ```
 
-## ➍ Create an Orchestration Rule 
+## ➍ Create an Orchestration Rule
 
 To create a persistent rule that is triggered by a deposit you can use [Create Orchestration Rules](/api-reference/endpoints/orchestration-rules/create-orchestration-rule).
 
@@ -189,7 +198,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/orchestration/rules' \
     "source": {
         "fiat": {
             "network": "WIRE",
-            "account_type": "CHECKING"
+            "account_type": "SWIFT"
         }
     },
     "destination": {
@@ -205,7 +214,7 @@ The response includes deposit instructions and the rule configuration:
 ```json
 {
     "rule": {
-        "id": "rule_7f8a9b1c-2d3e-4f5g-6h7i-8j9k0l1m2n3o",
+        "id": "16a66aa1-b13c-4dfa-9f1b-34635474d697",
         "ref_id": "rule_usd_to_usdg_auto_convert",
         "nickname": "Auto Convert USD to USDG",
         "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
@@ -214,15 +223,10 @@ The response includes deposit instructions and the rule configuration:
         "destination_asset": "USDG",
         "source": {
             "fiat": {
-                "deposit_instructions_id": "dep_inst_abc123",
-                "network": "WIRE",
-                "account_type": "CHECKING",
-                "routing_details": {
-                    "routing_number": "021000021",
-                    "account_number": "1234567890",
-                    "bank_name": "JP Morgan Chase",
-                    "bank_address": "270 Park Avenue, New York, NY 10017"
-                }
+                  "deposit_instructions_id": "d52f62c3-a5f6-44c6-adcf-84f24481ad8b",
+                  "network": "WIRE",
+                  "account_type": "SWIFT",
+                  "memo_id": "3CFWQTPC2W4PKGVX"
             }
         },
         "destination": {
@@ -235,26 +239,36 @@ The response includes deposit instructions and the rule configuration:
 }
 ```
 
-When deposits are received to the provided deposit instructions, an orchestration will automatically be triggered to convert the funds to the destination asset. Each triggered orchestration will include an `orchestration_rule_id` field referencing this rule. 
+Deposits to the specified instructions automatically trigger orchestrations for conversion to the destination asset. Each triggered orchestration will include an `orchestration_rule_id` field referencing this rule.
 
 ## ➎ Monitor Orchestration Status
+
+<div style={{ display: 'flex', justifyContent: 'center' }}>
+```mermaid
+stateDiagram-v2
+    [*] --> PROCESSING: Orchestration Created
+    PROCESSING --> COMPLETED: Success
+    PROCESSING --> FAILED: Error
+```
+</div>
+
+Orchestrations can exist in three states. To monitor them there's a few options.
 
 ### Recommended: Using Webhooks
 
 > **Best Practice**: Subscribe to orchestration webhooks for real-time status monitoring. This is the recommended approach as it provides immediate notifications without polling.
 
-Subscribe to orchestration status webhooks:
-- [`orchestration.processing`](/api-reference/webhooks/orchestration-processing) - When orchestration begins
-- [`orchestration.completed`](/api-reference/webhooks/orchestration-completed) - When orchestration succeeds  
-- [`orchestration.failed`](/api-reference/webhooks/orchestration-failed) - When orchestration fails
+Webhooks are triggered upon each status change in the orchestration lifecycle.
 
 The webhook payload contains an event ID that you use to fetch the full [`orchestration_status_change`](/api-reference/events/orchestration-status-change-object) event details:
 
 ```json
 {
+    "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
     "type": "orchestration.completed",
-    "event_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "timestamp": "2024-09-25T15:07:56.076853Z"
+    "source": "com.paxos",
+    "time": "2025-01-07T14:30:02Z",
+    "object": "event"
 }
 ```
 
@@ -262,7 +276,7 @@ Fetch the event details to get the orchestration information:
 
 ```json
 {
-    "id": "ea284608c-4cf0-4605-ae0a-5c1f7ff109d3",
+    "id": "ea284608c-4cf0-4605-ae0a-5c1f7ff109d3", // orchestration_id
     "orchestration_rule_id": "7f8a9b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",  // Present if triggered by a rule
     "ref_id": "orch_usdg_usd_a284608c-4cf0-4605-ae0a-5c1f7ff109d3",
     "status": "COMPLETED"
@@ -318,49 +332,17 @@ The response includes all orchestrations for the profile with their current stat
 }
 ```
 
-### Orchestration State Machine
-
-Orchestrations progress through the following states:
-
-```mermaid
-stateDiagram-v2
-    [*] --> PROCESSING: Orchestration Created
-    PROCESSING --> COMPLETED: Success
-    PROCESSING --> FAILED: Error
-    COMPLETED --> [*]
-    FAILED --> [*]
-    
-    note right of PROCESSING
-        Source funds debited
-        Conversion in progress
-    end note
-    
-    note right of COMPLETED
-        Destination funds credited
-        Transaction settled
-    end note
-    
-    note right of FAILED  
-        Source funds returned
-        Check fail_reason field
-    end note
-```
-
-- `PROCESSING`: The orchestration has been created and is being executed. Source assets are debited immediately.
-- `COMPLETED`: The orchestration succeeded. Destination assets have been credited.
-- `FAILED`: The orchestration failed. Source assets are returned. Check the `fail_reason` field for details.
-
-
 # Using Legacy API
 
-Next, use the [Stablecoin Conversion API](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert USD to any [supported asset](/guides/developer/convert#assets), and vice verse, without any fees.
+Next, use the [Stablecoin Conversion API](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) to easily convert USD to any [supported asset](/guides/developer/convert#assets), and vice versa, without any fees.
 Keep track of all your conversions with [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions) or [lookup a single conversion](/api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion).
 
 > If you've already authenticated and have USD and USDG balances in a Profile, skip ahead to the [request a conversion](#request-conversion) step.
 
-## ➊ Authenticate
+## ➊ Authenticate (Legacy)
 
 Include the following scopes when [authenticating](/guides/developer/authenticate):
+
 ```shell
 conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin funding:read_profile
 ```
@@ -372,6 +354,7 @@ conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin fun
 Use [Create Sandbox Deposit](/api-reference/endpoints/sandbox-deposits/create-sandbox-deposit) to add USD to the Profile (`profile_id`) you want the conversion to be associated with. See the [First API Request](/guides/developer/request) guide for help retrieving Profile IDs.
 This guide also includes examples for the USDG → USD conversion, so if you are following along make sure you add some USDG to the Profile.
 You can also use the [Fiat Transfers funding flow](/guides/developer/fiat-transfers/quickstart#funding) if you've already set up a Fiat Account.
+
 ### USD
 
 ```shell highlight={2}
@@ -383,6 +366,7 @@ curl --request POST \
   "amount": "1000"
 }'
 ```
+
 ### USDG
 
 ```shell
@@ -396,11 +380,13 @@ curl --location 'https://api.sandbox.paxos.com/v2/sandbox/profiles/0d3172c5-8840
     "crypto_network": "ETHEREUM"
 }'
 ```
+
 ## ➌ Request Conversion
 
 Request a conversion using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion).
 Include the following body parameters in your request to convert the `source_asset` of $100 USD into the `target_asset`.
 For [Third-party integrations](/guides/crypto-brokerage/ledger-type#fiat-and-crypto-subledger), you must also specify `identity_id` and `account_id`.
+
 ### USDG → USD
 
 ```shell
@@ -415,6 +401,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/conversion/stablecoins' \
     "target_asset": "USD",
 }'
 ```
+
 The acknowledgement response includes the `id`, which can be used to lookup the transaction, and the status will always be `CREATED`.
 The `source_asset` is immediately debited from the associated `profile_id` balance.
 The `target_asset` will not be credited until the [conversion status](/guides/developer/convert#statuses) is \"status": "SETTLED"`.
@@ -431,6 +418,7 @@ The `target_asset` will not be credited until the [conversion status](/guides/de
     ...
 }
 ```
+
 ### USD → PYUSD
 
 ```shell
@@ -462,6 +450,7 @@ The `target_asset` will not be credited until the [conversion status](/guides/de
     ...
 }
 ```
+
 ## ➍ Confirm the Conversion
 
 Use [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions) to check the conversion status.
@@ -513,13 +502,13 @@ All conversions use the lowest maximum precision among the asset pairs.
 | USD | 0.01 (1e-2) | USD → USDG = 0.01 (1e-2) |
 | [PYUSD](/guides/stablecoin/pyusd) | 0.000001 (1e-6) | PYUSD → USD = 0.01 (1e-2) |
 | [USDG](/guides/stablecoin/usdg) | 0.00000001 (1e-8) | USDG → USD = 0.01 (1e-2) |
-| [USDP](/guides/stablecoin/usdp) | 	0.00000001 (1e-8) | USDP → USD = 0.01 (1e-2) |
+| [USDP](/guides/stablecoin/usdp) |  0.00000001 (1e-8) | USDP → USD = 0.01 (1e-2) |
 
 ## Stablecoin Conversion Statuses
 
 There are three conversion statuses:
 
-- `CREATED`: The conversion has been submitted successfully but has not yet settled. 
+- `CREATED`: The conversion has been submitted successfully but has not yet settled.
 - `SETTLED`: The conversion has been completed.
 - `CANCELLED`: The conversion was stopped [using the cancel endpoint](/api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion) for the pending conversion.
 
