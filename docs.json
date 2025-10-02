@@ -139,7 +139,6 @@
             "group": "Identity",
             "pages": [
               "guides/identity/index",
-
               {
                 "group": "Manage Lifecycle",
                 "pages": [
@@ -150,6 +149,15 @@
               "guides/identity/statuses",
               "guides/identity/required-details",
               "guides/identity/institution-types"
+            ]
+          },
+          {
+            "group": "Stablecoin Orchestration",
+            "pages": [
+              "guides/developer/orchestrations/orchestrations",
+              "guides/developer/orchestrations/mint",
+              "guides/developer/orchestrations/convert",
+              "guides/developer/orchestrations/redeem"
             ]
           },
           {
@@ -262,7 +270,7 @@
             "pages": [
               "guides/dashboard/account",
               "guides/dashboard/signin",
-              "guides/dashboard/onboard"             
+              "guides/dashboard/onboard"
             ]
           },
           {
@@ -284,10 +292,10 @@
           {
             "group": "Fund Management",
             "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat"
+              "guides/dashboard/transactions",
+              "guides/dashboard/instructions",
+              "guides/dashboard/addresses",
+              "guides/dashboard/fiat"
             ]
           },
           {
@@ -304,7 +312,7 @@
                 "group": "Manage Team",
                 "pages": [
                   "guides/dashboard/admin/team",
-                  "guides/dashboard/roles"             
+                  "guides/dashboard/roles"
                 ]
               },
               "guides/dashboard/organization",
@@ -313,8 +321,6 @@
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
               "guides/dashboard/admin/reports"
-
-
             ]
           },
           {
@@ -391,7 +397,7 @@
               "guides/stablecoin/integrate-pyusd"
             ]
           },
-           {
+          {
             "group": "Other Stablecoins",
             "pages": [
               "guides/stablecoin/busd"
@@ -909,7 +915,9 @@
       {
         "tab": "Changelog",
         "hidden": true,
-        "pages": ["changelog"]
+        "pages": [
+          "changelog"
+        ]
       }
     ],
     "global": {
@@ -970,6 +978,11 @@
     "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json"
   },
   "contextual": {
-    "options": ["copy", "view", "claude", "chatgpt"]
+    "options": [
+      "copy",
+      "view",
+      "claude",
+      "chatgpt"
+    ]
   }
 }
