@@ -1,0 +1,47 @@
+---
+title: "orchestration_status_change"
+description: "Event object returned for orchestration status change events"
+---
+
+This object is returned by the [Get Event API](/api-reference/endpoints/events/get-event) when the event type is `orchestration.processing`, `orchestration.completed`, or `orchestration.failed`.
+
+## Object Fields
+
+<ResponseField name="id" type="string" required>
+The Paxos orchestration ID. You can call the GetOrchestration endpoint with this ID to get more details about it.
+</ResponseField>
+
+<ResponseField name="ref_id" type="string" required>
+The client-specified ID of the orchestration for replay protection and lookup.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+Status of the orchestration:
+
+**Available options:** `PROCESSING`, `COMPLETED`, `FAILED`
+</ResponseField>
+
+<ResponseField name="orchestration_rule_id" type="string">
+The ID of the orchestration rule that triggered this orchestration. This field will not be present for ad-hoc orchestrations. (optional)
+</ResponseField>
+
+<ResponseExample>
+
+```json Rule-triggered Orchestration
+{
+  "id": "ee1a802f-7557-4c59-b833-9a1ef29630d5",
+  "orchestration_rule_id": "86d3929f-0090-45e5-8195-dbcf63c43eec",
+  "ref_id": "orchestration_id.ee1a802f-7557-4c59-b833-9a1ef29630d5",
+  "status": "COMPLETED"
+}
+```
+
+```json Ad-hoc Orchestration
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "ref_id": "my-orchestration-123",
+  "status": "PROCESSING"
+}
+```
+
+</ResponseExample>
