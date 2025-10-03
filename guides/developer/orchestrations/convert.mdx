@@ -5,7 +5,7 @@ description: Execute conversions between supported assets.
 
 ## Overview
 
-Orchestrations enable seamless conversions between different stablecoins and currencies. These can be triggered through ad-hoc orchestrations from profiles or rule-based orchestrations from external deposits, allowing you to convert assets and route them to profiles or external addresses.
+Orchestrations enable seamless conversions between different stablecoins and currencies. These can be triggered through ad-hoc orchestrations from profiles or rule-based orchestrations from external deposits, and then routed to any supported destination.
 
 ## Conversion Flow Options
 
@@ -51,7 +51,7 @@ graph LR
 
 ### Example 1: PYUSD → USDG (Ad-hoc, Profile to Profile)
 
-Use the [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration) endpoint to convert PYUSD to USDG within your Paxos profile:
+Use the [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration) endpoint to convert PYUSD to USDG between Paxos profiles:
 
 <Expandable title="Request">
 
@@ -177,6 +177,7 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/rules' \
 ## How It Works
 
 ### Ad-hoc Conversions
+
 1. **Call the API**: Create an orchestration specifying source and destination assets
 2. **Validation**: Paxos validates the request and available balance
 3. **Conversion**: Assets are converted
@@ -184,6 +185,7 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/rules' \
 5. **Monitor Status**: Track your orchestration progress using [webhooks or API polling](./orchestrations#monitoring-orchestration-status)
 
 ### Rule-based Conversions
+
 1. **Create the Rule**: Set up an orchestration rule for automatic conversion
 2. **Get Deposit Address**: Use the address returned in the rule's `source.crypto.address` field
 3. **Receive Deposit**: External USDG arrives at your Paxos crypto address
@@ -196,4 +198,3 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/rules' \
 
 - Learn about [minting stablecoins](./mint) from USD deposits
 - Explore [redeeming stablecoins](./redeem) back to USD
-
