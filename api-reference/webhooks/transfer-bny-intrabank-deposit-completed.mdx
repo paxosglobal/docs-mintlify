@@ -1,0 +1,15 @@
+---
+title: "transfer.bny_intrabank_deposit.completed"
+description: "Webhook triggered when a BNY intrabank deposit has completed"
+openapi: "webhooks-openapi.json webhook transfer.bny_intrabank_deposit.completed"
+---
+
+Triggered when a BNY intrabank deposit has COMPLETED processing.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/endpoints/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns a [`transfer_status_change`](/api-reference/events/transfer-status-change-object) object with transfer status details.
