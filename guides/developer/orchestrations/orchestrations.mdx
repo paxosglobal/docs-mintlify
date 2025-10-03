@@ -227,12 +227,12 @@ The response includes all orchestrations for the profile with their current stat
 
 </Expandable>
 
-## Prerequisites for External Crypto Destinations
+## Required Setup for External Crypto Destinations
 
-When sending funds to external crypto addresses in orchestrations, you can optionally pre-register the destination address using [Put Crypto Destination Address](/api-reference/endpoints/crypto-destination-addresses/put-crypto-destination-address). This allows you to:
+When sending funds to external crypto addresses in orchestrations, you must first register the destination address using [Put Crypto Destination Address](/api-reference/endpoints/crypto-destination-addresses/put-crypto-destination-address). This is required to:
 
 - Store travel rule metadata for compliance
-- Reuse addresses across multiple orchestrations using the `crypto_address_id`
+- Obtain a `crypto_address_id` for use in orchestrations
 - Manage approved destination addresses
 
 ### Adding a Crypto Destination Address
@@ -272,25 +272,14 @@ curl -X PUT 'https://api.paxos.com/v2/transfer/crypto-destination-address' \
 
 </Expandable>
 
-### Using Pre-registered Addresses in Orchestrations
+### Using Registered Addresses in Orchestrations
 
-Once registered, you can reference the address by its ID in orchestration destinations:
+Once registered, reference the address by its ID in orchestration destinations:
 
 ```json
 "destination": {
   "crypto": {
     "crypto_address_id": "crypto_addr_123abc"
-  }
-}
-```
-
-Alternatively, you can specify the address directly without pre-registration:
-
-```json
-"destination": {
-  "crypto": {
-    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-    "network": "ETHEREUM"
   }
 }
 ```

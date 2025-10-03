@@ -112,7 +112,7 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/orchestrations' \
 
 ### Example 2: USDG → USDC (Rule-based, External to External)
 
-Use the [Create Orchestration Rule](/api-reference/endpoints/orchestration-rules/create-orchestration-rule) endpoint to automatically convert external USDG deposits to USDC and send to an external address. You can optionally [pre-register the destination address](./orchestrations#prerequisites-for-external-crypto-destinations):
+Use the [Create Orchestration Rule](/api-reference/endpoints/orchestration-rules/create-orchestration-rule) endpoint to automatically convert external USDG deposits to USDC and send to an external address. First [register the destination address](./orchestrations#required-setup-for-external-crypto-destinations) to get a `crypto_address_id`:
 
 <Expandable title="Request">
 
@@ -133,8 +133,7 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/rules' \
     },
     "destination": {
       "crypto": {
-        "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-        "network": "ETHEREUM"
+        "crypto_address_id": "crypto_addr_456def"
       }
     }
   }'
@@ -162,8 +161,7 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/rules' \
     },
     "destination": {
       "crypto": {
-        "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-        "network": "ETHEREUM"
+        "crypto_address_id": "crypto_addr_456def"
       }
     },
     "status": "ACTIVE",
