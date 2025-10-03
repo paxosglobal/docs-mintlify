@@ -2,8 +2,16 @@
 title: 'Mint'
 description: Deposit USD. Convert or convert-and-transfer in one API call.
 ---
-![Mint Workflow](/images/mint.png)
 
+<Warning title="Stablecoin Conversions Deprecation Notice">
+The Stablecoin Conversions API will be deprecated.
+
+Paxos will migrate all active conversion rules to the [Orchestrations API](/guides/developer/orchestrations/orchestrations) format by December 2025.
+
+Customers should transition to the Orchestrations API to ensure continuity of service.
+</Warning>
+
+![Mint Workflow](/images/mint.png)
 
 Minting a [Paxos-issued stablecoin](/guides/developer/blockchains#stablecoins) starts by depositing USD on the Paxos platform using the [Fiat Transfers APIs](/api-reference/endpoints/fiat-transfers) (**A** in the diagram).
 Depending on the use case, you can either convert USD to a stablecoin and keep the asset on the Paxos platform using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) (option **B**) or use [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to convert and transfer with the same API request (**C**).
@@ -48,6 +56,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/profiles/0d3172c5-8840-4bae-bd
 ```
 
 The response includes the updated USD and Paxos-issued stablecoin balances.
+
 ```json
 {
     "items": [
@@ -74,6 +83,7 @@ The response includes the updated USD and Paxos-issued stablecoin balances.
 
 Use [Create Crypto Withdrawal](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal) to transfer the Paxos-issued stablecoin to an address off the Paxos platform with a single request.
 To automatically convert fiat (USD) to stablecoin and transfer to an external address with a single request, set the `asset` to the stablecoin you want to mint, the `balance_asset` to `USD`, and the `crypto_network` to the desired network.
+
 ### USDG on Ethereum
 
 ```shell
@@ -91,6 +101,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/crypto-withdrawals' \
     "amount": "100"
 }'
 ```
+
 ### PYUSD on Solana
 
 ```shell
@@ -108,6 +119,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/crypto-withdrawals' \
     "amount": "100"
 }'
 ```
+
 The request confirmation response has a `status` of `PENDING`, since the on-chain transaction has not yet been confirmed.
 
 ### USDG on Ethereum
@@ -132,6 +144,7 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
     "auto_conversion": {}
 }
 ```
+
 ### PYUSD on Solana
 
 ```json highlight={13}
@@ -154,16 +167,18 @@ The request confirmation response has a `status` of `PENDING`, since the on-chai
     "auto_conversion": {}
 }
 ```
+
 To check the transaction status on the Paxos platform, use [List Transfers](/api-reference/endpoints/transfers/list-transfers).
 You can create a recurring request that look for completed transactions in the Profile.
 For example, filter on `type=CRYPTO_WITHDRAWAL` and `status=COMPLETED` parameters to find all the completed transactions.
+
 ```shell
 curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?type=CRYPTO_WITHDRAWAL&status=COMPLETED' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer {access_token}'
 ```
 
-By default, the response includes transactions from newest to oldest. 
+By default, the response includes transactions from newest to oldest.
 
 ```json highlight={15,33}
 {

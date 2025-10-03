@@ -27,13 +27,17 @@ graph LR
     classDef apiCall fill:#f3f4f6,stroke:#6b7280,stroke-width:2px,color:#374151
     classDef paxosBox fill:transparent,stroke:#16a34a,stroke-width:2px,stroke-dasharray:5
     classDef externalBox fill:transparent,stroke:#3730a3,stroke-width:2px,stroke-dasharray:5
+    classDef hidden fill:transparent,stroke:transparent,color:transparent
     
-    subgraph triggers["EXTERNAL TRIGGERS"]
+    subgraph triggers["TRIGGERS"]
+        CreateOrch["🔧 API: Create<br/>Orchestration"]:::apiCall
         ExtFiat["🏦 Bank Deposit"]:::external
         ExtCrypto["⛓ Blockchain Deposit"]:::external
     end
     
     subgraph sources["SOURCES (Paxos Managed)"]
+        %% Invisible spacer to prevent Profile A from overlapping with the subgraph label
+        spacer[" "]:::hidden
         ProfileA["👤 Profile A"]:::profile
         FiatInstr["📋 Fiat Deposit<br/>Instructions<br/>(Rule-based)"]:::ruleSource
         CryptoInstr["📋 Crypto Deposit<br/>Address<br/>(Rule-based)"]:::ruleSource
@@ -50,33 +54,32 @@ graph LR
         end
     end
     
-    %% API Calls
+    %% API Call for rules (shown separately)
     CreateRule["🔧 API: Create<br/>Orchestration Rule"]:::apiCall
-    CreateOrch["🔧 API: Create<br/>Orchestration"]:::apiCall
     
     %% Rule creation flow
     CreateRule ==>|"Creates"| FiatInstr
     CreateRule ==>|"Creates"| CryptoInstr
     
-    %% External triggers to rule-based sources
-    ExtFiat -.->|"Triggers if<br/>rule matches"| FiatInstr
-    ExtCrypto -.->|"Triggers if<br/>rule matches"| CryptoInstr
+    %% External triggers activate rules
+    ExtFiat -.->|"Activates"| FiatInstr
+    ExtCrypto -.->|"Activates"| CryptoInstr
     
     %% Ad-hoc orchestration trigger
     CreateOrch ==>|"Ad-hoc"| ProfileA
     
-    %% All sources to all destinations
-    ProfileA --> ProfileB
-    ProfileA --> ExtBank
-    ProfileA --> ExtCryptoAddr
+    %% Central routing node
+    Router["Can route to<br/>any destination"]:::apiCall
     
-    FiatInstr --> ProfileB
-    FiatInstr --> ExtBank
-    FiatInstr --> ExtCryptoAddr
+    %% Sources to router
+    ProfileA --> Router
+    FiatInstr -.-> Router
+    CryptoInstr -.-> Router
     
-    CryptoInstr --> ProfileB
-    CryptoInstr --> ExtBank
-    CryptoInstr --> ExtCryptoAddr
+    %% Router to all destinations
+    Router --> ProfileB
+    Router --> ExtBank
+    Router --> ExtCryptoAddr
     
     %% Style the subgraphs
     class sources paxosBox
@@ -84,9 +87,208 @@ graph LR
     class extDest externalBox
 ```
 
-### Key Points
-
 - **Rule-based Orchestrations**: Originate from external fiat deposits (bank accounts) or external crypto deposits (blockchain). These trigger automatically when a matching rule exists.
 - **Ad-hoc Orchestrations**: Must originate from internal profiles but can route to profiles, external fiat accounts, or external crypto addresses.
 - **Profile-to-Profile Transfers**: Customers with multiple internal profiles can execute ad-hoc transfers between them.
 - **Asset Conversion**: Any transfer can involve different source and destination assets (not shown for clarity but applies to all routes).
+
+## Required Authentication Scopes
+
+To use orchestrations, you'll need the following OAuth scopes when [authenticating](/guides/developer/authenticate):
+
+### Core Orchestration Operations
+
+- **Ad-hoc Orchestrations**:
+  - `orchestration:read_orchestration` - View orchestration status
+  - `orchestration:write_orchestration` - Create orchestrations
+- **Rule-based Orchestrations**:
+  - `orchestration:read_orchestration_rule` - View orchestration rules
+  - `orchestration:write_orchestration_rule` - Create and manage rules
+
+### Supporting Operations
+
+- **Fiat Operations** (for bank withdrawals):
+  - `transfer:read_fiat_account` - View fiat account details
+  - `transfer:write_fiat_account` - Create fiat accounts
+  - `transfer:read_fiat_deposit_instructions` - View deposit instructions
+  - `transfer:write_fiat_deposit_instructions` - Create deposit instructions
+- **Crypto Address Registration** (optional):
+  - `transfer:read_crypto_destination_address` - View registered addresses
+  - `transfer:write_crypto_destination_address` - Register new addresses
+
+## Monitoring Orchestration Status
+
+Orchestrations can exist in three states. To monitor them there's a few options.
+
+<div style={{ display: 'flex', justifyContent: 'center' }}>
+
+```mermaid
+stateDiagram-v2
+    [*] --> PROCESSING: Orchestration Created
+    PROCESSING --> COMPLETED: Success
+    PROCESSING --> FAILED: Error
+```
+
+</div>
+
+### Recommended: Using Webhooks
+
+> Subscribe to orchestration webhooks for real-time status monitoring. This is the recommended approach as it provides immediate notifications without polling.
+
+Webhooks are triggered upon each status change in the orchestration lifecycle.
+
+The webhook payload contains an event ID that you use to fetch the full [`orchestration_status_change`](/api-reference/events/orchestration-status-change-object) event details:
+
+<Expandable title="Webhook Payload">
+
+```json
+{
+    "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+    "type": "orchestration.completed",
+    "source": "com.paxos",
+    "time": "2025-01-07T14:30:02Z",
+    "object": "event"
+}
+```
+
+</Expandable>
+
+Fetch the event details to get the orchestration information:
+
+<Expandable title="Orchestration Status Change Event">
+
+```json
+{
+    "id": "ea284608c-4cf0-4605-ae0a-5c1f7ff109d3", // orchestration_id
+    "orchestration_rule_id": "7f8a9b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",  // Present if triggered by a rule
+    "ref_id": "orch_usdg_usd_a284608c-4cf0-4605-ae0a-5c1f7ff109d3",
+    "status": "COMPLETED"
+}
+```
+
+</Expandable>
+
+> When orchestrations are triggered by a rule, the event object will include an `orchestration_rule_id` field linking back to the originating rule.
+
+### Alternative: Polling with API
+
+Use [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations) to check orchestration status:
+
+<Expandable title="List Orchestration Request" defaultOpen="true">
+
+```shell
+curl --location 'https://api.sandbox.paxos.com/v2/orchestration/orchestrations?profile_id=0d3172c5-8840-4bae-bdd4-30688f0268fc&order=DESC' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer {access_token}'
+```
+
+</Expandable>
+
+The response includes all orchestrations for the profile with their current status:
+
+<Expandable title="List Orchestration Response">
+
+```json
+{
+    "orchestrations": [
+        {
+            "id": "ea284608c-4cf0-4605-ae0a-5c1f7ff109d3",
+            "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+            "source_asset": "USDG",
+            "source_amount": "100",
+            "destination_asset": "USD",
+            "destination_amount": "100",
+            "status": "COMPLETED",
+            "ref_id": "orch_usdg_usd_a284608c-4cf0-4605-ae0a-5c1f7ff109d3",
+            "created_at": "2024-09-25T15:07:50.123456Z",
+            "completed_at": "2024-09-25T15:07:56.076853Z",
+            ...
+        },
+        {
+            "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+            "profile_id": "0d3172c5-8840-4bae-bdd4-30688f0268fc",
+            "orchestration_rule_id": "7f8a9b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c",
+            "source_asset": "USD",
+            "source_amount": "100",
+            "destination_asset": "PYUSD", 
+            "destination_amount": "100",
+            "status": "COMPLETED",
+            "ref_id": "auto_rule_generated_ref_123",
+            "created_at": "2024-09-25T15:07:15.654321Z",
+            "completed_at": "2024-09-25T15:07:21.548903Z",
+            ...
+        }
+    ],
+    "next_page_cursor": "..."
+}
+```
+
+</Expandable>
+
+## Prerequisites for External Crypto Destinations
+
+When sending funds to external crypto addresses in orchestrations, you can optionally pre-register the destination address using [Put Crypto Destination Address](/api-reference/endpoints/crypto-destination-addresses/put-crypto-destination-address). This allows you to:
+
+- Store travel rule metadata for compliance
+- Reuse addresses across multiple orchestrations using the `crypto_address_id`
+- Manage approved destination addresses
+
+### Adding a Crypto Destination Address
+
+<Expandable title="Request">
+
+```bash
+curl -X PUT 'https://api.paxos.com/v2/transfer/crypto-destination-address' \
+  -H 'Authorization: Bearer {access_token}' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "crypto_network": "ETHEREUM",
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    "name": "External Treasury Wallet",
+    "identity_id": "{identity_id}",
+    "account_id": "{account_id}"
+  }'
+```
+
+</Expandable>
+
+<Expandable title="Response">
+
+```json
+{
+  "address": {
+    "id": "crypto_addr_123abc",
+    "crypto_network": "ETHEREUM",
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    "name": "External Treasury Wallet",
+    "identity_id": "{identity_id}",
+    "account_id": "{account_id}",
+    "created_at": "2024-01-15T10:00:00Z"
+  }
+}
+```
+
+</Expandable>
+
+### Using Pre-registered Addresses in Orchestrations
+
+Once registered, you can reference the address by its ID in orchestration destinations:
+
+```json
+"destination": {
+  "crypto": {
+    "crypto_address_id": "crypto_addr_123abc"
+  }
+}
+```
+
+Alternatively, you can specify the address directly without pre-registration:
+
+```json
+"destination": {
+  "crypto": {
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    "network": "ETHEREUM"
+  }
+}
+```
