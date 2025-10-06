@@ -2,7 +2,13 @@
 title: 'Redeem'
 description: Deposit stablecoin and convert to USD in one API call. Transfer USD to your bank.
 ---
+<Warning title="Stablecoin Conversions Deprecation Notice">
+The Stablecoin Conversions API will be deprecated.
 
+Paxos will migrate all active conversion rules to the [Orchestrations API](/guides/developer/orchestrations/orchestrations) format by December 2025.
+
+Customers should transition to the Orchestrations API to ensure continuity of service.
+</Warning>
 
 ![Redeem Workflow](/images/redeem.png)
 
@@ -33,6 +39,7 @@ funding:read_profile transfer:read_deposit_address transfer:read_transfer transf
 Use [Create Deposit Address](/api-reference/endpoints/deposit-addresses/create-deposit-address) to add a wallet address to the designated Profile.
 Include the appropriate `crypto_network` for the source stablecoin.
 Set `conversion_target_asset` to `USD` to automatically convert the stablecoin to USD when the transaction is complete.
+
 ### USDG on Ethereum
 
 ```shell
@@ -47,6 +54,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
     "conversion_target_asset": "USD"
 }'
 ```
+
 ### PYUSD on Solana
 
 ```shell
@@ -61,8 +69,10 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
     "conversion_target_asset": "USD"
 }'
 ```
+
 Capture the `address` and `compatible_crypto_networks` values from the response.
 Also store the `id` to use when looking up transactions.
+
 ### USDG on Ethereum
 
 ```json highlight={2,8,11}
@@ -83,6 +93,7 @@ Also store the `id` to use when looking up transactions.
     ]
 }
 ```
+
 ### PYUSD on Solana
 
 ```json highlight={2,8,11}
@@ -101,12 +112,14 @@ Also store the `id` to use when looking up transactions.
     ]
 }
 ```
+
 ## ➌ Transfer Stablecoin to the Paxos Platform
 
 Initiate an on-chain transfer from your external wallet to the `address` included in the response from the [previous step](#add-deposit-address) or from [List Deposit Addresses](/api-reference/endpoints/deposit-addresses/list-deposit-addresses).
 
 Use [List Transfers](/api-reference/endpoints/transfers/list-transfers) to check the status of transfer on the Paxos platform.
 Using the `type=CRYPTO_DEPOSIT` and `status=COMPLETED` query parameters, in conjunction with `crypto_tx_hashes`, filters the results.
+
 ### USDG on Ethereum
 
 ```shell
@@ -114,6 +127,7 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/transfers?crypto_tx_h
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer {access_token}'
 ```
+
 ### PYUSD on Solana
 
 ```shell
@@ -153,6 +167,7 @@ Once the status is `COMPLETED`, the USD balance updates.
     "next_page_cursor": "CAESDAjJq_a3BhCI9LaXAhjwhN8N"
 }
 ```
+
 ### PYUSD on Solana
 
 ```json
@@ -181,6 +196,7 @@ Once the status is `COMPLETED`, the USD balance updates.
     "next_page_cursor": "CAESDAi7n_a3BhCIkuKsAxisgt8N"
 }
 ```
+
 ## ➍ Transfer USD to Bank Account
 
 Use [Create Fiat Withdrawal](/api-reference/endpoints/fiat-transfers/create-fiat-withdrawal) to send USD to your bank account.

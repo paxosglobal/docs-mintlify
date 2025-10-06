@@ -207,6 +207,90 @@
         "description": "Triggered when a KYC refresh process expires without completion. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
     },
+    "orchestration.processing": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.processing",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Processing",
+        "description": "Triggered when an orchestration enters processing status. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "orchestration.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Completed",
+        "description": "Triggered when an orchestration completes successfully. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "orchestration.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Failed",
+        "description": "Triggered when an orchestration fails. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
     "transfer.crypto_deposit.pending": {
       "post": {
         "requestBody": {
@@ -569,6 +653,9 @@
               "identity.kyc_refresh.started",
               "identity.kyc_refresh.completed",
               "identity.kyc_refresh.expired",
+              "orchestration.processing",
+              "orchestration.completed",
+              "orchestration.failed",
               "transfer.crypto_deposit.pending",
               "transfer.crypto_deposit.completed",
               "transfer.crypto_deposit.failed",
@@ -727,6 +814,43 @@
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
           "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
           "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
+        }
+      },
+      "OrchestrationStatusChangeObject": {
+        "type": "object",
+        "title": "Orchestration Status Change Object",
+        "description": "Object returned by Get Event API for orchestration status change events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Orchestration ID",
+            "description": "The Paxos orchestration ID. You can call the GetOrchestration endpoint with this ID to get more details about it."
+          },
+          "orchestration_rule_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Orchestration Rule ID",
+            "description": "The ID of the orchestration rule that triggered this orchestration (optional, will not be present for ad-hoc orchestrations)"
+          },
+          "ref_id": {
+            "type": "string",
+            "title": "Reference ID",
+            "description": "The client-specified ID of the orchestration for replay protection and lookup"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PROCESSING", "COMPLETED", "FAILED"],
+            "title": "Orchestration Status",
+            "description": "Status of the orchestration"
+          }
+        },
+        "required": ["id", "ref_id", "status"],
+        "example": {
+          "id": "ee1a802f-7557-4c59-b833-9a1ef29630d5",
+          "orchestration_rule_id": "86d3929f-0090-45e5-8195-dbcf63c43eec",
+          "ref_id": "orchestration_id.ee1a802f-7557-4c59-b833-9a1ef29630d5",
+          "status": "COMPLETED"
         }
       },
       "TransferStatusChangeObject": {
