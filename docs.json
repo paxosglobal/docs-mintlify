@@ -596,8 +596,27 @@
             ]
           },
           {
-            "group": "Stablecoin Conversion",
+            "group": "Orchestrations / Conversions",
             "pages": [
+              "api-reference/endpoints/orchestrations-conversions/overview",
+              {
+                "group": "Orchestration Rules",
+                "pages": [
+                  "api-reference/endpoints/orchestration-rules/overview",
+                  "api-reference/endpoints/orchestration-rules/list-orchestration-rules",
+                  "api-reference/endpoints/orchestration-rules/create-orchestration-rule",
+                  "api-reference/endpoints/orchestration-rules/delete-orchestration-rule"
+                ]
+              },
+              {
+                "group": "Orchestration",
+                "pages": [
+                  "api-reference/endpoints/orchestration/overview",
+                  "api-reference/endpoints/orchestration/list-orchestrations",
+                  "api-reference/endpoints/orchestration/create-orchestration",
+                  "api-reference/endpoints/orchestration/get-orchestration"
+                ]
+              },
               {
                 "group": "Stablecoin Conversion",
                 "pages": [
@@ -606,14 +625,6 @@
                   "api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion",
                   "api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion",
                   "api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion"
-                ]
-              },
-              {
-                "group": "Orchestration Rules",
-                "pages": [
-                  "api-reference/endpoints/orchestration-rules/list-orchestration-rules",
-                  "api-reference/endpoints/orchestration-rules/create-orchestration-rule",
-                  "api-reference/endpoints/orchestration-rules/delete-orchestration-rule"
                 ]
               }
             ]
@@ -864,13 +875,6 @@
             "pages": [
               "api-reference/preview/overview"
             ]
-          },
-          {
-            "group": "Orchestration Previews",
-            "openapi": {
-              "source": "api-reference/preview/paxos-v2-preview-orchestration.openapi.json",
-              "directory": "api-reference/preview"
-            }
           },
           {
             "group": "Identity Control Previews",

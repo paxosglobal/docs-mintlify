@@ -1,0 +1,27 @@
+---
+title: "Overview"
+description: "The Orchestrations API provides a single interface for executing fiat and stablecoin conversions on the Paxos platform."
+---
+
+## Orchestration Rule
+
+If the orchestration begins with a deposit from an external source, use an Orchestration Rule.
+- Define orchestration behavior for incoming deposits.
+- Automatically execute the specified conversion when a deposit matches a rule.
+- Remain active and in effect until explicitly deleted.
+- Each rule is associated with deposit instructions that must be used by the sender.
+
+## Ad-Hoc Orchestrations
+
+If the source funds are already on the Paxos platform (e.g., held in a profile), use the Create Orchestration endpoint to initiate a one-time conversion.
+- This endpoint supports sending the converted funds to either another internal profile or an external destination.
+- Rules are not required for ad-hoc orchestrations.
+
+<Warning title="Stablecoin Conversions Deprecation Notice">
+The Stablecoin Conversions API will be deprecated.
+
+Paxos will migrate all active conversion rules to the Orchestrations API format by December 2025.
+
+Customers should transition to the Orchestrations API to ensure continuity of service.
+</Warning>
+
