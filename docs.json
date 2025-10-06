@@ -837,18 +837,91 @@
                   {
                     "group": "Hooks",
                     "pages": [
-                      "api-reference/webhooks/transfer-crypto-deposit-pending",
-                      "api-reference/webhooks/transfer-crypto-deposit-completed",
-                      "api-reference/webhooks/transfer-crypto-deposit-failed",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-pending",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-completed",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-failed",
-                      "api-reference/webhooks/transfer-act-deposit-pending",
-                      "api-reference/webhooks/transfer-act-deposit-completed",
-                      "api-reference/webhooks/transfer-act-deposit-failed",
-                      "api-reference/webhooks/transfer-act-withdrawal-pending",
-                      "api-reference/webhooks/transfer-act-withdrawal-completed",
-                      "api-reference/webhooks/transfer-act-withdrawal-failed"
+                      {
+                        "group": "ACT",
+                        "pages": [
+                          "api-reference/webhooks/transfer-act-deposit-pending",
+                          "api-reference/webhooks/transfer-act-deposit-completed",
+                          "api-reference/webhooks/transfer-act-deposit-failed",
+                          "api-reference/webhooks/transfer-act-withdrawal-pending",
+                          "api-reference/webhooks/transfer-act-withdrawal-completed",
+                          "api-reference/webhooks/transfer-act-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Banking Circle Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "BNY Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Crypto",
+                        "pages": [
+                          "api-reference/webhooks/transfer-crypto-deposit-pending",
+                          "api-reference/webhooks/transfer-crypto-deposit-completed",
+                          "api-reference/webhooks/transfer-crypto-deposit-failed",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-pending",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-completed",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Cubix",
+                        "pages": [
+                          "api-reference/webhooks/transfer-cubix-deposit-pending",
+                          "api-reference/webhooks/transfer-cubix-deposit-completed",
+                          "api-reference/webhooks/transfer-cubix-deposit-failed",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-pending",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-completed",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "RTP",
+                        "pages": [
+                          "api-reference/webhooks/transfer-rtp-deposit-pending",
+                          "api-reference/webhooks/transfer-rtp-deposit-completed",
+                          "api-reference/webhooks/transfer-rtp-deposit-failed"
+                        ]
+                      },
+                      {
+                        "group": "SCB Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Wire",
+                        "pages": [
+                          "api-reference/webhooks/transfer-wire-deposit-pending",
+                          "api-reference/webhooks/transfer-wire-deposit-completed",
+                          "api-reference/webhooks/transfer-wire-deposit-failed",
+                          "api-reference/webhooks/transfer-wire-withdrawal-pending",
+                          "api-reference/webhooks/transfer-wire-withdrawal-completed",
+                          "api-reference/webhooks/transfer-wire-withdrawal-failed"
+                        ]
+                      }
                     ]
                   },
                   {
