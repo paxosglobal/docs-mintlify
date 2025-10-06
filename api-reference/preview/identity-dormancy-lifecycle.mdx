@@ -1,41 +1,41 @@
 ---
 title: 'Dormancy Lifecycle'
-description: Manage dormant identities with automated lifecycle controls.
+description: Manage dormant identities on the Paxos Platform.
 ---
 
 ## Overview
 
-The Identity Dormancy Lifecycle feature enables you to manage identities that become inactive over time. Use Identity Controls to mark identities as dormant and the enhanced Identity API to monitor their status.
+The Identity Dormancy feature enables you to manage identities that have become inactive.
+Use Identity Controls to mark or unmark identities as dormant and the Identity API to monitor their status.
 
 **Key capabilities:**
-- Query identities with detailed status information including pending requirements, failed requirements, and active controls
-- Set and remove dormant controls on identities
+- Query identities with detailed status information, including active controls such as dormancy
+- Set and remove identity controls on identities
 - Filter identities by active control type and reason code
-- Track control lifecycle with creation and deletion timestamps
-
-## Use Cases
-
-- **Compliance**: Automatically flag accounts inactive for regulatory periods (e.g., 90, 180, or 365 days)
-- **Risk management**: Reduce exposure by restricting dormant account activity
-- **Resource optimization**: Identify and manage inactive identities
-- **Reactivation workflows**: Track and restore dormant accounts when users return
+- Track identity control lifecycle with creation and deletion timestamps
 
 ## Understanding Dormancy Controls
 
-A dormancy control marks an identity as inactive, changing its status to `DISABLED`. This prevents the identity from performing operations while maintaining a complete audit trail of the control lifecycle.
+Dormancy is a new type of identity control that marks an identity as inactive, changing its status to `DISABLED`.
+An identity marked as dormant may continue to hold assets, but is disallowed from initiating new transactions until it is no longer dormant.
+
+Paxos will automatically set dormant identity controls on identities that have been inactive for an extended period of time.
+You may manually set an identity as dormant via the Create Identity Control endpoint.
+A dormancy identity control will typically have the `is_overridable` attribute set, indicating that you may remove the control via the Delete Identity Control endpoint.
 
 ### Control Types
 
 | Type | Description | Set By |
 |------|-------------|--------|
-| `DORMANT` | Identity is dormant due to inactivity | Client or Paxos |
-| `CLOSED` | Identity is permanently closed | Client or Paxos |
+| `CLOSED` | Identity is closed and in a "sell-only" state | Client or Paxos |
+| `FROZEN` | Identity is frozen due to compliance reasons | Paxos |
+| `DORMANT` | Identity is dormant and unable to initiate new transactions | Client or Paxos |
 
 ### Reason Codes
 
 | Code | Description | Typical Use |
 |------|-------------|-------------|
-| `DORMANT` | Identity inactive for specified period | Automated dormancy workflows |
+| `INACTIVITY` | Identity inactive for specified period | Automated dormancy workflows |
 | `END_USER_REQUESTED` | User requested the control | Manual account closure |
 | `COMPLIANCE` | Regulatory or compliance requirement | Paxos-initiated controls |
 | `OTHER` | Miscellaneous reason | Custom scenarios |
@@ -53,7 +53,8 @@ When a dormant control is active, the identity status changes to `DISABLED`. The
       {
         "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
         "type": "DORMANT",
-        "controlled_by": "CLIENT",
+        "set_by": "PAXOS",
+        "is_overridable": true,
         "reason_code": "DORMANT",
         "reason": "No activity for 180 days",
         "created_at": "2006-01-02T15:04:05Z"
@@ -76,35 +77,21 @@ curl -X POST "https://api.paxos.com/v2/identity/controls" \
   -d '{
     "identity_id": "f190b163-208f-4d73-8deb-4fb8b24add00",
     "type": "DORMANT",
-    "reason_code": "DORMANT",
+    "reason_code": "INACTIVITY",
     "reason": "No activity for 180 days"
   }'
 ```
 
 The identity's status immediately changes to `DISABLED` and operations are blocked.
 
-### �② List Dormant Identities
+### ➋ List Dormant Identities
 
-Query all identities with dormant controls using the enhanced List Identities endpoint.
+Query all identities with dormant identity controls using the List Identities endpoint.
 
 **Filter by dormant control type:**
 
 ```bash
 curl -X GET "https://api.paxos.com/identity/identities?control_type=DORMANT" \
-  -H "Authorization: Bearer {access_token}"
-```
-
-**Filter by reason code:**
-
-```bash
-curl -X GET "https://api.paxos.com/identity/identities?control_reason_code=DORMANT" \
-  -H "Authorization: Bearer {access_token}"
-```
-
-**Filter by status:**
-
-```bash
-curl -X GET "https://api.paxos.com/identity/identities?status=DISABLED" \
   -H "Authorization: Bearer {access_token}"
 ```
 
@@ -117,9 +104,16 @@ curl -X GET "https://api.paxos.com/identity/identities/{identity_id}" \
   -H "Authorization: Bearer {access_token}"
 ```
 
-### ➍ View Control History
+### ➍ View Identity Control History
 
-List all controls (active and deleted) for an identity to maintain a complete audit trail.
+List active identity controls for an identity.
+
+```bash
+curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id}" \
+  -H "Authorization: Bearer {access_token}"
+```
+
+Include identity controls that have been previously deleted.
 
 ```bash
 curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id}&include_deleted=true" \
@@ -132,12 +126,23 @@ curl -X GET "https://api.paxos.com/v2/identity/controls?identity_id={identity_id
 {
   "items": [
     {
-      "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
+      "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
       "type": "DORMANT",
-      "controlled_by": "CLIENT",
+      "set_by": "PAXOS",
+      "is_overridable": true,
       "reason_code": "DORMANT",
       "reason": "No activity for 180 days",
       "created_at": "2006-01-02T15:04:05Z"
+    },
+    {
+      "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+      "type": "CLOSED",
+      "set_by": "CLIENT",
+      "is_overridable": true,
+      "reason_code": "END_USER_REQUEST",
+      "reason": "User requested account closure"
+      "created_at": "2006-01-02T15:04:05Z",
+      "deleted_at": "2006-01-02T15:04:05Z"
     }
   ],
   "next_page_cursor": ""
@@ -159,7 +164,7 @@ curl -X DELETE "https://api.paxos.com/v2/identity/controls" \
   }'
 ```
 
-The identity's status returns to its previous state (typically `APPROVED` if no other controls or requirements apply).
+The identity's status will be recalculated, typically returning to `APPROVED` if no other controls or requirements apply.
 
 ## Status Details Structure
 
@@ -171,102 +176,17 @@ The `status_details` field provides comprehensive information about an identity'
 {
   "active_controls": [
     {
-      "id": "control-id",
+      "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
       "type": "DORMANT",
-      "controlled_by": "CLIENT",
+      "set_by": "PAXOS",
+      "is_overridable": true,
       "reason_code": "DORMANT",
-      "reason": "Descriptive reason",
+      "reason": "No activity for 180 days",
       "created_at": "2006-01-02T15:04:05Z"
-    }
+    },
   ]
 }
 ```
-
-**Pending Requirements** - Requirements that must be satisfied before the identity can be approved
-
-```json
-{
-  "pending_requirements": [
-    {
-      "type": "SANCTIONS_SCREENING",
-      "message": "Pending Sanctions Screening"
-    }
-  ]
-}
-```
-
-**Failed Requirements** - Requirements that failed and prevent identity approval
-
-```json
-{
-  "failed_requirements": [
-    {
-      "type": "RISK_RATING",
-      "message": "Jurisdiction not supported by Paxos"
-    }
-  ]
-}
-```
-
-## Best Practices
-
-### Automated Dormancy Detection
-
-Implement a scheduled job to detect and flag dormant identities:
-
-1. Query identities last active before your threshold (e.g., 180 days ago)
-2. Filter out identities that already have a dormant control
-3. Create dormant controls for qualifying identities
-4. Log all dormancy actions for audit trails
-
-### Reactivation Workflow
-
-When a dormant user returns:
-
-1. Verify user identity through your authentication flow
-2. List the identity's controls to find the dormant control ID
-3. Delete the dormant control with a descriptive reason
-4. Check the identity status to confirm it's no longer `DISABLED`
-5. Allow user to resume normal operations
-
-### Pagination
-
-When querying large identity sets, use pagination:
-
-```bash
-# Initial request
-curl -X GET "https://api.paxos.com/identity/identities?limit=100" \
-  -H "Authorization: Bearer {access_token}"
-
-# Subsequent pages
-curl -X GET "https://api.paxos.com/identity/identities?limit=100&page_cursor={next_page_cursor}" \
-  -H "Authorization: Bearer {access_token}"
-```
-
-### Control History
-
-Keep `include_deleted=true` when listing controls to maintain a complete audit trail of an identity's lifecycle.
-
-## Identity Status States
-
-| Status | Description |
-|--------|-------------|
-| `PENDING` | Identity verification in progress |
-| `APPROVED` | Identity approved and active |
-| `DENIED` | Identity denied due to failed requirements |
-| `DISABLED` | Identity disabled (e.g., by dormant or closed control) |
-| `ERROR` | Error during identity processing |
-
-## API Reference
-
-### Identity Queries
-- [List Identities](/api-reference/preview/list-identities) - Query identities with filtering
-- [Get Identity](/api-reference/preview/get-identity) - Retrieve detailed identity status
-
-### Identity Controls
-- [List Identity Controls](/api-reference/preview/list-identity-controls) - View all controls for an identity
-- [Create Identity Control](/api-reference/preview/create-identity-control) - Set a new control
-- [Delete Identity Control](/api-reference/preview/delete-identity-control) - Remove an existing control
 
 ## Support
 
