@@ -139,7 +139,6 @@
             "group": "Identity",
             "pages": [
               "guides/identity/index",
-
               {
                 "group": "Manage Lifecycle",
                 "pages": [
@@ -150,6 +149,15 @@
               "guides/identity/statuses",
               "guides/identity/required-details",
               "guides/identity/institution-types"
+            ]
+          },
+          {
+            "group": "Stablecoin Orchestration",
+            "pages": [
+              "guides/developer/orchestrations/orchestrations",
+              "guides/developer/orchestrations/mint",
+              "guides/developer/orchestrations/convert",
+              "guides/developer/orchestrations/redeem"
             ]
           },
           {
@@ -262,7 +270,7 @@
             "pages": [
               "guides/dashboard/account",
               "guides/dashboard/signin",
-              "guides/dashboard/onboard"             
+              "guides/dashboard/onboard"
             ]
           },
           {
@@ -284,10 +292,10 @@
           {
             "group": "Fund Management",
             "pages": [
-                  "guides/dashboard/transactions",
-                  "guides/dashboard/instructions",
-                  "guides/dashboard/addresses",
-                  "guides/dashboard/fiat"
+              "guides/dashboard/transactions",
+              "guides/dashboard/instructions",
+              "guides/dashboard/addresses",
+              "guides/dashboard/fiat"
             ]
           },
           {
@@ -304,7 +312,7 @@
                 "group": "Manage Team",
                 "pages": [
                   "guides/dashboard/admin/team",
-                  "guides/dashboard/roles"             
+                  "guides/dashboard/roles"
                 ]
               },
               "guides/dashboard/organization",
@@ -313,8 +321,6 @@
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
               "guides/dashboard/admin/reports"
-
-
             ]
           },
           {
@@ -391,7 +397,7 @@
               "guides/stablecoin/integrate-pyusd"
             ]
           },
-           {
+          {
             "group": "Other Stablecoins",
             "pages": [
               "guides/stablecoin/busd"
@@ -831,24 +837,116 @@
                   {
                     "group": "Hooks",
                     "pages": [
-                      "api-reference/webhooks/transfer-crypto-deposit-pending",
-                      "api-reference/webhooks/transfer-crypto-deposit-completed",
-                      "api-reference/webhooks/transfer-crypto-deposit-failed",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-pending",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-completed",
-                      "api-reference/webhooks/transfer-crypto-withdrawal-failed",
-                      "api-reference/webhooks/transfer-act-deposit-pending",
-                      "api-reference/webhooks/transfer-act-deposit-completed",
-                      "api-reference/webhooks/transfer-act-deposit-failed",
-                      "api-reference/webhooks/transfer-act-withdrawal-pending",
-                      "api-reference/webhooks/transfer-act-withdrawal-completed",
-                      "api-reference/webhooks/transfer-act-withdrawal-failed"
+                      {
+                        "group": "ACT",
+                        "pages": [
+                          "api-reference/webhooks/transfer-act-deposit-pending",
+                          "api-reference/webhooks/transfer-act-deposit-completed",
+                          "api-reference/webhooks/transfer-act-deposit-failed",
+                          "api-reference/webhooks/transfer-act-withdrawal-pending",
+                          "api-reference/webhooks/transfer-act-withdrawal-completed",
+                          "api-reference/webhooks/transfer-act-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Banking Circle Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-banking-circle-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "BNY Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-bny-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-bny-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Crypto",
+                        "pages": [
+                          "api-reference/webhooks/transfer-crypto-deposit-pending",
+                          "api-reference/webhooks/transfer-crypto-deposit-completed",
+                          "api-reference/webhooks/transfer-crypto-deposit-failed",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-pending",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-completed",
+                          "api-reference/webhooks/transfer-crypto-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Cubix",
+                        "pages": [
+                          "api-reference/webhooks/transfer-cubix-deposit-pending",
+                          "api-reference/webhooks/transfer-cubix-deposit-completed",
+                          "api-reference/webhooks/transfer-cubix-deposit-failed",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-pending",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-completed",
+                          "api-reference/webhooks/transfer-cubix-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "RTP",
+                        "pages": [
+                          "api-reference/webhooks/transfer-rtp-deposit-pending",
+                          "api-reference/webhooks/transfer-rtp-deposit-completed",
+                          "api-reference/webhooks/transfer-rtp-deposit-failed"
+                        ]
+                      },
+                      {
+                        "group": "SCB Intrabank",
+                        "pages": [
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-pending",
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-completed",
+                          "api-reference/webhooks/transfer-scb-intrabank-deposit-failed",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-pending",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-completed",
+                          "api-reference/webhooks/transfer-scb-intrabank-withdrawal-failed"
+                        ]
+                      },
+                      {
+                        "group": "Wire",
+                        "pages": [
+                          "api-reference/webhooks/transfer-wire-deposit-pending",
+                          "api-reference/webhooks/transfer-wire-deposit-completed",
+                          "api-reference/webhooks/transfer-wire-deposit-failed",
+                          "api-reference/webhooks/transfer-wire-withdrawal-pending",
+                          "api-reference/webhooks/transfer-wire-withdrawal-completed",
+                          "api-reference/webhooks/transfer-wire-withdrawal-failed"
+                        ]
+                      }
                     ]
                   },
                   {
                     "group": "Objects",
                     "pages": [
                       "api-reference/events/transfer-status-change-object"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Orchestrations",
+                "pages": [
+                  {
+                    "group": "Hooks",
+                    "pages": [
+                      "api-reference/webhooks/orchestration-processing",
+                      "api-reference/webhooks/orchestration-completed",
+                      "api-reference/webhooks/orchestration-failed"
+                    ]
+                  },
+                  {
+                    "group": "Objects",
+                    "pages": [
+                      "api-reference/events/orchestration-status-change-object"
                     ]
                   }
                 ]
@@ -898,7 +996,9 @@
       {
         "tab": "Changelog",
         "hidden": true,
-        "pages": ["changelog"]
+        "pages": [
+          "changelog"
+        ]
       }
     ],
     "global": {
@@ -959,6 +1059,11 @@
     "openapi": "https://developer.paxos.com/docs/paxos-v2.openapi.json"
   },
   "contextual": {
-    "options": ["copy", "view", "claude", "chatgpt"]
+    "options": [
+      "copy",
+      "view",
+      "claude",
+      "chatgpt"
+    ]
   }
 }

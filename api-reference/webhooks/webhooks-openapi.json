@@ -207,6 +207,90 @@
         "description": "Triggered when a KYC refresh process expires without completion. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
     },
+    "orchestration.processing": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.processing",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Processing",
+        "description": "Triggered when an orchestration enters processing status. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "orchestration.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Completed",
+        "description": "Triggered when an orchestration completes successfully. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "orchestration.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Failed",
+        "description": "Triggered when an orchestration fails. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
     "transfer.crypto_deposit.pending": {
       "post": {
         "requestBody": {
@@ -542,6 +626,930 @@
         "summary": "ACT Withdrawal Failed",
         "description": "Triggered when a fiat withdrawal via DBS has failed or been cancelled. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
+    },
+    "transfer.wire_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Deposit Pending",
+        "description": "Triggered when a wire deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.wire_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Deposit Completed",
+        "description": "Triggered when a wire deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.wire_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Deposit Failed",
+        "description": "Triggered when a wire deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.wire_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Withdrawal Pending",
+        "description": "Triggered when a wire withdrawal has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.wire_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Withdrawal Completed",
+        "description": "Triggered when a wire withdrawal has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.wire_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.wire_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Wire Withdrawal Failed",
+        "description": "Triggered when a wire withdrawal has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Deposit Pending",
+        "description": "Triggered when a Cubix deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Deposit Completed",
+        "description": "Triggered when a Cubix deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Deposit Failed",
+        "description": "Triggered when a Cubix deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Withdrawal Pending",
+        "description": "Triggered when a Cubix withdrawal has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Withdrawal Completed",
+        "description": "Triggered when a Cubix withdrawal has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.cubix_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.cubix_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Cubix Withdrawal Failed",
+        "description": "Triggered when a Cubix withdrawal has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Deposit Pending",
+        "description": "Triggered when an SCB intrabank deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Deposit Completed",
+        "description": "Triggered when an SCB intrabank deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Deposit Failed",
+        "description": "Triggered when an SCB intrabank deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Withdrawal Pending",
+        "description": "Triggered when an SCB intrabank withdrawal has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Withdrawal Completed",
+        "description": "Triggered when an SCB intrabank withdrawal has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.scb_intrabank_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.scb_intrabank_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "SCB Intrabank Withdrawal Failed",
+        "description": "Triggered when an SCB intrabank withdrawal has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Deposit Pending",
+        "description": "Triggered when a Banking Circle intrabank deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Deposit Completed",
+        "description": "Triggered when a Banking Circle intrabank deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Deposit Failed",
+        "description": "Triggered when a Banking Circle intrabank deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Withdrawal Pending",
+        "description": "Triggered when a Banking Circle intrabank withdrawal has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Withdrawal Completed",
+        "description": "Triggered when a Banking Circle intrabank withdrawal has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.banking_circle_intrabank_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.banking_circle_intrabank_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Banking Circle Intrabank Withdrawal Failed",
+        "description": "Triggered when a Banking Circle intrabank withdrawal has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Deposit Pending",
+        "description": "Triggered when a BNY intrabank deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Deposit Completed",
+        "description": "Triggered when a BNY intrabank deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Deposit Failed",
+        "description": "Triggered when a BNY intrabank deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_withdrawal.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_withdrawal.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Withdrawal Pending",
+        "description": "Triggered when a BNY intrabank withdrawal has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_withdrawal.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_withdrawal.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Withdrawal Completed",
+        "description": "Triggered when a BNY intrabank withdrawal has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.bny_intrabank_withdrawal.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.bny_intrabank_withdrawal.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "BNY Intrabank Withdrawal Failed",
+        "description": "Triggered when a BNY intrabank withdrawal has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.rtp_deposit.pending": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.rtp_deposit.pending",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "RTP Deposit Pending",
+        "description": "Triggered when an RTP deposit has been initiated and is pending processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.rtp_deposit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.rtp_deposit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "RTP Deposit Completed",
+        "description": "Triggered when an RTP deposit has completed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.rtp_deposit.failed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.rtp_deposit.failed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "RTP Deposit Failed",
+        "description": "Triggered when an RTP deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
     }
   },
   "components": {
@@ -569,6 +1577,9 @@
               "identity.kyc_refresh.started",
               "identity.kyc_refresh.completed",
               "identity.kyc_refresh.expired",
+              "orchestration.processing",
+              "orchestration.completed",
+              "orchestration.failed",
               "transfer.crypto_deposit.pending",
               "transfer.crypto_deposit.completed",
               "transfer.crypto_deposit.failed",
@@ -727,6 +1738,43 @@
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
           "last_kyc_refresh_date": "2024-07-15T10:30:00Z",
           "next_kyc_refresh_date": "2024-08-25T14:25:41Z"
+        }
+      },
+      "OrchestrationStatusChangeObject": {
+        "type": "object",
+        "title": "Orchestration Status Change Object",
+        "description": "Object returned by Get Event API for orchestration status change events",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Orchestration ID",
+            "description": "The Paxos orchestration ID. You can call the GetOrchestration endpoint with this ID to get more details about it."
+          },
+          "orchestration_rule_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Orchestration Rule ID",
+            "description": "The ID of the orchestration rule that triggered this orchestration (optional, will not be present for ad-hoc orchestrations)"
+          },
+          "ref_id": {
+            "type": "string",
+            "title": "Reference ID",
+            "description": "The client-specified ID of the orchestration for replay protection and lookup"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PROCESSING", "COMPLETED", "FAILED"],
+            "title": "Orchestration Status",
+            "description": "Status of the orchestration"
+          }
+        },
+        "required": ["id", "ref_id", "status"],
+        "example": {
+          "id": "ee1a802f-7557-4c59-b833-9a1ef29630d5",
+          "orchestration_rule_id": "86d3929f-0090-45e5-8195-dbcf63c43eec",
+          "ref_id": "orchestration_id.ee1a802f-7557-4c59-b833-9a1ef29630d5",
+          "status": "COMPLETED"
         }
       },
       "TransferStatusChangeObject": {

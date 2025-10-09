@@ -1,0 +1,15 @@
+---
+title: "orchestration.failed"
+description: "Webhook triggered when an orchestration fails"
+openapi: "webhooks-openapi.json webhook orchestration.failed"
+---
+
+Triggered when an orchestration has FAILED and could not be completed.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/endpoints/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns an [`orchestration_status_change`](/api-reference/events/orchestration-status-change-object) object with orchestration status details.
