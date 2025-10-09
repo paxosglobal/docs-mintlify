@@ -982,6 +982,14 @@
               "api-reference/preview/identity-controls/create-identity-control",
               "api-reference/preview/identity-controls/delete-identity-control"
             ]
+          },
+          {
+            "group": "Dormancy Preview",
+            "pages": [
+              "api-reference/preview/identity-dormancy-lifecycle",
+              "api-reference/preview/identity-requirements/list-identities",
+              "api-reference/preview/identity-requirements/get-identity"
+            ]
           }
         ]
       },
