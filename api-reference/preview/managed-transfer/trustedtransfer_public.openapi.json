@@ -417,12 +417,17 @@
               "$ref": "#/components/schemas/CryptoNetwork"
             },
             "description": "Possible network to accept the deposit on."
+          },
+          "asset": {
+            "type": "string",
+            "description": "The token or asset to deposit.  E.g. \"ETH\", \"PYUSD\"."
           }
         },
         "required": [
           "identity_id",
           "profile_id",
-          "destination_crypto_networks"
+          "destination_crypto_networks",
+          "asset"
         ]
       },
       "CreateTrustedDepositIntentResponse": {
