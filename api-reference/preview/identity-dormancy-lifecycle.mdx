@@ -1,0 +1,94 @@
+---
+title: 'Dormancy Lifecycle'
+description: Manage dormant identities on the Paxos Platform.
+---
+
+## Overview
+
+Dormancy enables you to manage [Identities](/guides/identity) that have become inactive on the Paxos platform by marking them dormant to reduce costs.
+An identity marked as dormant may continue to hold assets, but is disallowed from initiating new transactions until it is no longer dormant.
+Paxos will automatically mark identities that have been inactive for an extended period of time as dormant.
+You may also explicitly mark or unmark identities as dormant via the Identity API.
+
+This guide will walk you through how to:
+ - Set and unset identities as dormant via the [Identity Controls API](/api-reference/preview/identity-controls/overview)
+ - List which of your identities are currently dormant
+
+### Identity Status Impact
+
+When an identity is marked dormant, the identity status changes to `DISABLED`. See the [identity status guide](/guides/identity/statuses) for more information.
+When retrieving an identity via [Get Identity](/api-reference/endpoints/identity/get-identity), the identity's `status_details` field will include any active dormancy control:
+
+```json
+{
+  "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+  "status": "DISABLED",
+  "status_details": {
+    "active_controls": [
+      {
+        "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
+        "type": "DORMANT",
+        "set_by": "CLIENT",
+        "is_overridable": true,
+        "reason_code": "INACTIVITY",
+        "reason": "No activity for 180 days",
+        "created_at": "2006-01-02T15:04:05Z"
+      }
+    ]
+  }
+}
+```
+
+## Workflow
+
+### ➊ Mark Identity as Dormant
+
+Mark an identity as dormant using the [Create Identity Control](/api-reference/preview/identity-controls/create-identity-control) endpoint.
+
+```bash
+curl -X POST "https://api.paxos.com/v2/identity/controls" \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "type": "DORMANT",
+    "reason_code": "INACTIVITY",
+    "reason": "No activity for 180 days"
+  }'
+```
+
+The identity's status immediately changes to `DISABLED` and operations are blocked.
+
+### ➋ Unmark Identity as Dormant
+
+Unmark an Identity as dormant using the [Delete Identity Control](/api-reference/preview/identity-controls/delete-identity-control) endpoint.
+
+```bash
+curl -X DELETE "https://api.paxos.com/v2/identity/controls" \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "identity_id": "{identity_id}",
+    "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
+    "reason": "User returned and requested reactivation"
+  }'
+```
+
+### ➌ List Dormant Identities
+
+Query all identities with dormant identity controls using the [List Identities](/api-reference/endpoints/identity/list-identities) endpoint.
+
+**Filter by dormant control type:**
+
+```bash
+curl -X GET "https://api.paxos.com/identity/identities?control_type=DORMANT" \
+  -H "Authorization: Bearer {access_token}"
+```
+
+Once an identity is no longer dormant, the identity will typically returning to the `APPROVED` status after re-screening if no other controls or requirements apply.
+You can listen for an [identity status change event](/api-reference/events/identity-status-change-object) via [Paxos Webhooks](/guides/webhooks) to be notified when the identity's status changes.
+If the identity remains in the `DISABLED` state, then you can check the identity's `status_details` field to understand why.
+
+## Support
+
+Questions? Contact [Support](https://support.paxos.com).
