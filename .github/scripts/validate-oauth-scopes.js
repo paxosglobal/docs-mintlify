@@ -34,7 +34,10 @@ function extractOpenAPIFromFrontmatter(content) {
   const openApiMatch = frontmatter.match(/^openapi:\s*(.+)$/m);
   
   if (openApiMatch) {
-    const [method, path] = openApiMatch[1].trim().split(' ', 2);
+    // example: openApiMatch = "https://developer.paxos.com/docs/paxos-v2.openapi.json get /identity/identities/{id}"
+    const openApiMatchSubstrings = openApiMatch[1].trim().split(' ');
+    const method = openApiMatchSubstrings[openApiMatchSubstrings.length - 2]; // second-to-last item
+    const path = openApiMatchSubstrings[openApiMatchSubstrings.length - 1]; // last item
     return { method: method.toLowerCase(), path };
   }
   return null;
