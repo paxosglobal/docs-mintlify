@@ -84,6 +84,6 @@ The following grid shows which roles are applicable for each institution type:
 | `GRANTOR`                   |         ✅         |            --            |        --        |            --            |
 | `BENEFICIARY`               |         ✅         |            --            |        --        |            --            |
 
-- **Trusts**: A trust institution must have members that collectively have the roles of BENEFICIARY, TRUSTEE, and GRANTOR. A member cannot have both BENEFICIAL_OWNER and BENEFICIARY roles.
+- **Trusts**: A trust institution must have at least one member with one of the following roles: GRANTOR, TRUSTEE, or BENEFICIARY.
 - **Corporations, LLCs, Partnerships**: These institutions typically require at least one BENEFICIAL_OWNER and one MANAGEMENT_CONTROL_PERSON.
 - For all institution types, members must be Identity objects already created in the system. 
