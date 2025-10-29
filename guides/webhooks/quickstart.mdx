@@ -123,6 +123,7 @@ type Event struct {
     Source string    `json:"source"`
     Time   time.Time `json:"time"`
     Object string    `json:"object"`
+    IsTest bool      `json:"is_test"`
 }
 ```
 </Tab>
@@ -140,6 +141,7 @@ public record PaxosEvent(
     String source,
     LocalDateTime time,
     String object
+    Boolean isTest
 ) {}
 ```
 </Tab>
@@ -165,7 +167,8 @@ curl -X POST http://localhost:8080/webhook/paxos \
            "type": "identity.approved",
            "source": "com.paxos",
            "time": "2025-01-07T14:30:02Z",
-           "object": "event"
+           "object": "event",
+           "is_test": false
          }'
 ```
 
@@ -182,6 +185,7 @@ When running the above, your consumer should receive the event, printing to stan
 | `source` | The source of the event. This will always be `com.paxos`. | `com.paxos` |
 | `time` | The time the event was created. Formatted according to RFC3339 date-time. | `2025-01-01T14:30:02Z` |
 | `object` | The object type of the event. This will always be `event`. | `event` |
+| `is_test` | Whether the event was a test event. Test events are only sent via the SendTestEvent API endpoint.  | `false` |
 ## ➌ Secure the Consumer
 You must secure your consumer's endpoint by authenticating using either:
 

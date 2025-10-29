@@ -42,3 +42,4 @@ For optimal webhook processing, we recommend:
 3. **Implement idempotency**: Design your webhook handlers to be idempotent in case the same event is delivered multiple times
 4. **Monitor delivery failures**: Implement monitoring for webhook delivery failures to detect issues early
 5. **Implement backup polling**: Establish a periodic job that polls the [Events API](/api-reference/events) as a fallback mechanism for missed webhook events 
+6. **Ignore test events**: You may wish to test the functionality of your webhook consumer endpoint by sending test events. To ignore test events, you can filter on the `is_test=false` field in your webhook consumer.
