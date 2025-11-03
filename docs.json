@@ -986,9 +986,7 @@
           {
             "group": "Dormancy Preview",
             "pages": [
-              "api-reference/preview/identity-dormancy-lifecycle",
-              "api-reference/preview/identity-requirements/list-identities",
-              "api-reference/preview/identity-requirements/get-identity"
+              "api-reference/preview/identity-dormancy-lifecycle"
             ]
           }
         ]
