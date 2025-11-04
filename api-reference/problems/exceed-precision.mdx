@@ -1,0 +1,31 @@
+---
+title: 400 - Exceed Precision
+---
+
+An Exceed Precision error is returned when a request contains an amount with more decimal places than allowed for the specified asset.
+
+For example, attempting to withdraw or transfer an amount with excessive decimal precision beyond what the asset supports will result in this error.
+
+An Exceed Precision error has the following "meta" fields:
+
+- `asset`: The asset for which precision was exceeded.
+- `requested_precision`: The number of decimal places provided in the request.
+- `max_precision`: The maximum allowed decimal places for the asset.
+
+To resolve an Exceed Precision error, round the amount to the maximum allowed precision for the asset.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "amount precision exceeds maximum allowed",
+  "meta": {
+    "asset": "BTC",
+    "requested_precision": 10,
+    "max_precision": 8
+  },
+  "status": 400,
+  "title": "Exceed Precision",
+  "type": "https://developer.paxos.com/docs/v2/problems/exceed-precision"
+}
+```
+</CodeGroup>
