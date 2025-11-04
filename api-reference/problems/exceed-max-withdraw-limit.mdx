@@ -1,0 +1,31 @@
+---
+title: 400 - Exceed Max Withdraw Limit
+---
+
+An Exceed Max Withdraw Limit error is returned when a withdrawal request exceeds the maximum allowed withdrawal amount for the specified asset.
+
+For example, attempting to withdraw an amount greater than the configured maximum limit for an asset will result in this error.
+
+An Exceed Max Withdraw Limit error has the following "meta" fields:
+
+- `asset`: The asset being withdrawn.
+- `requested_amount`: The amount requested for withdrawal.
+- `max_limit`: The maximum allowed withdrawal amount for the asset.
+
+To resolve an Exceed Max Withdraw Limit error, reduce the withdrawal amount to be at or below the maximum limit, or contact support to discuss limit adjustments.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "withdrawal amount exceeds maximum limit",
+  "meta": {
+    "asset": "SOL",
+    "requested_amount": "1.0",
+    "max_limit": "0.5"
+  },
+  "status": 400,
+  "title": "Exceed Max Withdraw Limit",
+  "type": "https://developer.paxos.com/docs/v2/problems/exceed-max-withdraw-limit"
+}
+```
+</CodeGroup>
