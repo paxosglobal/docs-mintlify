@@ -959,7 +959,10 @@
               "api-reference/problems/expired",
               "api-reference/problems/insufficient-funds",
               "api-reference/problems/rejected",
-              "api-reference/problems/already-exists"
+              "api-reference/problems/already-exists",
+              "api-reference/problems/exceed-max-withdraw-limit",
+              "api-reference/problems/below-min-withdraw-limit",
+              "api-reference/problems/exceed-precision"
             ]
           }
         ]
