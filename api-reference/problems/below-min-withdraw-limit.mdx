@@ -1,0 +1,21 @@
+---
+title: 400 - Below Min Withdraw Limit
+---
+
+A Below Min Withdraw Limit error is returned when a withdrawal request is below the minimum allowed withdrawal amount.
+
+For example, attempting to withdraw an amount less than the configured minimum withdrawal limit for the profile or asset will result in this error.
+
+To resolve this error, increase the withdrawal amount to meet or exceed the minimum required limit.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "withdrawal amount is below minimum limit",
+  "meta": {},
+  "status": 400,
+  "title": "Below Min Withdraw Limit",
+  "type": "https://developer.paxos.com/docs/v2/problems/below-min-withdraw-limit"
+}
+```
+</CodeGroup>
