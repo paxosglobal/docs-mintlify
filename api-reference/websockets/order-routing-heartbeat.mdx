@@ -1,0 +1,126 @@
+---
+title: Order Routing Heartbeat
+description: Logical-level liveness signal for Order Routing platform.
+tags:
+  - Order Routing
+  - Heartbeat
+  - WebSocket
+---
+
+The Heartbeat channel provides a logical-level liveness signal for authorized Order Routing customers. Subscribe to receive periodic heartbeat messages to monitor the health of your WebSocket connection and the server's responsiveness.
+
+## Subscribe to Heartbeat
+
+### Request
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "heartbeat"
+    }
+  ]
+}
+```
+
+> The heartbeat channel does not require parameters.
+
+### Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "heartbeat",
+      "success": true
+    }
+  ]
+}
+```
+
+### Error Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "heartbeat",
+      "success": false,
+      "error": "UNKNOWN_CHANNEL"
+    }
+  ]
+}
+```
+
+## Heartbeat Message Format
+
+The server sends periodic heartbeat messages after you subscribe:
+
+```json
+{
+  "channel": "heartbeat",
+  "payload": {
+    "timestamp": "2024-01-15T10:30:00.123456789Z"
+  }
+}
+```
+
+### Message Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | string | Server timestamp in RFC3339Nano format |
+
+## Unsubscribe
+
+To stop receiving heartbeat messages:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "heartbeat"
+    }
+  ]
+}
+```
+
+## List Active Subscriptions
+
+Get all active subscriptions including heartbeat:
+
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+### Response
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "heartbeat"
+    },
+    {
+      "type": "market_data",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+## Heartbeat vs WebSocket Ping/Pong
+
+The heartbeat channel operates at the application layer, while WebSocket ping/pong operates at the protocol layer:
+
+- **WebSocket Ping/Pong**: Automatic transport-layer keepalive handled by the WebSocket protocol
+- **Heartbeat Channel**: Application-layer liveness signal providing server timestamp and logical health status
+
+Use heartbeat messages to verify that the server is not only connected but also actively processing and responding to your connection at the application level.
+
+> Questions? Contact [Support](https://support.paxos.com).

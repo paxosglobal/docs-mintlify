@@ -221,7 +221,7 @@ Get all active subscriptions for your connection.
 
 ## Data Channels
 
-The Order Routing WebSocket API supports two types of streaming data channels:
+The Order Routing WebSocket API supports four types of streaming data channels:
 
 ### Market Data Channel
 Provides real-time order book updates with initial snapshots and incremental changes.
@@ -245,6 +245,28 @@ Provides real-time order book updates with initial snapshots and incremental cha
 }
 ```
 
+### Top of Book Channel
+Provides real-time updates of the best bid and best ask prices only.
+
+- **Channel type:** `market_data.top_of_book`
+- **Message frequency:** On best price changes
+- **Lightweight alternative to full order book**
+- **[View detailed documentation →](/api-reference/websockets/order-routing-top-of-book)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "market_data.top_of_book",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "TOP_OF_BOOK",
+    "timestamp": "2024-01-15T10:30:00.123456789Z",
+    "bids": [{"price": "50000.00", "amount": "1.5"}],
+    "asks": [{"price": "50100.00", "amount": "2.0"}]
+  }
+}
+```
+
 ### Execution Data Channel
 Provides real-time trade execution notifications.
 
@@ -261,6 +283,24 @@ Provides real-time trade execution notifications.
     "price": "50000.00",
     "amount": "0.5",
     "executed_at": "2024-01-15T10:30:00.123Z"
+  }
+}
+```
+
+### Heartbeat Channel
+Provides logical-level liveness signal for connection monitoring.
+
+- **Channel type:** `heartbeat`
+- **Message frequency:** Periodic heartbeat messages
+- **No parameters required**
+- **[View detailed documentation →](/api-reference/websockets/order-routing-heartbeat)**
+
+**Example streaming message:**
+```json
+{
+  "channel": "heartbeat",
+  "payload": {
+    "timestamp": "2024-01-15T10:30:00.123456789Z"
   }
 }
 ```

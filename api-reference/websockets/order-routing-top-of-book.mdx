@@ -1,0 +1,150 @@
+---
+title: Order Routing Top of Book
+description: Real-time best bid and ask updates for Order Routing platform.
+tags:
+  - Order Routing
+  - Market Data
+  - WebSocket
+---
+
+The Top of Book channel provides real-time updates of the best bid and best ask prices for authorized Order Routing customers. This lightweight channel is ideal when you only need the best available prices without the full order book depth.
+
+## Subscribe to Top of Book
+
+### Request
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data.top_of_book",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+### Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data.top_of_book",
+      "success": true
+    }
+  ]
+}
+```
+
+### Error Response
+```json
+{
+  "type": "subscribe",
+  "channels": [
+    {
+      "type": "market_data.top_of_book",
+      "success": false,
+      "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
+    }
+  ]
+}
+```
+
+## Top of Book Message Format
+
+Real-time updates of the best bid and ask prices:
+
+```json
+{
+  "channel": "market_data.top_of_book",
+  "payload": {
+    "market": "BTCUSD",
+    "type": "TOP_OF_BOOK",
+    "timestamp": "2024-01-15T10:30:00.123456789Z",
+    "bids": [
+      {
+        "price": "50000.00",
+        "amount": "1.5"
+      }
+    ],
+    "asks": [
+      {
+        "price": "50100.00",
+        "amount": "2.0"
+      }
+    ]
+  }
+}
+```
+
+### Message Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `market` | string | The market pair (e.g., "BTCUSD") |
+| `type` | string | Always `"TOP_OF_BOOK"` for this channel |
+| `timestamp` | string | Server timestamp in RFC3339Nano format |
+| `bids` | array | Array with best bid price and amount |
+| `asks` | array | Array with best ask price and amount |
+
+### Price Level Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `price` | string | Price level as a decimal string |
+| `amount` | string | Available amount at this price level as a decimal string |
+
+
+## Unsubscribe
+
+To stop receiving top of book updates:
+
+```json
+{
+  "type": "unsubscribe",
+  "channels": [
+    {
+      "type": "market_data.top_of_book",
+      "params": {
+        "market": "BTCUSD"
+      }
+    }
+  ]
+}
+```
+
+## List Active Subscriptions
+
+Get all active subscriptions including top of book:
+
+```json
+{
+  "type": "subscription_list"
+}
+```
+
+### Response
+```json
+{
+  "type": "subscription_list",
+  "channels": [
+    {
+      "type": "market_data.top_of_book",
+      "params": {
+        "market": "BTCUSD"
+      }
+    },
+    {
+      "type": "market_data",
+      "params": {
+        "market": "ETHUSD"
+      }
+    }
+  ]
+}
+```
+
+> Questions? Contact [Support](https://support.paxos.com).

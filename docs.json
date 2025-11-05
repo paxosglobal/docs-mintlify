@@ -798,7 +798,9 @@
                 "pages": [
                   "api-reference/websockets/order-routing-overview",
                   "api-reference/websockets/order-routing-market-data",
-                  "api-reference/websockets/order-routing-execution-data"
+                  "api-reference/websockets/order-routing-top-of-book",
+                  "api-reference/websockets/order-routing-execution-data",
+                  "api-reference/websockets/order-routing-heartbeat"
                 ]
               }
             ]
