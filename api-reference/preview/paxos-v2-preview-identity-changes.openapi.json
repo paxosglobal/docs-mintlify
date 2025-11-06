@@ -1114,7 +1114,8 @@
             "FIS",
             "PROVE",
             "PERSONA",
-            "PLAID"
+            "PLAID",
+            "DOTFILE"
           ]
         },
         "PersonDetails": {
