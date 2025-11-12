@@ -9,17 +9,17 @@ description: Webhooks provide a way for notifications to be delivered to an exte
 Paxos Webhooks allow you to register your own endpoints to receive asynchronous events driven by the Paxos Platform.
 See the [Webhooks API Reference](/api-reference/webhooks) for the current set of supported events.
 
-<Note>
-- Each entity can have a maximum of **10 active webhooks**
-- Webhook names must be **unique** within your account
-- Webhooks cannot currently be updated. To modify a webhook, create a new one and delete the existing webhook. Deleted webhooks do not count toward your limit. We will be providing support to update Webhook directly in the future.
-</Note>
-
 To get started, you will need to:
 1. Set up a [webhook consumer](/guides/webhooks/quickstart) for Paxos webhook events, which is an HTTP POST endpoint that accepts and processes [events](/api-reference/events).
 2. Test the webhook consumer locally by sending a test event to your endpoint.
 3. Secure the endpoint using either API key or OAuth-based authentication.
 4. Log in to your Dashboard account and navigate to the Webhooks section under the Developer tab. Configure your webhook with the relevant name, endpoint, event types, auth config, and RPS.
 5. Once the webhook has been successfully created and shows with the Active status, send a test event and ensure your consumer receives and processes the events correctly.
+
+<Note>
+    - Each entity can have a maximum of **10 active webhooks**
+    - Webhook names must be **unique** within your account
+    - Webhooks cannot currently be updated. To modify a webhook, create a new one and delete the existing webhook. Deleted webhooks do not count toward your limit. We will be providing support to update Webhook directly in the future.
+</Note>
 
 For information about webhook delivery, retry policies, and rate limits, see the [Retries and Limits](/guides/webhooks/retries-and-limits) guide.
