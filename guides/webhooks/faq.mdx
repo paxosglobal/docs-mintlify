@@ -14,7 +14,7 @@ To test webhooks in Sandbox:
 3. Verify your consumer receives the event with `is_test=true`
 4. Optionally, you can trigger real events such as using the [CreateIdentity](/api-reference/endpoints/identity/create-identity) API to create a new identity and receive an `identity.approved` event
 
-For more details, see the [Get Started with Webhooks](/guides/webhooks/quickstart) guide.
+For more details, see [Test a Webhook](/guides/dashboard/webhooks#test-a-webhook) in the Dashboard guide or the [Get Started with Webhooks](/guides/webhooks/quickstart) guide.
 
 </Accordion>
 
@@ -34,6 +34,8 @@ Yes, webhook invocations to your consumer endpoint are rate-limited. When config
 <Accordion title="How can I send test events?" id="test-events">
 
 After creating a webhook via the Dashboard, use the Test feature to send test events to your webhook endpoint. These events will be marked with `is_test=true`.
+
+For step-by-step instructions, see [Test a Webhook](/guides/dashboard/webhooks#test-a-webhook) in the Dashboard guide.
 
 </Accordion>
 
