@@ -23,13 +23,13 @@ After this you can use the [List Events](/api-reference/endpoints/events/list-ev
 
 <Accordion title="Are there rate limits for webhook deliveries?" id="webhook-rate-limits">
 
-Yes, webhook invocations to your consumer endpoint are rate-limited to 10 per second by default. If you need higher throughput, please contact [Support](https://support.paxos.com) to discuss increasing your rate limits. For more information, see our [rate limits documentation](/guides/webhooks/retries-and-limits#rate-limits).
+Yes, webhook invocations to your consumer endpoint are rate-limited. When configuring a webhook via the Dashboard, you can set the rate limit from 1 to 100 requests per second. The default is 10 requests per second. For more information, see our [rate limits documentation](/guides/webhooks/retries-and-limits#rate-limits).
 
 </Accordion>
 
 <Accordion title="How can I send test events?" id="test-events">
 
-We are in the process of rolling out self-service Webhooks, which should be live soon. Currently you are unable to send test events as Webhooks are managed for you by Paxos.
+After creating a webhook via the Dashboard, use the Test feature to send test events to your webhook endpoint. These events will be marked with `is_test=true`.
 
 </Accordion>
 
