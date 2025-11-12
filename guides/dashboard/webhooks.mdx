@@ -1,0 +1,82 @@
+---
+title: 'Webhooks'
+description: Create and manage webhooks to receive real-time event notifications from the Paxos platform.
+---
+
+Use [Webhooks](https://dashboard.paxos.com/dashboard/webhooks) in Dashboard to create and manage webhook integrations that receive asynchronous event notifications when events occur on the Paxos platform.
+
+<Note>
+- Each entity can have a maximum of **10 active webhooks**
+- Webhook names must be **unique** within your account
+- Webhooks cannot currently be updated. To modify a webhook, create a new one and delete the existing webhook. Deleted webhooks do not count toward your limit. We are working on bringing you update functionality.
+</Note>
+
+For a complete guide on setting up webhook consumers and integrating with the Paxos platform, see the [Webhooks Developer Guide](/guides/webhooks).
+
+## View Webhooks
+
+Navigate to the [Webhooks](https://dashboard.paxos.com/dashboard/webhooks) section under the Developer tab to view all configured webhooks for your account.
+
+Each webhook displays:
+- **Name**: The unique identifier for your webhook
+- **URL**: The endpoint URL where events are delivered
+- **Status**: Current status (Active, Inactive, etc.)
+- **Rate Limit**: Configured requests per second
+- **Event Types**: Number of subscribed event types
+
+Use the **Actions** menu to test, edit, or delete an existing webhook.
+
+## Create a Webhook
+
+Before creating a webhook in Dashboard, ensure you have a webhook consumer endpoint ready to receive events. See [Create a Webhook Consumer](/guides/webhooks/quickstart#create-a-webhook-consumer) for implementation examples.
+
+To create a new webhook:
+
+1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
+2. Click **Create Webhook**
+3. Configure the webhook settings:
+   - **Name**: Enter a unique name for your webhook
+   - **URL**: Enter your webhook consumer endpoint URL (must be HTTPS)
+   - **Authentication**: Select and configure your authentication method:
+     - **API Key**: Provide the header name and API key value that Paxos will include in webhook requests
+     - **OAuth**: Provide the OAuth endpoint URL, Client ID, and Client Secret
+   - **Event Types**: Select which events you want to receive (Identity, Transfer, Orchestration, etc.)
+   - **Rate Limit**: Set the delivery rate limit (1-100 requests per second, default is 10)
+4. Click **Create** to save the webhook
+
+Once created, the webhook will show an **Active** status and begin receiving events based on your selected event types.
+
+<Info>
+Paxos supports approvals for creating and deleting webhooks. You can enable approvals for webhooks via the Admin → [Approvals](/guides/dashboard/admin/approvals) tab to add an additional layer of security and control.
+</Info>
+
+## Test a Webhook
+
+After creating a webhook, use the Test feature to verify your consumer endpoint is configured correctly:
+
+1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
+2. Click **Actions** → **Test** for the webhook you want to test
+3. Select an event type to send as a test event
+4. Click **Send Test Event**
+
+The test event will be sent to your endpoint with `is_test=true` in the payload. Verify that your consumer receives and processes the event correctly.
+
+<Info>
+For information on handling test events in your consumer code, see the [webhook consumer examples](/guides/webhooks/quickstart#create-a-webhook-consumer).
+</Info>
+
+## Delete a Webhook
+
+To delete a webhook:
+
+1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
+2. Click **Actions** → **Delete** for the webhook you want to remove
+3. Confirm the deletion
+
+Once deleted, the webhook will no longer receive events and will not count toward your 10 webhook limit.
+
+## Webhook Delivery and Monitoring
+
+For information about webhook delivery behavior, retry policies, and rate limits, see the [Retries and Limits](/guides/webhooks/retries-and-limits) guide.
+
+To recover from failed webhook deliveries, use the [List Events](/api-reference/endpoints/events/list-events) API to query for missed events.
