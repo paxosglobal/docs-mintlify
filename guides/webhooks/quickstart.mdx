@@ -41,6 +41,8 @@ http.HandleFunc("/webhook/paxos", func(w http.ResponseWriter, req *http.Request)
         fmt.Printf("received documents required event: %v\n, processing...", event)
         // process documents required event
     }
+
+    w.WriteHeader(http.StatusOK)
 })
 ```
   </Tab>
@@ -73,6 +75,8 @@ public class WebhookServlet extends HttpServlet {
                     System.out.printf("received unknown event type: %s%n", event.type());
                     break;
             }
+
+            resp.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             System.err.printf("error reading request body: %s%n", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
