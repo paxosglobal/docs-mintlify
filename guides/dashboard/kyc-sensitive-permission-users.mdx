@@ -31,28 +31,21 @@ KYC becomes required **only** when a user is assigned a role containing specific
 
 ## Permissions That Require KYC
 
-Any user assigned a role—standard or custom—that includes one or more of the following permissions must complete KYC.
+Any user assigned a role (standard or custom) that includes one or more of the following permissions must complete KYC.
 
-### Transfers & Withdrawals
+### KYC-Required Permissions
 
-- Make external **fiat** account withdrawals
-- Make external **crypto** account withdrawals
-- Transfer between Paxos profiles **within the same entity**
-- Transfer between Paxos profiles **across entities**
-
-### Conversions
-
-- Create or delete conversion rules
-- Initiate stablecoin conversions
-
-### Orchestration
-
-- Create or update orchestration rules
-- Create or update orchestrations
-
-### Trading
-
-- Execute on an issuer quote for buying or selling an asset
+| Category | Permission | Requires KYC |
+|---------|------------|--------------|
+| **Transfers & Withdrawals** | Make external fiat withdrawals | ✅ |
+| | Make external crypto withdrawals | ✅ |
+| | Transfer between Paxos profiles within the same entity | ✅ |
+| | Transfer between Paxos profiles across entities | ✅ |
+| **Conversions** | Create or delete conversion rules | ✅ |
+| | Initiate stablecoin conversions | ✅ |
+| **Orchestration** | Create or update orchestration rules | ✅ |
+| | Create or update orchestrations | ✅ |
+| **Trading** | Execute on an issuer quote for buying or selling an asset | ✅ |
 
 ---
 
