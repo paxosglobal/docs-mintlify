@@ -27,11 +27,9 @@ After the 24-hour retry window has elapsed, undelivered events will not be autom
 
 ## Rate Limits
 
-To ensure optimal performance and stability, Paxos implements rate limits on webhook deliveries:
+To ensure optimal performance and stability, Paxos implements rate limits on webhook deliveries.
 
-- **Default delivery rate**: Maximum 10 webhook invocations per second per consumer endpoint
-
-If you need higher throughput for your webhook consumer endpoint, please contact [Support](https://support.paxos.com) to discuss increasing your rate limits.
+When configuring a webhook via the Dashboard, you can set the rate limit from 1 to 100 requests per second. The default is 10 requests per second.
 
 ## Best Practices
 

@@ -8,9 +8,13 @@ description: Get answers to common questions about webhooks.
 
 <Accordion title="How do I test in Sandbox?" id="testing-in-sandbox">
 
-The easiest way to test in Sandbox, once registered, is to use the [CreateIdentity](/api-reference/endpoints/identity/create-identity) API to create a new identity.
-If your sandbox consumer is registered and setup correctly, you should see an `identity.approved` event. Reach out to
-[Support](https://support.paxos.com) if you do not see the message.
+To test webhooks in Sandbox:
+1. Create a webhook in your Sandbox Dashboard account targeting your test endpoint
+2. Use the Test feature in Dashboard to send a test event to your webhook
+3. Verify your consumer receives the event with `is_test=true`
+4. Optionally, you can trigger real events such as using the [CreateIdentity](/api-reference/endpoints/identity/create-identity) API to create a new identity and receive an `identity.approved` event
+
+For more details, see [Test a Webhook](/guides/dashboard/webhooks#test-a-webhook) in the Dashboard guide or the [Get Started with Webhooks](/guides/webhooks/quickstart) guide.
 
 </Accordion>
 
@@ -23,13 +27,15 @@ After this you can use the [List Events](/api-reference/endpoints/events/list-ev
 
 <Accordion title="Are there rate limits for webhook deliveries?" id="webhook-rate-limits">
 
-Yes, webhook invocations to your consumer endpoint are rate-limited to 10 per second by default. If you need higher throughput, please contact [Support](https://support.paxos.com) to discuss increasing your rate limits. For more information, see our [rate limits documentation](/guides/webhooks/retries-and-limits#rate-limits).
+Yes, webhook invocations to your consumer endpoint are rate-limited. When configuring a webhook via the Dashboard, you can set the rate limit from 1 to 100 requests per second. The default is 10 requests per second. For more information, see our [rate limits documentation](/guides/webhooks/retries-and-limits#rate-limits).
 
 </Accordion>
 
 <Accordion title="How can I send test events?" id="test-events">
 
-We are in the process of rolling out self-service Webhooks, which should be live soon. Currently you are unable to send test events as Webhooks are managed for you by Paxos.
+After creating a webhook via the Dashboard, use the Test feature to send test events to your webhook endpoint. These events will be marked with `is_test=true`.
+
+For step-by-step instructions, see [Test a Webhook](/guides/dashboard/webhooks#test-a-webhook) in the Dashboard guide.
 
 </Accordion>
 
