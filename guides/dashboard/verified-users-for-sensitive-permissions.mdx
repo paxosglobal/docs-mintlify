@@ -1,11 +1,9 @@
 ---
-title: "KYC Requirements for Sensitive-Permission Users"
+title: "Verified Users for Sensitive Permissions"
 description: "Learn how Paxos verifies users who can initiate financial actions such as transfers, withdrawals, conversions, orchestration, and trading."
 sidebar_position: "4"
 tags: "dashboard,admin,team,kyc,permissions"
 ---
-
-# KYC Requirements for Sensitive-Permission Users
 
 As part of Paxos’s ongoing commitment to regulatory compliance, certain user permissions in the Paxos Dashboard require identity verification (KYC). Any user who can move funds or initiate sensitive financial actions on behalf of an institution must complete KYC before those permissions become active.
 
@@ -17,7 +15,7 @@ This guide explains which permissions require KYC, how users complete verificati
 
 ---
 
-## Why KYC Is Required
+## Why Identity Verification Is Required
 
 Paxos is a regulated financial institution and must verify the identity of any user who can initiate asset movement or financial automation. KYC ensures that:
 
@@ -29,11 +27,10 @@ KYC becomes required **only** when a user is assigned a role containing specific
 
 ---
 
-## Permissions That Require KYC
+## Sensitive Permissions
 
-Any user assigned a role (standard or custom) that includes one or more of the following permissions must complete KYC.
+Any user assigned a role (standard or custom) that includes one or more of the following sensitive permissions must complete KYC.
 
-### KYC-Required Permissions
 
 | Category | Permission | Requires KYC |
 |---------|------------|--------------|
@@ -49,18 +46,18 @@ Any user assigned a role (standard or custom) that includes one or more of the f
 
 ---
 
-## Roles That Require KYC
+## Sensitive Roles
 
-- The **Treasurer** role is the only out-of-the-box role requiring KYC.
-- **Any Custom Role** that includes any of the KYC-required permissions above will also require KYC.
+- The **Treasurer** role is the only standard role that requires KYC.
+- **Any Custom Role** that includes any of the sensitive permissions above will also require KYC.
 
 <Notice type="warning">
-  If you modify an existing Custom Role to include a KYC-required permission, **all users assigned to that role will be required to complete KYC immediately**.
+  If you modify an existing Custom Role to include a sensitive permission, **all users assigned to that role will be required to complete KYC immediately**.
 </Notice>
 
 ---
 
-## Completing KYC as a User
+## Complete Identity Verification
 
 Users who require verification will automatically see a banner at the top of their Dashboard home page.
 
@@ -80,7 +77,7 @@ Once complete, users see a **Verified** badge in their Account menu:
 
 ---
 
-## Viewing KYC Status as an Admin
+## Monitor User Verification Status
 
 Admins can monitor user verification status on the **Manage Team → Users** page.
 
@@ -132,8 +129,7 @@ When creating or updating Custom Roles:
   **Best Practice:** Maintain at least one KYC-verified operational user at all times to avoid workflow disruptions.
 </Notice>
 
-For guidance on creating and managing custom roles, see:\
-👉 [Managing Roles & Permissions](../roles)
+For guidance on creating and managing custom roles, see [Managing Roles & Permissions](/guides/dashboard/roles).
 
 ---
 
@@ -149,11 +145,16 @@ No. KYC must be completed directly by each user through Persona.
 No. KYC is tied to the Paxos account, not the entity.\
 However, they must complete KYC if they are assigned a role containing sensitive permissions.
 
+
+<Tip>
+Questions? Contact [Paxos Support](https://support.paxos.com).
+</Tip>
+
 ---
 
 ## Related Documentation
 
-- [Manage Team Overview](../team)
-- [Managing Roles & Permissions](../roles)
-- [Inviting Users](../team/invite-users)
-- [Dashboard Home](../../dashboard/home)
+- [Manage Team Overview](/guides/dashboard/team)
+- [Managing Roles & Permissions](/guides/dashboard/roles)
+- [Inviting Users](/guides/dashboard/team/invite-users)
+- [Dashboard Home](/guides/dashboard/home)
