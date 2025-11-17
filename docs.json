@@ -312,7 +312,8 @@
                 "group": "Manage Team",
                 "pages": [
                   "guides/dashboard/admin/team",
-                  "guides/dashboard/roles"
+                  "guides/dashboard/roles",
+                  "guides/dashboard/verified-users-for-sensitive-permissions"
                 ]
               },
               "guides/dashboard/organization",
