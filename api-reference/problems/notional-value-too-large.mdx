@@ -1,0 +1,21 @@
+---
+title: 403 - Notional Value Too Large
+---
+
+A Notional Value Too Large error is returned when the total notional value of a trade or order exceeds the maximum allowed limit.
+
+For example, attempting to create an order with a notional value that exceeds the configured maximum for the profile, market, or trading limits will result in this error.
+
+To resolve this error, reduce the order size to bring the notional value within the allowed limits, or contact support to adjust trading limits if needed.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "notional value exceeds maximum allowed",
+  "meta": {},
+  "status": 403,
+  "title": "Notional Value Too Large",
+  "type": "https://developer.paxos.com/docs/v2/problems/notional-value-too-large"
+}
+```
+</CodeGroup>
