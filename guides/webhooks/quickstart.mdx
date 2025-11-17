@@ -173,7 +173,8 @@ public record PaxosEvent(
 
 Log in to your [Dashboard](https://dashboard.paxos.com/login) account and navigate to the Webhooks section under the Developer tab. Configure your webhook with:
  - **Endpoint URL**: Your webhook consumer endpoint URL
- - **Authentication**: Configure either API Key or OAuth authentication
+ - **Auth Type**: Select your authentication method (API Key or OAuth)
+ - **Authentication**: Configure your selected authentication method
    - **API Key**: Provide the API Key Header name and API Key value that Paxos will include when calling your endpoint
    - **OAuth**: Provide the OAuth endpoint URL, Client ID, and Client Secret
  - **Event Types**: Select which [event types](/api-reference/events) you would like to receive and process
