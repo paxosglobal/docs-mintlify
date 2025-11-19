@@ -136,14 +136,14 @@
     "/transfer/managed/deposit-intents": {
       "get": {
         "summary": "List Managed Deposit Intents",
-        "operationId": "ListTrustedDepositIntents",
+        "operationId": "ListManagedDepositIntents",
         "responses": {
           "200": {
             "description": "A successful response.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListTrustedDepositIntentsResponse"
+                  "$ref": "#/components/schemas/ListManagedDepositIntentsResponse"
                 }
               }
             }
@@ -161,6 +161,7 @@
           },
           {
             "name": "profile_ids",
+            "description": "Return managed deposit intents related to the given profile_ids.\nAt least one of managed_deposit_intent_id or identity_id is required.",
             "in": "query",
             "required": false,
             "explode": true,
@@ -170,6 +171,15 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "name": "managed_deposit_intent_id",
+            "description": "Return the managed deposit intent for the given id.\nAt least one of managed_deposit_intent_id or identity_id is required.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "tags": [
@@ -178,7 +188,7 @@
         "security": [
           {
             "OAuth2": [
-              "transfer:read_managedtransfer"
+              "transfer:read_managed_deposit"
             ]
           }
         ]
@@ -186,14 +196,14 @@
       "post": {
         "summary": "Create Managed Deposit Intent",
         "description": "This is the first step in the process of a managed deposit.",
-        "operationId": "CreateTrustedDepositIntent",
+        "operationId": "CreateManagedDepositIntent",
         "responses": {
           "200": {
             "description": "A successful response.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateTrustedDepositIntentResponse"
+                  "$ref": "#/components/schemas/CreateManagedDepositIntentResponse"
                 }
               }
             }
@@ -203,7 +213,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTrustedDepositIntentRequest"
+                "$ref": "#/components/schemas/CreateManagedDepositIntentRequest"
               }
             }
           },
@@ -215,7 +225,7 @@
         "security": [
           {
             "OAuth2": [
-              "transfer:write_managedtransfer"
+              "transfer:write_managed_deposit"
             ]
           }
         ]
@@ -224,14 +234,14 @@
     "/transfer/managed/withdrawal-intents": {
       "post": {
         "summary": "Create Managed Withdrawal Intent",
-        "operationId": "CreateTrustedWithdrawalIntent",
+        "operationId": "CreateManagedWithdrawalIntent",
         "responses": {
           "200": {
             "description": "A successful response.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateTrustedWithdrawalIntentResponse"
+                  "$ref": "#/components/schemas/CreateManagedWithdrawalIntentResponse"
                 }
               }
             }
@@ -241,7 +251,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateTrustedWithdrawalIntentRequest"
+                "$ref": "#/components/schemas/CreateManagedWithdrawalIntentRequest"
               }
             }
           },
@@ -262,14 +272,14 @@
     "/transfer/managed/withdrawal-intents/{id}": {
       "get": {
         "summary": "Get Managed Withdrawal Intent",
-        "operationId": "GetTrustedWithdrawalIntent",
+        "operationId": "GetManagedWithdrawalIntent",
         "responses": {
           "200": {
             "description": "A successful response.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetTrustedWithdrawalIntentResponse"
+                  "$ref": "#/components/schemas/GetManagedWithdrawalIntentResponse"
                 }
               }
             }
@@ -300,14 +310,14 @@
     "/transfer/managed/withdrawal-intents/{id}/execute": {
       "post": {
         "summary": "Execute Managed Withdrawal Intent",
-        "operationId": "ExecuteTrustedWithdrawalIntent",
+        "operationId": "ExecuteManagedWithdrawalIntent",
         "responses": {
           "200": {
             "description": "A successful response.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExecuteTrustedWithdrawalIntentResponse"
+                  "$ref": "#/components/schemas/ExecuteManagedWithdrawalIntentResponse"
                 }
               }
             }
@@ -327,7 +337,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TrustedTransferPublicExecuteTrustedWithdrawalIntentBody"
+                "$ref": "#/components/schemas/ManagedTransferPublicExecuteManagedWithdrawalIntentBody"
               }
             }
           },
@@ -348,7 +358,7 @@
   },
   "components": {
     "schemas": {
-      "TrustedTransferPublicExecuteTrustedWithdrawalIntentBody": {
+      "ManagedTransferPublicExecuteManagedWithdrawalIntentBody": {
         "type": "object",
         "properties": {
           "auth_token": {
@@ -396,7 +406,7 @@
           "amount"
         ]
       },
-      "CreateTrustedDepositIntentRequest": {
+      "CreateManagedDepositIntentRequest": {
         "type": "object",
         "properties": {
           "identity_id": {
@@ -406,10 +416,6 @@
           "profile_id": {
             "type": "string",
             "description": "The target Profile of the transfer."
-          },
-          "source_integration_id": {
-            "type": "string",
-            "description": "The broker/exchange/wallet from which the deposit will originate.\nValid values are: `Binance`, `Coinbase`, ..."
           },
           "destination_crypto_networks": {
             "type": "array",
@@ -425,29 +431,27 @@
         },
         "required": [
           "identity_id",
-          "profile_id",
-          "destination_crypto_networks",
-          "asset"
+          "profile_id"
         ]
       },
-      "CreateTrustedDepositIntentResponse": {
+      "CreateManagedDepositIntentResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "The ID of the trusted deposit intent."
+            "description": "The ID of the managed deposit intent."
           },
           "link_token": {
             "type": "string",
-            "description": "The link token used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+            "description": "The link token used in initializing the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
           },
           "client_id": {
             "type": "string",
-            "description": "The client id used to initialize the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
+            "description": "The client id used in initializing the Mesh SDK.  See https://docs.meshconnect.com/guides/web-sdk."
           }
         }
       },
-      "CreateTrustedWithdrawalIntentRequest": {
+      "CreateManagedWithdrawalIntentRequest": {
         "type": "object",
         "properties": {
           "identity_id": {
@@ -463,12 +467,12 @@
           "target_integration_id"
         ]
       },
-      "CreateTrustedWithdrawalIntentResponse": {
+      "CreateManagedWithdrawalIntentResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "The ID of the trusted withdrawal intent."
+            "description": "The ID of the managed withdrawal intent."
           },
           "link_token": {
             "type": "string",
@@ -497,7 +501,7 @@
         ],
         "description": "A CryptoNetwork is a blockchain transmitting cryptocurrencies.\n\n - STELLAR: @hidden\n - XLAYER: @hidden"
       },
-      "ExecuteTrustedWithdrawalIntentResponse": {
+      "ExecuteManagedWithdrawalIntentResponse": {
         "type": "object",
         "properties": {
           "destination_address": {
@@ -526,11 +530,11 @@
           }
         }
       },
-      "GetTrustedWithdrawalIntentResponse": {
+      "GetManagedWithdrawalIntentResponse": {
         "type": "object",
         "properties": {
           "status": {
-            "$ref": "#/components/schemas/TrustedWithdrawalStatus"
+            "$ref": "#/components/schemas/ManagedWithdrawalStatus"
           },
           "destination_broker_type": {
             "type": "string"
@@ -544,98 +548,112 @@
           }
         }
       },
-      "ListTrustedDepositIntentsResponse": {
+      "ListManagedDepositIntentsResponse": {
         "type": "object",
         "properties": {
           "deposit_intents": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TrustedDepositIntents"
+              "$ref": "#/components/schemas/ManagedDepositIntents"
             }
           }
         }
       },
-      "TrustedDepositAttempt": {
+      "ManagedDepositAttempt": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
           "status": {
-            "$ref": "#/components/schemas/TrustedDepositAttemptStatus"
+            "$ref": "#/components/schemas/ManagedDepositAttemptStatus"
           },
           "destination_crypto_network": {
             "$ref": "#/components/schemas/CryptoNetwork"
           },
-          "tx_hash": {
-            "type": "string"
+          "crypto_tx_hash": {
+            "type": "string",
+            "description": "The on-chain transaction hash."
           },
           "destination_address": {
-            "type": "string"
+            "type": "string",
+            "description": "The destination crypto address."
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The timestamp at which this managed deposit attempt was created."
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The timestamp at which this managed deposit attempt was updated."
           },
           "transfer_id": {
             "type": "string",
-            "description": "This field is populated when the status is SUBMITTED_TRANSFER_TO_PROFILE.  The caller can use this as input to https://docs.paxos.com/api-reference/endpoints/transfers/get-transfer."
+            "description": "This field is populated when the status is SUBMITTED_TRANSFER_TO_PROFILE.  The caller can use this value as input to https://docs.paxos.com/api-reference/endpoints/transfers/get-transfer."
           }
         }
       },
-      "TrustedDepositAttemptStatus": {
+      "ManagedDepositAttemptStatus": {
         "type": "string",
         "enum": [
           "SUBMITTED_TRANSFER_TO_PROFILE",
           "UNMATCHED"
         ]
       },
-      "TrustedDepositIntentStatus": {
+      "ManagedDepositIntentStatus": {
         "type": "string",
         "enum": [
           "AWAITING_TRANSACTION_INFO",
+          "RECEIVED_TRANSACTION_INFO",
           "TIMED_OUT_RECEIVING_TRANSACTION_INFO"
         ]
       },
-      "TrustedDepositIntents": {
+      "ManagedDepositIntents": {
         "type": "object",
         "properties": {
-          "trusted_deposit_intent_id": {
+          "managed_deposit_intent_id": {
             "type": "string"
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "The Paxos customer ID."
           },
           "identity_id": {
-            "type": "string"
+            "type": "string",
+            "description": "The Paxos ID of the Identity associated with the transfer."
           },
           "profile_id": {
-            "type": "string"
+            "type": "string",
+            "description": "The target Profile of the transfer."
           },
           "status": {
-            "$ref": "#/components/schemas/TrustedDepositIntentStatus"
+            "$ref": "#/components/schemas/ManagedDepositIntentStatus"
           },
           "matched_deposit": {
-            "$ref": "#/components/schemas/TrustedDepositAttempt"
+            "$ref": "#/components/schemas/ManagedDepositAttempt"
           },
-          "other_deposit_attempts": {
+          "other_deposits": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TrustedDepositAttempt"
-            }
+              "$ref": "#/components/schemas/ManagedDepositAttempt"
+            },
+            "description": "In the event that an unexpected deposit is received,this field will be populated."
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The timestamp at which this managed deposit intent was created."
           },
           "updated_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "The timestamp at which this managed deposit intent was updated."
           }
         }
       },
-      "TrustedWithdrawalStatus": {
+      "ManagedWithdrawalStatus": {
         "type": "string",
         "enum": [
           "FAILED_TO_OBTAIN_DESTINATION_ADDRESS",
