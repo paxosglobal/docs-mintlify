@@ -182,7 +182,6 @@
             "pages": [
               "guides/payments/index",
               "guides/payments/quickstart",
-              "guides/payments/websocket",
               "guides/payments/status",
               "guides/payments/faq"
             ]
