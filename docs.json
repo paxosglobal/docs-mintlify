@@ -828,7 +828,7 @@
                     "group": "Objects",
                     "pages": [
                       "api-reference/events/identity-documents-required-object",
-                      "api-reference/events/identity_summary_status_change-object",
+                      "api-reference/events/identity-summary-status-change-object",
                       "api-reference/events/identity-kyc-refresh-object"
                     ]
                   }
