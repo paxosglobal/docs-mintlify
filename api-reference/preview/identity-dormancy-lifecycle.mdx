@@ -86,7 +86,7 @@ curl -X GET "https://api.paxos.com/identity/identities?control_type=DORMANT" \
 ```
 
 Once an identity is no longer dormant, the identity will typically returning to the `APPROVED` status after re-screening if no other controls or requirements apply.
-You can listen for an [identity status change event](/api-reference/events/identity-status-change-object) via [Paxos Webhooks](/guides/webhooks) to be notified when the identity's status changes.
+You can listen for an [identity status change event](/api-reference/events/identity-summary-status-change-object) via [Paxos Webhooks](/guides/webhooks) to be notified when the identity's status changes.
 If the identity remains in the `DISABLED` state, then you can check the identity's `status_details` field to understand why.
 
 ## Support
