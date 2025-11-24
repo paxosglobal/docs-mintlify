@@ -1066,5 +1066,10 @@
       "claude",
       "chatgpt"
     ]
-  }
+  },
+  "integrations": {
+      "intercom": {
+            "appId": "vb4vihqn"
+      }
+}
 }
