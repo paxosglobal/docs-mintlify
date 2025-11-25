@@ -1,7 +1,7 @@
 name: Bot PR Review Check
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, review_requested, ready_for_review]
   pull_request_review:
     types: [submitted, dismissed]
@@ -9,8 +9,8 @@ on:
 jobs:
   check-bot-reviews:
     runs-on: ubuntu-latest
-    # Only run on PRs, not on the main branch
-    if: github.event_name == 'pull_request_target' || github.event_name == 'pull_request_review'
+    permissions:
+      pull-requests: read
 
     steps:
       - name: Check if PR author is a bot
@@ -36,10 +36,17 @@ jobs:
             return { isBot, isMintlify, author };
 
       - name: Check for human reviewers
-        if: steps.check-bot.outputs.is_bot == 'true'
         uses: actions/github-script@v7
         with:
           script: |
+            const isBot = '${{ steps.check-bot.outputs.is_bot }}' === 'true';
+
+            // If not a bot PR, pass the check
+            if (!isBot) {
+              console.log('✅ Not a bot PR - check passes');
+              return;
+            }
+
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
 
