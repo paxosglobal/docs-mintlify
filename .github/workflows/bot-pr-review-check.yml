@@ -1,0 +1,83 @@
+name: Bot PR Review Check
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, review_requested, ready_for_review]
+  pull_request_review:
+    types: [submitted, dismissed]
+
+jobs:
+  check-bot-reviews:
+    runs-on: ubuntu-latest
+    # Only run on PRs, not on the main branch
+    if: github.event_name == 'pull_request_target' || github.event_name == 'pull_request_review'
+
+    steps:
+      - name: Check if PR author is a bot
+        id: check-bot
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const isBot = pr.user.type === 'Bot' || author.includes('[bot]');
+
+            // Specific check for Mintlify bot
+            const isMintlify = author === 'mintlify[bot]' || author === 'mintlify';
+
+            core.setOutput('is_bot', isBot);
+            core.setOutput('is_mintlify', isMintlify);
+            core.setOutput('author', author);
+
+            console.log(`PR Author: ${author}`);
+            console.log(`Is Bot: ${isBot}`);
+            console.log(`Is Mintlify: ${isMintlify}`);
+
+            return { isBot, isMintlify, author };
+
+      - name: Check for human reviewers
+        if: steps.check-bot.outputs.is_bot == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            // Get all reviews for this PR
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            console.log(`Total reviews: ${reviews.length}`);
+
+            // Filter for approved reviews by humans (not bots)
+            const humanApprovals = reviews.filter(review => {
+              const isHuman = review.user.type !== 'Bot' && !review.user.login.includes('[bot]');
+              const isApproved = review.state === 'APPROVED';
+              console.log(`Reviewer: ${review.user.login}, Type: ${review.user.type}, State: ${review.state}, Is Human: ${isHuman}`);
+              return isHuman && isApproved;
+            });
+
+            // Get unique human approvers (in case someone approved multiple times)
+            const uniqueHumanApprovers = [...new Set(humanApprovals.map(r => r.user.login))];
+            const humanApprovalCount = uniqueHumanApprovers.length;
+
+            console.log(`Unique human approvers: ${uniqueHumanApprovers.join(', ')}`);
+            console.log(`Human approval count: ${humanApprovalCount}`);
+
+            const requiredApprovals = 2;
+            const author = '${{ steps.check-bot.outputs.author }}';
+
+            if (humanApprovalCount < requiredApprovals) {
+              core.setFailed(
+                `❌ This PR was created by a bot (${author}) and requires at least ${requiredApprovals} human reviewers to approve. ` +
+                `Currently has ${humanApprovalCount} human approval(s).`
+              );
+            } else {
+              console.log(`✅ PR has ${humanApprovalCount} human approvals (required: ${requiredApprovals})`);
+              core.notice(
+                `✅ Bot PR review check passed: ${humanApprovalCount} human approvals from: ${uniqueHumanApprovers.join(', ')}`
+              );
+            }
