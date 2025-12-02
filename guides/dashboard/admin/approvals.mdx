@@ -16,7 +16,7 @@ Approvals adds an extra layer of security to your most sensitive actions in the 
 
 ## Current Approval Actions
 
-Approvals is currently available for:
+Approvals are currently available for:
 - Adding crypto destination [addresses](/guides/dashboard/addresses)
 - Adding [fiat accounts](/guides/dashboard/fiat)
 - [User roles](/guides/dashboard/admin/team): assigning or editing roles directly (non-SSO) and updating SSO group-to-role mappings (SSO)
@@ -24,6 +24,7 @@ Approvals is currently available for:
 - Adding or deleting [conversion instructions](/guides/dashboard/instructions) (mints & redeems to external destinations)
 - Adding or deleting [webhooks](/guides/dashboard/webhooks)
 - Turning off an enabled approval policy
+- Editing an approval policy configuration
 
 <Note>
 Paxos is working on rolling out approvals for additional actions and more customization options for approval policies. Withdrawals approvals (both crypto and fiat) are coming soon.
@@ -37,6 +38,18 @@ Approvals helps your organization:
 - Meet compliance requirements through documented review processes
 - Maintain better control over where assets can be sent
 
+## Modifying a policy
+
+You can edit individual approval policies to configure the number of approvers required for a specific action. Policy modifications are managed from [Admin > Approvals](https://dashboard.paxos.com/admin/approvals), the same location used for enabling or disabling policies.
+
+<Note>
+Edits to approval policies require approvals themselves.
+</Note>
+
+<Info>
+When a new approval is created, it uses the current configuration of the policy at that time. For example, if you have configured your "Add Fiat Account" policy to require 3 approvals, but later edit the policy, already created approvals will still require 3 approvals. You can see the number of approvals gained and total required (e.g., `1/3` means 1 of 3).
+</Info>
+
 ## How Approvals Work
 
 Let's walk through an example of adding a new crypto destination address with Approvals enabled:
@@ -46,7 +59,7 @@ Let's walk through an example of adding a new crypto destination address with Ap
 <Permissions value="Entity Manager: enable or disable approvals" />
 
 - An Entity Manager must first enable the Approvals feature for desired actions
-- Go to [Admin > Approval Controls](https://dashboard.paxos.com/admin/approval-controls)
+- Go to [Admin > Approval Controls](https://dashboard.paxos.com/admin/approvals)
 - Select "Add Address" to enable approval requirements for new crypto addresses
 
 ![Approvals Page](/images/approvals-enable.png)
