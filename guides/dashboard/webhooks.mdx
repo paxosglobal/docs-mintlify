@@ -52,6 +52,21 @@ Once created, the webhook will show an **Active** status and begin receiving eve
 Paxos supports approvals for creating and deleting webhooks. You can enable approvals for webhooks via the Admin → [Approvals](/guides/dashboard/admin/approvals) tab to add an additional layer of security and control.
 </Info>
 
+## Test a Webhook
+
+After creating a webhook, use the Test feature to verify your consumer endpoint is configured correctly:
+
+1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
+2. Click **Actions** → **Test** for the webhook you want to test
+3. Select an event type to send as a test event
+4. Click **Send Test Event**
+
+The test event will be sent to your endpoint with `is_test=true` in the payload. Verify that your consumer receives and processes the event correctly.
+
+<Info>
+For information on handling test events in your consumer code, see the [webhook consumer examples](/guides/webhooks/quickstart#create-a-webhook-consumer).
+</Info>
+
 ## Update a Webhook
 
 To update an existing webhook:
@@ -69,21 +84,6 @@ To update an existing webhook:
 
 <Info>
 If [approvals](/guides/dashboard/admin/approvals) are enabled for webhooks, updates will require approval before taking effect.
-</Info>
-
-## Test a Webhook
-
-After creating a webhook, use the Test feature to verify your consumer endpoint is configured correctly:
-
-1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
-2. Click **Actions** → **Test** for the webhook you want to test
-3. Select an event type to send as a test event
-4. Click **Send Test Event**
-
-The test event will be sent to your endpoint with `is_test=true` in the payload. Verify that your consumer receives and processes the event correctly.
-
-<Info>
-For information on handling test events in your consumer code, see the [webhook consumer examples](/guides/webhooks/quickstart#create-a-webhook-consumer).
 </Info>
 
 ## Delete a Webhook
