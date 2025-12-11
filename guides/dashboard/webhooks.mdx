@@ -27,25 +27,6 @@ Each webhook displays:
 
 Click **View** to display more details about your webhook, including event types, rate limit (requests per second), and approval history.
 
-## Update a Webhook
-
-To update an existing webhook:
-
-1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
-2. Click **View** for the webhook you want to update
-3. Click **Edit**
-4. Modify any combination of the following settings:
-   - **Name**: Update the webhook name
-   - **URL**: Change the endpoint URL
-   - **Event Types**: Add or remove event subscriptions
-   - **Auth Type and Credentials**: Update authentication configuration
-   - **Rate Limit**: Adjust the requests per second limit
-5. Click **Update Webhook** to apply your changes, or **Submit for Approval** if approvals are required
-
-<Info>
-If [approvals](/guides/dashboard/admin/approvals) are enabled for webhooks, updates will require approval before taking effect.
-</Info>
-
 ## Create a Webhook
 
 Before creating a webhook in Dashboard, ensure you have a webhook consumer endpoint ready to receive events. See [Create a Webhook Consumer](/guides/webhooks/quickstart#create-a-webhook-consumer) for implementation examples.
@@ -84,6 +65,25 @@ The test event will be sent to your endpoint with `is_test=true` in the payload.
 
 <Info>
 For information on handling test events in your consumer code, see the [webhook consumer examples](/guides/webhooks/quickstart#create-a-webhook-consumer).
+</Info>
+
+## Update a Webhook
+
+To update an existing webhook:
+
+1. Navigate to [Webhooks](https://dashboard.paxos.com/dashboard/webhooks)
+2. Click **View** for the webhook you want to update
+3. Click **Edit**
+4. Modify any combination of the following settings:
+   - **Name**: Update the webhook name
+   - **URL**: Change the endpoint URL
+   - **Event Types**: Add or remove event subscriptions
+   - **Auth Type and Credentials**: Update authentication configuration
+   - **Rate Limit**: Adjust the requests per second limit
+5. Click **Update Webhook** to apply your changes, or **Submit for Approval** if approvals are required
+
+<Info>
+If [approvals](/guides/dashboard/admin/approvals) are enabled for webhooks, updates will require approval before taking effect.
 </Info>
 
 ## Delete a Webhook
