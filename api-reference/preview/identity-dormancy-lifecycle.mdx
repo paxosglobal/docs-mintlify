@@ -7,8 +7,8 @@ description: Manage dormant identities on the Paxos Platform.
 
 Dormancy enables you to manage [Identities](/guides/identity) that have become inactive on the Paxos platform by marking them dormant to reduce costs.
 An identity marked as dormant may continue to hold assets, but is disallowed from initiating new transactions until it is no longer dormant.
-Paxos will automatically mark identities that have been inactive for an extended period of time as dormant.
-You may also explicitly mark or unmark identities as dormant via the Identity API.
+You can define your own criteria for which identities qualify as dormant, and build a UX around explicitly marking or unmarking identities as such.
+Paxos will not automatically mark identities as dormant unless agreed to as part of your integration.
 
 This guide will walk you through how to:
  - Set and unset identities as dormant via the [Identity Controls API](/api-reference/preview/identity-controls/overview)
