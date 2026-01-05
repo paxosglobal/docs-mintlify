@@ -176,10 +176,15 @@ Log in to your [Dashboard](https://dashboard.paxos.com/login) account and naviga
  - **Auth Type**: Select your authentication method (API Key or OAuth)
  - **Authentication**: Configure your selected authentication method
    - **API Key**: Provide the API Key Header name and API Key value that Paxos will include when calling your endpoint
-   - **OAuth**: Provide the OAuth endpoint URL (client_url), Client ID, and Client Secret. When using OAuth2 authentication, access tokens are obtained by sending a POST request to the configured client_url. The credentials are sent in the request body using `application/x-www-form-urlencoded` format:
-     ```
-     grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret>
-     ```
+   - **OAuth**: Provide the OAuth endpoint URL (client_url), Client ID, and Client Secret
+
+### OAuth2 token retrieval
+
+When using OAuth2 authentication, access tokens are obtained by sending a POST request to the configured `client_url`. The credentials are sent in the request body using `application/x-www-form-urlencoded` format:
+
+```
+grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret>
+```
  - **Event Types**: Select which [event types](/api-reference/events) you would like to receive and process
  - **Rate Limit**: Set the rate limit (1-100 requests per second, default is 10 RPS)
 
