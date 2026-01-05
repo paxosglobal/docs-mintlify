@@ -67,10 +67,6 @@ After creating a webhook, use the Test feature to verify your consumer endpoint 
 
 The test event will be sent to your endpoint with `is_test=true` in the payload. Verify that your consumer receives and processes the event correctly.
 
-<Note>
-When using OAuth2 authentication, access tokens are obtained by sending a POST request to the configured `client_url`. The credentials are sent in the request body using `application/x-www-form-urlencoded` format: `grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret>`
-</Note>
-
 <Info>
 For information on handling test events in your consumer code, see the [webhook consumer examples](/guides/webhooks/quickstart#create-a-webhook-consumer).
 </Info>
