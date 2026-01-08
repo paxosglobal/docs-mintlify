@@ -6,17 +6,16 @@ rss: true
 
 # Upcoming changes
 
+<Update label="Q1 2026" description="v2 API">
+     **Stablecoin Conversions API Service** will be deprecated on March 9th, 2026. Customers using the Stablecoin Conversions API should migrate to the [Orchestrations API](https://docs.paxos.com/guides/developer/orchestrations/orchestrations) for conversions. 
+</Update>
+
 <Update label="Q1 2026" description="Reports">
 **Profile Transaction Reconciliation Reports**: Paxos is enhancing reconciliation reports with the following changes:
 
-- **Stablecoin Conversion API transactions** will use new identifiers:
-  - Resource: `SWAP` (replacing `CONVERSION`)
-  - Transaction Type: `SWAP_TX` (replacing `CONVERSION_CREATION` and `CONVERSION_SETTLEMENT`)
-  - `OrchestrationID` field will link related conversion legs
-
 - **Orchestration API transactions** will be represented with new fields:
   - New Resource Type: `ORCHESTRATION`
-  - New Resource Transaction Types: `ORCHESTRATION_RESERVE` and `ORCHESTRATION_UNRESERVE` reserving funds during an orchestration flow
+  - New Resource Transaction Types: `ORCHESTRATION_RESERVE`, which reserves funds during an orchestration flow, and `ORCHESTRATION_UNRESERVE`, which returns funds in case of an orchestration failure.
 
 These changes will improve tracking of multi-step transactions and provide better visibility into fund allocation during processing.
 </Update>
