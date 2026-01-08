@@ -1,26 +1,29 @@
 The values of the TransactionType vary depending on the Resource.
 The TransactionType denotes the specific purpose of the transaction.
 
-| Resource | TransactionType | Description |
-| --- | --- | --- |
-| CONVERSION | CONVERSION_CANCELLATION | A transaction to unreserve funds for a created stablecoin conversion. |
-| CONVERSION | CONVERSION_CREATION | A transaction to reserve funds for a stablecoin conversion. |
-| CONVERSION	| CONVERSION_SETTLEMENT | Settlement of the stablecoin conversion transaction. |
-| EXECUTION | COMMISSION | A transaction to collect commission from an executed trade. |
-| EXECUTION | SETTLE_BASE | Settlement of the base (crypto) side of the trade to/from the counterparty. |
-| EXECUTION | SETTLE_QUOTE | Settlement of the quote (cash) side of the trade to/from the counterparty For example, a SELL order has been executed. |
-| EXECUTION | SETTLE_UNRESERVE | A transaction to unreserve funds for trading because of a BUY side price improvement on an executed order. For example, a limit order used a BUY price of $50,000 but executed at $49,000). |
-| ORDER | RESERVE | A transaction to reserve funds for trading. For example, a limit order has been placed. |
-| ORDER | UNRESERVE | A transaction to unreserve funds for trading. For example, a limit order has been canceled. |
-| QUOTE_EXECUTION | COLLECT_FROM_EXECUTOR | A record of transaction indicating a credit of the account. |
-| QUOTE_EXECUTION | FUND_EXECUTOR | A record of transaction indicating a debit  of the account. |
-| TRANSFER | DEPOSIT_COMPLETION | A transaction to complete a deposit, resulting in funds being credited. |
-| TRANSFER | DEPOSIT_CREATION | A transaction to deposit funds into the Paxos platform. |
-| TRANSFER | DEPOSIT_FAILURE | A transaction to reserve the funds of a failed deposit into pending debit where they can move off the Paxos platform back to their source. |
-| TRANSFER | FEE_DEBIT | A transaction to debit the fees upon completion of the transfer. |
-| TRANSFER | FEE_ENCUMBERMENT | A transaction to reserve the transfer fee. |
-| TRANSFER | INTERNAL_TRANSFER | A book transfer of funds to another profile under the same customer account. |
-| TRANSFER | PAXOS_TRANSFER | A book transfer of funds to another Paxos customer. |
-| TRANSFER | WITHDRAWAL_COMPLETION | A transaction to complete a withdrawal, resulting in the transfer of funds off the Paxos platform. |
-| TRANSFER | WITHDRAWAL_CREATION | A transaction to initiate a withdrawal typically reserving the debit amount. For example, a wire withdrawal or crypto withdrawal. |
-| TRANSFER | WITHDRAWAL_FAILURE | A transaction to return funds previously reserved for a failed withdrawal. |
+| Resource        | TransactionType         | Description                                                                                                                                                                               |
+|-----------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| CONVERSION      | CONVERSION_CANCELLATION | A transaction to unreserve funds for a created stablecoin conversion.                                                                                                                     |
+| CONVERSION      | CONVERSION_CREATION     | A transaction to reserve funds for a stablecoin conversion.                                                                                                                               |
+| CONVERSION      | CONVERSION_SETTLEMENT   | Settlement of the stablecoin conversion transaction.                                                                                                                                      |
+| EXECUTION       | COMMISSION              | A transaction to collect commission from an executed trade.                                                                                                                               |
+| EXECUTION       | SETTLE_BASE             | Settlement of the base (crypto) side of the trade to/from the counterparty.                                                                                                               |
+| EXECUTION       | SETTLE_QUOTE            | Settlement of the quote (cash) side of the trade to/from the counterparty For example, a SELL order has been executed.                                                                    |
+| EXECUTION       | SETTLE_UNRESERVE        | A transaction to unreserve funds for trading because of a BUY side price improvement on an executed order. For example, a limit order used a BUY price of 90,000 but executed at 89,000). |
+| ORCHESTRATION   | ORCHESTRATION_RESERVE   | A transaction to reserve funds for Orchestration processing                                                                                                                               |
+| ORCHESTRATION   | ORCHESTRATION_UNRESERVE | A transaction to unreserve funds after Orchestration processing                                                                                                                           |
+| ORDER           | RESERVE                 | A transaction to reserve funds for trading. For example, a limit order has been placed.                                                                                                   |
+| ORDER           | UNRESERVE               | A transaction to unreserve funds for trading. For example, a limit order has been canceled.                                                                                               |
+| QUOTE_EXECUTION | COLLECT_FROM_EXECUTOR   | A record of transaction indicating a credit of the account.                                                                                                                               |
+| QUOTE_EXECUTION | FUND_EXECUTOR           | A record of transaction indicating a debit  of the account.                                                                                                                               |
+| TRANSFER        | DEPOSIT_COMPLETION      | A transaction to complete a deposit, resulting in funds being credited.                                                                                                                   |
+| TRANSFER        | DEPOSIT_CREATION        | A transaction to deposit funds into the Paxos platform.                                                                                                                                   |
+| TRANSFER        | DEPOSIT_FAILURE         | A transaction to reserve the funds of a failed deposit into pending debit where they can move off the Paxos platform back to their source.                                                |
+| TRANSFER        | FEE_DEBIT               | A transaction to debit the fees upon completion of the transfer.                                                                                                                          |
+| TRANSFER        | FEE_ENCUMBERMENT        | A transaction to reserve the transfer fee.                                                                                                                                                |
+| TRANSFER        | INTERNAL_TRANSFER       | A book transfer of funds to another profile under the same customer account.                                                                                                              |
+| TRANSFER        | PAXOS_TRANSFER          | A book transfer of funds to another Paxos customer.                                                                                                                                       |
+| TRANSFER        | WITHDRAWAL_COMPLETION   | A transaction to complete a withdrawal, resulting in the transfer of funds off the Paxos platform.                                                                                        |
+| TRANSFER        | WITHDRAWAL_CREATION     | A transaction to initiate a withdrawal typically reserving the debit amount. For example, a wire withdrawal or crypto withdrawal.                                                         |
+| TRANSFER        | WITHDRAWAL_FAILURE      | A transaction to return funds previously reserved for a failed withdrawal.                                                                                                                |
+
