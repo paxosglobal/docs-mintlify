@@ -1,10 +1,11 @@
 The Resource field denotes the category of transaction being recorded on each row of the [Profile Transactions Report](#ProfileTransactionReport).
 
-| Resource Enum Value | Description |
-| --- | --- |
-| CONVERSION | Stablecoin conversion transaction. |
-| EXECUTION | An execution of an order on the order book. There can be multiple executions for one order. |
-| ORDER | A market or limit order placed for trading. Using either FIX or the v2 Order service. |
-| QUOTE_EXECUTION | A Held Rate Quote transaction. |
-| TRANSFER | A transfer on or off the Paxos platform. For example, a wire withdrawal or crypto deposit. |
-| WIRE_WITHDRAWAL_UPLOAD | A manually created wire withdrawal. |
+| Resource Enum Value    | Description                                                                                 |
+|------------------------|---------------------------------------------------------------------------------------------|
+| CONVERSION             | Stablecoin conversion transaction.                                                          |
+| EXECUTION              | An execution of an order on the order book. There can be multiple executions for one order. |
+| ORCHESTRATION          | A multi-step workflow to move between assets, networks, and rails.                          |
+| ORDER                  | A market or limit order placed for trading. Using either FIX or the v2 Order service.       |
+| QUOTE_EXECUTION        | A Held Rate Quote transaction.                                                              |
+| TRANSFER               | A transfer on or off the Paxos platform. For example, a wire withdrawal or crypto deposit.  |
+| WIRE_WITHDRAWAL_UPLOAD | A manually created wire withdrawal.                                                         |

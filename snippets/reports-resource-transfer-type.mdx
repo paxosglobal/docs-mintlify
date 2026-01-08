@@ -1,14 +1,16 @@
 The ResourceTransferType identifies the direction of each transfer and whether it was a movement of fiat into or out of the Paxos Platform (WIRE\_, SEN\_), a movement of crypto asset into or out of Paxos (CRYPTO\_), or a movement of crypto or fiat between profiles within the Paxos platform (PROFILE_TRANSFER).
 
-| Resource | TransferType | Description |
-| --- | --- | --- |
-| TRANSFER | CRYPTO_DEPOSIT | A crypto deposit into Paxos. |
-| TRANSFER | CRYPTO_WITHDRAWAL | A crypto withdrawal out of Paxos. |
-| TRANSFER | INTERNAL_TRANSFER_CREDIT | Transfer received from another Profile. |
-| TRANSFER | INTERNAL_TRANSFER_DEBIT | Transfer sent to another Profile. |
-| TRANSFER | PAXOS_TRANSFER_CREDIT | Transfer received from another Peer. |
-| TRANSFER | PAXOS_TRANSFER_DEBIT | Transfer sent to another Peer. |
-| TRANSFER | SEN_DEPOSIT | Deprecated. Does not appear in new reports. A deposit into Paxos platform on the Silvergate Exchange Network. |
-| TRANSFER | SEN_WITHDRAWAL | Deprecated. Does not appear in new reports. A withdrawal out of Paxos on the Silvergate Exchange Network . |
-| TRANSFER | WIRE_DEPOSIT | A wire deposit into Paxos. |
-| TRANSFER | WIRE_WITHDRAWAL | A wire withdrawal out of Paxos. |
+| Resource | TransferType             | Description                                                                                                   |
+|----------|--------------------------|---------------------------------------------------------------------------------------------------------------|
+| TRANSFER | CRYPTO_DEPOSIT           | A crypto deposit into Paxos.                                                                                  |
+| TRANSFER | CRYPTO_WITHDRAWAL        | A crypto withdrawal out of Paxos.                                                                             |
+| TRANSFER | INTERNAL_TRANSFER_CREDIT | Transfer received from another Profile.                                                                       |
+| TRANSFER | INTERNAL_TRANSFER_DEBIT  | Transfer sent to another Profile.                                                                             |
+| TRANSFER | ORCHESTRATION_RESERVE    | Assets reserved for Orchestration processing                                                                  |
+| TRANSFER | ORCHESTRATION_UNRESERVE  | Assets unreserved after Orchestration processing                                                              |
+| TRANSFER | PAXOS_TRANSFER_CREDIT    | Transfer received from another Peer.                                                                          |
+| TRANSFER | PAXOS_TRANSFER_DEBIT     | Transfer sent to another Peer.                                                                                |
+| TRANSFER | SEN_DEPOSIT              | Deprecated. Does not appear in new reports. A deposit into Paxos platform on the Silvergate Exchange Network. |
+| TRANSFER | SEN_WITHDRAWAL           | Deprecated. Does not appear in new reports. A withdrawal out of Paxos on the Silvergate Exchange Network .    |
+| TRANSFER | WIRE_DEPOSIT             | A wire deposit into Paxos.                                                                                    |
+| TRANSFER | WIRE_WITHDRAWAL          | A wire withdrawal out of Paxos.                                                                               |
