@@ -11,7 +11,7 @@ The TransactionType denotes the specific purpose of the transaction.
 | EXECUTION       | SETTLE_QUOTE            | Settlement of the quote (cash) side of the trade to/from the counterparty For example, a SELL order has been executed.                                                                    |
 | EXECUTION       | SETTLE_UNRESERVE        | A transaction to unreserve funds for trading because of a BUY side price improvement on an executed order. For example, a limit order used a BUY price of 90,000 but executed at 89,000). |
 | ORCHESTRATION   | ORCHESTRATION_RESERVE   | A transaction to reserve funds for Orchestration processing.                                                                                                                              |
-| ORCHESTRATION   | ORCHESTRATION_UNRESERVE | A transaction to unreserve funds in case of Orchestration failure.                                                                                                                           |
+| ORCHESTRATION   | ORCHESTRATION_UNRESERVE | A transaction to unreserve funds in case of Orchestration failure.                                                                                                                        |
 | ORDER           | RESERVE                 | A transaction to reserve funds for trading. For example, a limit order has been placed.                                                                                                   |
 | ORDER           | UNRESERVE               | A transaction to unreserve funds for trading. For example, a limit order has been canceled.                                                                                               |
 | QUOTE_EXECUTION | COLLECT_FROM_EXECUTOR   | A record of transaction indicating a credit of the account.                                                                                                                               |
@@ -26,4 +26,3 @@ The TransactionType denotes the specific purpose of the transaction.
 | TRANSFER        | WITHDRAWAL_COMPLETION   | A transaction to complete a withdrawal, resulting in the transfer of funds off the Paxos platform.                                                                                        |
 | TRANSFER        | WITHDRAWAL_CREATION     | A transaction to initiate a withdrawal typically reserving the debit amount. For example, a wire withdrawal or crypto withdrawal.                                                         |
 | TRANSFER        | WITHDRAWAL_FAILURE      | A transaction to return funds previously reserved for a failed withdrawal.                                                                                                                |
-
