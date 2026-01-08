@@ -3,26 +3,6 @@ title: "Changelog"
 description: "Product updates and announcements"
 rss: true
 ---
-
-## Upcoming Changes
-
-<Update label="Q1 2026" description="Reports">
-**Profile Transaction Reconciliation Reports**: Paxos is enhancing reconciliation reports with the following changes:
-
-- **Stablecoin Conversion API transactions** will use new identifiers:
-  - Resource: `SWAP` (replacing `CONVERSION`)
-  - Transaction Type: `SWAP_TX` (replacing `CONVERSION_CREATION` and `CONVERSION_SETTLEMENT`)
-  - `OrchestrationID` field will link related conversion legs
-
-- **Orchestration API transactions** will be represented with new fields:
-  - New Resource Type: `ORCHESTRATION`
-  - New Resource Transaction Types: `ORCHESTRATION_RESERVE` and `ORCHESTRATION_UNRESERVE` reserving funds during an orchestration flow
-
-These changes will improve tracking of multi-step transactions and provide better visibility into fund allocation during processing.
-</Update>
-
----
-
 <Update label="December 22, 2025" description="v2 API">
 **v2 API**: Add value `AIPRISE` to parameter `person_details.passthrough_verifier_type` on Create Identity and Update Identity request and response for passthrough person IDV.
 </Update>
