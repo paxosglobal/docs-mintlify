@@ -33,11 +33,14 @@ The Top of Book channel provides real-time updates of the best bid and best ask 
   "channels": [
     {
       "type": "market_data.top_of_book",
+      "params": { "market": "BTCUSD" },
       "success": true
     }
   ]
 }
 ```
+
+The response echoes back the request parameters, allowing you to correlate responses when subscribing to multiple channels.
 
 ### Error Response
 ```json
@@ -46,6 +49,7 @@ The Top of Book channel provides real-time updates of the best bid and best ask 
   "channels": [
     {
       "type": "market_data.top_of_book",
+      "params": { "market": "BADBAD" },
       "success": false,
       "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
     }

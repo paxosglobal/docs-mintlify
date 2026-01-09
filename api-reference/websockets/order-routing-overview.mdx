@@ -145,15 +145,19 @@ Subscribe to one or more data channels for real-time updates.
   "channels": [
     {
       "type": "market_data",
+      "params": { "market": "BTCUSD" },
       "success": true
     },
     {
       "type": "execution_data",
+      "params": { "market": "ETHUSD" },
       "success": true
     }
   ]
 }
 ```
+
+The response echoes back the request parameters for each channel, allowing you to correlate which subscription succeeded or failed when subscribing to multiple channels in a single request.
 
 ### Unsubscribe Operation
 
@@ -181,11 +185,14 @@ Stop receiving updates from specific channels.
   "channels": [
     {
       "type": "market_data",
+      "params": { "market": "BTCUSD" },
       "success": true
     }
   ]
 }
 ```
+
+The response echoes back the request parameters for each channel, allowing you to correlate which unsubscription succeeded or failed when unsubscribing from multiple channels in a single request.
 
 ### List Subscriptions Operation
 
