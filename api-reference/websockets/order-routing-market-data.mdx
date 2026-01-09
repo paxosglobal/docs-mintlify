@@ -33,11 +33,14 @@ The Market Data channel provides real-time order book updates for authorized Ord
   "channels": [
     {
       "type": "market_data",
+      "params": { "market": "BTCUSD" },
       "success": true
     }
   ]
 }
 ```
+
+The response echoes back the request parameters, allowing you to correlate responses when subscribing to multiple channels.
 
 ### Error Response
 ```json
@@ -46,6 +49,7 @@ The Market Data channel provides real-time order book updates for authorized Ord
   "channels": [
     {
       "type": "market_data",
+      "params": { "market": "BADBAD" },
       "success": false,
       "error": "UNKNOWN_CHANNEL_PARAMS_CONFIGURATION"
     }
