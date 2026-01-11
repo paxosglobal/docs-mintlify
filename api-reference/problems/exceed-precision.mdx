@@ -1,0 +1,21 @@
+---
+title: 400 - Exceed Precision
+---
+
+An Exceed Precision error is returned when a request contains a numeric value with more decimal places than allowed for the specified asset or field.
+
+For example, attempting to create an order with an amount that has more decimal places than the asset's precision limit will result in this error.
+
+To resolve this error, round the value to the appropriate number of decimal places as defined by the asset's precision requirements.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "value exceeds allowed precision",
+  "meta": {},
+  "status": 400,
+  "title": "Exceed Precision",
+  "type": "https://developer.paxos.com/docs/v2/problems/exceed-precision"
+}
+```
+</CodeGroup>
