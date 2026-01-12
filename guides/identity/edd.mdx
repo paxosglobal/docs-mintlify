@@ -1,14 +1,11 @@
 ---
-title: 'Enhanced Due Diligence'
-description: Manage the enhanced due diligence of an Identity on the Paxos Platform.
+title: "Enhanced Due Diligence"
+description: "Manage the enhanced due diligence of an Identity on the Paxos Platform."
 ---
 
-
-
-
-
-
-
+<Info>
+  This is EDD
+</Info>
 
 To ensure that Paxos meets regulatory requirements, when an identity is deemed high risk according to Paxos risk rating methodology, Paxos initiates a process called Enhanced Due Diligence (EDD).
 This can occur during onboarding, or during the lifecycle of an active identity (for example, if identity information changes that impacts risk rating; if suspicious transaction patterns occur on the account).
@@ -44,9 +41,7 @@ This will be followed by an `identity.approved` or `identity.denied` event based
 Poll [List Events](/api-reference/endpoints/events/list-events), offsetting the `created_at.gt` filter for each subsequent poll, fetching all `identity.documents_required` events.
 
 <Info>
-
-Paxos recommends you keep track of the [Event](/api-reference/events) ids you've processed in order to idempotently process the event.
-
+  Paxos recommends you keep track of the [Event](/api-reference/events) ids you've processed in order to idempotently process the event.
 </Info>
 
 ### ➋ Upload the Required Documents
