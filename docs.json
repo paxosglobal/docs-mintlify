@@ -318,8 +318,13 @@
               "guides/dashboard/organization",
               "guides/dashboard/admin/entity",
               "guides/dashboard/admin/api",
-              "guides/dashboard/webhooks",
-              "guides/dashboard/events",
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "guides/dashboard/webhooks",
+                  "guides/dashboard/events"
+                ]
+              },
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
               "guides/dashboard/admin/reports"
