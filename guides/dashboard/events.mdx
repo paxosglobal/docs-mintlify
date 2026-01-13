@@ -1,0 +1,42 @@
+---
+title: 'Events'
+description: View and monitor webhook events from the Paxos platform.
+---
+
+View your most recent webhook events from the Dashboard via the **Webhooks** → [**Events**](https://dashboard.paxos.com/dashboard/developer/webhooks/events) tab.
+
+<Frame>
+  <img src="/images/dashboard/events/3.png" alt="Events view in Dashboard" />
+</Frame>
+
+## Filter events
+
+Filter events by:
+
+- **Created at**: Filter events by date
+- **Event type(s)**: Filter by specific event types
+- **Live or test events**: Toggle between live and test events
+
+Click **View** for any event to see the full event payload.
+
+Each event in the Dashboard links directly to its corresponding event type documentation in the [API Reference > Webhooks](/api-reference/webhooks/identity-documents-required) section, where you can find detailed payload schemas and field descriptions.
+
+## Undelivered events
+
+Events may fail to deliver to your webhook endpoint due to network issues, endpoint unavailability, or authentication failures. When this happens, the event will show an undelivered status.
+
+<Frame>
+  <img src="/images/dashboard/events/1.png" alt="Undelivered event indicator" />
+</Frame>
+
+<Frame>
+  <img src="/images/dashboard/events/2.png" alt="Undelivered event details" />
+</Frame>
+
+To recover from failed webhook deliveries, use the [List Events](/api-reference/endpoints/events/list-events) API to query for missed events.
+
+For information about webhook delivery behavior, retry policies, and rate limits, see the [Retries and Limits](/guides/webhooks/retries-and-limits) guide.
+
+<Info>
+For details on creating and managing webhooks, see [Webhooks](/guides/dashboard/webhooks).
+</Info>
