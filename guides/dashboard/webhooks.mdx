@@ -48,9 +48,18 @@ To create a new webhook:
 
 Once created, the webhook will show an **Active** status and begin receiving events based on your selected event types.
 
-<Note>
-When using OAuth2 authentication, access tokens are obtained by sending a POST request to the configured `client_url`. The credentials are sent in the request body using `application/x-www-form-urlencoded` format: `grant_type=client_credentials&client_id=<client_id>&client_secret=<client_secret>`
-</Note>
+### OAuth2 client authentication
+
+When using OAuth2 authentication, Paxos obtains access tokens by sending a POST request to the configured `client_url` using the [OAuth2 client credentials grant](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1).
+
+Paxos supports both standard client authentication methods and sends them simultaneously in token requests to maximize compatibility with OAuth2 providers:
+
+| Method | Description | Format |
+|--------|-------------|--------|
+| `client_secret_basic` (recommended) | Client credentials sent in the Authorization header as Basic auth | `Authorization: Basic base64(url_encode(client_id):url_encode(client_secret))` |
+| `client_secret_post` | Client credentials sent in the request body as form parameters | `client_id=xxx&client_secret=yyy` |
+
+The request body always includes `grant_type=client_credentials` using `application/x-www-form-urlencoded` format.
 
 <Info>
 Paxos supports approvals for creating and deleting webhooks. You can enable approvals for webhooks via the Admin → [Approvals](/guides/dashboard/admin/approvals) tab to add an additional layer of security and control.
