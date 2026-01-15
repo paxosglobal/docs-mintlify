@@ -3,6 +3,25 @@ title: "Changelog"
 description: "Product updates and announcements"
 rss: true
 ---
+
+# Upcoming changes
+
+<Update label="Q1 2026" description="v2 API">
+     **Stablecoin Conversions API Service** will be deprecated on March 9th, 2026. Customers using the Stablecoin Conversions API should migrate to the [Orchestrations API](https://docs.paxos.com/guides/developer/orchestrations/orchestrations) for conversions. 
+</Update>
+
+<Update label="Q1 2026" description="Reports">
+**Profile Transaction Reconciliation Reports**: Paxos is enhancing reconciliation reports with the following changes:
+
+- **[Orchestration API](https://docs.paxos.com/api-reference/endpoints/orchestration/overview) transactions** will have additional entries in the report:
+  - New Resource Type: `ORCHESTRATION`
+  - New Resource Transaction Types: `ORCHESTRATION_RESERVE`, which reserves funds during an orchestration flow, and `ORCHESTRATION_UNRESERVE`, which returns funds in case of an orchestration failure.
+
+These changes will improve tracking of multi-step transactions and provide better visibility into fund allocation during processing.
+</Update>
+
+## Released changes
+
 <Update label="December 22, 2025" description="v2 API">
 **v2 API**: Add value `AIPRISE` to parameter `person_details.passthrough_verifier_type` on Create Identity and Update Identity request and response for passthrough person IDV.
 </Update>
