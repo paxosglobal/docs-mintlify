@@ -1,0 +1,21 @@
+---
+title: 400 - Minimum Commission Exceeds Notional
+---
+
+A Minimum Commission Exceeds Notional error is returned when the minimum commission required for a trade exceeds the notional value of the trade itself.
+
+For example, attempting to execute a very small trade where the minimum commission fee would be greater than the trade amount will result in this error.
+
+To resolve this error, increase the trade size so that the notional value exceeds the minimum commission requirement.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "minimum commission exceeds notional value",
+  "meta": {},
+  "status": 400,
+  "title": "Minimum Commission Exceeds Notional",
+  "type": "https://developer.paxos.com/docs/v2/problems/minimum-commission-exceeds-notional"
+}
+```
+</CodeGroup>

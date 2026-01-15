@@ -965,10 +965,17 @@
           {
             "group": "Problems",
             "pages": [
+              "api-reference/problems/already-exists",
+              "api-reference/problems/below-min-withdraw-limit",
+              "api-reference/problems/exceed-max-withdraw-limit",
+              "api-reference/problems/exceed-precision",
               "api-reference/problems/expired",
               "api-reference/problems/insufficient-funds",
+              "api-reference/problems/market-conditions-prevented-execution",
+              "api-reference/problems/minimum-commission-exceeds-notional",
+              "api-reference/problems/notional-value-too-large",
               "api-reference/problems/rejected",
-              "api-reference/problems/already-exists"
+              "api-reference/problems/unavailable-market"
             ]
           }
         ]
