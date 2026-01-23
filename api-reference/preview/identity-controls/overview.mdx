@@ -18,11 +18,11 @@ List all controls for an identity. Returns both active and deleted controls base
 
 ### Create Identity Control
 **POST /v2/identity/controls**
-Create a new control for an identity. Clients can only create `CLOSED` or `DORMANT` controls.
+Create a new control for an identity. Clients can only create `SELL_ONLY` or `DORMANT` controls.
 
 ### Delete Identity Control
 **DELETE /v2/identity/controls**
-Delete a control to reactivate an identity. Only `CLIENT` controls can be deleted.
+Delete a control to reactivate an identity. Only `is_overridable: true` controls can be deleted.
 
 ## Authentication
 
@@ -35,31 +35,27 @@ All endpoints require OAuth2 authentication with the following scopes:
 
 | Type | Description |
 | --- | --- |
-| `CLOSED` | Identity is closed, common reasons include `END_USER_REQUESTED` or `COMPLIANCE` |
+| `SELL_ONLY` | Identity may only sell |
 | `DORMANT` | Identity is dormant due to inactivity |
 
-Being `CLOSED` or `DORMANT` will affect the Identity's ability to perform actions on the Platform.
+Being `SELL_ONLY`, `CLOSED`, or `DORMANT` will affect the Identity's ability to perform actions on the Platform.
 
-## Control Ownership
-Controls created via `CreateIdentityControl` create will be `set_by:CLIENT` and you'll be able to delete these controls. 
-In some scenarios paxos will enforce an account closure or other type of control and you'll not be able to delete these controls.
-
-| Set By | Can Delete | Description |
-| --- | --- | --- |
-| `CLIENT` | ✓ | Controls set by your integration |
-| `PAXOS` | ✗ | Controls enforced by Paxos for compliance or risk reasons |
+## Control Overridability
+Controls created via `CreateIdentityControl` create will be `is_overridable: true` and you'll be able to delete these controls.
+In some scenarios Paxos will enforce an account closure or other type of control with `is_overridable: false` and you'll not be able to delete these controls.
 
 ## Response Format
 
-All endpoints return controls in the following structure:
+Controls are returned in the following structure:
 
 ```json
 {
   "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
-  "type": "CLOSED",
+  "type": "SELL_ONLY",
   "set_by": "CLIENT",
+  "is_overridable": true,
   "reason_code": "END_USER_REQUESTED",
-  "reason": "User requested account closure",
+  "reason": "User requested",
   "created_at": "2024-01-15T10:30:00Z",
   "deleted_at": null
 }
@@ -70,5 +66,5 @@ All endpoints return controls in the following structure:
 Identity Controls replaces the deprecated `user_disabled` and `admin_disabled` boolean fields. Existing identities with these fields set will be automatically migrated to use Identity Controls. During the transition period, both the legacy fields and Identity Controls will be supported.
 
 **Migration mapping:**
-- `user_disabled: true` → Identity Control with `set_by: CLIENT` and `type: CLOSED`
-- `admin_disabled: true` → Identity Control with `set_by: PAXOS` and `type: CLOSED`
+- `user_disabled: true` → Identity Control with `type: SELL_ONLY`, `set_by: CLIENT`, `is_overridable: true`
+- `admin_disabled: true` → Identity Control with `type: SELL_ONLY`, `set_by: PAXOS`, `is_overridable: false`
