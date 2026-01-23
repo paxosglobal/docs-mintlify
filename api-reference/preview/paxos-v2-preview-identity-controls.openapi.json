@@ -278,9 +278,10 @@
         "type": "string",
         "enum": [
           "SELL_ONLY",
+          "CLOSED",
           "DORMANT"
         ],
-        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell\n- `DORMANT`: Identity is dormant due to inactivity"
+        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell\n- `CLOSED`: Identity is closed and cannot perform any actions\n- `DORMANT`: Identity is dormant due to inactivity"
       },
       "CreateIdentityControlRequest": {
         "type": "object",
