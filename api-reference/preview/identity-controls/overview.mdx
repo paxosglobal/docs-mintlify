@@ -36,9 +36,11 @@ All endpoints require OAuth2 authentication with the following scopes:
 | Type | Description |
 | --- | --- |
 | `SELL_ONLY` | Identity may only sell |
+| `CLOSED` | Identity is closed and may not perform any actions |
+| `FROZEN` | Identity is frozen due to compliance reasons |
 | `DORMANT` | Identity is dormant due to inactivity |
 
-Being `SELL_ONLY`, `CLOSED`, or `DORMANT` will affect the Identity's ability to perform actions on the Platform.
+Being `SELL_ONLY`, `CLOSED`, `FROZEN`, or `DORMANT` will affect the Identity's ability to perform actions on the Platform.
 
 ## Control Overridability
 Controls created via `CreateIdentityControl` create will be `is_overridable: true` and you'll be able to delete these controls.
