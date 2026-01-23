@@ -244,10 +244,17 @@
         "enum": [
           "OTHER",
           "END_USER_REQUEST",
-          "COMPLIANCE",
-          "INACTIVITY"
+          "INACTIVITY",
+          "COMPLIANCE_KYC",
+          "COMPLIANCE_EDD",
+          "COMPLIANCE_SCREENING",
+          "COMPLIANCE_INVESTIGATION",
+          "ONBOARDING_INCOMPLETE",
+          "RISK_FRAUD",
+          "LEGAL_ORDER",
+          "ADMINISTRATIVE"
         ],
-        "description": "Reason code for why a control was applied.\n\n- `OTHER`: Miscellaneous reason\n- `END_USER_REQUEST`: Control applied at the end user's request\n- `COMPLIANCE`: Control applied for compliance or regulatory reasons\n- `INACTIVITY`: Identity is has been inactive for an extended period of time"
+        "description": "Reason code for why a control was applied.\n\n- `OTHER`: Miscellaneous reason not captured by existing categories\n- `END_USER_REQUEST`: Control applied at the end user's request\n- `INACTIVITY`: Control applied due to prolonged inactivity in accordance with dormancy or lifecycle management policies\n- `COMPLIANCE_KYC`: Control applied due to unmet KYC requirements, including missing, expired, failed, or unresponsiveness to refresh obligations\n- `COMPLIANCE_EDD`: Control applied due to Enhanced Due Diligence (EDD) requirements, including failure to complete EDD reviews, provide requested information, or satisfy heightened risk assessment criteria\n- `COMPLIANCE_SCREENING`: Control applied as a result of sanctions, politically exposed person (PEP), or adverse media screening hits\n- `COMPLIANCE_INVESTIGATION`: Control applied while an identity is under active compliance, risk, or regulatory investigation, including reviews triggered by monitoring alerts or external inquiries\n- `ONBOARDING_INCOMPLETE`: Control applied because the onboarding process was not successfully completed, including failure to respond to requests for information or provide required documentation\n- `RISK_FRAUD`: Control applied due to suspected or confirmed fraud, abuse, or security risk, including account compromise, transaction fraud, or policy violations\n- `LEGAL_ORDER`: Control applied to comply with a legal, regulatory, or law-enforcement directive, including court orders, asset preservation requests, or regulatory instructions\n- `ADMINISTRATIVE`: Control applied for operational or platform-initiated reasons not attributable to the end user or compliance failure, such as system remediation or account restructuring"
       },
       "IdentityControlSetBy": {
         "type": "string",
@@ -265,7 +272,7 @@
           "FROZEN",
           "DORMANT"
         ],
-        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell crypto\n- `CLOSED`: Identity is closed and cannot perform any actions\n- `FROZEN`: Identity is frozen due to compliance reasons\n- `DORMANT`: Identity is dormant due to inactivity"
+        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell\n- `CLOSED`: Identity is closed and cannot perform any actions\n- `FROZEN`: Identity is frozen due to compliance reasons\n- `DORMANT`: Identity is dormant due to inactivity"
       },
       "CreateIdentityControlRequestClientIdentityControlType": {
         "type": "string",
@@ -273,7 +280,7 @@
           "SELL_ONLY",
           "DORMANT"
         ],
-        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell crypto\n- `DORMANT`: Identity is dormant due to inactivity"
+        "description": "The type of control applied to an identity.\n\n- `SELL_ONLY`: Identity may only sell\n- `DORMANT`: Identity is dormant due to inactivity"
       },
       "CreateIdentityControlRequest": {
         "type": "object",

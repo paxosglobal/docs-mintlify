@@ -28,7 +28,7 @@ When retrieving an identity via [Get Identity](/api-reference/endpoints/identity
       {
         "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
         "type": "DORMANT",
-        "set_by": "CLIENT",
+        "set_by": "SET_BY_CLIENT",
         "is_overridable": true,
         "reason_code": "INACTIVITY",
         "reason": "No activity for 180 days",
@@ -68,7 +68,6 @@ curl -X DELETE "https://api.paxos.com/v2/identity/controls" \
   -H "Authorization: Bearer {access_token}" \
   -H "Content-Type: application/json" \
   -d '{
-    "identity_id": "{identity_id}",
     "id": "ae54b3b4-cce6-4707-b34b-c9c4f0537798",
     "reason": "User returned and requested reactivation"
   }'
