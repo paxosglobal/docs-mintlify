@@ -380,14 +380,6 @@
             ]
           },
           {
-            "group": "Lift Dollar (USDL)",
-            "pages": [
-              "guides/stablecoin/usdl/index",
-              "guides/stablecoin/usdl/mainnet",
-              "guides/stablecoin/usdl/testnet"
-            ]
-          },
-          {
             "group": "Pax Dollar (USDP)",
             "pages": [
               "guides/stablecoin/usdp/index",
