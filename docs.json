@@ -327,7 +327,8 @@
               },
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
-              "guides/dashboard/admin/reports"
+              "guides/dashboard/admin/reports",
+              "guides/dashboard/admin/audit-log"
             ]
           },
           {
