@@ -1,16 +1,25 @@
 ---
-title: 'Audit Log'
-description: Track and review user activity and system events within your Entity.
+title: 'User Audit Logs'
+description: Track and review every user action within your Entity with full request/response visibility.
 ---
 
-Go to [Admin > Audit Log](https://dashboard.paxos.com/admin/audit-log) to view a comprehensive record of actions performed within your Entity.
+Go to [Admin > User Audit Logs](https://dashboard.paxos.com/admin/audit-log) to view a comprehensive record of all user actions performed within your Entity.
 
-The Audit Log provides visibility into user activity and system events, helping you maintain security oversight and meet compliance requirements.
+User Audit Logs provide full visibility into user activity, helping you maintain security oversight, debug issues, and meet compliance requirements.
 
-## Viewing the audit log
+## Key features
 
-The Audit Log displays a chronological list of events including:
+- **Full activity history** — Every user action (creates, updates, deletes) is recorded with who did it, when, and from what IP address.
+- **Request/response visibility** — View the exact payload sent and the response returned for any action, useful for debugging or compliance review.
+- **Sensitive data redaction** — Passwords, tokens, keys, and PII are automatically stripped before storage so they're never exposed in logs.
 
+{/* Screenshot: User Audit Logs overview page showing the main log table */}
+
+## Viewing audit logs
+
+The User Audit Logs display a chronological list of all user actions including:
+
+- API requests (creates, updates, deletes)
 - User sign-ins and authentication events
 - Role and permission changes
 - Team member invitations and removals
@@ -24,24 +33,55 @@ Each log entry includes:
 |-------|-------------|
 | Timestamp | Date and time the action occurred (UTC). |
 | User | The user who performed the action. |
-| Action | Description of the activity. |
-| Details | Additional context about the event. |
+| IP Address | The IP address from which the action originated. |
+| HTTP Method | The request method (GET, POST, PUT, PATCH, DELETE). |
+| API Path | The endpoint that was called. |
+| Status Code | The HTTP response status code. |
+| Domain | The category of the action (e.g., Transfers, Webhooks). |
 
-## Filtering and search
+{/* Screenshot: Expanded log entry showing request and response details */}
 
-Use the filters at the top of the Audit Log to narrow results by:
+## Filtering audit logs
 
-- **Date range**: Select a start and end date to view events within a specific period.
-- **User**: Filter by a specific team member.
-- **Action type**: Filter by category of action (authentication, configuration, transactions).
+Use the filters at the top of the page to narrow results. You can combine multiple filters to find specific activity.
+
+### Available filters
+
+| Filter | Description |
+|--------|-------------|
+| **User** | Filter by one or more specific users. |
+| **HTTP Method** | Filter by request method: GET, POST, PUT, PATCH, or DELETE. |
+| **API Path** | Substring search on the endpoint path (e.g., "webhooks"). |
+| **Domain** | Filter by category (e.g., Transfers, Webhooks, Profiles). |
+| **Status Code** | Filter by response status range: 2xx successes, 4xx client errors, 5xx server errors. |
+| **Time Range** | Filter by before, after, or between specific dates. |
+
+{/* Screenshot: Filter panel with multiple filters applied */}
+
+## Viewing request and response details
+
+Click on any log entry to expand it and view:
+
+- **Request payload** — The exact data sent in the API request.
+- **Response payload** — The full response returned by the system.
+
+This is useful for debugging failed requests or reviewing exactly what data was submitted for compliance purposes.
+
+<Note>
+Sensitive data such as passwords, API keys, tokens, and personally identifiable information (PII) is automatically redacted from stored logs.
+</Note>
+
+{/* Screenshot: Expanded entry showing redacted sensitive fields in request/response */}
 
 ## Exporting audit logs
 
 To export audit log data:
 
-1. Apply any desired filters.
+1. Apply any desired filters to narrow the results.
 2. Click **Export**.
 3. Download the CSV file containing the filtered results.
+
+{/* Screenshot: Export button and download dialog */}
 
 <Tip>
 Regular audit log reviews help identify unusual activity and ensure compliance with your organization's security policies.
