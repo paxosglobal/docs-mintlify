@@ -111,8 +111,7 @@ Subscribe to multiple markets simultaneously:
 ### Real-time Updates
 - Messages are sent immediately when trades execute
 - No messages during idle periods with no trading activity
-- Executions are not delivered in execution order as they are processed in order isolation. 
-  - Individual orders executions will be sent sequentially in the order they were received.
+- Executions may not be delivered in timestamp order. Clients should handle ordering based on the executed_at date information.
 
 ### Example Implementation
 
