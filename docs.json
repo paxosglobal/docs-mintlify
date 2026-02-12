@@ -966,7 +966,20 @@
         ]
       },
       {
-        "tab": "Previews",
+        "tab": "Preview: Managed Transfer",
+        "hidden": false,
+        "groups": [
+          {
+            "group": "Managed Transfer",
+            "openapi": {
+              "source": "api-reference/preview/managed-transfer/trustedtransfer_public.openapi.json",
+              "directory": "api-reference/preview/managed-transfer/"
+            }
+          }
+        ]
+      },
+      {
+        "tab": "Other Previews",
         "hidden": true,
         "groups": [
           {
