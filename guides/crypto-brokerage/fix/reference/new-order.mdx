@@ -7,8 +7,16 @@ description: "New Order Single message format and fields."
 
 Submit new orders as **New Order Single** with **MsgType (`35`)** set to `D`.
 
+### Identity Mapping
+
+| Paxos API Field | FIX Tag |
+| --- | --- |
+| `customer_id` | **Account (`1`)** |
+| `profile_id` | **ClientID (`109`)** |
+
 ### Key Field Rules
 
+- **Account (`1`)** is your Paxos `customer_id` and **ClientID (`109`)** is your Paxos `profile_id`.
 - **Price (`44`)** must be omitted for **Market (`1`)** and **Stop Market (`3`)** orders.
 - **CashOrderQty (`152`)** is required for market **buy** orders and represents the fiat notional to convert.
 - **OrderQty (`38`)** is required for market **sell**, stop market sell, stop limit sell, and all limit orders.
@@ -98,15 +106,20 @@ See [Execution Report - Order Reject](/guides/crypto-brokerage/fix/reference/exe
 | `56` | TargetCompID | Always | Standard FIX header |
 | `34` | MsgSeqNum | Always | Standard FIX header |
 | `52` | SendingTime | Always | Standard FIX header |
-| `10` | CheckSum | Always | Standard FIX trailer |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
 
 #### Common Order Fields (All Order Types)
 
 | Tag | Field | When to Include | Notes |
 | --- | --- | --- | --- |
 | `11` | ClOrdID | Always | Client order ID (a-z, A-Z, 0-9, `.`, `-`, `_`, `$`, `:`) |
-| `109` | ClientID | Always | |
-| `1` | Account | Always | |
+| `109` | ClientID | Always | Paxos `profile_id` |
+| `1` | Account | Always | Paxos `customer_id` |
 | `21` | HandlInst | Always | Must be `1` |
 | `55` | Symbol | Always | Currency pair |
 | `167` | SecurityType | Always | Must be `FOR` |

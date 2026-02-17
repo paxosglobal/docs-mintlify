@@ -21,7 +21,12 @@ After submitting a [New Order](/guides/crypto-brokerage/fix/reference/new-order)
 | `56` | TargetCompID | Always | Standard FIX header |
 | `34` | MsgSeqNum | Always | Standard FIX header |
 | `52` | SendingTime | Always | Standard FIX header |
-| `10` | CheckSum | Always | Standard FIX trailer |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
 
 ### Response Fields
 
@@ -32,7 +37,7 @@ After submitting a [New Order](/guides/crypto-brokerage/fix/reference/new-order)
 
 <Note>
 
-**OrderID (`37`)** is set to all zeros (`00000000-0000-0000-0000-000000000000`) for Pending New. The actual OrderID is assigned in the [New](#new) report.
+**OrderID (`37`)** is set to all zeros (`00000000-0000-0000-0000-000000000000`) for Pending New. The actual OrderID is assigned in the **New** execution report.
 
 </Note>
 
