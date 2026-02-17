@@ -120,18 +120,23 @@ To use orchestrations, you'll need the following OAuth scopes when [authenticati
 
 ## Monitoring Orchestration Status
 
-Orchestrations can exist in three states. To monitor them there's a few options.
+Orchestrations can exist in four states. To monitor them there's a few options.
 
 <div style={{ display: 'flex', justifyContent: 'center' }}>
 
 ```mermaid
 stateDiagram-v2
+    [*] --> PENDING_APPROVAL: Approval Required
     [*] --> PROCESSING: Orchestration Created
+    PENDING_APPROVAL --> PROCESSING: Approved
+    PENDING_APPROVAL --> FAILED: Rejected
     PROCESSING --> COMPLETED: Success
     PROCESSING --> FAILED: Error
 ```
 
 </div>
+
+Ad-hoc orchestrations that require maker-checker approval enter the `PENDING_APPROVAL` state before processing begins. Once approved, they transition to `PROCESSING`. If rejected, they transition directly to `FAILED`.
 
 ### Recommended: Using Webhooks
 

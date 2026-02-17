@@ -3,7 +3,7 @@ title: "orchestration_status_change"
 description: "Event object returned for orchestration status change events"
 ---
 
-This object is returned by the [Get Event API](/api-reference/endpoints/events/get-event) when the event type is `orchestration.processing`, `orchestration.completed`, or `orchestration.failed`.
+This object is returned by the [Get Event API](/api-reference/endpoints/events/get-event) when the event type is `orchestration.pending_approval`, `orchestration.processing`, `orchestration.completed`, or `orchestration.failed`.
 
 ## Object Fields
 
@@ -18,7 +18,7 @@ The client-specified ID of the orchestration for replay protection and lookup.
 <ResponseField name="status" type="string" required>
 Status of the orchestration:
 
-**Available options:** `PROCESSING`, `COMPLETED`, `FAILED`
+**Available options:** `PENDING_APPROVAL`, `PROCESSING`, `COMPLETED`, `FAILED`
 </ResponseField>
 
 <ResponseField name="orchestration_rule_id" type="string">

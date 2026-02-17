@@ -938,6 +938,7 @@
                   {
                     "group": "Hooks",
                     "pages": [
+                      "api-reference/webhooks/orchestration-pending-approval",
                       "api-reference/webhooks/orchestration-processing",
                       "api-reference/webhooks/orchestration-completed",
                       "api-reference/webhooks/orchestration-failed"

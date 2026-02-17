@@ -207,6 +207,34 @@
         "description": "Triggered when a KYC refresh process expires without completion. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
     },
+    "orchestration.pending_approval": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "orchestration.pending_approval",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Orchestration Pending Approval",
+        "description": "Triggered when an ad-hoc orchestration requires maker-checker approval before processing can begin. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
     "orchestration.processing": {
       "post": {
         "requestBody": {
@@ -1577,6 +1605,7 @@
               "identity.kyc_refresh.started",
               "identity.kyc_refresh.completed",
               "identity.kyc_refresh.expired",
+              "orchestration.pending_approval",
               "orchestration.processing",
               "orchestration.completed",
               "orchestration.failed",
@@ -1764,7 +1793,7 @@
           },
           "status": {
             "type": "string",
-            "enum": ["PROCESSING", "COMPLETED", "FAILED"],
+            "enum": ["PENDING_APPROVAL", "PROCESSING", "COMPLETED", "FAILED"],
             "title": "Orchestration Status",
             "description": "Status of the orchestration"
           }

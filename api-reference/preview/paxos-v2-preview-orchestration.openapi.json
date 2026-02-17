@@ -612,6 +612,7 @@
       "OrchestrationStatus": {
         "type": "string",
         "enum": [
+          "PENDING_APPROVAL",
           "PROCESSING",
           "COMPLETED",
           "FAILED"
