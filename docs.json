@@ -966,6 +966,26 @@
         ]
       },
       {
+        "tab": "FIX API Reference",
+        "groups": [
+          {
+            "group": "FIX API Reference",
+            "pages": [
+              "guides/crypto-brokerage/fix/reference/index",
+              "guides/crypto-brokerage/fix/reference/session-messages",
+              "guides/crypto-brokerage/fix/reference/new-order",
+              "guides/crypto-brokerage/fix/reference/order-cancel",
+              "guides/crypto-brokerage/fix/reference/order-status",
+              "guides/crypto-brokerage/fix/reference/execution-report-new",
+              "guides/crypto-brokerage/fix/reference/execution-report-fills",
+              "guides/crypto-brokerage/fix/reference/execution-report-cancels",
+              "guides/crypto-brokerage/fix/reference/execution-report-reject-expired",
+              "guides/crypto-brokerage/fix/reference/encoded-tags"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Previews",
         "hidden": true,
         "groups": [

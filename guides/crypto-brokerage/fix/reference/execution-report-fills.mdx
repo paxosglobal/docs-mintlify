@@ -1,0 +1,154 @@
+---
+title: "Execution Reports - Fills"
+description: "Partial fill and filled execution report message formats and fields."
+---
+
+## Execution Reports – Fills
+
+Paxos sends fill Execution Reports as orders match against the order book:
+
+- **Partial Fill** (**ExecType (`150`)** = `1`) — Sent for each individual fill. **lastShares (`32`)** and **LastPx (`31`)** contain the fill quantity and price.
+- **Filled** (**ExecType (`150`)** = `2`) — Sent when the order is completely filled. **LeavesQty (`151`)** = `0`.
+
+<Warning>
+
+Market buy order executions are captured in **Partial Fill** messages. The **Filled** message for market buys is a summary confirming the order is closed — it does not represent an additional execution.
+
+</Warning>
+
+### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+| `10` | CheckSum | Always | Standard FIX trailer |
+
+### Response Fields
+
+<Tabs>
+<Tab title="Partial Fill">
+
+**ExecType (`150`)** = `1`, **OrdStatus (`39`)** = `1` (Partially Filled). **LeavesQty (`151`)** > `0`.
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `1` (Partially Filled) |
+| `32` | lastShares | Always | Fill quantity for this execution |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | Fill price for this execution |
+| `151` | LeavesQty | Always | Remaining unfilled quantity |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | Total filled quantity so far |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `1` (Partially Filled) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `12` | Commission | When charged | Commission paid |
+| `13` | CommType | When charged | `3` (Absolute Value) |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `5851` | LiquidityInd | When available | `1` = Add, `2` = Remove |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+<Tab title="Filled">
+
+**ExecType (`150`)** = `2`, **OrdStatus (`39`)** = `2` (Filled). **LeavesQty (`151`)** = `0`.
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `2` (Filled) |
+| `32` | lastShares | Always | Fill quantity for this execution |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | Fill price for this execution |
+| `151` | LeavesQty | Always | `0` |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | Total filled quantity |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `2` (Filled) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `12` | Commission | When charged | Commission paid |
+| `13` | CommType | When charged | `3` (Absolute Value) |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `99` | StopPx | Stop orders only | Only when OrdType is `3` or `4` |
+| `5851` | LiquidityInd | When available | `1` = Add, `2` = Remove |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+</Tabs>
+
+> See also: [Execution Reports - Cancels](/guides/crypto-brokerage/fix/reference/execution-report-cancels) and [Execution Reports - Rejected and Expired](/guides/crypto-brokerage/fix/reference/execution-report-reject-expired).

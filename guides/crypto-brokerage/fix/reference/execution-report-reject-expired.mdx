@@ -1,0 +1,236 @@
+---
+title: "Execution Reports - Rejected and Expired"
+description: "Order reject and expired execution report message formats, rejection reason codes, and detailed failure messages."
+---
+
+## Execution Report - Order Reject
+
+If an order is rejected, Paxos returns an Execution Report with **ExecType (`150`)** = `8` and **OrdRejReason (`103`)** populated with the rejection reason.
+
+### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+| `10` | CheckSum | Always | Standard FIX trailer |
+
+### Reject Response Fields
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `8` (Rejected) |
+| `32` | lastShares | Always | `0` |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | `0` |
+| `103` | OrdRejReason | Always | See [Rejection Reason Codes](#rejection-reason-codes--ordrejreason-103) |
+| `151` | LeavesQty | Always | `0` |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | See [Detailed Rejection Messages](#detailed-rejection-messages--text-58) |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | `0` |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | `0` |
+| `41` | OrigClOrdID | Always | |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `8` (Rejected) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | `0` |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+### Rejection Reason Codes – OrdRejReason (`103`)
+
+| Value | Meaning |
+| --- | --- |
+| `0` | Broker option |
+| `1` | Unknown symbol |
+| `2` | Exchange closed |
+| `3` | Order exceeds limit |
+| `5` | Unknown order |
+| `6` | Duplicate order |
+| `8` | Stale order |
+
+### Detailed Rejection Messages – Text (`58`)
+
+**Validation Errors**
+
+| Text Value | Description |
+| --- | --- |
+| `ClientId Is required` | Missing ClientID field |
+| `ClientOrderId Is required` | Missing ClOrdID field |
+| `Account Is required` | Missing Account field |
+| `Symbol Is required` | Missing Symbol field |
+| `OriginalClientOrderId Is required` | Missing OrigClOrdID field |
+| `HandlingInstructions Expected Value for this field is 1` | HandlInst must be `1` |
+| `Side {value} is not an acceptable value for this field` | Invalid Side value |
+| `OrderType {value} is not an acceptable value for this field` | Invalid OrdType value |
+| `CashOrderQty Must be greater than zero` | CashOrderQty must be > 0 |
+| `OrderQuantity Must be greater than zero` | OrderQty must be > 0 |
+| `StopPrice Must be zero` | StopPx must be 0 for non-stop orders |
+| `ExpirationTime must be of format YYYYMMDD-HH:MM:SS or YYYYMMDD-HH:MM:SS.sss` | Invalid ExpireTime format |
+| `InvalidTimeInForce` | Invalid TimeInForce for this order type |
+| `MissingExpirationDate` | ExpireTime required for GTT orders |
+| `TimeInForce Not supported` | Unsupported TimeInForce for this order type |
+| `Account Is not a GUID` | Account must be a valid GUID |
+| `ClientId Is not a GUID` | ClientID must be a valid GUID |
+| `Invalid Message Type` | Unsupported MsgType |
+
+**Business Rule Violations**
+
+| Text Value | Description |
+| --- | --- |
+| `InsufficientBalance` | Account lacks sufficient funds |
+| `NotionalValueTooLarge` | Exceeds [maximum notional order size](/guides/crypto-brokerage/fix/reference/new-order#maximum-notional-order-size-by-type) |
+| `InvalidPriceForTakerOrder` | Price deviates 15%+ from midpoint. See [Limit Order Taker Price Protection](/guides/crypto-brokerage/fix/reference/new-order#limit-order-taker-price-protection). |
+| `MinimumCommissionExceedsNotional` | Order notional value is too small; minimum commission would exceed it |
+| `InactiveInstrument` | Market is unavailable or in cancel-and-post-only mode |
+| `MarketHalted` | Market is halted |
+| `OrderIdentifierIsNotUniqueForUser` | Duplicate client order identifier for this user |
+| `TooManyOpenOrders` | User has exceeded the maximum of 25,000 open orders. Contact your Paxos representative to request a different limit. |
+| `UserNotAuthorizedForTrading` | User is not authorized to trade |
+| `BlacklistedCountryForTrading` | User's country is blocked from trading |
+| `UserNotExemptFromSelfMatchPrevention` | Self-match prevention triggered and user is not exempt |
+| `MarketDataUnavailable` | Market data is unavailable for validation |
+| `Market conditions have invalidated this order` | Market conditions prevent execution |
+| `PaxAccountingUnknownError` | Internal processing error |
+
+**Identity and Account Errors**
+
+| Text Value | Description |
+| --- | --- |
+| `InvalidRecipientProfileId` | Invalid RecipientProfileId |
+| `InvalidIdentityId` | Invalid IdentityId |
+| `InvalidIdentityAccountId` | Invalid IdentityAccountId |
+| `InvalidFundCommissionOption` | Invalid FundCommissionOption value |
+| `DisabledIdentityId` | IdentityId is disabled |
+| `DisabledIdentityAccountId` | IdentityAccountId is disabled |
+| `PendingIdentityId` | IdentityId is pending approval |
+| `PendingIdentityAccountId` | IdentityAccountId is pending approval |
+
+**Matching Engine Rejections**
+
+These rejections occur after the order reaches the matching engine. Unlike the enum-style values above, these use human-readable text strings.
+
+| Text Value | Description |
+| --- | --- |
+| `no open limit order on other side` | Market order rejected — no liquidity on the opposite side |
+| `order marketable to existing quote/book` | Post-only order rejected — it would cross the book |
+| `Stale Order` | Order became stale before it could be matched |
+
+---
+
+## Execution Report - Expired
+
+Expired Execution Reports are returned for market buy orders that close with a small amount of unexecuted quote currency remaining. **ExecType (`150`)** = `C`, **OrdStatus (`39`)** = `C` (Expired).
+
+<Note>
+
+Market buy order executions are captured in [Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) messages. The Expired message is a summary confirming the order is closed.
+
+</Note>
+
+### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+| `10` | CheckSum | Always | Standard FIX trailer |
+
+### Expired Response Fields
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `C` (Expired) |
+| `32` | lastShares | Always | |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | |
+| `151` | LeavesQty | Always | `0` |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | `Expired Order` |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | Total filled quantity |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `40` | OrdType | Always | |
+| `39` | OrdStatus | Always | `C` (Expired) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `12` | Commission | When charged | Commission paid |
+| `13` | CommType | When charged | `3` (Absolute Value) |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `5851` | LiquidityInd | When available | `1` = Add, `2` = Remove |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+> See also: [Execution Reports - Fills](/guides/crypto-brokerage/fix/reference/execution-report-fills) for fill details during the order lifecycle.
