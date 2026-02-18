@@ -1,0 +1,122 @@
+---
+title: 'Transfers'
+description: 'SDK reference for the Transfers service — list, get, and monitor crypto and fiat transfers.'
+---
+
+The Transfers service provides read access to all transfers (crypto deposits, crypto withdrawals, wire transfers, and internal transfers) associated with your profiles.
+
+**Client accessor**: `client.Transfers`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListTransfers` | `GET /transfer/transfers` | List transfers with optional filters |
+| `GetTransfer` | `GET /transfer/transfers/{id}` | Get a single transfer by ID |
+
+## ListTransfers
+
+Returns an iterator over all transfers matching the given filters.
+
+<CodeGroup>
+
+```go Go
+iter := client.Transfers.ListTransfers(ctx, &paxos.ListTransfersRequest{
+    ProfileID: "profile_123",
+    Limit:     50,
+})
+
+for iter.Next() {
+    t := iter.Current()
+    fmt.Printf("%s: %s %s (%s)\n", t.ID, t.Amount, t.Asset, t.Status)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
+}
+```
+
+```python Python
+for t in client.transfers.list_transfers(profile_id="profile_123", limit=50):
+    print(f"{t.id}: {t.amount} {t.asset} ({t.status})")
+```
+
+```typescript TypeScript
+for await (const t of client.transfers.listTransfers({
+  profileId: "profile_123",
+  limit: 50,
+})) {
+  console.log(`${t.id}: ${t.amount} ${t.asset} (${t.status})`);
+}
+```
+
+```java Java
+for (Transfer t : client.transfers().listTransfers(
+        ListTransfersRequest.builder()
+            .profileId("profile_123")
+            .limit(50)
+            .build())) {
+    System.out.printf("%s: %s %s (%s)%n",
+        t.getId(), t.getAmount(), t.getAsset(), t.getStatus());
+}
+```
+
+</CodeGroup>
+
+### Request Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `profile_id` | string | Filter by profile ID |
+| `limit` | int | Number of items per page (default 50) |
+| `type` | string | Filter by transfer type (`DEPOSIT`, `WITHDRAWAL`, etc.) |
+| `status` | string | Filter by status (`PENDING`, `COMPLETED`, `FAILED`) |
+
+## GetTransfer
+
+Fetch a single transfer by its ID.
+
+<CodeGroup>
+
+```go Go
+transfer, err := client.Transfers.GetTransfer(ctx, "txn_123")
+if err != nil {
+    if paxos.IsNotFound(err) {
+        fmt.Println("Transfer not found")
+    }
+    return err
+}
+fmt.Printf("Transfer %s: %s %s\n", transfer.ID, transfer.Amount, transfer.Asset)
+```
+
+```python Python
+try:
+    transfer = client.transfers.get_transfer("txn_123")
+    print(f"Transfer {transfer.id}: {transfer.amount} {transfer.asset}")
+except paxos.NotFoundError:
+    print("Transfer not found")
+```
+
+```typescript TypeScript
+try {
+  const transfer = await client.transfers.getTransfer("txn_123");
+  console.log(`Transfer ${transfer.id}: ${transfer.amount} ${transfer.asset}`);
+} catch (e) {
+  if (e instanceof PaxosNotFoundError) {
+    console.log("Transfer not found");
+  }
+}
+```
+
+```java Java
+try {
+    Transfer transfer = client.transfers().getTransfer("txn_123");
+    System.out.printf("Transfer %s: %s %s%n",
+        transfer.getId(), transfer.getAmount(), transfer.getAsset());
+} catch (NotFoundException e) {
+    System.out.println("Transfer not found");
+}
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Transfers API Reference](/api-reference/endpoints/transfers/overview).

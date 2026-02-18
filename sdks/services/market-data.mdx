@@ -1,0 +1,85 @@
+---
+title: 'Market Data'
+description: 'SDK reference for the Market Data service — list markets, order books, tickers, and recent executions.'
+---
+
+The Market Data service provides real-time market information including available markets, order book depth, tickers, and recent trade executions. Most Market Data endpoints do not require authentication.
+
+**Client accessor**: `client.MarketData`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListMarkets` | `GET /trading/markets` | List available trading markets |
+| `GetOrderBook` | `GET /trading/markets/{market}/order-book` | Get the order book for a market |
+| `GetTicker` | `GET /trading/markets/{market}/ticker` | Get the ticker for a market |
+| `ListRecentExecutions` | `GET /trading/markets/{market}/recent-executions` | List recent trades for a market |
+
+## ListMarkets
+
+<CodeGroup>
+
+```go Go
+markets, err := client.MarketData.ListMarkets(ctx)
+if err != nil {
+    log.Fatal(err)
+}
+for _, m := range markets {
+    fmt.Printf("%s: %s / %s\n", m.Market, m.BaseAsset, m.QuoteAsset)
+}
+```
+
+```python Python
+markets = client.market_data.list_markets()
+for m in markets:
+    print(f"{m.market}: {m.base_asset} / {m.quote_asset}")
+```
+
+```typescript TypeScript
+const markets = await client.marketData.listMarkets();
+for (const m of markets) {
+  console.log(`${m.market}: ${m.baseAsset} / ${m.quoteAsset}`);
+}
+```
+
+```java Java
+List<Market> markets = client.marketData().listMarkets();
+for (Market m : markets) {
+    System.out.printf("%s: %s / %s%n", m.getMarket(), m.getBaseAsset(), m.getQuoteAsset());
+}
+```
+
+</CodeGroup>
+
+## GetOrderBook
+
+<CodeGroup>
+
+```go Go
+book, err := client.MarketData.GetOrderBook(ctx, "BTC-USD")
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Best bid: %s, Best ask: %s\n", book.Bids[0].Price, book.Asks[0].Price)
+```
+
+```python Python
+book = client.market_data.get_order_book("BTC-USD")
+print(f"Best bid: {book.bids[0].price}, Best ask: {book.asks[0].price}")
+```
+
+```typescript TypeScript
+const book = await client.marketData.getOrderBook("BTC-USD");
+console.log(`Best bid: ${book.bids[0].price}, Best ask: ${book.asks[0].price}`);
+```
+
+```java Java
+OrderBook book = client.marketData().getOrderBook("BTC-USD");
+System.out.printf("Best bid: %s, Best ask: %s%n",
+    book.getBids().get(0).getPrice(), book.getAsks().get(0).getPrice());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Market Data API Reference](/api-reference/endpoints/market-data/overview).

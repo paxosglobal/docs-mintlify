@@ -1,0 +1,86 @@
+---
+title: 'Events'
+description: 'SDK reference for the Events service — list and get events for notifications and webhook processing.'
+---
+
+The Events service provides access to platform events such as identity status changes, transfer completions, and orchestration updates. Use it for polling or to fetch full event details from webhook notifications.
+
+**Client accessor**: `client.Events`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListEvents` | `GET /notification/events` | List events with optional filters |
+| `GetEvent` | `GET /notification/events/{id}` | Get an event by ID |
+
+## ListEvents
+
+<CodeGroup>
+
+```go Go
+iter := client.Events.ListEvents(ctx, &paxos.ListEventsRequest{
+    Limit: 100,
+})
+for iter.Next() {
+    event := iter.Current()
+    fmt.Printf("%s: %s (%s)\n", event.ID, event.Type, event.CreatedAt)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
+}
+```
+
+```python Python
+for event in client.events.list_events(limit=100):
+    print(f"{event.id}: {event.type} ({event.created_at})")
+```
+
+```typescript TypeScript
+for await (const event of client.events.listEvents({ limit: 100 })) {
+  console.log(`${event.id}: ${event.type} (${event.createdAt})`);
+}
+```
+
+```java Java
+for (Event event : client.events().listEvents(
+        ListEventsRequest.builder().limit(100).build())) {
+    System.out.printf("%s: %s (%s)%n",
+        event.getId(), event.getType(), event.getCreatedAt());
+}
+```
+
+</CodeGroup>
+
+## GetEvent
+
+Fetch a single event by ID. This is used internally by `client.Webhooks.ParseEvent()` but is also available for direct use.
+
+<CodeGroup>
+
+```go Go
+event, err := client.Events.GetEvent(ctx, "event_123")
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Event %s: %s\n", event.ID, event.Type)
+```
+
+```python Python
+event = client.events.get_event("event_123")
+print(f"Event {event.id}: {event.type}")
+```
+
+```typescript TypeScript
+const event = await client.events.getEvent("event_123");
+console.log(`Event ${event.id}: ${event.type}`);
+```
+
+```java Java
+Event event = client.events().getEvent("event_123");
+System.out.printf("Event %s: %s%n", event.getId(), event.getType());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Events API Reference](/api-reference/endpoints/events/overview).

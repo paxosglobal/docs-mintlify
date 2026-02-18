@@ -1,0 +1,58 @@
+---
+title: 'AI & Agent Usage'
+description: 'Use AI coding assistants with Paxos SDKs for faster, more accurate integrations.'
+---
+
+Each Paxos SDK ships with `CLAUDE.md` and `AGENTS.md` files that provide structured context for AI coding assistants. These files help LLMs generate correct SDK code by describing available methods, patterns, and common pitfalls.
+
+## How It Works
+
+When you point an AI assistant at a Paxos SDK repository, the `CLAUDE.md` file gives it:
+
+- A summary of all available services and methods
+- Correct patterns for authentication, error handling, and pagination
+- Common workflows (e.g., "create identity, approve it, fund the profile, make a transfer")
+- Warnings about common mistakes (e.g., using floats for monetary amounts)
+
+## Using Claude with the SDK
+
+If you're using [Claude Code](https://claude.com/claude-code), the `CLAUDE.md` file is read automatically when you work in the SDK repository.
+
+Example prompts that produce good results:
+
+- "Create a crypto withdrawal with idempotency from profile X to address Y"
+- "Set up a webhook handler that processes identity approval events"
+- "Write an integration test that deposits USD and lists transfers"
+- "Implement pagination to export all transfers to a CSV file"
+
+## LLM-Friendly Documentation
+
+All SDK methods include natural language docstrings with business context, not just type signatures. This helps LLMs understand *when* to use a method, not just *how*.
+
+For example, asking an LLM to "implement a crypto withdrawal with idempotency" produces code that correctly uses `CreateCryptoWithdrawal` with an idempotency key — because the docstring explains the business context and the idempotency pattern.
+
+## AGENTS.md Reference
+
+Each SDK includes an `AGENTS.md` file with task-specific instructions for common workflows:
+
+- Setting up a new integration from scratch
+- Adding webhook handling to an existing application
+- Migrating from direct API calls to the SDK
+- Writing integration tests against the Sandbox
+
+## Best Practices
+
+- **Use environment variables for credentials** — Never paste `PAXOS_CLIENT_ID` or `PAXOS_CLIENT_SECRET` inline in prompts
+- **Test generated code in Sandbox** — Always verify generated code works in [Sandbox](/sdks/sandbox) before deploying to production
+- **Use string types for amounts** — LLMs sometimes suggest floating-point types for monetary amounts. Paxos SDKs use string-based decimal types to avoid precision errors
+- **Review error handling** — Verify that generated code handles errors appropriately for your use case
+
+## Documentation Resources
+
+Paxos provides machine-readable documentation for AI tools:
+
+- [`/llms.txt`](/llms.txt) — Structured index of all documentation pages, following the [llmstxt.org](https://llmstxt.org) convention
+- [`/llms-full.txt`](/llms-full.txt) — Complete documentation compiled into a single file for full-context AI prompts
+- [OpenAPI specification](https://developer.paxos.com/docs/paxos-v2.openapi.json) — Complete REST API schema for precise implementation details
+
+> For more about using AI tools with Paxos APIs generally, see the [AI-Assisted Development](/guides/developer/ai-assisted-development) guide.

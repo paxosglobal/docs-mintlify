@@ -1,0 +1,153 @@
+---
+title: 'Error Handling'
+description: 'Handle API errors with typed exceptions, RFC 7807 Problem Details, and request IDs for support.'
+---
+
+Paxos API errors follow [RFC 7807 Problem Details](https://tools.ietf.org/html/rfc7807). The SDK parses these into typed errors so you can handle specific failure cases without inspecting raw HTTP status codes.
+
+## Error Format
+
+All Paxos API errors return a JSON body with these fields:
+
+```json
+{
+  "type": "https://docs.paxos.com/problems/not-found",
+  "title": "Not Found",
+  "status": 404,
+  "detail": "transfer with id 'abc' not found",
+  "instance": "/transfer/transfers/abc",
+  "request_id": "req_01HX..."
+}
+```
+
+| Field | Description |
+|---|---|
+| `type` | URI identifying the error type |
+| `title` | Short human-readable summary |
+| `status` | HTTP status code |
+| `detail` | Longer explanation of what went wrong |
+| `instance` | The request path that caused the error |
+| `request_id` | Unique ID for this request — include this in support tickets |
+
+## Typed Errors
+
+The SDK maps HTTP status codes to typed errors:
+
+| HTTP Status | Error Type | Helper |
+|---|---|---|
+| 400 | `ValidationError` | `IsValidationError()` |
+| 401 | `UnauthorizedError` | `IsUnauthorized()` |
+| 403 | `ForbiddenError` | `IsForbidden()` |
+| 404 | `NotFoundError` | `IsNotFound()` |
+| 409 | `ConflictError` | `IsConflict()` |
+| 422 | `UnprocessableError` | `IsUnprocessable()` |
+| 429 | `RateLimitError` | `IsRateLimited()` |
+| 5xx | `ServerError` | `IsServerError()` |
+
+## Handling Errors
+
+<CodeGroup>
+
+```go Go
+transfer, err := client.Transfers.GetTransfer(ctx, "txn_123")
+if err != nil {
+    if paxos.IsNotFound(err) {
+        fmt.Println("Transfer not found")
+        return
+    }
+
+    var apiErr *paxos.APIError
+    if errors.As(err, &apiErr) {
+        fmt.Printf("API error: %s (request_id: %s)\n", apiErr.Detail, apiErr.RequestID)
+    }
+
+    return err
+}
+```
+
+```python Python
+try:
+    transfer = client.transfers.get_transfer("txn_123")
+except paxos.NotFoundError as e:
+    print("Transfer not found")
+except paxos.APIError as e:
+    print(f"API error: {e.detail} (request_id: {e.request_id})")
+```
+
+```typescript TypeScript
+try {
+  const transfer = await client.transfers.getTransfer("txn_123");
+} catch (e) {
+  if (e instanceof PaxosNotFoundError) {
+    console.log("Transfer not found");
+  } else if (e instanceof PaxosAPIError) {
+    console.log(`API error: ${e.detail} (request_id: ${e.requestId})`);
+  }
+}
+```
+
+```java Java
+try {
+    Transfer transfer = client.transfers().getTransfer("txn_123");
+} catch (NotFoundException e) {
+    System.out.println("Transfer not found");
+} catch (PaxosApiException e) {
+    System.out.printf("API error: %s (request_id: %s)%n", e.getDetail(), e.getRequestId());
+}
+```
+
+</CodeGroup>
+
+## Common Errors and Fixes
+
+| Error | Status | Common Cause | Fix |
+|---|---|---|---|
+| `NotFoundError` | 404 | Wrong ID or resource doesn't exist | Verify the ID; use List endpoints to discover valid IDs |
+| `UnauthorizedError` | 401 | Bad credentials | Verify `client_id` and `client_secret`; check you are using the correct environment |
+| `ForbiddenError` | 403 | Missing OAuth2 scope | Add the required scope to your API credentials in the [Dashboard](https://dashboard.paxos.com/) |
+| `ValidationError` | 400 | Invalid request body | Check required fields and field types in the [API Reference](/api-reference) |
+| `RateLimitError` | 429 | Too many requests | Reduce concurrency; the SDK retries automatically with backoff |
+| `ServerError` | 5xx | Paxos-side issue | The SDK retries automatically; if the issue persists, contact [Support](https://support.paxos.com) |
+
+## Extracting Request ID
+
+Always include the `request_id` when contacting support. Every error carries it:
+
+<CodeGroup>
+
+```go Go
+var apiErr *paxos.APIError
+if errors.As(err, &apiErr) {
+    log.Printf("Include this in your support ticket: %s", apiErr.RequestID)
+}
+```
+
+```python Python
+except paxos.APIError as e:
+    print(f"Include this in your support ticket: {e.request_id}")
+```
+
+```typescript TypeScript
+if (e instanceof PaxosAPIError) {
+  console.log(`Include this in your support ticket: ${e.requestId}`);
+}
+```
+
+```java Java
+catch (PaxosApiException e) {
+    System.out.println("Include this in your support ticket: " + e.getRequestId());
+}
+```
+
+</CodeGroup>
+
+## Retry Behavior
+
+The SDK automatically retries requests that fail with `429` (rate limit) or `5xx` (server error):
+
+- Up to 3 retries with exponential backoff
+- Initial delay of 500ms, doubling each attempt (with jitter)
+- Maximum backoff of 30 seconds
+- `Retry-After` headers are respected when present
+
+Retries are transparent — you only see the final result or error. Client errors (`400`, `403`, `404`) are never retried since they require a code change to fix.

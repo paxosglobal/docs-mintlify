@@ -1,0 +1,82 @@
+---
+title: 'Go Quickstart'
+description: 'Install the Paxos Go SDK and make your first API call in under 5 minutes.'
+---
+
+<Steps>
+
+### Install the SDK
+
+Requires Go 1.21 or later.
+
+```bash
+go get github.com/paxosglobal/paxos-go
+```
+
+### Set Up Credentials
+
+Create API credentials in the [Paxos Dashboard](https://dashboard.sandbox.paxos.com/) and export them as environment variables.
+
+```bash
+export PAXOS_CLIENT_ID="your_client_id"
+export PAXOS_CLIENT_SECRET="your_client_secret"
+```
+
+> If you don't have a Sandbox account, [sign up here](https://dashboard.sandbox.paxos.com/).
+
+### Make Your First API Call
+
+Create a file called `main.go` with the following code. This example creates a client, lists your profiles, and prints the result.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/paxosglobal/paxos-go"
+)
+
+func main() {
+	client, err := paxos.NewClient(
+		os.Getenv("PAXOS_CLIENT_ID"),
+		os.Getenv("PAXOS_CLIENT_SECRET"),
+		paxos.WithSandbox(),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ctx := context.Background()
+
+	// List profiles
+	iter := client.Profiles.ListProfiles(ctx, &paxos.ListProfilesRequest{
+		Limit: 10,
+	})
+	for iter.Next() {
+		profile := iter.Current()
+		fmt.Printf("Profile: %s (%s)\n", profile.ID, profile.Nickname)
+	}
+	if err := iter.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+Run the program:
+
+```bash
+go run main.go
+```
+
+</Steps>
+
+## Next Steps
+
+- Learn how the SDK manages [Authentication](/sdks/authentication) automatically
+- Explore [Error Handling](/sdks/error-handling) patterns
+- Set up the [Sandbox](/sdks/sandbox) environment for testing
+- Browse the [Transfers](/sdks/services/transfers) service reference
