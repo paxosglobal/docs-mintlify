@@ -1,0 +1,21 @@
+---
+title: 403 - Unavailable Market
+---
+
+An Unavailable Market error is returned when attempting to trade on a market that is currently unavailable or disabled.
+
+For example, this error may occur when a market is temporarily closed for maintenance, suspended due to regulatory requirements, or permanently disabled.
+
+To resolve this error, check the market status and wait for the market to become available, or select a different available market for your trade.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "market is currently unavailable",
+  "meta": {},
+  "status": 403,
+  "title": "Unavailable Market",
+  "type": "https://developer.paxos.com/docs/v2/problems/unavailable-market"
+}
+```
+</CodeGroup>
