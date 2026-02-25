@@ -1,0 +1,59 @@
+---
+title: 'Approval Tiers'
+sidebarTitle: 'Approval Tiers'
+description: Require more approvers for higher-value transactions using approval tiers.
+---
+
+Approval tiers let you require more approvers for higher-value transactions. Instead of applying the same approver count to all amounts, you define USD thresholds where the number of required approvers increases.
+
+## Example tier configuration
+
+| Amount range | Approvers required |
+| --- | --- |
+| \$0 – \$999 | 1 (default) |
+| \$1,000 – \$4,999 | 2 |
+| \$5,000+ | 3 |
+
+## Supported operations
+
+Tiers are available for:
+- Crypto withdrawals
+- Fiat withdrawals
+
+## Setting up tiers
+
+### ➊ Navigate to Approvals
+
+Go to [Admin > Approvals](https://dashboard.paxos.com/admin/approvals) and click **Edit** on a supported operation.
+
+### ➋ Set the default approver count
+
+Configure the default number of approvers. This applies to amounts below your first tier threshold.
+
+### ➌ Add a tier
+
+Click **Add Tier** and enter:
+- A USD threshold amount
+- The number of approvers required for that tier
+
+### ➍ Add additional tiers
+
+Add more tiers as needed. Each threshold must be higher than the previous one.
+
+### ➎ Submit for approval
+
+Click **Submit for Approval**. Another user must approve the policy change before it takes effect.
+
+## How amounts are evaluated
+
+Transactions are matched against tiers by their USD value:
+
+- **Below first tier threshold**: Uses the default approver count
+- **At or above a tier threshold**: Uses that tier's approver count
+
+## Constraints
+
+- Each tier's threshold must be strictly greater than the previous tier's
+- Approver count per tier cannot exceed the number of users with the approver role
+- You cannot add a new tier until the current one has a threshold amount set
+- If your first tier starts above $0, a banner reminds you that lower amounts fall back to the default
