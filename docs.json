@@ -327,6 +327,7 @@
               },
               "guides/dashboard/travel-rule",
               "guides/dashboard/admin/approvals",
+              "guides/dashboard/admin/approval-tiers",
               "guides/dashboard/admin/reports"
             ]
           },
