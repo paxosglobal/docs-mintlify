@@ -1,17 +1,18 @@
 ---
-title: 'Approval tiers'
+title: 'Approval Tiers'
+sidebarTitle: 'Approval Tiers'
 description: Require more approvers for higher-value transactions using approval tiers.
 ---
 
-Approval tiers let you require more approvers for higher-value transactions. Instead of a flat approval count for all amounts, you define USD thresholds where the number of required approvers increases.
+Approval tiers let you require more approvers for higher-value transactions. Instead of a single approver count for all amounts, you define USD thresholds where the number of required approvers increases.
 
 ## Example tier configuration
 
-| Amount range    | Approvers required |
-|-----------------|-------------------|
-| $0 – $999       | 1 (default)       |
-| $1,000 – $4,999 | 2                 |
-| $5,000+         | 3                 |
+| Amount range      | Approvers required |
+|-------------------|-------------------|
+| $0 to $999        | 1 (default)       |
+| $1,000 to $4,999  | 2                 |
+| $5,000 and above  | 3                 |
 
 ## Supported operations
 
@@ -19,7 +20,7 @@ Tiers are available for:
 - Crypto withdrawals
 - Fiat withdrawals
 
-Other operations only support a flat approver count.
+Other operations support only a single approver count for all transaction amounts.
 
 ## Setting up tiers
 
