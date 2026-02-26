@@ -980,7 +980,8 @@
               "guides/crypto-brokerage/fix/reference/execution-report-fills",
               "guides/crypto-brokerage/fix/reference/execution-report-cancels",
               "guides/crypto-brokerage/fix/reference/execution-report-reject-expired",
-              "guides/crypto-brokerage/fix/reference/encoded-tags"
+              "guides/crypto-brokerage/fix/reference/encoded-tags",
+              "guides/crypto-brokerage/fix/reference/data-dictionary"
             ]
           }
         ]
