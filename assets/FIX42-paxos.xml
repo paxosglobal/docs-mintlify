@@ -27,27 +27,22 @@
     </trailer>
 
     <messages>
-        <!-- ================================================================ -->
-        <!-- Session (Admin) Messages                                         -->
-        <!-- ================================================================ -->
-
-        <!-- Heartbeat: MsgType 0 -->
+        <!-- Session (Admin) Messages -->
         <message name="Heartbeat" msgtype="0" msgcat="admin">
             <field name="TestReqID" required="N"/>
         </message>
-
-        <!-- Test Request: MsgType 1 -->
+        <message name="Logon" msgtype="A" msgcat="admin">
+            <field name="EncryptMethod" required="Y"/>
+            <field name="HeartBtInt" required="Y"/>
+            <field name="ResetSeqNumFlag" required="N"/>
+        </message>
         <message name="TestRequest" msgtype="1" msgcat="admin">
             <field name="TestReqID" required="Y"/>
         </message>
-
-        <!-- Resend Request: MsgType 2 -->
         <message name="ResendRequest" msgtype="2" msgcat="admin">
             <field name="BeginSeqNo" required="Y"/>
             <field name="EndSeqNo" required="Y"/>
         </message>
-
-        <!-- Reject: MsgType 3 -->
         <message name="Reject" msgtype="3" msgcat="admin">
             <field name="RefSeqNum" required="Y"/>
             <field name="Text" required="N"/>
@@ -55,42 +50,25 @@
             <field name="RefMsgType" required="N"/>
             <field name="SessionRejectReason" required="N"/>
         </message>
-
-        <!-- Sequence Reset: MsgType 4 -->
         <message name="SequenceReset" msgtype="4" msgcat="admin">
             <field name="GapFillFlag" required="N"/>
             <field name="NewSeqNo" required="Y"/>
         </message>
-
-        <!-- Logout: MsgType 5 -->
         <message name="Logout" msgtype="5" msgcat="admin">
             <field name="Text" required="N"/>
         </message>
 
-        <!-- Logon: MsgType A -->
-        <message name="Logon" msgtype="A" msgcat="admin">
-            <field name="EncryptMethod" required="Y"/>
-            <field name="HeartBtInt" required="Y"/>
-            <field name="ResetSeqNumFlag" required="N"/>
-        </message>
-
-        <!-- ================================================================ -->
-        <!-- Application Messages                                             -->
-        <!-- ================================================================ -->
-
-        <!-- New Order Single: MsgType D -->
+        <!-- Application Messages -->
         <message name="NewOrderSingle" msgtype="D" msgcat="app">
-            <!-- Required -->
+            <field name="Account" required="Y"/>
             <field name="ClOrdID" required="Y"/>
             <field name="ClientID" required="Y"/>
-            <field name="Account" required="Y"/>
             <field name="HandlInst" required="Y"/>
             <field name="Symbol" required="Y"/>
             <field name="SecurityType" required="Y"/>
             <field name="Side" required="Y"/>
             <field name="TransactTime" required="Y"/>
             <field name="OrdType" required="Y"/>
-            <!-- Conditional -->
             <field name="Price" required="N"/>
             <field name="OrderQty" required="N"/>
             <field name="CashOrderQty" required="N"/>
@@ -98,24 +76,20 @@
             <field name="TimeInForce" required="N"/>
             <field name="ExpireTime" required="N"/>
             <field name="ExecInst" required="N"/>
-            <!-- Optional / Brokerage -->
             <field name="SelfMatchPreventionID" required="N"/>
             <field name="AllocBrokerAccountID" required="N"/>
             <field name="SenderSubID" required="N"/>
             <field name="FundCommissionOption" required="N"/>
         </message>
-
-        <!-- Execution Report: MsgType 8 -->
         <message name="ExecutionReport" msgtype="8" msgcat="app">
-            <!-- Always Present -->
-            <field name="OrderID" required="Y"/>
+            <field name="Account" required="Y"/>
             <field name="ClOrdID" required="Y"/>
             <field name="OrigClOrdID" required="N"/>
+            <field name="OrderID" required="Y"/>
             <field name="ExecID" required="Y"/>
             <field name="ExecTransType" required="Y"/>
             <field name="ExecType" required="Y"/>
             <field name="OrdStatus" required="Y"/>
-            <field name="Account" required="Y"/>
             <field name="ClientID" required="Y"/>
             <field name="Symbol" required="Y"/>
             <field name="Side" required="Y"/>
@@ -135,64 +109,74 @@
             <field name="TransactTime" required="Y"/>
             <field name="Text" required="N"/>
             <field name="GrossTradeAmt" required="N"/>
-            <!-- Conditional -->
             <field name="Commission" required="N"/>
             <field name="CommType" required="N"/>
             <field name="OrdRejReason" required="N"/>
             <field name="ExecRestatementReason" required="N"/>
             <field name="LiquidityInd" required="N"/>
-            <!-- Optional / Brokerage -->
             <field name="SelfMatchPreventionID" required="N"/>
             <field name="AllocBrokerAccountID" required="N"/>
             <field name="SenderSubID" required="N"/>
             <field name="FundCommissionOption" required="N"/>
             <field name="RecipientProfileId" required="N"/>
         </message>
-
-        <!-- Order Cancel Request: MsgType F -->
         <message name="OrderCancelRequest" msgtype="F" msgcat="app">
-            <!-- Required -->
-            <field name="OrigClOrdID" required="Y"/>
-            <field name="ClOrdID" required="Y"/>
             <field name="Account" required="Y"/>
+            <field name="ClOrdID" required="Y"/>
+            <field name="OrigClOrdID" required="Y"/>
             <field name="ClientID" required="Y"/>
             <field name="Symbol" required="Y"/>
             <field name="SecurityType" required="Y"/>
             <field name="Side" required="Y"/>
             <field name="TransactTime" required="Y"/>
-            <!-- Conditional -->
             <field name="OrderQty" required="N"/>
             <field name="CashOrderQty" required="N"/>
         </message>
-
-        <!-- Order Cancel Reject: MsgType 9 -->
         <message name="OrderCancelReject" msgtype="9" msgcat="app">
-            <field name="OrderID" required="Y"/>
+            <field name="Account" required="Y"/>
             <field name="ClOrdID" required="Y"/>
             <field name="OrigClOrdID" required="Y"/>
+            <field name="OrderID" required="Y"/>
             <field name="OrdStatus" required="Y"/>
-            <field name="Account" required="Y"/>
             <field name="CxlRejResponseTo" required="Y"/>
             <field name="CxlRejReason" required="Y"/>
         </message>
-
-        <!-- Order Status Request: MsgType H -->
         <message name="OrderStatusRequest" msgtype="H" msgcat="app">
+            <field name="Account" required="Y"/>
             <field name="ClOrdID" required="Y"/>
             <field name="ClientID" required="Y"/>
-            <field name="Account" required="Y"/>
             <field name="Symbol" required="Y"/>
             <field name="Side" required="Y"/>
         </message>
     </messages>
 
     <fields>
-        <!-- ================================================================ -->
-        <!-- Standard Header / Trailer Fields                                 -->
-        <!-- ================================================================ -->
+        <field number="1" name="Account" type="STRING"/>
+        <field number="6" name="AvgPx" type="PRICE"/>
+        <field number="7" name="BeginSeqNo" type="INT"/>
         <field number="8" name="BeginString" type="STRING"/>
         <field number="9" name="BodyLength" type="INT"/>
         <field number="10" name="CheckSum" type="STRING"/>
+        <field number="11" name="ClOrdID" type="STRING"/>
+        <field number="12" name="Commission" type="AMT"/>
+        <field number="13" name="CommType" type="CHAR">
+            <value enum="3" description="ABSOLUTE"/>
+        </field>
+        <field number="14" name="CumQty" type="QTY"/>
+        <field number="16" name="EndSeqNo" type="INT"/>
+        <field number="17" name="ExecID" type="STRING"/>
+        <field number="18" name="ExecInst" type="MULTIPLEVALUESTRING">
+            <value enum="6" description="PARTICIPATE_DO_NOT_INITIATE"/>
+        </field>
+        <field number="20" name="ExecTransType" type="CHAR">
+            <value enum="0" description="NEW"/>
+            <value enum="3" description="STATUS"/>
+        </field>
+        <field number="21" name="HandlInst" type="CHAR">
+            <value enum="1" description="AUTOMATED_EXECUTION_NO_INTERVENTION"/>
+        </field>
+        <field number="31" name="LastPx" type="PRICE"/>
+        <field number="32" name="LastShares" type="QTY"/>
         <field number="34" name="MsgSeqNum" type="INT"/>
         <field number="35" name="MsgType" type="STRING">
             <value enum="0" description="HEARTBEAT"/>
@@ -209,68 +193,6 @@
             <value enum="H" description="ORDER_STATUS_REQUEST"/>
         </field>
         <field number="36" name="NewSeqNo" type="INT"/>
-        <field number="43" name="PossDupFlag" type="BOOLEAN"/>
-        <field number="49" name="SenderCompID" type="STRING"/>
-        <field number="52" name="SendingTime" type="UTCTIMESTAMP"/>
-        <field number="56" name="TargetCompID" type="STRING"/>
-        <field number="97" name="PossResend" type="BOOLEAN"/>
-        <field number="122" name="OrigSendingTime" type="UTCTIMESTAMP"/>
-
-        <!-- ================================================================ -->
-        <!-- Session Message Fields                                           -->
-        <!-- ================================================================ -->
-        <field number="7" name="BeginSeqNo" type="INT"/>
-        <field number="16" name="EndSeqNo" type="INT"/>
-        <field number="45" name="RefSeqNum" type="INT"/>
-        <field number="58" name="Text" type="STRING"/>
-        <field number="98" name="EncryptMethod" type="INT">
-            <value enum="0" description="NONE"/>
-        </field>
-        <field number="108" name="HeartBtInt" type="INT"/>
-        <field number="112" name="TestReqID" type="STRING"/>
-        <field number="123" name="GapFillFlag" type="BOOLEAN"/>
-        <field number="141" name="ResetSeqNumFlag" type="BOOLEAN"/>
-        <field number="371" name="RefTagID" type="INT"/>
-        <field number="372" name="RefMsgType" type="STRING"/>
-        <field number="373" name="SessionRejectReason" type="INT">
-            <value enum="0" description="INVALID_TAG_NUMBER"/>
-            <value enum="1" description="REQUIRED_TAG_MISSING"/>
-            <value enum="2" description="TAG_NOT_DEFINED_FOR_THIS_MESSAGE_TYPE"/>
-            <value enum="3" description="UNDEFINED_TAG"/>
-            <value enum="4" description="TAG_SPECIFIED_WITHOUT_A_VALUE"/>
-            <value enum="5" description="VALUE_IS_INCORRECT"/>
-            <value enum="6" description="INCORRECT_DATA_FORMAT_FOR_VALUE"/>
-            <value enum="7" description="DECRYPTION_PROBLEM"/>
-            <value enum="8" description="SIGNATURE_PROBLEM"/>
-            <value enum="9" description="COMP_ID_PROBLEM"/>
-            <value enum="10" description="SENDING_TIME_ACCURACY_PROBLEM"/>
-            <value enum="11" description="INVALID_MSG_TYPE"/>
-        </field>
-
-        <!-- ================================================================ -->
-        <!-- Order Fields                                                     -->
-        <!-- ================================================================ -->
-        <field number="1" name="Account" type="STRING"/>
-        <field number="6" name="AvgPx" type="PRICE"/>
-        <field number="11" name="ClOrdID" type="STRING"/>
-        <field number="12" name="Commission" type="AMT"/>
-        <field number="13" name="CommType" type="CHAR">
-            <value enum="3" description="ABSOLUTE"/>
-        </field>
-        <field number="14" name="CumQty" type="QTY"/>
-        <field number="17" name="ExecID" type="STRING"/>
-        <field number="18" name="ExecInst" type="MULTIPLEVALUESTRING">
-            <value enum="6" description="PARTICIPATE_DO_NOT_INITIATE"/>
-        </field>
-        <field number="20" name="ExecTransType" type="CHAR">
-            <value enum="0" description="NEW"/>
-            <value enum="3" description="STATUS"/>
-        </field>
-        <field number="21" name="HandlInst" type="CHAR">
-            <value enum="1" description="AUTOMATED_EXECUTION_NO_INTERVENTION"/>
-        </field>
-        <field number="31" name="LastPx" type="PRICE"/>
-        <field number="32" name="LastShares" type="QTY"/>
         <field number="37" name="OrderID" type="STRING"/>
         <field number="38" name="OrderQty" type="QTY"/>
         <field number="39" name="OrdStatus" type="CHAR">
@@ -290,13 +212,19 @@
             <value enum="4" description="STOP_LIMIT"/>
         </field>
         <field number="41" name="OrigClOrdID" type="STRING"/>
+        <field number="43" name="PossDupFlag" type="BOOLEAN"/>
         <field number="44" name="Price" type="PRICE"/>
+        <field number="45" name="RefSeqNum" type="INT"/>
+        <field number="49" name="SenderCompID" type="STRING"/>
         <field number="50" name="SenderSubID" type="STRING"/>
+        <field number="52" name="SendingTime" type="UTCTIMESTAMP"/>
         <field number="54" name="Side" type="CHAR">
             <value enum="1" description="BUY"/>
             <value enum="2" description="SELL"/>
         </field>
         <field number="55" name="Symbol" type="STRING"/>
+        <field number="56" name="TargetCompID" type="STRING"/>
+        <field number="58" name="Text" type="STRING"/>
         <field number="59" name="TimeInForce" type="CHAR">
             <value enum="1" description="GOOD_TILL_CANCEL"/>
             <value enum="3" description="IMMEDIATE_OR_CANCEL"/>
@@ -304,6 +232,10 @@
             <value enum="6" description="GOOD_TILL_DATE"/>
         </field>
         <field number="60" name="TransactTime" type="UTCTIMESTAMP"/>
+        <field number="97" name="PossResend" type="BOOLEAN"/>
+        <field number="98" name="EncryptMethod" type="INT">
+            <value enum="0" description="NONE"/>
+        </field>
         <field number="99" name="StopPx" type="PRICE"/>
         <field number="102" name="CxlRejReason" type="INT">
             <value enum="0" description="TOO_LATE_TO_CANCEL"/>
@@ -321,8 +253,13 @@
             <value enum="6" description="DUPLICATE_ORDER"/>
             <value enum="8" description="STALE_ORDER"/>
         </field>
+        <field number="108" name="HeartBtInt" type="INT"/>
         <field number="109" name="ClientID" type="STRING"/>
+        <field number="112" name="TestReqID" type="STRING"/>
+        <field number="122" name="OrigSendingTime" type="UTCTIMESTAMP"/>
+        <field number="123" name="GapFillFlag" type="BOOLEAN"/>
         <field number="126" name="ExpireTime" type="UTCTIMESTAMP"/>
+        <field number="141" name="ResetSeqNumFlag" type="BOOLEAN"/>
         <field number="150" name="ExecType" type="CHAR">
             <value enum="0" description="NEW"/>
             <value enum="1" description="PARTIAL_FILL"/>
@@ -340,6 +277,22 @@
         <field number="167" name="SecurityType" type="STRING">
             <value enum="FOR" description="FOREIGN_EXCHANGE_CONTRACT"/>
         </field>
+        <field number="371" name="RefTagID" type="INT"/>
+        <field number="372" name="RefMsgType" type="STRING"/>
+        <field number="373" name="SessionRejectReason" type="INT">
+            <value enum="0" description="INVALID_TAG_NUMBER"/>
+            <value enum="1" description="REQUIRED_TAG_MISSING"/>
+            <value enum="2" description="TAG_NOT_DEFINED_FOR_THIS_MESSAGE_TYPE"/>
+            <value enum="3" description="UNDEFINED_TAG"/>
+            <value enum="4" description="TAG_SPECIFIED_WITHOUT_A_VALUE"/>
+            <value enum="5" description="VALUE_IS_INCORRECT"/>
+            <value enum="6" description="INCORRECT_DATA_FORMAT_FOR_VALUE"/>
+            <value enum="7" description="DECRYPTION_PROBLEM"/>
+            <value enum="8" description="SIGNATURE_PROBLEM"/>
+            <value enum="9" description="COMP_ID_PROBLEM"/>
+            <value enum="10" description="SENDING_TIME_ACCURACY_PROBLEM"/>
+            <value enum="11" description="INVALID_MSG_TYPE"/>
+        </field>
         <field number="378" name="ExecRestatementReason" type="INT">
             <value enum="4" description="BROKER_OPTION"/>
         </field>
@@ -347,10 +300,7 @@
         <field number="434" name="CxlRejResponseTo" type="CHAR">
             <value enum="1" description="ORDER_CANCEL_REQUEST"/>
         </field>
-
-        <!-- ================================================================ -->
-        <!-- Paxos Custom Fields                                              -->
-        <!-- ================================================================ -->
+        <!-- Paxos Custom Fields -->
         <field number="2362" name="SelfMatchPreventionID" type="STRING"/>
         <field number="5000" name="RecipientProfileId" type="STRING"/>
         <field number="5047" name="AllocBrokerAccountID" type="STRING"/>
