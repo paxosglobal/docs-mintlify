@@ -1,0 +1,34 @@
+---
+title: "Encoded Tags"
+description: "MsgType and ExecType lookup values for Paxos FIX 4.2."
+---
+
+Use these tables to decode **MsgType (`35`)** and **ExecType (`150`)** values in FIX messages.
+
+## MsgType (`35`)
+
+| Value | Description | Reference |
+| --- | --- | --- |
+| `A` | Logon | [Session Messages](/guides/crypto-brokerage/fix/reference/session-messages#logon) |
+| `D` | New Order Single | [New Order](/guides/crypto-brokerage/fix/reference/new-order) |
+| `F` | Order Cancel Request | [Order Cancel](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-request) |
+| `H` | Order Status Request | [Order Status](/guides/crypto-brokerage/fix/reference/order-status#order-status-request) |
+| `0` | Heartbeat | [Session Messages](/guides/crypto-brokerage/fix/reference/session-messages#heartbeat) |
+| `2` | Resend Request | [Session Messages](/guides/crypto-brokerage/fix/reference/session-messages#replay-messages) |
+| `8` | Execution Report | [New](/guides/crypto-brokerage/fix/reference/execution-report-new), [Fills](/guides/crypto-brokerage/fix/reference/execution-report-fills), [Cancels](/guides/crypto-brokerage/fix/reference/execution-report-cancels), [Reject & Expired](/guides/crypto-brokerage/fix/reference/execution-report-reject-expired) |
+| `9` | Order Cancel Reject | [Order Cancel](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-reject) |
+
+## ExecType (`150`)
+
+| Value | Description | Reference |
+| --- | --- | --- |
+| `0` | New | [Execution Report - New](/guides/crypto-brokerage/fix/reference/execution-report-new) |
+| `1` | Partially Filled | [Execution Report - Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) |
+| `2` | Filled | [Execution Report - Filled](/guides/crypto-brokerage/fix/reference/execution-report-fills) |
+| `3` | Done | |
+| `4` | Canceled | [Execution Report - Canceled](/guides/crypto-brokerage/fix/reference/execution-report-cancels) |
+| `6` | Pending Cancel | [Execution Report - Pending Cancel](/guides/crypto-brokerage/fix/reference/execution-report-cancels) |
+| `8` | Rejected | [Execution Report - Order Reject](/guides/crypto-brokerage/fix/reference/execution-report-reject-expired#execution-report---order-reject) |
+| `A` | Pending New Order | [Execution Report - Pending New](/guides/crypto-brokerage/fix/reference/execution-report-new) |
+| `C` | Order Expired | [Execution Report - Expired](/guides/crypto-brokerage/fix/reference/execution-report-reject-expired#execution-report---expired) |
+| `D` | Order Changed | |

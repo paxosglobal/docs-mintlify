@@ -1,0 +1,154 @@
+---
+title: "Execution Reports - Cancels"
+description: "Pending cancel and canceled execution report message formats and fields."
+---
+
+## Execution Reports – Cancels
+
+After submitting an [Order Cancel Request](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-request), Paxos sends two Execution Reports confirming the cancellation process:
+
+- **Pending Cancel** (**ExecType (`150`)** = `6`) — Acknowledgement that the cancel request was received.
+- **Canceled** (**ExecType (`150`)** = `4`) — Confirmation that the order has been canceled.
+
+<Warning>
+
+A Pending Cancel is **not** a guarantee of cancellation. The order may fill before the cancel is processed. If cancellation fails, an [Order Cancel Reject](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-reject) is returned instead.
+
+</Warning>
+
+### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+### Response Fields
+
+<Tabs>
+<Tab title="Pending Cancel">
+
+**ExecType (`150`)** = `6`, **OrdStatus (`39`)** = `6` (Pending Cancel).
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `6` (Pending Cancel) |
+| `32` | lastShares | Always | `0` |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | `0` |
+| `151` | LeavesQty | Always | Remaining unfilled quantity |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | `Order Cancel Pending` |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | Total filled quantity |
+| `11` | ClOrdID | Always | ClOrdID from the cancel request |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `41` | OrigClOrdID | Always | Original order ClOrdID |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `6` (Pending Cancel) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+<Tab title="Canceled">
+
+**ExecType (`150`)** = `4`, **OrdStatus (`39`)** = `4` (Canceled).
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `4` (Canceled) |
+| `32` | lastShares | Always | `0` |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | `0` |
+| `151` | LeavesQty | Always | Remaining unfilled quantity |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | `Cancelled Order` |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | All zeros for canceled orders |
+| `14` | CumQty | Always | Total filled quantity |
+| `11` | ClOrdID | Always | ClOrdID from the cancel request |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `41` | OrigClOrdID | Always | Original order ClOrdID |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `4` (Canceled) |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+</Tabs>
+
+> See also: [Order Cancel Request](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-request) and [Order Cancel Reject](/guides/crypto-brokerage/fix/reference/order-cancel#order-cancel-reject).

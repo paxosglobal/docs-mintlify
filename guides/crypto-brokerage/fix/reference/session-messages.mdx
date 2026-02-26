@@ -1,0 +1,285 @@
+---
+title: "Session Messages"
+description: "Logon, logout, heartbeat, replay, and reject message formats and fields."
+---
+
+## Logon
+
+Initiate a FIX session with a **Logon** message — **MsgType (`35`)** set to `A`. Set **EncryptMethod (`98`)** to `0` and **HeartBtInt (`108`)** to the desired interval (default: `30` seconds).
+
+### Message Format
+
+#### Standard FIX Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `A` (Logon) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Logon Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `98` | EncryptMethod | Always | Must be `0` |
+| `108` | HeartBtInt | Always | Heartbeat interval in seconds (default: `30`) |
+
+<Tabs>
+<Tab title="Outgoing">
+
+Send the Logon message to initiate the session:
+
+| Tag | Field | Value | Notes |
+| --- | --- | --- | --- |
+| `49` | SenderCompID | Your client ID | |
+| `56` | TargetCompID | `ITBIT` | |
+
+</Tab>
+<Tab title="Response">
+
+Paxos responds with a matching Logon message:
+
+| Tag | Field | Value | Notes |
+| --- | --- | --- | --- |
+| `49` | SenderCompID | `ITBIT` | |
+| `56` | TargetCompID | Your client ID | |
+
+</Tab>
+</Tabs>
+
+---
+
+## Logon with Reset Sequence Number Flag
+
+Reset sequence numbers on both sides by sending a Logon with **ResetSeqNumFlag (`141`)** set to `Y`.
+
+<Tip>
+
+Implement a [sequence number management](/guides/crypto-brokerage/fix/best-practices#sequence-number-management) strategy to promote a stable trading environment.
+
+</Tip>
+
+### Message Format
+
+Uses the same [Standard FIX Fields](#standard-fix-fields) and [Logon Fields](#logon-fields) as a regular Logon, plus:
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `141` | ResetSeqNumFlag | Always | `Y` — reset sequence numbers on both sides |
+
+<Tabs>
+<Tab title="Outgoing">
+
+Send the Logon with **ResetSeqNumFlag (`141`)** = `Y`.
+
+</Tab>
+<Tab title="Response">
+
+Paxos responds with a matching Logon that also includes **ResetSeqNumFlag (`141`)** = `Y`.
+
+</Tab>
+</Tabs>
+
+---
+
+## Replay Messages
+
+Request retransmission of messages with a **Resend Request** — **MsgType (`35`)** set to `2`. Use this when a gap in sequence numbers is detected, a message is lost, or higher-than-expected sequence numbers arrive from the counterparty.
+
+### Resend Scenarios
+
+| Scenario | BeginSeqNo (`7`) | EndSeqNo (`16`) |
+| --- | --- | --- |
+| Single message | N | N (same value) |
+| Range of messages | First in range | Last in range |
+| All subsequent messages | N | `0` |
+
+### Message Format
+
+#### Standard FIX Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `2` (Resend Request) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+<Tabs>
+<Tab title="Outgoing">
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `7` | BeginSeqNo | Always | First message sequence number in range |
+| `16` | EndSeqNo | Always | Last message sequence number in range (`0` for all subsequent) |
+
+</Tab>
+<Tab title="Response">
+
+Paxos resends the requested messages sequentially. Resent messages include:
+
+**Required**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `7` | BeginSeqNo | Always | First message sequence number in range |
+| `16` | EndSeqNo | Always | Last message sequence number in range |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `43` | PossDupFlag | Retransmitted messages | `Y` — indicates possible retransmission |
+| `122` | OrigSendingTime | Retransmitted messages | Original time of message transmission |
+
+</Tab>
+</Tabs>
+
+---
+
+## Heartbeat
+
+Monitor the FIX connection with **Heartbeat** messages — **MsgType (`35`)** set to `0`. The default **HeartBtInt (`108`)** interval is `30` seconds.
+
+### Key Behavior
+
+- Reset the heartbeat timer after **every transmitted message**, not just heartbeats.
+- If no data is received within the heartbeat interval, send a **Test Request** (MsgType `1`) to verify the connection.
+- Include **TestReqID (`112`)** to match Test Requests with Heartbeat responses. Any string can be used (a timestamp is recommended).
+- If no Heartbeat response arrives in a reasonable time, consider the connection lost.
+
+### Message Format
+
+#### Standard FIX Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `0` (Heartbeat) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Heartbeat Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `112` | TestReqID | In response to a Test Request | Echoes the TestReqID from the Test Request |
+
+<Tabs>
+<Tab title="Outgoing">
+
+Send a Heartbeat when no message has been sent within the **HeartBtInt** interval, or in response to a Test Request.
+
+</Tab>
+<Tab title="Response">
+
+Paxos responds to Test Requests with a Heartbeat containing the matching **TestReqID (`112`)**.
+
+</Tab>
+</Tabs>
+
+---
+
+## Reject
+
+A **Reject** message — **MsgType (`35`)** set to `3` — is sent when a message cannot be processed due to a session-level rule violation.
+
+### Message Format – Response Message
+
+#### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `3` (Reject) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Reject Fields
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `45` | RefSeqNum | Always | Sequence number of the rejected message |
+| `58` | Text | Always | Human-readable reason for the reject |
+| `373` | SessionRejectReason | Always | Reject reason code |
+
+---
+
+## Logout
+
+A **Logout** message — **MsgType (`35`)** set to `5` — initiates or confirms FIX session termination.
+
+<Warning>
+
+Disconnection without exchanging Logout messages indicates an abnormal condition. An unsolicited Logout may indicate a connection or account issue — **Text (`58`)** contains a human-readable message. If you cannot reconnect with **ResetSeqNumFlag (`141`)** set to `Y`, contact [Support](https://support.paxos.com).
+
+</Warning>
+
+### Message Format – Incoming Message
+
+#### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `5` (Logout) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Logout Fields
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `58` | Text | Always | Human-readable message indicating any issues |

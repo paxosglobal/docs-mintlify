@@ -1,0 +1,126 @@
+---
+title: "Order Status Messages"
+description: "Order status request and status execution report message formats and fields."
+---
+
+## Order Status Request
+
+Query the current status of an order with **MsgType (`35`)** set to `H`.
+
+### Message Format – Outgoing Message
+
+#### Standard FIX Fields
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `H` (Order Status Request) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Status Request Fields
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `11` | ClOrdID | Always | Client order ID of the order to query (a-z, A-Z, 0-9, `.`, `-`, `_`, `$`, `:`) |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `55` | Symbol | Always | Currency pair |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+
+---
+
+## Execution Report - Order Status
+
+The response is an Execution Report containing the order's current state, with **ExecTransType (`20`)** set to `3` (Status).
+
+<Tip>
+
+**lastShares (`32`)** and **LastPx (`31`)** contain the price and quantity of the most recent fill. A completed order has **LeavesQty (`151`)** = `0`. Note: lastShares was relabeled as lastQty in later FIX versions; the tag number and purpose are identical.
+
+</Tip>
+
+### Message Format – Response Message
+
+#### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Order Status Fields
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | Current execution type |
+| `32` | lastShares | Always | Quantity of the latest fill (`0` if no fills) |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | Price of the latest fill (`0` if no fills) |
+| `151` | LeavesQty | Always | Remaining quantity (`0` for completed orders) |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | |
+| `20` | ExecTransType | Always | `3` (Status) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | Total filled quantity |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | Average fill price |
+| `41` | OrigClOrdID | Always | |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | Current order status |
+| `37` | OrderID | Always | |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `99` | StopPx | Stop orders only | Only when OrdType is `3` or `4` |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |

@@ -1,0 +1,165 @@
+---
+title: "Execution Reports - New"
+description: "Pending New and New execution report message formats and fields."
+---
+
+## Execution Reports – New
+
+After submitting a [New Order](/guides/crypto-brokerage/fix/reference/new-order), Paxos sends two Execution Reports confirming receipt and acceptance:
+
+- **Pending New** (**ExecType (`150`)** = `A`) — Acknowledgement that the order was received.
+- **New** (**ExecType (`150`)** = `0`) — Confirmation that the order is active on the book.
+
+### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+### Response Fields
+
+<Tabs>
+<Tab title="Pending New">
+
+**ExecType (`150`)** = `A`, **OrdStatus (`39`)** = `A` (Pending New).
+
+<Note>
+
+**OrderID (`37`)** is set to all zeros (`00000000-0000-0000-0000-000000000000`) for Pending New. The actual OrderID is assigned in the **New** execution report.
+
+</Note>
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `A` (Pending New) |
+| `32` | lastShares | Always | `0` |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | `0` |
+| `151` | LeavesQty | Always | Order quantity |
+| `12` | Commission | Always | `0.0` |
+| `13` | CommType | Always | `3` (Absolute Value) |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | `Pending New Order` |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | `0` |
+| `14` | CumQty | Always | `0` |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | `0` |
+| `41` | OrigClOrdID | Always | |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `A` (Pending New) |
+| `37` | OrderID | Always | All zeros for Pending New |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `99` | StopPx | Stop orders only | Only when OrdType is `3` or `4` |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+<Tab title="New">
+
+**ExecType (`150`)** = `0`, **OrdStatus (`39`)** = `0` (New).
+
+<Note>
+
+When **ExecType (`150`)** = `D` and **ExecRestatementReason (`378`)** = `4`, a Stop Limit order has been triggered and is now active on the book.
+
+</Note>
+
+**Always Present**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `150` | ExecType | Always | `0` (New) or `D` (Order Changed, for triggered stop limits) |
+| `32` | lastShares | Always | `0` |
+| `109` | ClientID | Always | |
+| `1` | Account | Always | |
+| `31` | LastPx | Always | `0` |
+| `151` | LeavesQty | Always | Order quantity |
+| `60` | TransactTime | Always | |
+| `58` | Text | Always | `New Order` |
+| `20` | ExecTransType | Always | `0` (New) |
+| `55` | Symbol | Always | Currency pair |
+| `17` | ExecID | Always | |
+| `14` | CumQty | Always | `0` |
+| `11` | ClOrdID | Always | |
+| `44` | Price | Always | |
+| `6` | AvgPx | Always | `0` |
+| `41` | OrigClOrdID | Always | |
+| `40` | OrdType | Always | `1` = Market, `2` = Limit, `3` = Stop Market, `4` = Stop Limit |
+| `39` | OrdStatus | Always | `0` (New) |
+| `37` | OrderID | Always | Assigned order ID |
+| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+
+**Conditional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `378` | ExecRestatementReason | Stop Limit triggers | `4` — Stop Limit order triggered (when ExecType = `D`) |
+| `38` | OrderQty | Limit and market sell orders | Base quantity |
+| `152` | CashOrderQty | Market buy orders | Fiat notional |
+| `18` | ExecInst | Post-only orders | `6` (Post-Only) |
+| `99` | StopPx | Stop orders only | Only when OrdType is `3` or `4` |
+| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
+
+**Brokerage Clients**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+</Tab>
+</Tabs>
+
+> See also: [Execution Reports - Fills](/guides/crypto-brokerage/fix/reference/execution-report-fills) for the next stage of the order lifecycle.

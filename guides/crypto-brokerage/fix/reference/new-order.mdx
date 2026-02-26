@@ -1,0 +1,247 @@
+---
+title: "New Order"
+description: "New Order Single message format and fields."
+---
+
+## New Order
+
+Submit new orders as **New Order Single** with **MsgType (`35`)** set to `D`.
+
+### Identity Mapping
+
+| Paxos API Field | FIX Tag |
+| --- | --- |
+| `customer_id` | **Account (`1`)** |
+| `profile_id` | **ClientID (`109`)** |
+
+### Key Field Rules
+
+- **Account (`1`)** is your Paxos `customer_id` and **ClientID (`109`)** is your Paxos `profile_id`.
+- **Price (`44`)** must be omitted for **Market (`1`)** and **Stop Market (`3`)** orders.
+- **CashOrderQty (`152`)** is required for market **buy** orders and represents the fiat notional to convert.
+- **OrderQty (`38`)** is required for market **sell**, stop market sell, stop limit sell, and all limit orders.
+- Send **only one** of **OrderQty (`38`)** or **CashOrderQty (`152`)**.
+- **StopPx (`99`)** is required for stop market and stop limit orders. Currently only **sell stop loss** orders are supported.
+- **HandlInst (`21`)** must be set to `1`.
+- **Symbol (`55`)** must be the currency pair, and **SecurityType (`167`)** must be `FOR`.
+
+### Supported Order Types
+
+We support the following **OrdType (`40`)** values:
+
+| Order type | OrdType (`40`) |
+| --- | --- |
+| Market | `1` |
+| Limit | `2` |
+| Stop Market | `3` |
+| Stop Limit | `4` |
+
+Post-only orders are **Limit (`2`)** orders with **ExecInst (`18`)** set to `6` (Post-Only).
+
+### Time In Force
+
+Time in force is set with **TimeInForce (`59`)**:
+
+| TimeInForce (`59`) | Meaning |
+| --- | --- |
+| `1` | Good Till Cancel (GTC) |
+| `3` | Immediate or Cancel (IOC) |
+| `4` | Fill or Kill (FOK) |
+| `6` | Good Till Time (GTT) |
+
+| Order type (OrdType `40`) | Allowed TimeInForce (`59`) | Default |
+| --- | --- | --- |
+| Limit (`2`) | `1`, `3`, `4`, `6` | `1` (GTC) |
+| Market (`1`) | `3` | `3` (IOC) |
+| Stop Market (`3`) | `1`, `6` | `1` (GTC) |
+| Stop Limit (`4`) | `1`, `6` | `1` (GTC) |
+
+For **GTT (`6`)**, include **ExpireTime (`126`)** in `YYYYMMDD-HH:MM:SS` or `YYYYMMDD-HH:MM:SS.sss` (milliseconds are ignored).
+
+### Tick Size Requirements
+
+**Price (`44`)** must align to market tick sizes for limit and stop limit orders:
+
+| Market | Tick size | Requirement |
+| --- | --- | --- |
+| XBT markets | 0.25 | **Price (`44`)** must be evenly divisible by 0.25 |
+| ETH markets | 0.05 | **Price (`44`)** must be evenly divisible by 0.05 |
+| All other markets | 0.01 | **Price (`44`)** must be evenly divisible by 0.01 |
+
+### Maximum Notional Order Size By Type
+
+Maximum notional limits are based on **OrdType (`40`)**:
+
+| Order type (OrdType `40`) | Markets | Max notional (USD) |
+| --- | --- | --- |
+| Limit (`2`) | XBTUSD, ETHUSD | 1,500,000 |
+| Limit (`2`) | All other markets | 1,000,000 |
+| Market (`1`) | All | 500,000 |
+
+### Limit Order Taker Price Protection
+
+<Warning>
+
+Limit orders will be rejected if the order is taker and the **Price (`44`)** deviates by **15% or more** from the midpoint.
+
+</Warning>
+
+For FIX/GFIX inbound orders, this rejection is returned as an **Execution Report** with:
+
+- **Text (`58`)** = `InvalidPriceForTakerOrder`
+- **OrdRejReason (`103`)** = `0` (Broker option)
+
+See [Execution Report - Order Reject](/guides/crypto-brokerage/fix/reference/execution-report-reject-expired#execution-report---order-reject) for the full response format.
+
+### Message Format – Outgoing Message
+
+#### Standard FIX Fields (All Order Types)
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `D` (New Order Single) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+#### Standard FIX Trailer
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Common Order Fields (All Order Types)
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `11` | ClOrdID | Always | Client order ID (a-z, A-Z, 0-9, `.`, `-`, `_`, `$`, `:`) |
+| `109` | ClientID | Always | Paxos `profile_id` |
+| `1` | Account | Always | Paxos `customer_id` |
+| `21` | HandlInst | Always | Must be `1` |
+| `55` | Symbol | Always | Currency pair |
+| `167` | SecurityType | Always | Must be `FOR` |
+| `54` | Side | Always | `1` = Buy, `2` = Sell |
+| `60` | TransactTime | Always | |
+
+<Tabs>
+<Tab title="Market">
+
+Set **OrdType (`40`)** to `1` (Market). **Price (`44`)** must be omitted. See [Time In Force](#time-in-force) and [Maximum Notional Order Size By Type](#maximum-notional-order-size-by-type).
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `40` | OrdType | Always | `1` (Market) |
+
+**Conditional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `152` | CashOrderQty | Market **buy** | Fiat notional to convert |
+| `38` | OrderQty | Market **sell** | Base quantity |
+
+**Optional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `59` | TimeInForce | To override default | Market orders default to `3` (IOC) |
+| `2362` | SelfMatchPreventionID | If enabled | Requires additional permissions |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+
+</Tab>
+<Tab title="Limit">
+
+Set **OrdType (`40`)** to `2` (Limit). See [Tick Size Requirements](#tick-size-requirements), [Maximum Notional Order Size By Type](#maximum-notional-order-size-by-type), and [Limit Orders](#limit-orders).
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `40` | OrdType | Always | `2` (Limit) |
+| `44` | Price | Always | Must meet tick size |
+| `38` | OrderQty | Always | Base quantity |
+
+**Conditional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `18` | ExecInst | Post-only limit | Set to `6` |
+| `126` | ExpireTime | If TimeInForce = `6` | See [Time In Force](#time-in-force) |
+
+**Optional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `59` | TimeInForce | To override default | Limit orders default to `1` (GTC) |
+| `2362` | SelfMatchPreventionID | If enabled | Requires additional permissions |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+
+</Tab>
+<Tab title="Stop Market">
+
+Set **OrdType (`40`)** to `3` (Stop Market). Only **sell stop loss** orders are supported.
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `40` | OrdType | Always | `3` (Stop Market) |
+| `99` | StopPx | Always | Stop price |
+| `38` | OrderQty | Always | Stop Market **sell** quantity |
+
+**Conditional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `126` | ExpireTime | If TimeInForce = `6` | See [Time In Force](#time-in-force) |
+
+**Optional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `59` | TimeInForce | To override default | Stop Market defaults to `1` (GTC) |
+| `2362` | SelfMatchPreventionID | If enabled | Requires additional permissions |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+
+</Tab>
+<Tab title="Stop Limit">
+
+Set **OrdType (`40`)** to `4` (Stop Limit). See [Tick Size Requirements](#tick-size-requirements).
+
+**Required**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `40` | OrdType | Always | `4` (Stop Limit) |
+| `44` | Price | Always | Must meet tick size |
+| `99` | StopPx | Always | Stop price |
+| `38` | OrderQty | Always | Base quantity |
+
+**Conditional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `126` | ExpireTime | If TimeInForce = `6` | See [Time In Force](#time-in-force) |
+
+**Optional**
+
+| Tag | Field | When to Include | Notes |
+| --- | --- | --- | --- |
+| `59` | TimeInForce | To override default | Stop Limit defaults to `1` (GTC) |
+| `2362` | SelfMatchPreventionID | If enabled | Requires additional permissions |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+
+</Tab>
+</Tabs>
