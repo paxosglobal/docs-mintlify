@@ -70,7 +70,7 @@ For **GTT (`6`)**, include **ExpireTime (`126`)** in `YYYYMMDD-HH:MM:SS` or `YYY
 
 ### Order Routing Mode
 
-Use **OrderRoutingMode (`8000`)** to choose the routing strategy for a new order.
+Use **OrderRoutingMode (`8000`)** to choose the routing strategy for the new order.
 
 | OrderRoutingMode (`8000`) | Routing strategy |
 | --- | --- |
@@ -79,13 +79,13 @@ Use **OrderRoutingMode (`8000`)** to choose the routing strategy for a new order
 
 <Note>
 
-To apply **OrderRoutingMode (`8000`)**, the user/customer must be whitelisted by Paxos engineers. If the account is not whitelisted, this field is ignored.
+To apply **OrderRoutingMode (`8000`)**, the customer must be whitelisted by Paxos first. If the account is not whitelisted, this field is ignored.
 
 </Note>
 
 <Note>
 
-If an invalid value is provided for **OrderRoutingMode (`8000`)**, the field is ignored and the routing mode configured for the user/customer is used.
+If an invalid value is provided for **OrderRoutingMode (`8000`)**, the field is ignored and the default routing mode configured for the customer is used.
 
 </Note>
 
@@ -235,7 +235,6 @@ Set **OrdType (`40`)** to `3` (Stop Market). Only **sell stop loss** orders are 
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
-| `8000` | OrderRoutingMode | If enabled and whitelisted | `1` = No routing, `2` = Best execution routing |
 
 </Tab>
 <Tab title="Stop Limit">
@@ -266,7 +265,6 @@ Set **OrdType (`40`)** to `4` (Stop Limit). See [Tick Size Requirements](#tick-s
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
-| `8000` | OrderRoutingMode | If enabled and whitelisted | `1` = No routing, `2` = Best execution routing |
 
 </Tab>
 </Tabs>
