@@ -103,6 +103,7 @@
             <field name="AllocBrokerAccountID" required="N"/>
             <field name="SenderSubID" required="N"/>
             <field name="FundCommissionOption" required="N"/>
+            <field name="OrderRoutingMode" required="N"/>
         </message>
 
         <!-- Execution Report: MsgType 8 -->
