@@ -68,6 +68,27 @@ For **GTT (`6`)**, include **ExpireTime (`126`)** in `YYYYMMDD-HH:MM:SS` or `YYY
 | ETH markets | 0.05 | **Price (`44`)** must be evenly divisible by 0.05 |
 | All other markets | 0.01 | **Price (`44`)** must be evenly divisible by 0.01 |
 
+### Order Routing Mode
+
+Use **OrderRoutingMode (`8000`)** to choose the routing strategy for the new order.
+
+| OrderRoutingMode (`8000`) | Routing strategy |
+| --- | --- |
+| `1` | Standard |
+| `2` | Best Execution |
+
+<Note>
+
+OrderRoutingMode enables Paxos Best Execution routing on eligible accounts. To confirm availability for your integration, as well as learn more about the Best Execution mode, please contact your Paxos account representative.
+
+</Note>
+
+<Note>
+
+If an invalid value is provided for **OrderRoutingMode (`8000`)**, the field is ignored and the default routing mode configured for the customer is used.
+
+</Note>
+
 ### Maximum Notional Order Size By Type
 
 Maximum notional limits are based on **OrdType (`40`)**:
@@ -153,6 +174,7 @@ Set **OrdType (`40`)** to `1` (Market). **Price (`44`)** must be omitted. See [T
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
+| `8000` | OrderRoutingMode | If enabled | `1` = Standard, `2` = Best Execution |
 
 </Tab>
 <Tab title="Limit">
@@ -183,6 +205,7 @@ Set **OrdType (`40`)** to `2` (Limit). See [Tick Size Requirements](#tick-size-r
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
+| `8000` | OrderRoutingMode | If enabled | `1` = Standard, `2` = Best Execution |
 
 </Tab>
 <Tab title="Stop Market">
@@ -212,6 +235,7 @@ Set **OrdType (`40`)** to `3` (Stop Market). Only **sell stop loss** orders are 
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
+| `8000` | OrderRoutingMode | If enabled | `1` = Standard, `2` = Best Execution |
 
 </Tab>
 <Tab title="Stop Limit">
@@ -242,6 +266,7 @@ Set **OrdType (`40`)** to `4` (Stop Limit). See [Tick Size Requirements](#tick-s
 | `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
 | `50` | SenderSubID | Brokerage clients | IdentityId |
 | `5074` | FundCommissionOption | Brokerage clients | |
+| `8000` | OrderRoutingMode | If enabled | `1` = Standard, `2` = Best Execution |
 
 </Tab>
 </Tabs>
