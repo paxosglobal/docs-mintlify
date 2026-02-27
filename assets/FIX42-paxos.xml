@@ -360,5 +360,9 @@
             <value enum="1" description="ADD"/>
             <value enum="2" description="REMOVE"/>
         </field>
+        <field number="8000" name="OrderRoutingMode" type="INT">
+            <value enum="1" description="NO_ROUTING"/>
+            <value enum="2" description="BEST_EXECUTION_ROUTING"/>
+        </field>
     </fields>
 </fix>
