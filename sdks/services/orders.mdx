@@ -1,0 +1,96 @@
+---
+title: 'Orders'
+description: 'SDK reference for the Orders service — create, list, and cancel trading orders.'
+---
+
+The Orders service lets you place, monitor, and cancel trading orders on the Paxos exchange.
+
+**Client accessor**: `client.Orders`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListOrders` | `GET /trading/orders` | List orders with optional filters |
+| `CreateOrder` | `POST /trading/orders` | Place a new order |
+| `GetOrder` | `GET /trading/orders/{id}` | Get an order by ID |
+| `CancelOrder` | `DELETE /trading/orders/{id}` | Cancel a pending order |
+| `ListExecutions` | `GET /trading/executions` | List order executions |
+
+## CreateOrder
+
+<CodeGroup>
+
+```go Go
+order, err := client.Orders.CreateOrder(ctx, &paxos.CreateOrderRequest{
+    ProfileID: "profile_123",
+    Market:    "BTC-USD",
+    Side:      "BUY",
+    Type:      "MARKET",
+    BaseAmount: "0.01",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Order %s: %s\n", order.ID, order.Status)
+```
+
+```python Python
+order = client.orders.create_order(
+    profile_id="profile_123",
+    market="BTC-USD",
+    side="BUY",
+    type="MARKET",
+    base_amount="0.01",
+)
+print(f"Order {order.id}: {order.status}")
+```
+
+```typescript TypeScript
+const order = await client.orders.createOrder({
+  profileId: "profile_123",
+  market: "BTC-USD",
+  side: "BUY",
+  type: "MARKET",
+  baseAmount: "0.01",
+});
+console.log(`Order ${order.id}: ${order.status}`);
+```
+
+```java Java
+Order order = client.orders().createOrder(
+    CreateOrderRequest.builder()
+        .profileId("profile_123")
+        .market("BTC-USD")
+        .side("BUY")
+        .type("MARKET")
+        .baseAmount("0.01")
+        .build());
+System.out.printf("Order %s: %s%n", order.getId(), order.getStatus());
+```
+
+</CodeGroup>
+
+## CancelOrder
+
+<CodeGroup>
+
+```go Go
+err := client.Orders.CancelOrder(ctx, "order_123")
+```
+
+```python Python
+client.orders.cancel_order("order_123")
+```
+
+```typescript TypeScript
+await client.orders.cancelOrder("order_123");
+```
+
+```java Java
+client.orders().cancelOrder("order_123");
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Orders API Reference](/api-reference/endpoints/orders/overview).

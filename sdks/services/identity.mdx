@@ -1,0 +1,132 @@
+---
+title: 'Identity'
+description: 'SDK reference for the Identity service — create, verify, and manage customer identities.'
+---
+
+The Identity service manages KYC (Know Your Customer) verification for individuals and institutions. Identities must be verified before they can transact.
+
+**Client accessor**: `client.Identity`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListIdentities` | `GET /identity/identities` | List identities with optional filters |
+| `CreateIdentity` | `POST /identity/identities` | Create a new identity for verification |
+| `GetIdentity` | `GET /identity/identities/{id}` | Get an identity by ID |
+| `UpdateIdentity` | `PATCH /identity/identities/{id}` | Update identity details |
+
+## CreateIdentity
+
+<CodeGroup>
+
+```go Go
+identity, err := client.Identity.CreateIdentity(ctx, &paxos.CreateIdentityRequest{
+    PersonDetails: &paxos.PersonDetails{
+        FirstName:   "Jane",
+        LastName:    "Doe",
+        DateOfBirth: "1990-01-15",
+    },
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Created identity: %s (status: %s)\n", identity.ID, identity.SummaryStatus)
+```
+
+```python Python
+identity = client.identity.create_identity(
+    person_details={
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "date_of_birth": "1990-01-15",
+    },
+)
+print(f"Created identity: {identity.id} (status: {identity.summary_status})")
+```
+
+```typescript TypeScript
+const identity = await client.identity.createIdentity({
+  personDetails: {
+    firstName: "Jane",
+    lastName: "Doe",
+    dateOfBirth: "1990-01-15",
+  },
+});
+console.log(`Created identity: ${identity.id} (status: ${identity.summaryStatus})`);
+```
+
+```java Java
+Identity identity = client.identity().createIdentity(
+    CreateIdentityRequest.builder()
+        .personDetails(PersonDetails.builder()
+            .firstName("Jane")
+            .lastName("Doe")
+            .dateOfBirth("1990-01-15")
+            .build())
+        .build());
+System.out.printf("Created identity: %s (status: %s)%n",
+    identity.getId(), identity.getSummaryStatus());
+```
+
+</CodeGroup>
+
+## GetIdentity
+
+<CodeGroup>
+
+```go Go
+identity, err := client.Identity.GetIdentity(ctx, "identity_123")
+```
+
+```python Python
+identity = client.identity.get_identity("identity_123")
+```
+
+```typescript TypeScript
+const identity = await client.identity.getIdentity("identity_123");
+```
+
+```java Java
+Identity identity = client.identity().getIdentity("identity_123");
+```
+
+</CodeGroup>
+
+## ListIdentities
+
+<CodeGroup>
+
+```go Go
+iter := client.Identity.ListIdentities(ctx, &paxos.ListIdentitiesRequest{Limit: 50})
+for iter.Next() {
+    id := iter.Current()
+    fmt.Printf("%s: %s %s (%s)\n", id.ID, id.PersonDetails.FirstName, id.PersonDetails.LastName, id.SummaryStatus)
+}
+```
+
+```python Python
+for id in client.identity.list_identities(limit=50):
+    print(f"{id.id}: {id.person_details.first_name} {id.person_details.last_name} ({id.summary_status})")
+```
+
+```typescript TypeScript
+for await (const id of client.identity.listIdentities({ limit: 50 })) {
+  console.log(`${id.id}: ${id.personDetails.firstName} ${id.personDetails.lastName} (${id.summaryStatus})`);
+}
+```
+
+```java Java
+for (Identity id : client.identity().listIdentities(
+        ListIdentitiesRequest.builder().limit(50).build())) {
+    System.out.printf("%s: %s %s (%s)%n",
+        id.getId(), id.getPersonDetails().getFirstName(),
+        id.getPersonDetails().getLastName(), id.getSummaryStatus());
+}
+```
+
+</CodeGroup>
+
+> In Sandbox, use `client.Sandbox.SetIdentityStatus()` to approve identities without real verification. See the [Sandbox Guide](/sdks/sandbox).
+
+> For the full REST API documentation, see the [Identity API Reference](/api-reference/endpoints/identity/overview).

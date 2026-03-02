@@ -1,0 +1,92 @@
+---
+title: 'Profiles'
+description: 'SDK reference for the Profiles service — create, list, and manage profiles and balances.'
+---
+
+Profiles represent segregated accounts within your Paxos organization. Each profile can hold assets, execute transfers, and place orders independently.
+
+**Client accessor**: `client.Profiles`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListProfiles` | `GET /identity/profiles` | List profiles |
+| `CreateProfile` | `POST /identity/profiles` | Create a new profile |
+| `GetProfile` | `GET /identity/profiles/{id}` | Get a profile by ID |
+| `UpdateProfile` | `PATCH /identity/profiles/{id}` | Update profile details |
+| `DeactivateProfile` | `POST /identity/profiles/{id}/deactivate` | Deactivate a profile |
+| `ListProfileBalances` | `GET /identity/profiles/{id}/balances` | List balances for a profile |
+| `GetProfileBalance` | `GET /identity/profiles/{id}/balances/{asset}` | Get balance for a specific asset |
+
+## CreateProfile
+
+<CodeGroup>
+
+```go Go
+profile, err := client.Profiles.CreateProfile(ctx, &paxos.CreateProfileRequest{
+    Nickname: "Trading Account",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Profile: %s (%s)\n", profile.ID, profile.Nickname)
+```
+
+```python Python
+profile = client.profiles.create_profile(nickname="Trading Account")
+print(f"Profile: {profile.id} ({profile.nickname})")
+```
+
+```typescript TypeScript
+const profile = await client.profiles.createProfile({ nickname: "Trading Account" });
+console.log(`Profile: ${profile.id} (${profile.nickname})`);
+```
+
+```java Java
+Profile profile = client.profiles().createProfile(
+    CreateProfileRequest.builder()
+        .nickname("Trading Account")
+        .build());
+System.out.printf("Profile: %s (%s)%n", profile.getId(), profile.getNickname());
+```
+
+</CodeGroup>
+
+## ListProfileBalances
+
+<CodeGroup>
+
+```go Go
+balances, err := client.Profiles.ListProfileBalances(ctx, "profile_123")
+if err != nil {
+    log.Fatal(err)
+}
+for _, b := range balances {
+    fmt.Printf("%s: %s available\n", b.Asset, b.Available)
+}
+```
+
+```python Python
+balances = client.profiles.list_profile_balances("profile_123")
+for b in balances:
+    print(f"{b.asset}: {b.available} available")
+```
+
+```typescript TypeScript
+const balances = await client.profiles.listProfileBalances("profile_123");
+for (const b of balances) {
+  console.log(`${b.asset}: ${b.available} available`);
+}
+```
+
+```java Java
+List<ProfileBalance> balances = client.profiles().listProfileBalances("profile_123");
+for (ProfileBalance b : balances) {
+    System.out.printf("%s: %s available%n", b.getAsset(), b.getAvailable());
+}
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Profiles API Reference](/api-reference/endpoints/profiles/overview).

@@ -1,0 +1,59 @@
+---
+title: 'Deposit Addresses'
+description: 'SDK reference for the Deposit Addresses service — create and list crypto deposit addresses.'
+---
+
+The Deposit Addresses service lets you generate and list blockchain addresses for receiving crypto deposits.
+
+**Client accessor**: `client.DepositAddresses`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListDepositAddresses` | `GET /transfer/deposit-addresses` | List deposit addresses |
+| `CreateDepositAddress` | `POST /transfer/deposit-addresses` | Create a new deposit address |
+
+## CreateDepositAddress
+
+<CodeGroup>
+
+```go Go
+addr, err := client.DepositAddresses.CreateDepositAddress(ctx, &paxos.CreateDepositAddressRequest{
+    ProfileID:    "profile_123",
+    CryptoNetwork: "ETHEREUM",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Deposit address: %s (%s)\n", addr.Address, addr.CryptoNetwork)
+```
+
+```python Python
+addr = client.deposit_addresses.create_deposit_address(
+    profile_id="profile_123",
+    crypto_network="ETHEREUM",
+)
+print(f"Deposit address: {addr.address} ({addr.crypto_network})")
+```
+
+```typescript TypeScript
+const addr = await client.depositAddresses.createDepositAddress({
+  profileId: "profile_123",
+  cryptoNetwork: "ETHEREUM",
+});
+console.log(`Deposit address: ${addr.address} (${addr.cryptoNetwork})`);
+```
+
+```java Java
+DepositAddress addr = client.depositAddresses().createDepositAddress(
+    CreateDepositAddressRequest.builder()
+        .profileId("profile_123")
+        .cryptoNetwork("ETHEREUM")
+        .build());
+System.out.printf("Deposit address: %s (%s)%n", addr.getAddress(), addr.getCryptoNetwork());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Deposit Addresses API Reference](/api-reference/endpoints/deposit-addresses/list-deposit-addresses).
