@@ -16,7 +16,7 @@ Identifier for the identity requiring documents
 </ResponseField>
 
 <ResponseField name="required_documents" type="array" required>
-List of required document types
+List of required document types. Values in this array correspond to the `document_type` parameter in the [Document Upload API](/api-reference/endpoints/identity-documents/document-upload#body-document-types).
 </ResponseField>
 
 <ResponseExample>
@@ -25,7 +25,7 @@ List of required document types
 {
   "id": "d840cf31-352f-4190-a476-7522bf3eafda",
   "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-  "required_documents": ["DRIVERS_LICENSE", "PASSPORT"]
+  "required_documents": ["PROOF_OF_ADDRESS", "PROOF_OF_FUNDS"]
 }
 ```
 
