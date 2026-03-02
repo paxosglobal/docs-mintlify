@@ -90,6 +90,7 @@ Save the XML below as `FIX42-paxos.xml` and reference it in your FIX engine conf
             <field name="SenderSubID" required="N"/>
             <field name="FundCommissionOption" required="N"/>
             <field name="SelfMatchPreventionID" required="N"/>
+            <field name="OrderRoutingMode" required="N"/>
         </message>
         <message name="ExecutionReport" msgtype="8" msgcat="app">
             <field name="Side" required="Y"/>
@@ -318,6 +319,10 @@ Save the XML below as `FIX42-paxos.xml` and reference it in your FIX engine conf
         <field number="5851" name="LiquidityInd" type="CHAR">
             <value enum="1" description="ADD"/>
             <value enum="2" description="REMOVE"/>
+        </field>
+        <field number="8000" name="OrderRoutingMode" type="INT">
+            <value enum="1" description="NO_ROUTING"/>
+            <value enum="2" description="BEST_EXECUTION_ROUTING"/>
         </field>
     </fields>
 </fix>
