@@ -94,6 +94,10 @@
       "destination": "/api-reference/preview/overview"
     },
     {
+      "source": "/api-reference/preview",
+      "destination": "/api-reference/preview/overview"
+    },
+    {
       "source": "/fix",
       "destination": "/guides/crypto-brokerage/fix/index"
     },
@@ -989,6 +993,7 @@
       },
       {
         "tab": "Previews",
+        "href": "api-reference/preview/overview",
         "hidden": true,
         "groups": [
           {
