@@ -91,7 +91,11 @@
     },
     {
       "source": "/preview",
-      "destination": "/api-reference/preview/overview"
+      "destination": "/preview/overview"
+    },
+    {
+      "source": "/api-reference/preview/:slug*",
+      "destination": "/preview/:slug*"
     },
     {
       "source": "/fix",
@@ -994,22 +998,22 @@
           {
             "group": "Previews",
             "pages": [
-              "api-reference/preview/overview"
+              "preview/overview"
             ]
           },
           {
             "group": "Identity Control Previews",
             "pages": [
-              "api-reference/preview/identity-controls/overview",
-              "api-reference/preview/identity-controls/list-identity-controls",
-              "api-reference/preview/identity-controls/create-identity-control",
-              "api-reference/preview/identity-controls/delete-identity-control"
+              "preview/identity-controls/overview",
+              "preview/identity-controls/list-identity-controls",
+              "preview/identity-controls/create-identity-control",
+              "preview/identity-controls/delete-identity-control"
             ]
           },
           {
             "group": "Dormancy Preview",
             "pages": [
-              "api-reference/preview/identity-dormancy-lifecycle"
+              "preview/identity-dormancy-lifecycle"
             ]
           }
         ]
