@@ -296,7 +296,6 @@
             "group": "Fund Management",
             "pages": [
               "guides/dashboard/transactions",
-              "guides/dashboard/instructions",
               "guides/dashboard/addresses",
               "guides/dashboard/fiat"
             ]
