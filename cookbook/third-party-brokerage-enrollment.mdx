@@ -501,7 +501,7 @@ noindex: true
 
     # Usage
     identity_status = get_identity_status(access_token, identity_id)
-    print(f"Identity Status: {identity_status.get('summary_status')}")
+    print(f"Identity Status: {identity_status.get('status')}")
     ```
 
     ```javascript JavaScript
@@ -519,7 +519,7 @@ noindex: true
 
     // Usage
     const identityStatus = await getIdentityStatus(accessToken, identityId);
-    console.log(`Identity Status: ${identityStatus.summary_status}`);
+    console.log(`Identity Status: ${identityStatus.status}`);
     ```
 
     </CodeGroup>

@@ -149,7 +149,7 @@ allow `HIGH` risk customers to onboard to Paxos.
 
 ### ➋ Wait for the Identity to be Approved
 Using the above details should result in auto-approval of the [Identity](/api-reference/endpoints/identity). You can immediately call the [Get Identity](/api-reference/endpoints/identity/get-identity) endpoint
-and see the `summary_status` is `APPROVED`.
+and see the `status` is `APPROVED`.
 ```shell
 curl --location "https://api.sandbox.paxos.com/v2/identity/identities/{identity_id}" \
 --request "GET" \

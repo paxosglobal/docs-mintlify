@@ -15,14 +15,14 @@ Unique identifier for this event object
 Identifier for the affected identity
 </ResponseField>
 
-<ResponseField name="old_summary_status" type="string" required>
-The previous summary status of the identity
+<ResponseField name="old_status" type="string" required>
+The previous status of the identity
 
 **Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
 </ResponseField>
 
-<ResponseField name="new_summary_status" type="string" required>
-The new summary status of the identity
+<ResponseField name="new_status" type="string" required>
+The new status of the identity
 
 **Available options:** `PENDING`, `ERROR`, `APPROVED`, `DENIED`, `DISABLED`
 </ResponseField>
@@ -33,8 +33,8 @@ The new summary status of the identity
 {
   "id": "d840cf31-352f-4190-a476-7522bf3eafda",
   "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-  "old_summary_status": "PENDING",
-  "new_summary_status": "APPROVED"
+  "old_status": "PENDING",
+  "new_status": "APPROVED"
 }
 ```
 

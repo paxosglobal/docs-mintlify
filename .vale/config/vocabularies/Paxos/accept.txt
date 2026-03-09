@@ -82,6 +82,8 @@ required_documents
 identity_summary_status_change
 old_summary_status
 new_summary_status
+old_status
+new_status
 final_snapshot
 quote_id
 quote_amount

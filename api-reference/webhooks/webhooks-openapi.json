@@ -1681,25 +1681,25 @@
             "title": "Identity ID",
             "description": "Identifier for the affected identity"
           },
-          "old_summary_status": {
+          "old_status": {
             "type": "string",
             "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
             "title": "Previous Status",
-            "description": "The previous summary status of the identity"
+            "description": "The previous status of the identity"
           },
-          "new_summary_status": {
+          "new_status": {
             "type": "string",
             "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
             "title": "New Status",
-            "description": "The new summary status of the identity"
+            "description": "The new status of the identity"
           }
         },
-        "required": ["id", "identity_id", "old_summary_status", "new_summary_status"],
+        "required": ["id", "identity_id", "old_status", "new_status"],
         "example": {
           "id": "d840cf31-352f-4190-a476-7522bf3eafda",
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-          "old_summary_status": "PENDING",
-          "new_summary_status": "APPROVED"
+          "old_status": "PENDING",
+          "new_status": "APPROVED"
         }
       },
       "IdentityKycRefreshObject": {
