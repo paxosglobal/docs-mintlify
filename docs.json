@@ -296,8 +296,21 @@
             "group": "Fund Management",
             "pages": [
               "guides/dashboard/transactions",
-              "guides/dashboard/addresses",
-              "guides/dashboard/fiat"
+              {
+                "group": "Crypto Addresses",
+                "pages": [
+                  "guides/dashboard/addresses",
+                  "guides/dashboard/withdrawal-addresses",
+                  "guides/dashboard/deposit-addresses"
+                ]
+              },
+              {
+                "group": "Fiat Accounts",
+                "pages": [
+                  "guides/dashboard/fiat",
+                  "guides/dashboard/fiat-deposit-instructions"
+                ]
+              }
             ]
           },
           {

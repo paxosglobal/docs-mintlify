@@ -1,48 +1,13 @@
 ---
 title: 'Crypto Addresses'
-description: View and manage addresses for transferring crypto off the Paxos platform.
+description: View and manage addresses for transferring crypto on and off the Paxos platform.
 ---
 
-import AddCryptoAddress from "/snippets/add-crypto-address.mdx";
-import Permissions from "/snippets/permissions.mdx";
-
-![Add Crypto Address](/images/address-withdrawal.png)
-
-Use [Addresses](https://dashboard.paxos.com/dashboard/addresses) to review all the current destination wallet addresses that can be used to move digital assets off the Paxos platform.
-For example, when [transferring a stablecoin to an external wallet](/guides/dashboard/transfer#transfer-to-an-external-wallet-or-bank-account), the options are populated from the addresses shown and configured here.
-
-<Permissions value="view saved crypto addresses" />
-
-To view a saved network address:
-
-- Use the copy function in the **Address** column to quickly add an address to the clipboard.
-- Use the **Actions** menu to view a saved address and review existing information, including the [beneficiary details](/guides/dashboard/travel-rule).
-
-## Add Network Address
-
-<AddCryptoAddress />
-
-Optionally, perform a test [transfer](/guides/dashboard/transfer#transfer-to-an-external-wallet-or-bank-account) to ensure you can send assets to the destination wallet address.
-
-## Delete Network Address
-
-On the [Addresses](https://dashboard.paxos.com/dashboard/addresses) screen, use **Delete** in the **Actions** menu to permanently remove a saved network address.
-Any future withdrawals to the address will fail unless you add the address again.
-
-<Permissions value="add or delete crypto addresses" />
-
-## Deposit Instructions
-
-![Addresses Deposit Instructions](/images/address-deposit-instructions.png)
-
-Use Addresses to access saved crypto deposit instructions.
-
-- **Deposit**: The asset (Source) is deposited directly into the selected Paxos Profile (Destination).
-
-<Tip>
-
-Deposit instructions are immutable. If your deposit requirements change, create a new set of instructions.
-
-</Tip>
-
-To download deposit instructions, select the **Actions** menu and use **Export Instructions**.
+<CardGroup cols={2}>
+  <Card title="Withdrawal Addresses" href="/guides/dashboard/withdrawal-addresses" icon="arrow-up-right">
+    Add and manage destination wallet addresses for crypto withdrawals.
+  </Card>
+  <Card title="Deposit Addresses" href="/guides/dashboard/deposit-addresses" icon="arrow-down-left">
+    Access saved deposit addresses for receiving crypto into your Paxos profile.
+  </Card>
+</CardGroup>
