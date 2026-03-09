@@ -299,7 +299,6 @@
               {
                 "group": "Crypto Addresses",
                 "pages": [
-                  "guides/dashboard/addresses",
                   "guides/dashboard/withdrawal-addresses",
                   "guides/dashboard/deposit-addresses"
                 ]
