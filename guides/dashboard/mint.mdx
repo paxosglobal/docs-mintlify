@@ -3,7 +3,7 @@ title: 'Mint'
 description: Convert USD to Paxos-issued stablecoins and receive them in an external wallet.
 ---
 
-This guide walks you through the standard automated minting flow (**USD \> Stablecoin**), where funds are sent via bank transfer and converted into stablecoins on supported blockchain networks. The steps are the same for USDG,  PYUSD and USDP.
+This guide walks you through the standard automated minting flow (**USD \> Stablecoin**), where funds are sent via bank transfer and converted into stablecoins on supported blockchain networks. The steps are the same for USDG, PYUSD and USDP.
 
 <Frame caption="Watch a demo: See the full minting flow from start to finish before getting started.">
   <video controls className="w-full rounded-xl">
@@ -12,12 +12,13 @@ This guide walks you through the standard automated minting flow (**USD \> Stabl
 </Frame>
 
 ## **What You'll Do**
+
 1. [Add a destination wallet address](/guides/dashboard/mint#withdraw-address) (This is where you'll receive the stablecoin).
 2. [Create minting instructions](/guides/dashboard/mint#minting-instructions), which define:
 
-* **How** you'll send USD to Paxos (SWIFT or ABA, DBS-ACT, CUBIX).
-* **Which stablecoin** you want (USDG, PYUSD, USDP).  
-* **Where** the stablecoin should go (wallet \+ network).
+- **How** you'll send USD to Paxos (SWIFT or ABA, DBS-ACT, CUBIX).
+- **Which stablecoin** you want (USDG, PYUSD, USDP).
+- **Where** the stablecoin should go (wallet \+ network).
 
 3. [Send USD to the Paxos platform](/guides/dashboard/mint#send-usd) using the generated deposit details.
 
@@ -34,17 +35,17 @@ Paxos will automatically mint the stablecoin and send it to your wallet.
 
 ### Supported Stablecoins and Networks
 
-| Asset | Supported Network |
-| ----- | ----- |
-| USDG | Ethereum, Solana, X Layer |
+| Asset | Supported Network                   |
+| ----- | ----------------------------------- |
+| USDG  | Ethereum, Solana, X Layer           |
 | PYUSD | Ethereum, Solana, Arbitrum, Stellar |
-| USDP | Ethereum |
+| USDP  | Ethereum                            |
 
 ## ➊ Add Destination Wallet Address​
 
-You must add a wallet address before minting. This is where your stablecoins will be sent. 
+You must add a wallet address before minting. This is where your stablecoins will be sent.
 
-![Minting Add Address](/images/mint-add-address.png)
+![Minting Add Address](/images/address-withdrawal.png)
 
 1. Navigate to [**Addresses**](https://dashboard.paxos.com/dashboard/addresses) in the Paxos dashboard.
 2. Click **⊕︎ Address**.
@@ -55,21 +56,21 @@ You must add a wallet address before minting. This is where your stablecoins wil
 
 <Tip>
 
-Use the [**Approvals**](https://docs.paxos.com/dashboard/admin/approvals) functionality to require additional team members to review any new addresses and instructions before they are saved. 
-This avoids potential mistakes around incorrect information and adds an extra layer of security. **Only approved addresses** can be used in any mint process. Similarly minting instructions **aren't active until approved**.  
+Use the [**Approvals**](https://docs.paxos.com/dashboard/admin/approvals) functionality to require additional team members to review any new addresses and instructions before they are saved.
+This avoids potential mistakes around incorrect information and adds an extra layer of security. **Only approved addresses** can be used in any mint process. Similarly minting instructions **aren't active until approved**.
 
 </Tip>
 
 ## ➋ Create Minting Instructions​
+
 Once your wallet address is added, configure the minting rules for USD > Stablecoin.
 
 <Info>
-
-Minting instructions are reusable and immutable. Access [Saved Instructions](https://dashboard.paxos.com/dashboard/saved-instructions) to reuse them anytime you want to mint the same asset. 
+Minting instructions are reusable and immutable. Access [Addresses](https://dashboard.paxos.com/dashboard/addresses/deposit) for crypto or [Fiat Accounts](https://dashboard.paxos.com/dashboard/fiat/deposits) for USD to reuse them anytime you want to mint the same asset.
 
 </Info>
 
-1. Go to [**Dashboard**](https://dashboard.paxos.com/) **> Convert**.  
+1. Go to [**Dashboard**](https://dashboard.paxos.com/) **> Convert**.
 2. Select **USD** as the asset you have. <br />![Minting Asset You Have](/images/mint-asset-you-have.png)
 3. Select **External Account/Wallet** and then the fiat network you use to send USD to Paxos. If you choose **DBS-ACT**, it may need to be activated first. [Contact Support](https://support.paxos.com/hc/en-us) for details. <br />![Minting Select Source](/images/mint-select-source.png)
 
@@ -83,7 +84,7 @@ Use the [**Paxos Profile**](https://docs.paxos.com/dashboard/organization#profil
 5. For the destination, select **External Account/Wallet** and then choose one of the available networks and one of the existing **Addresses**.
 6. Name the instructions. <br />![Minting Name Instructions](/images/mint-name-instructions.png)
 
-7. Click **Generate Deposit Instructions** to review the minting instructions. You can also download them for reference when sending USD to Paxos. 
+7. Click **Generate Deposit Instructions** to review the minting instructions. You can also download them for reference when sending USD to Paxos.
 
 <Tip>
 
@@ -91,7 +92,8 @@ Test the minting instructions with a small amount before minting large volumes.
 
 </Tip>
 
-## ➌ Send USD to Paxos 
+## ➌ Send USD to Paxos
+
 Use the [Deposit instructions](/guides/dashboard/deposit) to send wire funds to Paxos.
 
 <Warning>
@@ -106,7 +108,7 @@ Once the funds are received, Paxos automatically executes the minting instructio
 
 Track your minting progress from the **Transactions >Asset Movements** section. You'll see two entries:
 
-- **Fiat Deposit**: It usually takes a minute or two for the system to show the associated  
+- **Fiat Deposit**: It usually takes a minute or two for the system to show the associated
 - **Crypto Withdraw**: The actual crypto withdraw may take anywhere from seconds to hours, depending on the blockchain, mint amount and off-business-hour transactions.
 
 Transactions have the following status:
@@ -117,7 +119,7 @@ Transactions have the following status:
 
 <Tip>
 
-Crypto Network Fees: Crypto network fees are calculated at the time of withdraw and deducted from the total deposit amount. Use the **View** action to see a fee breakdown and other transaction details. ![Minting Transactions](/images/mint-transactions.png) 
+Crypto Network Fees: Crypto network fees are calculated at the time of withdraw and deducted from the total deposit amount. Use the **View** action to see a fee breakdown and other transaction details. ![Minting Transactions](/images/mint-transactions.png)
 
 </Tip>
 
@@ -125,8 +127,8 @@ Crypto Network Fees: Crypto network fees are calculated at the time of withdraw 
 
 Paxos supports manual minting flows with a number of different options. Following are a few options:
 
-* [Deposit USD](/guides/dashboard/deposit), then perform a manual [convert](/guides/dashboard/convert) followed by a [manual transfer](/guides/dashboard/transfer).
-* Use **Convert** to deposit USD and [convert](/guides/dashboard/convert) it to a stablecoin, keeping it on-platform in the Profile of your choice, followed by a [manual transfer](/guides/dashboard/transfer).
+- [Deposit USD](/guides/dashboard/deposit), then perform a manual [convert](/guides/dashboard/convert) followed by a [manual transfer](/guides/dashboard/transfer).
+- Use **Convert** to deposit USD and [convert](/guides/dashboard/convert) it to a stablecoin, keeping it on-platform in the Profile of your choice, followed by a [manual transfer](/guides/dashboard/transfer).
 
 <Tip>
 
