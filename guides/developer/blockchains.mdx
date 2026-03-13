@@ -13,34 +13,61 @@ These assets are supported in the context of three main use cases:
 
 ## Stablecoins
 
-| Stablecoin                                                | Arbitrum One | Base | Ethereum | Ink | Polygon PoS | Solana | Stellar | X Layer |
-|-----------------------------------------------------------| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Binance USD ([BUSD](/guides/stablecoin/busd))<sup>1</sup> | -- | -- | ✅ | -- | -- | -- | -- | -- |
-| Global Dollar ([USDG](/guides/stablecoin/usdg))           | -- | -- | ✅ | ✅ | -- | ✅ | -- | ✅ |
-| Pax Dollar ([USDP](/guides/stablecoin/usdp))              | -- | -- | ✅ | -- | -- | ✅ | -- | -- |
-| PayPal USD ([PYUSD](/guides/stablecoin/pyusd))            | ✅ | -- | ✅ | -- | -- | ✅ | ✅ | -- |
-| USD Coin (USDC)                                           | -- | ✅ | ✅ | -- | ✅ | ✅ | -- | -- |
+<Columns cols={2}>
+  <Card title="Global Dollar (USDG)" icon="dollar-sign" href="/guides/stablecoin/usdg">
+    **Supported networks:** Ethereum, Ink, Solana, X Layer
+  </Card>
+  <Card title="PayPal USD (PYUSD)" icon="dollar-sign" href="/guides/stablecoin/pyusd">
+    **Supported networks:** Arbitrum One, Ethereum, Solana, Stellar
+  </Card>
+  <Card title="Pax Dollar (USDP)" icon="dollar-sign" href="/guides/stablecoin/usdp">
+    **Supported networks:** Ethereum, Solana
+  </Card>
+  <Card title="USD Coin (USDC)" icon="dollar-sign">
+    **Supported networks:** Base, Ethereum, Polygon PoS, Solana
+  </Card>
+  <Card title="Binance USD (BUSD)" icon="dollar-sign" href="/guides/stablecoin/busd">
+    **Supported networks:** Ethereum only
 
-
-<sup>1</sup> [BUSD](/guides/stablecoin/busd) withdrawals are no longer available on the Paxos Platform. [BUSD](/guides/stablecoin/busd) (ERC-20) deposits are supported to redeem for USD or convert to [USDP](/guides/stablecoin/usdp). **Do not deposit BUSD via Binance Smart Chain (BSC)**.
+    <Warning>Withdrawals no longer available. Deposits supported for USD redemption or USDP conversion. Do not deposit via Binance Smart Chain (BSC).</Warning>
+  </Card>
+</Columns>
 
 ## Trading and Custody
 
-| Digital Asset                                 | Bitcoin | Bitcoin Cash | Ethereum | Litecoin | Solana |
-|-----------------------------------------------| :---: | :---: | :---: | :---: | :---: |
-| Aave (AAVE)                                   | -- | -- | ✅ | -- | -- |
-| Bitcoin (BTC)<sup>2</sup>                     | ✅ | -- | -- | -- | -- |
-| Bitcoin Cash (BCH)                            | -- | ✅ | -- | -- | -- |
-| Chainlink (LINK)                              | -- | -- | ✅ | -- | -- |
-| Ethereum (ETH)                                | -- | -- | ✅ | -- | -- |
-| Litecoin (LTC)                                | -- | -- | -- | ✅ | -- |
-| Pax Gold ([PAXG](https://paxos.com/paxgold/)) | -- | -- | ✅ | -- | -- |
-| Solana (SOL)<sup>3</sup>                      | -- | -- | -- | -- | ✅ |
-| Uniswap (UNI)                                 | -- | -- | ✅ | -- | -- |
+<Columns cols={2}>
+  <Card title="Bitcoin (BTC)" icon="bitcoin-sign">
+    **Network:** Bitcoin
 
-<sup>2</sup> Supported wallet types for BTC withdrawals: P2WPKH, P2WSH, P2PKH, P2SH, and P2TR (Taproot).
+    Supported wallet types for withdrawals: P2WPKH, P2WSH, P2PKH, P2SH, and P2TR (Taproot).
+  </Card>
+  <Card title="Ethereum (ETH)" icon="ethereum">
+    **Network:** Ethereum
+  </Card>
+  <Card title="Solana (SOL)" icon="circle-nodes">
+    **Network:** Solana
 
-<sup>3</sup> Trading or custody of SOL is not available to residents of the US.
+    <Warning>Trading or custody of SOL is not available to residents of the US.</Warning>
+  </Card>
+  <Card title="Litecoin (LTC)" icon="coins">
+    **Network:** Litecoin
+  </Card>
+  <Card title="Bitcoin Cash (BCH)" icon="bitcoin-sign">
+    **Network:** Bitcoin Cash
+  </Card>
+  <Card title="Pax Gold (PAXG)" icon="coins" href="https://paxos.com/paxgold/">
+    **Network:** Ethereum
+  </Card>
+  <Card title="Aave (AAVE)" icon="circle-nodes">
+    **Network:** Ethereum
+  </Card>
+  <Card title="Chainlink (LINK)" icon="link">
+    **Network:** Ethereum
+  </Card>
+  <Card title="Uniswap (UNI)" icon="circle-nodes">
+    **Network:** Ethereum
+  </Card>
+</Columns>
 
 ## Blockchain Transactions
 
