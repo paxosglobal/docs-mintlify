@@ -1,0 +1,133 @@
+---
+title: 'Migration Guide'
+description: 'Migrate from direct API calls to the Paxos SDK for automatic authentication, retries, pagination, and typed errors.'
+---
+
+If you already integrate with Paxos APIs using raw HTTP calls, you can migrate to the SDK incrementally. The SDK handles authentication, retries, pagination, and error parsing automatically — eliminating boilerplate you currently maintain.
+
+## Why Migrate?
+
+| Concern | Direct API Calls | With the SDK |
+|---|---|---|
+| Authentication | Manual token management, refresh logic, thread safety | Automatic — handled by the SDK |
+| Retries | Manual retry loops with backoff and jitter | Automatic — 429 and 5xx retried with exponential backoff |
+| Pagination | Manual cursor tracking and page fetching | Automatic — iterators handle page boundaries |
+| Error handling | Parse JSON, check status codes, extract request ID | Typed errors with `IsNotFound()`, `IsRateLimited()`, etc. |
+| Idempotency | Generate and manage idempotency keys manually | Automatic — SDK generates keys for retried mutating requests |
+
+## Before and After
+
+### Authentication
+
+**Before** — Manual token acquisition and injection:
+
+```bash
+# Get a token
+TOKEN=$(curl -s -X POST https://oauth.sandbox.paxos.com/oauth2/token \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "client_id=$PAXOS_CLIENT_ID" \
+  --data-urlencode "client_secret=$PAXOS_CLIENT_SECRET" \
+  | jq -r '.access_token')
+
+# Use the token
+curl https://api.sandbox.paxos.com/v2/transfer/transfers/txn_123 \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+**After** — The SDK handles it:
+
+<CodeGroup>
+
+```go Go
+client, _ := paxos.NewClient(os.Getenv("PAXOS_CLIENT_ID"), os.Getenv("PAXOS_CLIENT_SECRET"), paxos.WithSandbox())
+transfer, err := client.Transfers.GetTransfer(ctx, "txn_123")
+```
+
+```python Python
+client = paxos.Client(client_id=os.environ["PAXOS_CLIENT_ID"], client_secret=os.environ["PAXOS_CLIENT_SECRET"], sandbox=True)
+transfer = client.transfers.get_transfer("txn_123")
+```
+
+```typescript TypeScript
+const client = new PaxosClient({ clientId: process.env.PAXOS_CLIENT_ID!, clientSecret: process.env.PAXOS_CLIENT_SECRET!, sandbox: true });
+const transfer = await client.transfers.getTransfer("txn_123");
+```
+
+```java Java
+PaxosClient client = PaxosClient.builder().clientId(System.getenv("PAXOS_CLIENT_ID")).clientSecret(System.getenv("PAXOS_CLIENT_SECRET")).sandbox(true).build();
+Transfer transfer = client.transfers().getTransfer("txn_123");
+```
+
+</CodeGroup>
+
+### Pagination
+
+**Before** — Manual cursor loop:
+
+```go
+var cursor string
+for {
+    resp, _ := http.Get(fmt.Sprintf("https://api.sandbox.paxos.com/v2/transfer/transfers?limit=50&page_cursor=%s", cursor))
+    var result ListResponse
+    json.NewDecoder(resp.Body).Decode(&result)
+
+    for _, t := range result.Items {
+        process(t)
+    }
+
+    if result.NextPageCursor == "" {
+        break
+    }
+    cursor = result.NextPageCursor
+}
+```
+
+**After** — Auto-pagination iterator:
+
+```go
+for iter := client.Transfers.ListTransfers(ctx, &paxos.ListTransfersRequest{Limit: 50}); iter.Next(); {
+    process(iter.Current())
+}
+```
+
+### Error Handling
+
+**Before** — Raw status code checks:
+
+```go
+resp, _ := http.Get(url)
+if resp.StatusCode == 429 {
+    time.Sleep(time.Second * 5)
+    // retry...
+} else if resp.StatusCode == 404 {
+    // not found...
+}
+```
+
+**After** — Typed error checking:
+
+```go
+transfer, err := client.Transfers.GetTransfer(ctx, "txn_123")
+if paxos.IsNotFound(err) {
+    // handle not found
+}
+// 429 and 5xx are retried automatically
+```
+
+## Migration Checklist
+
+Use this checklist to migrate incrementally:
+
+- [ ] Install the SDK ([Go](/sdks/quickstart/go), [Python](/sdks/quickstart/python), [TypeScript](/sdks/quickstart/typescript), [Java](/sdks/quickstart/java))
+- [ ] Replace token management code with SDK client construction
+- [ ] Replace HTTP call sites with SDK service methods one at a time
+- [ ] Replace manual error handling with typed SDK errors
+- [ ] Replace pagination loops with SDK iterators
+- [ ] Test each migrated call against [Sandbox](/sdks/sandbox)
+- [ ] Deploy to production
+
+## Incremental Migration
+
+You don't have to migrate everything at once. The SDK client can coexist with your existing HTTP code. Start with the endpoints you call most frequently, then migrate the rest over time.
+
+> The SDK uses the same underlying REST API — there are no behavioral differences between SDK calls and direct API calls.

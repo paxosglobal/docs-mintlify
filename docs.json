@@ -132,6 +132,54 @@
         ]
       },
       {
+        "tab": "SDKs",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "sdks/index"
+            ]
+          },
+          {
+            "group": "Quickstart",
+            "pages": [
+              "sdks/quickstart/go",
+              "sdks/quickstart/python",
+              "sdks/quickstart/typescript",
+              "sdks/quickstart/java"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "sdks/authentication",
+              "sdks/error-handling",
+              "sdks/pagination",
+              "sdks/webhooks",
+              "sdks/sandbox",
+              "sdks/ai-agents",
+              "sdks/migration"
+            ]
+          },
+          {
+            "group": "Service References",
+            "pages": [
+              "sdks/services/transfers",
+              "sdks/services/identity",
+              "sdks/services/orders",
+              "sdks/services/profiles",
+              "sdks/services/fiat-transfers",
+              "sdks/services/deposit-addresses",
+              "sdks/services/stablecoin-conversion",
+              "sdks/services/settlement",
+              "sdks/services/market-data",
+              "sdks/services/events",
+              "sdks/services/api-credentials"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Developer Guide",
         "groups": [
           {

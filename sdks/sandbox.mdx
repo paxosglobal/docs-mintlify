@@ -1,0 +1,160 @@
+---
+title: 'Sandbox'
+description: 'Test your integration in the Paxos Sandbox environment with simulated deposits, identity approvals, and test data.'
+---
+
+The Paxos Sandbox is a separate environment for testing your integration without real money or real identity verification. It mirrors the production API at `api.sandbox.paxos.com` with separate credentials and isolated test data.
+
+## Enabling Sandbox Mode
+
+Pass the sandbox option when creating your client:
+
+<CodeGroup>
+
+```go Go
+client, err := paxos.NewClient(
+    os.Getenv("PAXOS_CLIENT_ID"),
+    os.Getenv("PAXOS_CLIENT_SECRET"),
+    paxos.WithSandbox(),
+)
+```
+
+```python Python
+client = paxos.Client(
+    client_id=os.environ["PAXOS_CLIENT_ID"],
+    client_secret=os.environ["PAXOS_CLIENT_SECRET"],
+    sandbox=True,
+)
+```
+
+```typescript TypeScript
+const client = new PaxosClient({
+  clientId: process.env.PAXOS_CLIENT_ID!,
+  clientSecret: process.env.PAXOS_CLIENT_SECRET!,
+  sandbox: true,
+});
+```
+
+```java Java
+PaxosClient client = PaxosClient.builder()
+    .clientId(System.getenv("PAXOS_CLIENT_ID"))
+    .clientSecret(System.getenv("PAXOS_CLIENT_SECRET"))
+    .sandbox(true)
+    .build();
+```
+
+</CodeGroup>
+
+> Sandbox credentials are different from production credentials. Create them in the [Sandbox Dashboard](https://dashboard.sandbox.paxos.com/).
+
+## Simulating Deposits
+
+Use `CreateSandboxDeposit` to add test funds to a profile:
+
+<CodeGroup>
+
+```go Go
+deposit, err := client.Sandbox.CreateSandboxDeposit(ctx, &paxos.CreateSandboxDepositRequest{
+    ProfileID: "profile_123",
+    Asset:     "USD",
+    Amount:    "10000.00",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Deposited %s %s\n", deposit.Amount, deposit.Asset)
+```
+
+```python Python
+deposit = client.sandbox.create_sandbox_deposit(
+    profile_id="profile_123",
+    asset="USD",
+    amount="10000.00",
+)
+print(f"Deposited {deposit.amount} {deposit.asset}")
+```
+
+```typescript TypeScript
+const deposit = await client.sandbox.createSandboxDeposit({
+  profileId: "profile_123",
+  asset: "USD",
+  amount: "10000.00",
+});
+console.log(`Deposited ${deposit.amount} ${deposit.asset}`);
+```
+
+```java Java
+SandboxDeposit deposit = client.sandbox().createSandboxDeposit(
+    CreateSandboxDepositRequest.builder()
+        .profileId("profile_123")
+        .asset("USD")
+        .amount("10000.00")
+        .build());
+System.out.printf("Deposited %s %s%n", deposit.getAmount(), deposit.getAsset());
+```
+
+</CodeGroup>
+
+## Setting Identity Status
+
+Bypass the identity verification process in Sandbox by setting the status directly:
+
+<CodeGroup>
+
+```go Go
+err := client.Sandbox.SetIdentityStatus(ctx, &paxos.SetIdentityStatusRequest{
+    IdentityID:              "identity_123",
+    IDVerificationStatus:    "APPROVED",
+    SanctionsVerificationStatus: "APPROVED",
+})
+```
+
+```python Python
+client.sandbox.set_identity_status(
+    identity_id="identity_123",
+    id_verification_status="APPROVED",
+    sanctions_verification_status="APPROVED",
+)
+```
+
+```typescript TypeScript
+await client.sandbox.setIdentityStatus({
+  identityId: "identity_123",
+  idVerificationStatus: "APPROVED",
+  sanctionsVerificationStatus: "APPROVED",
+});
+```
+
+```java Java
+client.sandbox().setIdentityStatus(
+    SetIdentityStatusRequest.builder()
+        .identityId("identity_123")
+        .idVerificationStatus("APPROVED")
+        .sanctionsVerificationStatus("APPROVED")
+        .build());
+```
+
+</CodeGroup>
+
+## Test Workflow Example
+
+A typical Sandbox test scenario:
+
+➊ Create a profile
+
+➋ Create an identity and approve it with `SetIdentityStatus`
+
+➌ Fund the profile with `CreateSandboxDeposit`
+
+➍ Execute transfers, orders, or other operations
+
+➎ Verify results using the List and Get endpoints
+
+## Sandbox Limitations
+
+- **No real blockchain transactions** — Crypto withdrawals don't execute on a live network (testnets are available for some chains)
+- **Simulated settlements** — Settlement operations complete immediately
+- **More permissive rate limits** — Sandbox has higher rate limits than production
+- **Separate data** — Sandbox data is completely isolated from production
+
+> For testnet details, withdrawal limits, and fiat transfer testing, see the [Sandbox reference](/guides/developer/sandbox).

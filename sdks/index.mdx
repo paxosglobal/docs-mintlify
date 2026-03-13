@@ -1,0 +1,68 @@
+---
+title: 'SDKs'
+description: 'Idiomatic client libraries for Go, Python, TypeScript, and Java that handle authentication, pagination, retries, and error handling automatically.'
+---
+
+Paxos SDKs provide a simple, idiomatic interface to all Paxos APIs in Go, Python, TypeScript, and Java. Each SDK handles OAuth2 authentication, automatic retries with backoff, cursor-based pagination, and typed error handling so you can focus on your integration logic.
+
+## Choose Your Language
+
+<CardGroup cols={2}>
+  <Card title="Go" icon="golang" href="/sdks/quickstart/go">
+    Go 1.21+ with functional options. The reference SDK implementation.
+  </Card>
+  <Card title="Python" icon="python" href="/sdks/quickstart/python">
+    Python 3.9+ with async support and type hints.
+  </Card>
+  <Card title="TypeScript" icon="js" href="/sdks/quickstart/typescript">
+    Node 18+ and browser-compatible with full TypeScript types.
+  </Card>
+  <Card title="Java" icon="java" href="/sdks/quickstart/java">
+    Java 17+ with builder patterns and CompletableFuture support.
+  </Card>
+</CardGroup>
+
+## Feature Comparison
+
+Every SDK provides the same core capabilities:
+
+| Feature | Go | Python | TypeScript | Java |
+|---|---|---|---|---|
+| Auto-authentication (OAuth2) | ✅ | ✅ | ✅ | ✅ |
+| Auto-pagination (iterators) | ✅ | ✅ | ✅ | ✅ |
+| Typed errors (RFC 7807) | ✅ | ✅ | ✅ | ✅ |
+| Retry with exponential backoff | ✅ | ✅ | ✅ | ✅ |
+| Sandbox mode | ✅ | ✅ | ✅ | ✅ |
+| Decimal precision for amounts | ✅ | ✅ | ✅ | ✅ |
+| AI tooling (CLAUDE.md) | ✅ | ✅ | ✅ | ✅ |
+
+## API Coverage
+
+The SDKs cover all publicly documented Paxos API services:
+
+**Identity & Accounts** — [Identity](/api-reference/endpoints/identity/overview), [Profiles](/api-reference/endpoints/profiles/overview), [Accounts](/api-reference/endpoints/accounts/overview)
+
+**Transfers & Funding** — [Transfers](/api-reference/endpoints/transfers/overview), [Fiat Transfers](/api-reference/endpoints/fiat-transfers/overview), [Deposit Addresses](/api-reference/endpoints/deposit-addresses/list-deposit-addresses), [Crypto Withdrawals](/api-reference/endpoints/crypto-withdrawals/create-crypto-withdrawal)
+
+**Trading** — [Orders](/api-reference/endpoints/orders/overview), [Market Data](/api-reference/endpoints/market-data/overview), [Pricing](/api-reference/endpoints/pricing/overview), [Quotes](/api-reference/endpoints/quotes/overview)
+
+**Stablecoin** — [Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/overview), [Orchestrations](/api-reference/endpoints/orchestration/overview)
+
+**Settlement** — [Settlement](/api-reference/endpoints/settlement/overview)
+
+**Events** — [Events](/api-reference/endpoints/events/overview)
+
+## GitHub Repositories
+
+| Language | Repository |
+|---|---|
+| Go | [github.com/paxosglobal/paxos-go](https://github.com/paxosglobal/paxos-go) |
+| Python | [github.com/paxosglobal/paxos-python](https://github.com/paxosglobal/paxos-python) |
+| TypeScript | [github.com/paxosglobal/paxos-js](https://github.com/paxosglobal/paxos-js) |
+| Java | [github.com/paxosglobal/paxos-java](https://github.com/paxosglobal/paxos-java) |
+
+## Next Steps
+
+- Follow a [Quickstart](/sdks/quickstart/go) to make your first API call
+- Learn how the SDK handles [Authentication](/sdks/authentication) automatically
+- Set up the [Sandbox](/sdks/sandbox) for testing
