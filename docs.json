@@ -66,10 +66,6 @@
       "destination": "/guides/crypto-brokerage/:slug*"
     },
     {
-      "source": "/settlements/:slug*",
-      "destination": "/guides/settlements/:slug*"
-    },
-    {
       "source": "/payments/:slug*",
       "destination": "/guides/payments/:slug*"
     },
@@ -185,16 +181,6 @@
               "guides/payments/websocket",
               "guides/payments/status",
               "guides/payments/faq"
-            ]
-          },
-          {
-            "group": "Settlements",
-            "pages": [
-              "guides/settlements/index",
-              "guides/settlements/quickstart",
-              "guides/settlements/status",
-              "guides/settlements/notification",
-              "guides/settlements/faq"
             ]
           },
           {
@@ -581,22 +567,6 @@
                 "group": "Sandbox Fiat Transfers",
                 "pages": [
                   "api-reference/endpoints/sandbox-fiat-transfers/initiate-sandbox-fiat-deposit"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Settlements",
-            "pages": [
-              {
-                "group": "Settlement",
-                "pages": [
-                  "api-reference/endpoints/settlement/overview",
-                  "api-reference/endpoints/settlement/list-transactions",
-                  "api-reference/endpoints/settlement/create-transaction",
-                  "api-reference/endpoints/settlement/get-transaction",
-                  "api-reference/endpoints/settlement/cancel-transaction",
-                  "api-reference/endpoints/settlement/affirm-transaction"
                 ]
               }
             ]
