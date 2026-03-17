@@ -57,3 +57,43 @@ Transactions are matched against tiers by their USD value:
 - Approver count per tier cannot exceed the number of users with the approver role
 - You cannot add a new tier until the current one has a threshold amount set
 - If your first tier starts above $0, a banner reminds you that lower amounts fall back to the default
+
+## Per-tier approver roles
+
+By default, any user whose role includes the relevant approval permission can approve transactions across all tiers. You can optionally restrict which roles are allowed to approve on a per-tier basis.
+
+### How it works
+
+Each tier can override the default approver roles. When an override is active, only users with the selected roles can approve transactions that fall within that tier's amount range. Tiers without overrides continue to use the default roles.
+
+| Amount range | Approvers required | Allowed roles |
+| --- | --- | --- |
+| \$0 – \$999 | 1 | All roles with approval permission (default) |
+| \$1,000 – \$4,999 | 2 | Treasury Manager, Compliance Officer |
+| \$5,000+ | 3 | Treasury Manager |
+
+In this example, anyone with the approval permission can approve transactions under \$1,000. Transactions between \$1,000 and \$4,999 require two approvals from users with the Treasury Manager or Compliance Officer role. Transactions of \$5,000 or more require three approvals, all from users with the Treasury Manager role.
+
+### Restricting roles on a tier
+
+#### ➊ Edit a tier
+
+Go to [Admin > Approvals](https://dashboard.paxos.com/admin/approvals) and click **Edit** on a supported operation.
+
+#### ➋ Toggle the override
+
+On the tier you want to restrict, enable **Override default roles**.
+
+#### ➌ Select roles
+
+Choose one or more roles from the dropdown. Only roles that have the relevant approval permission for that operation type are shown.
+
+#### ➍ Submit for approval
+
+Click **Submit for Approval**. Another user must approve the policy change before it takes effect.
+
+### Constraints
+
+- You can only select roles that have the relevant approval permission for the operation type
+- At least one role must be selected when overriding default roles
+- Tiers without overrides use the default roles — any user with the approval permission can approve
