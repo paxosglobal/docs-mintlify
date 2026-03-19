@@ -1,0 +1,19 @@
+---
+title: 403 - WebAuthn Signature Required
+---
+
+A WebAuthn Signature Required error is returned when an operation requires step-up authentication via a WebAuthn signature.
+
+This problem type indicates that the request cannot proceed until the user completes a WebAuthn authentication challenge. The client should initiate the WebAuthn signing flow and retry the request with the resulting signature.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "webauthn signature required",
+  "meta": {},
+  "status": 403,
+  "title": "WebAuthn Signature Required",
+  "type": "https://developer.paxos.com/docs/v2/problems/webauthn-signature-required"
+}
+```
+</CodeGroup>
