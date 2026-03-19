@@ -951,7 +951,7 @@
               "api-reference/problems/insufficient-funds",
               "api-reference/problems/rejected",
               "api-reference/problems/already-exists",
-              "api-reference/problems/webauthn-signature-required"
+              "api-reference/problems/step-up-auth-required"
             ]
           }
         ]
