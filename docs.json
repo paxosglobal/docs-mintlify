@@ -103,11 +103,15 @@
     },
     {
       "source": "/api-reference/preview/identity-dormancy-lifecycle",
-      "destination": "/api-reference/endpoints/identity/identity-dormancy-lifecycle"
+      "destination": "/guides/identity/dormancy"
     },
     {
       "source": "/preview/identity-dormancy-lifecycle",
-      "destination": "/api-reference/endpoints/identity/identity-dormancy-lifecycle"
+      "destination": "/guides/identity/dormancy"
+    },
+    {
+      "source": "/api-reference/endpoints/identity/identity-dormancy-lifecycle",
+      "destination": "/guides/identity/dormancy"
     },
     {
       "source": "/api-reference/preview/:slug*",
@@ -163,7 +167,8 @@
                 "group": "Manage Lifecycle",
                 "pages": [
                   "guides/identity/edd",
-                  "guides/identity/kyc-refresh"
+                  "guides/identity/kyc-refresh",
+                  "guides/identity/dormancy"
                 ]
               },
               "guides/identity/statuses",
@@ -569,8 +574,7 @@
                   "api-reference/endpoints/identity-controls/overview",
                   "api-reference/endpoints/identity-controls/list-identity-controls",
                   "api-reference/endpoints/identity-controls/create-identity-control",
-                  "api-reference/endpoints/identity-controls/delete-identity-control",
-                  "api-reference/endpoints/identity/identity-dormancy-lifecycle"
+                  "api-reference/endpoints/identity-controls/delete-identity-control"
                 ]
               }
             ]
