@@ -11,6 +11,25 @@ async function fetchOpenAPISpec() {
   return response.json();
 }
 
+async function fetchPreviewOpenAPISpecs() {
+  const specs = [];
+  const previewDir = path.join(process.cwd(), 'preview');
+
+  try {
+    const entries = await fs.readdir(previewDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.endsWith('.openapi.json')) {
+        const content = await fs.readFile(path.join(previewDir, entry.name), 'utf8');
+        specs.push(JSON.parse(content));
+      }
+    }
+  } catch (error) {
+    // Preview directory may not exist, that's fine
+  }
+
+  return specs;
+}
+
 async function findMdxFiles(dir) {
   const files = [];
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -43,15 +62,15 @@ function extractOpenAPIFromFrontmatter(content) {
   return null;
 }
 
-function findOAuthScope(openApiSpec, method, path) {
+function findOAuthScopeInSpec(openApiSpec, method, path) {
   const paths = openApiSpec.paths;
   if (!paths[path] || !paths[path][method]) {
     return null;
   }
-  
+
   const operation = paths[path][method];
   const security = operation.security || openApiSpec.security || [];
-  
+
   // Look for OAuth2 security with scopes
   for (const securityRequirement of security) {
     for (const [schemeName, scopes] of Object.entries(securityRequirement)) {
@@ -61,7 +80,18 @@ function findOAuthScope(openApiSpec, method, path) {
       }
     }
   }
-  
+
+  return null;
+}
+
+function findOAuthScope(specs, method, path) {
+  // Check main spec first, then preview specs
+  for (const spec of specs) {
+    const scope = findOAuthScopeInSpec(spec, method, path);
+    if (scope !== null) {
+      return scope;
+    }
+  }
   return null;
 }
 
@@ -74,17 +104,17 @@ function extractOAuthScopeFromContent(content) {
   return scopeMatch ? scopeMatch[1].trim() : null;
 }
 
-async function validateFile(filePath, openApiSpec) {
+async function validateFile(filePath, specs) {
   try {
     const content = await fs.readFile(filePath, 'utf8');
-    
+
     const openApiInfo = extractOpenAPIFromFrontmatter(content);
     if (!openApiInfo) {
       // Skip files without OpenAPI frontmatter - they're not API endpoints
       return { valid: true };
     }
-    
-    const expectedScope = findOAuthScope(openApiSpec, openApiInfo.method, openApiInfo.path);
+
+    const expectedScope = findOAuthScope(specs, openApiInfo.method, openApiInfo.path);
     const hasScope = hasOAuthScopeSection(content);
     
     // If the endpoint requires a scope but file doesn't have one
@@ -137,17 +167,24 @@ async function main() {
     console.log('🔄 Fetching OpenAPI specification...');
     const openApiSpec = await fetchOpenAPISpec();
     console.log('✅ OpenAPI specification fetched successfully');
-    
+
+    console.log('🔄 Loading preview OpenAPI specifications...');
+    const previewSpecs = await fetchPreviewOpenAPISpecs();
+    console.log(`✅ Loaded ${previewSpecs.length} preview OpenAPI specification(s)`);
+
+    // Combine main spec with preview specs for validation
+    const allSpecs = [openApiSpec, ...previewSpecs];
+
     console.log('🔍 Finding MDX files in api-reference/endpoints...');
     const endpointsDir = path.join(process.cwd(), 'api-reference', 'endpoints');
     const mdxFiles = await findMdxFiles(endpointsDir);
     console.log(`📁 Found ${mdxFiles.length} MDX files to validate`);
-    
+
     console.log('🔄 Validating OAuth scopes...');
     const errors = [];
-    
+
     for (const filePath of mdxFiles) {
-      const result = await validateFile(filePath, openApiSpec);
+      const result = await validateFile(filePath, allSpecs);
       if (!result.valid) {
         const relativePath = path.relative(process.cwd(), filePath);
         errors.push({
