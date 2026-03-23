@@ -94,6 +94,22 @@
       "destination": "/preview/overview"
     },
     {
+      "source": "/api-reference/preview/identity-controls/:slug*",
+      "destination": "/api-reference/endpoints/identity-controls/:slug*"
+    },
+    {
+      "source": "/preview/identity-controls/:slug*",
+      "destination": "/api-reference/endpoints/identity-controls/:slug*"
+    },
+    {
+      "source": "/api-reference/preview/identity-dormancy-lifecycle",
+      "destination": "/api-reference/endpoints/identity/identity-dormancy-lifecycle"
+    },
+    {
+      "source": "/preview/identity-dormancy-lifecycle",
+      "destination": "/api-reference/endpoints/identity/identity-dormancy-lifecycle"
+    },
+    {
       "source": "/api-reference/preview/:slug*",
       "destination": "/preview/:slug*"
     },
@@ -546,6 +562,16 @@
                   "api-reference/endpoints/identity-documents/list-identity-documents",
                   "api-reference/endpoints/identity-documents/document-upload"
                 ]
+              },
+              {
+                "group": "Identity Controls",
+                "pages": [
+                  "api-reference/endpoints/identity-controls/overview",
+                  "api-reference/endpoints/identity-controls/list-identity-controls",
+                  "api-reference/endpoints/identity-controls/create-identity-control",
+                  "api-reference/endpoints/identity-controls/delete-identity-control",
+                  "api-reference/endpoints/identity/identity-dormancy-lifecycle"
+                ]
               }
             ]
           },
@@ -985,21 +1011,6 @@
             "group": "Previews",
             "pages": [
               "preview/overview"
-            ]
-          },
-          {
-            "group": "Identity Control Previews",
-            "pages": [
-              "preview/identity-controls/overview",
-              "preview/identity-controls/list-identity-controls",
-              "preview/identity-controls/create-identity-control",
-              "preview/identity-controls/delete-identity-control"
-            ]
-          },
-          {
-            "group": "Dormancy Preview",
-            "pages": [
-              "preview/identity-dormancy-lifecycle"
             ]
           }
         ]

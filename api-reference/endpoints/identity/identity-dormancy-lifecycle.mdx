@@ -11,7 +11,7 @@ You can define your own criteria for which identities qualify as dormant, and bu
 Paxos will not automatically mark identities as dormant unless agreed to as part of your integration.
 
 This guide will walk you through how to:
- - Set and unset identities as dormant via the [Identity Controls API](/api-reference/preview/identity-controls/overview)
+ - Set and unset identities as dormant via the [Identity Controls API](/api-reference/endpoints/identity-controls/overview)
  - List which of your identities are currently dormant
 
 ### Identity Status Impact
@@ -43,7 +43,7 @@ When retrieving an identity via [Get Identity](/api-reference/endpoints/identity
 
 ### ➊ Mark Identity as Dormant
 
-Mark an identity as dormant using the [Create Identity Control](/api-reference/preview/identity-controls/create-identity-control) endpoint.
+Mark an identity as dormant using the [Create Identity Control](/api-reference/endpoints/identity-controls/create-identity-control) endpoint.
 
 ```bash
 curl -X POST "https://api.paxos.com/v2/identity/controls" \
@@ -61,7 +61,7 @@ The identity's status immediately changes to `DISABLED` and operations are block
 
 ### ➋ Unmark Identity as Dormant
 
-Unmark an Identity as dormant using the [Delete Identity Control](/api-reference/preview/identity-controls/delete-identity-control) endpoint.
+Unmark an Identity as dormant using the [Delete Identity Control](/api-reference/endpoints/identity-controls/delete-identity-control) endpoint.
 
 ```bash
 curl -X DELETE "https://api.paxos.com/v2/identity/controls" \
