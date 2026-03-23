@@ -3,6 +3,10 @@ title: "Changelog"
 description: "Product updates and announcements"
 rss: true
 ---
+<Update label="March 23, 2026" description="v2 API">
+**Identity Controls API**: Added new [Identity Controls API](/api-reference/endpoints/identity-controls/overview) for managing identity lifecycle states. This API replaces the deprecated `user_disabled` and `admin_disabled` fields on Identity and provides finer-grained control types including `SELL_ONLY`, `CLOSED`, `FROZEN`, and `DORMANT`. See the [Dormancy Lifecycle guide](/guides/identity/dormancy) for managing inactive identities.
+</Update>
+
 <Update label="March 20, 2026" description="v2 API">
 **Transfer Status Details**: Add `stale_fee_quote` to `status_details` on Transfer responses. This field is populated when a crypto withdrawal is cancelled because on-chain state changed after the fee was quoted, indicating that the fee quote must be refreshed before retrying.
 </Update>
