@@ -166,7 +166,7 @@ Expired Execution Reports are sent when an order closes without being fully fill
 
 There are two scenarios that produce an Expired execution report:
 
-- **Market buy orders** that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed.
+- **Market buy orders** (non-Order Routing customers) that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed.
 - **Order Routing GTT orders** that reach their expiration time before being fully filled. The order may have been partially filled.
 
 <Note>
