@@ -164,10 +164,9 @@ These rejections occur after the order reaches the matching engine. Unlike the e
 
 Expired Execution Reports are sent when an order closes without being fully filled. **ExecType (`150`)** = `C`, **OrdStatus (`39`)** = `C` (Expired).
 
-There are two scenarios that produce an Expired execution report:
+### Market Buy Expiry (non-Order Routing)
 
-- **Market buy orders** (non-Order Routing customers) that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed.
-- **Order Routing GTT orders** that reach their expiration time before being fully filled. The order may have been partially filled.
+Market buy orders may close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed.
 
 <Note>
 
@@ -175,7 +174,7 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 
 </Note>
 
-### Standard FIX Fields
+#### Standard FIX Fields
 
 | Tag | Field | When Present | Notes |
 | --- | --- | --- | --- |
@@ -187,42 +186,114 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | `34` | MsgSeqNum | Always | Standard FIX header |
 | `52` | SendingTime | Always | Standard FIX header |
 
-#### Standard FIX Trailer
+##### Standard FIX Trailer
 
 | Tag | Field | When Present | Notes |
 | --- | --- | --- | --- |
 | `10` | CheckSum | Always | |
 
-### Expired Response Fields
+#### Response Fields
 
 **Always Present**
 
+| Tag | Field | Notes |
+| --- | --- | --- |
+| `54` | Side | `1` = Buy |
+| `150` | ExecType | `C` (Expired) |
+| `32` | LastShares | `0` |
+| `109` | ClientID | |
+| `1` | Account | |
+| `31` | LastPx | `0` |
+| `151` | LeavesQty | `0` |
+| `60` | TransactTime | |
+| `58` | Text | `Expired Order` |
+| `20` | ExecTransType | `0` (New) |
+| `55` | Symbol | Currency pair |
+| `17` | ExecID | |
+| `14` | CumQty | Total filled quantity |
+| `11` | ClOrdID | |
+| `44` | Price | `0` |
+| `6` | AvgPx | Average fill price |
+| `40` | OrdType | `1` (Market) |
+| `39` | OrdStatus | `C` (Expired) |
+| `37` | OrderID | |
+| `12` | Commission | `0` |
+| `13` | CommType | `3` (Absolute Value) |
+| `381` | GrossTradeAmt | `0` |
+| `152` | CashOrderQty | Fiat notional |
+| `59` | TimeInForce | `1` = GTC, `3` = IOC, `4` = FOK |
+| `5851` | LiquidityInd | `2` (Remove) |
+
+**Brokerage Clients**
+
 | Tag | Field | When Present | Notes |
 | --- | --- | --- | --- |
-| `54` | Side | Always | `1` = Buy, `2` = Sell |
-| `150` | ExecType | Always | `C` (Expired) |
-| `32` | lastShares | Always | `0` |
-| `109` | ClientID | Always | |
-| `1` | Account | Always | |
-| `31` | LastPx | Always | `0` |
-| `151` | LeavesQty | Always | Unfilled quantity (`0` for market buy expiry) |
-| `60` | TransactTime | Always | |
-| `58` | Text | Always | `Expired Order` |
-| `20` | ExecTransType | Always | `0` (New) |
-| `55` | Symbol | Always | Currency pair |
-| `17` | ExecID | Always | |
-| `14` | CumQty | Always | Total filled quantity |
-| `11` | ClOrdID | Always | |
-| `44` | Price | Always | Limit price (`0` for market buy expiry) |
-| `6` | AvgPx | Always | Average fill price |
-| `40` | OrdType | Always | |
-| `39` | OrdStatus | Always | `C` (Expired) |
-| `37` | OrderID | Always | |
-| `12` | Commission | Always | Commission paid (`0` if none) |
-| `13` | CommType | Always | `3` (Absolute Value) |
-| `381` | GrossTradeAmt | Always | Gross trade amount (`0` for market buy expiry) |
-| `152` | CashOrderQty | Always | Fiat notional |
-| `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
+| `5047` | AllocBrokerAccountID | Brokerage clients | IdentityAccountId |
+| `50` | SenderSubID | Brokerage clients | IdentityId |
+| `5074` | FundCommissionOption | Brokerage clients | |
+| `5000` | RecipientProfileId | Brokerage clients | ProfileID that receives settled currency |
+
+**Optional**
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `2362` | SelfMatchPreventionID | If enabled | Prevents self-matching. Up to 36 characters. Requires additional permissions. |
+
+---
+
+### GTT Order Expiry (Order Routing)
+
+Order Routing orders with GTT (Good Till Time) time-in-force that reach their expiration time before being fully filled. The order may have been partially filled.
+
+#### Standard FIX Fields
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `8` | BeginString | Always | Standard FIX header |
+| `9` | BodyLength | Always | Standard FIX header |
+| `35` | MsgType | Always | `8` (Execution Report) |
+| `49` | SenderCompID | Always | Standard FIX header |
+| `56` | TargetCompID | Always | Standard FIX header |
+| `34` | MsgSeqNum | Always | Standard FIX header |
+| `52` | SendingTime | Always | Standard FIX header |
+
+##### Standard FIX Trailer
+
+| Tag | Field | When Present | Notes |
+| --- | --- | --- | --- |
+| `10` | CheckSum | Always | |
+
+#### Response Fields
+
+**Always Present**
+
+| Tag | Field | Notes |
+| --- | --- | --- |
+| `54` | Side | `1` = Buy, `2` = Sell |
+| `150` | ExecType | `C` (Expired) |
+| `32` | LastShares | `0` |
+| `109` | ClientID | |
+| `1` | Account | |
+| `31` | LastPx | `0` |
+| `151` | LeavesQty | Unfilled quantity |
+| `60` | TransactTime | |
+| `58` | Text | `Expired Order` |
+| `20` | ExecTransType | `0` (New) |
+| `55` | Symbol | Currency pair |
+| `17` | ExecID | |
+| `14` | CumQty | Total filled quantity |
+| `11` | ClOrdID | |
+| `44` | Price | `0` |
+| `6` | AvgPx | Average fill price |
+| `40` | OrdType | |
+| `39` | OrdStatus | `C` (Expired) |
+| `37` | OrderID | |
+| `12` | Commission | `0` |
+| `13` | CommType | `3` (Absolute Value) |
+| `381` | GrossTradeAmt | Gross trade amount |
+| `152` | CashOrderQty | Fiat notional |
+| `59` | TimeInForce | `6` (GTT) |
+| `126` | ExpireTime | `YYYYMMDD-HH:MM:SS` format |
 
 **Conditional**
 
@@ -230,8 +301,6 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | --- | --- | --- | --- |
 | `38` | OrderQty | Limit and market sell orders | Base quantity |
 | `18` | ExecInst | Post-only orders | `6` (Post-Only) |
-| `5851` | LiquidityInd | Market buy expiry | `2` (Remove) |
-| `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
 
 **Brokerage Clients**
 
