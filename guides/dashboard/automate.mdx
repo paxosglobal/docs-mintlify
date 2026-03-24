@@ -1,0 +1,69 @@
+---
+title: 'Automate'
+description: Set up automation rules to automatically convert and route incoming deposits.
+---
+
+
+Go to the [Dashboard](https://dashboard.paxos.com/) and click **Automate** in the top-right corner to create automation rules for incoming deposits. When funds arrive, Paxos automatically converts and routes them based on your configuration.
+
+## How Automation Works
+
+1. Create an automation rule that defines:
+   - **Trigger**: The type of incoming deposit (USD or crypto).
+   - **Conversion**: What to convert the deposit into (for example, USD → stablecoin or stablecoin → USD).
+   - **Destination**: Where the converted asset should go (a Paxos Profile or an external bank account/wallet).
+1. Paxos generates deposit instructions for the automation rule.
+1. Send funds using the generated deposit instructions.
+1. When funds arrive, Paxos automatically executes the conversion and routes the result to the specified destination.
+
+## Create an Automation
+
+### USD Deposit
+
+Automatically convert incoming wire or CUBIX transfers.
+
+1. Select **USD Deposit**.
+1. Choose the fiat network for the deposit (for example, SWIFT, ABA, or CUBIX).
+1. Select the asset to convert into (for example, a stablecoin).
+1. Choose the **Destination** where the converted asset should go (a [Profile](/guides/dashboard/organization#profile) or an external wallet).
+1. Name the automation rule.
+1. Click **Generate Deposit Instructions** and use them to send USD to Paxos.
+
+### Crypto Deposit
+
+Automatically convert incoming stablecoin deposits on supported networks.
+
+1. Select **Crypto Deposit**.
+1. Choose the stablecoin and **Network** for the deposit.
+1. Select the asset to convert into.
+1. Choose the **Destination** where the converted asset should go (a [Profile](/guides/dashboard/organization#profile) or an external bank account/wallet).
+1. Name the automation rule.
+1. Save the automation and use the generated deposit address to send crypto to Paxos.
+
+## Manage Automations
+
+Access existing automation rules from the **Automate** menu or from [Addresses](https://dashboard.paxos.com/dashboard/addresses/deposit) (for crypto) and [Fiat Accounts](https://dashboard.paxos.com/dashboard/fiat/deposits) (for USD).
+
+Automation rules are reusable. Use the same deposit instructions anytime you want to repeat the same conversion flow.
+
+<Tip>
+
+Use the [**Approvals**](/guides/dashboard/admin/approvals) functionality to require additional team members to review new automation rules before they are activated. **Only approved automation rules** generate active deposit instructions.
+
+</Tip>
+
+## Review Transaction Status
+
+Track automation activity from **Transactions > Asset Movements**. Each automation execution generates:
+
+- **Deposit**: The incoming fiat or crypto deposit.
+- **Conversion**: The automatic conversion step.
+- **Withdrawal** (if applicable): The outbound transfer to an external destination.
+
+Transactions have the following status:
+
+- **Pending**: The transaction is executing, which may include a manual review. If a transaction is pending for an extended duration, contact Support.
+- **Failed**: If a transaction shows the failed status, contact Support.
+- **Complete**: The transaction is successful.
+
+> Questions? Contact [Support](https://support.paxos.com).

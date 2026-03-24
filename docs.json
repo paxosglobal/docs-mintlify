@@ -74,6 +74,18 @@
       "destination": "/guides/dashboard/:slug*"
     },
     {
+      "source": "/guides/dashboard/transfer",
+      "destination": "/guides/dashboard/withdraw"
+    },
+    {
+      "source": "/guides/dashboard/mint",
+      "destination": "/guides/dashboard/convert"
+    },
+    {
+      "source": "/guides/dashboard/redeem",
+      "destination": "/guides/dashboard/convert"
+    },
+    {
       "source": "/stablecoin/:slug*",
       "destination": "/guides/stablecoin/:slug*"
     },
@@ -288,18 +300,12 @@
             ]
           },
           {
-            "group": "Asset Movement",
+            "group": "Money Movement",
             "pages": [
               "guides/dashboard/deposit",
+              "guides/dashboard/withdraw",
               "guides/dashboard/convert",
-              "guides/dashboard/transfer"
-            ]
-          },
-          {
-            "group": "Stablecoin Operations",
-            "pages": [
-              "guides/dashboard/mint",
-              "guides/dashboard/redeem",
+              "guides/dashboard/automate",
               "guides/dashboard/paxg"
             ]
           },
