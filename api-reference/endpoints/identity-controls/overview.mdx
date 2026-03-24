@@ -59,6 +59,8 @@ Controls are returned in the following structure:
 }
 ```
 
+Active identity controls are also visible in the `status_details.active_controls` field when retrieving an identity via [GetIdentity](/api-reference/endpoints/identity/get-identity) or [ListIdentities](/api-reference/endpoints/identity/list-identities).
+
 ## Migration from Legacy Fields
 
 Identity Controls replaces the deprecated `user_disabled` and `admin_disabled` boolean fields. Existing identities with these fields set will be automatically migrated to use Identity Controls. During the transition period, both the legacy fields and Identity Controls will be supported.
