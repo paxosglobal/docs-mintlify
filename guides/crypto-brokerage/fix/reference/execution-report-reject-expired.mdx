@@ -218,17 +218,17 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | `40` | OrdType | Always | |
 | `39` | OrdStatus | Always | `C` (Expired) |
 | `37` | OrderID | Always | |
+| `12` | Commission | Always | Commission paid (`0` if none) |
+| `13` | CommType | Always | `3` (Absolute Value) |
 | `381` | GrossTradeAmt | Always | Gross trade amount (`0` for market buy expiry) |
+| `152` | CashOrderQty | Always | Fiat notional |
 | `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
 
 **Conditional**
 
 | Tag | Field | When Present | Notes |
 | --- | --- | --- | --- |
-| `12` | Commission | When charged | Commission paid |
-| `13` | CommType | When charged | `3` (Absolute Value) |
 | `38` | OrderQty | Limit and market sell orders | Base quantity |
-| `152` | CashOrderQty | Market buy orders | Fiat notional |
 | `18` | ExecInst | Post-only orders | `6` (Post-Only) |
 | `5851` | LiquidityInd | Market buy expiry | `2` (Remove) |
 | `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
