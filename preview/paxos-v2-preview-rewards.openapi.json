@@ -7,7 +7,8 @@
   "paths": {
     "/rewards/addresses": {
       "get": {
-        "summary": "List Reward Addresses",
+        "summary": "List reward addresses",
+        "description": "Returns a paginated list of reward addresses",
         "operationId": "ListAttributionAddresses",
         "tags": ["Reward Addresses"],
         "security": [
@@ -15,14 +16,92 @@
             "OAuth2": ["rewards:read_monitoring_address"]
           }
         ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "customer_id",
+            "description": "Optional for public API - extracted from auth context if not provided.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ledger",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
+            }
+          },
+          {
+            "name": "address",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "order",
+            "description": "Optional, sort order for results based on created_at. The default sort order is DESC.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["DESC", "ASC"] }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Optional, cursor token for fetching the next page.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "id",
+            "description": "Optional, address id.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "payout_group_id",
+            "description": "Optional, filter by payout group.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "include_balance",
+            "description": "When true, fetch and include balance for each address.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean" }
+          },
+          {
+            "name": "balance_timestamp",
+            "description": "Point-in-time for balance query (optional, defaults to now).",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListAttributionAddressesResponse" }
+              }
+            }
           }
         }
       },
       "post": {
-        "summary": "Create Reward Address",
+        "summary": "Create a reward address",
+        "description": "Creates a new reward address for reward attribution.",
         "operationId": "CreateAttributionAddress",
         "tags": ["Reward Addresses"],
         "security": [
@@ -30,16 +109,30 @@
             "OAuth2": ["rewards:write_monitoring_address"]
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateAttributionAddressRequest" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateAttributionAddressResponse" }
+              }
+            }
           }
         }
       }
     },
     "/rewards/addresses/{id}": {
       "put": {
-        "summary": "Update Reward Address",
+        "summary": "Update a reward address",
+        "description": "Updates an existing reward address.",
         "operationId": "UpdateAttributionAddress",
         "tags": ["Reward Addresses"],
         "security": [
@@ -50,19 +143,34 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Address ID used as the URL path parameter. Must match address.id when both are provided.",
             "in": "path",
             "required": true,
             "schema": { "type": "string" }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AttributionAddress" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UpdateAttributionAddressResponse" }
+              }
+            }
           }
         }
       },
       "delete": {
-        "summary": "Delete Reward Address",
+        "summary": "Delete a reward address",
+        "description": "Deletes a reward address.",
         "operationId": "DeleteAttributionAddress",
         "tags": ["Reward Addresses"],
         "security": [
@@ -73,21 +181,52 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Address ID for deletion (preferred for REST API).",
             "in": "path",
             "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "customer_id",
+            "description": "Partner ID (used for legacy deletion or when auth context unavailable).",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ledger",
+            "description": "Ledger type (required for legacy deletion).",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
+            }
+          },
+          {
+            "name": "address",
+            "description": "Wallet address (required for legacy deletion).",
+            "in": "query",
+            "required": false,
             "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteAttributionAddressResponse" }
+              }
+            }
           }
         }
       }
     },
     "/rewards/claim-schedules": {
       "get": {
-        "summary": "List Claim Schedules",
+        "summary": "List claim schedules",
+        "description": "Returns a paginated list of claim schedules.",
         "operationId": "ListClaimSchedules",
         "tags": ["Claims"],
         "security": [
@@ -95,14 +234,43 @@
             "OAuth2": ["rewards:read_claims_schedule"]
           }
         ],
+        "parameters": [
+          {
+            "name": "payout_group_id",
+            "description": "Optionally filter by payout group.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100. Maximum 1000.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Cursor for getting the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListClaimSchedulesResponse" }
+              }
+            }
           }
         }
       },
       "post": {
-        "summary": "Create Claim Schedule",
+        "summary": "Create a claim schedule",
+        "description": "Creates a new claim schedule for automatic reward claims.",
         "operationId": "CreateClaimSchedule",
         "tags": ["Claims"],
         "security": [
@@ -110,16 +278,30 @@
             "OAuth2": ["rewards:write_claims_schedule"]
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateClaimScheduleRequest" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateClaimScheduleResponse" }
+              }
+            }
           }
         }
       }
     },
     "/rewards/claim-schedules/{id}": {
       "put": {
-        "summary": "Update Claim Schedule",
+        "summary": "Update a claim schedule",
+        "description": "Updates an existing claim schedule.",
         "operationId": "UpdateClaimSchedule",
         "tags": ["Claims"],
         "security": [
@@ -135,14 +317,28 @@
             "schema": { "type": "string" }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClaimServicePublicUpdateClaimScheduleBody" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UpdateClaimScheduleResponse" }
+              }
+            }
           }
         }
       },
       "delete": {
-        "summary": "Delete Claim Schedule",
+        "summary": "Delete a claim schedule",
+        "description": "Deletes a claim schedule.",
         "operationId": "DeleteClaimSchedule",
         "tags": ["Claims"],
         "security": [
@@ -160,14 +356,20 @@
         ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteClaimScheduleResponse" }
+              }
+            }
           }
         }
       }
     },
     "/rewards/claims": {
       "get": {
-        "summary": "List Claims",
+        "summary": "List claims",
+        "description": "Returns a paginated list of claims with optional filtering.",
         "operationId": "ListClaims",
         "tags": ["Claims"],
         "security": [
@@ -175,9 +377,73 @@
             "OAuth2": ["rewards:read_claims"]
           }
         ],
+        "parameters": [
+          {
+            "name": "payout_group_id",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["PENDING", "SUBMITTED", "CONFIRMED", "FAILED"]
+              }
+            }
+          },
+          {
+            "name": "chain",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "jurisdiction",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "start_time",
+            "description": "Start time filter (inclusive).",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "end_time",
+            "description": "End time filter (inclusive).",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "page_cursor",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListClaimsResponse" }
+              }
+            }
           }
         }
       }
@@ -185,6 +451,7 @@
     "/rewards/payout-groups": {
       "get": {
         "summary": "List Payout Groups",
+        "description": "Retrieves a list of payout groups.",
         "operationId": "ListPayoutGroups",
         "tags": ["Payout Groups"],
         "security": [
@@ -192,14 +459,34 @@
             "OAuth2": ["rewards:read_payout_groups"]
           }
         ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "page_cursor",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ListPayoutGroupsResponse" }
+              }
+            }
           }
         }
       },
       "post": {
         "summary": "Create Payout Group",
+        "description": "Adds a payout group. A payout group encapsulates common rewards characteristics. All monitored addresses which reference this payout group will accumulate rewards at the same rate and claim their rewards to the payout destination specified for this group.",
         "operationId": "CreatePayoutGroup",
         "tags": ["Payout Groups"],
         "security": [
@@ -207,9 +494,22 @@
             "OAuth2": ["rewards:write_payout_groups"]
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePayoutGroupRequest" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreatePayoutGroupResponse" }
+              }
+            }
           }
         }
       }
@@ -217,6 +517,7 @@
     "/rewards/payout-groups/{id}": {
       "put": {
         "summary": "Update Payout Group",
+        "description": "Updates a payout group. Any changes to a payout group which has an on-chain component will cause the unclaimed rewards for that group to be implicitly claimed. No details of the implicit claiming are returned in this API response.",
         "operationId": "UpdatePayoutGroup",
         "tags": ["Payout Groups"],
         "security": [
@@ -227,19 +528,34 @@
         "parameters": [
           {
             "name": "id",
+            "description": "UUID direct reference to the existing payout group.",
             "in": "path",
             "required": true,
             "schema": { "type": "string" }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RewardsPayoutGroupServiceUpdatePayoutGroupBody" }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UpdatePayoutGroupResponse" }
+              }
+            }
           }
         }
       },
       "delete": {
         "summary": "Delete Payout Group",
+        "description": "Deletes a payout group. Deleting a payout group which has an on-chain component will cause the unclaimed rewards for that group to be implicitly claimed. No details of the implicit claiming are returned in this API response.",
         "operationId": "DeletePayoutGroup",
         "tags": ["Payout Groups"],
         "security": [
@@ -250,6 +566,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "UUID direct reference to the payout group to delete.",
             "in": "path",
             "required": true,
             "schema": { "type": "string" }
@@ -257,14 +574,20 @@
         ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeletePayoutGroupResponse" }
+              }
+            }
           }
         }
       }
     },
     "/rewards/details": {
       "get": {
-        "summary": "Get Reward Details",
+        "summary": "Get reward details",
+        "description": "Returns current reward rates, next accrual time, lifetime earned, and total available rewards.",
         "operationId": "GetRewardDetails",
         "tags": ["Rewards"],
         "security": [
@@ -274,7 +597,12 @@
         ],
         "responses": {
           "200": {
-            "description": "A successful response."
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetRewardDetailsResponse" }
+              }
+            }
           }
         }
       }
@@ -298,6 +626,323 @@
               "rewards:read_rewards_details": "Read reward details"
             }
           }
+        }
+      }
+    },
+    "schemas": {
+      "AttributionLedgerType": {
+        "type": "string",
+        "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"],
+        "description": "An AttributionLedgerType is a data source which produces events which cause monitoring to occur. Examples include blockchains and the Paxos platform."
+      },
+      "AttributionAddress": {
+        "type": "object",
+        "title": "All data associated with an attribution address",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Address ID."
+          },
+          "customer_id": {
+            "type": "string",
+            "description": "Partner ID."
+          },
+          "ledger": {
+            "$ref": "#/components/schemas/AttributionLedgerType"
+          },
+          "address": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "payout_group_id": {
+            "type": "string",
+            "description": "UUID of the payout group this address belongs to."
+          },
+          "metadata": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "string",
+            "description": "Total custody at address. Only populated when include_balance=true in request."
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Output only. Registration status (UNREGISTERED, PENDING, ACTIVE, FAILED). Server-managed; ignored on create/update."
+          },
+          "effective_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ListAttributionAddressesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AttributionAddress" },
+            "description": "Monitored addresses in this page of results."
+          },
+          "next_page_cursor": {
+            "type": "string",
+            "description": "Token for the next page of results; empty if no more results."
+          }
+        }
+      },
+      "CreateAttributionAddressRequest": {
+        "type": "object",
+        "properties": {
+          "address": { "$ref": "#/components/schemas/AttributionAddress" }
+        }
+      },
+      "CreateAttributionAddressResponse": {
+        "type": "object",
+        "properties": {
+          "address": { "$ref": "#/components/schemas/AttributionAddress" }
+        }
+      },
+      "UpdateAttributionAddressResponse": {
+        "type": "object",
+        "properties": {
+          "address": { "$ref": "#/components/schemas/AttributionAddress" }
+        }
+      },
+      "DeleteAttributionAddressResponse": {
+        "type": "object"
+      },
+      "ScheduleType": {
+        "type": "string",
+        "enum": ["DAILY", "MONTHLY"]
+      },
+      "ClaimSchedule": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "payout_group_id": { "type": "string" },
+          "schedule_type": { "$ref": "#/components/schemas/ScheduleType" },
+          "next_run_at": { "type": "string", "format": "date-time" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListClaimSchedulesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClaimSchedule" },
+            "description": "Claim schedules in this page of results."
+          },
+          "next_page_cursor": {
+            "type": "string",
+            "description": "Token to retrieve the next page of results, or empty if there are no more results."
+          }
+        }
+      },
+      "CreateClaimScheduleRequest": {
+        "type": "object",
+        "required": ["payout_group_id", "schedule_type"],
+        "properties": {
+          "payout_group_id": { "type": "string" },
+          "schedule_type": { "$ref": "#/components/schemas/ScheduleType" }
+        }
+      },
+      "CreateClaimScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "claim_schedule": { "$ref": "#/components/schemas/ClaimSchedule" }
+        }
+      },
+      "ClaimServicePublicUpdateClaimScheduleBody": {
+        "type": "object",
+        "required": ["schedule_type"],
+        "properties": {
+          "schedule_type": { "$ref": "#/components/schemas/ScheduleType" }
+        }
+      },
+      "UpdateClaimScheduleResponse": {
+        "type": "object",
+        "properties": {
+          "claim_schedule": { "$ref": "#/components/schemas/ClaimSchedule" }
+        }
+      },
+      "DeleteClaimScheduleResponse": {
+        "type": "object"
+      },
+      "ClaimType": {
+        "type": "string",
+        "enum": ["CLAIM_ALL", "CLAIM_FOR_ADDRESSES"]
+      },
+      "ClaimOnchainStatus": {
+        "type": "string",
+        "enum": ["PENDING", "SUBMITTED", "CONFIRMED", "FAILED"]
+      },
+      "Claim": {
+        "type": "object",
+        "title": "A reward claim transaction",
+        "properties": {
+          "id": { "type": "string" },
+          "payout_group_id": { "type": "string" },
+          "claim_type": { "$ref": "#/components/schemas/ClaimType" },
+          "claim_schedule_id": {
+            "type": "string",
+            "description": "Present if triggered by a schedule."
+          },
+          "onchain_status": { "$ref": "#/components/schemas/ClaimOnchainStatus" },
+          "amount": {
+            "type": "string",
+            "description": "Amount in business units (e.g., \"123.456789\" for USDG)."
+          },
+          "tx_hash": { "type": "string" },
+          "addresses": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Populated for CLAIM_FOR_ADDRESSES type."
+          },
+          "error_message": { "type": "string" },
+          "blockchain": { "type": "string" },
+          "asset_type": { "type": "string" },
+          "submitted_at": { "type": "string", "format": "date-time" },
+          "confirmed_at": { "type": "string", "format": "date-time" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListClaimsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Claim" },
+            "description": "Claims in this page of results."
+          },
+          "next_page_cursor": {
+            "type": "string",
+            "description": "Token to retrieve the next page of results, or empty if there are no more results."
+          }
+        }
+      },
+      "PayoutGroup": {
+        "type": "object",
+        "required": ["id", "ledger", "asset_type", "rate_id", "jurisdiction", "claimer_address", "onchain_status", "balance", "created_at", "updated_at"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID direct reference to the created payout group."
+          },
+          "ledger": { "type": "string", "description": "Ledger identifier." },
+          "asset_type": { "type": "string", "description": "Asset type for this payout group." },
+          "rate_id": { "type": "string", "description": "Rate ID associated with this payout group." },
+          "jurisdiction": { "type": "string", "description": "Jurisdiction for this payout group." },
+          "name": { "type": "string", "description": "User-readable name for this group." },
+          "claimer_address": { "type": "string", "description": "Address that will claim rewards for this group." },
+          "manager_address": { "type": "string", "description": "Address that manages this payout group (optional)." },
+          "destination_address": { "type": "string", "description": "Address that will receive payouts from this group (optional)." },
+          "onchain_group_id": { "type": "string", "format": "int64", "description": "On-chain group ID (optional)." },
+          "onchain_status": { "type": "string", "description": "Status of the on-chain group." },
+          "balance": { "type": "string", "description": "Current balance of unclaimed rewards." },
+          "balance_at": { "type": "string", "format": "date-time", "description": "Balance timestamp (optional)." },
+          "last_claim_all_at": { "type": "string", "format": "date-time", "description": "Last claim all timestamp (optional)." },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListPayoutGroupsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PayoutGroup" },
+            "description": "Payout groups in this page of results."
+          },
+          "next_page_cursor": { "type": "string" }
+        }
+      },
+      "CreatePayoutGroupRequest": {
+        "type": "object",
+        "properties": {
+          "ledger": { "type": "string", "description": "Ledger identifier." },
+          "asset_type": { "type": "string", "description": "Asset type for this payout group." },
+          "jurisdiction": { "type": "string", "description": "Jurisdiction for this payout group." },
+          "name": { "type": "string", "description": "User-readable name for this group." },
+          "claimer_address": { "type": "string", "description": "Address that will claim rewards for this group." },
+          "schedule_type": { "$ref": "#/components/schemas/ScheduleType" }
+        }
+      },
+      "CreatePayoutGroupResponse": {
+        "type": "object",
+        "properties": {
+          "group": { "$ref": "#/components/schemas/PayoutGroup" }
+        }
+      },
+      "RewardsPayoutGroupServiceUpdatePayoutGroupBody": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "User-readable name for this group (optional)." },
+          "jurisdiction": { "type": "string", "description": "Jurisdiction for this payout group (optional, e.g. \"US\", \"EU\")." }
+        }
+      },
+      "UpdatePayoutGroupResponse": {
+        "type": "object",
+        "properties": {
+          "group": { "$ref": "#/components/schemas/PayoutGroup" }
+        }
+      },
+      "DeletePayoutGroupResponse": {
+        "type": "object"
+      },
+      "Jurisdiction": {
+        "type": "string",
+        "enum": ["JURISDICTION_UNSPECIFIED", "EU", "US"]
+      },
+      "Tier": {
+        "type": "string",
+        "enum": [
+          "TIER_UNSPECIFIED",
+          "FOUNDER",
+          "PARTNER_CUSTODY_REMOVAL_PROGRAM",
+          "PARTNER_STANDARD_CUSTODY_TIER_1",
+          "PARTNER_STANDARD_CUSTODY_TIER_2",
+          "PARTNER_STANDARD_CUSTODY_TIER_3"
+        ]
+      },
+      "RewardRate": {
+        "type": "object",
+        "title": "A reward rate configuration",
+        "properties": {
+          "id": { "type": "string", "description": "The rate ID." },
+          "multiplier_id": { "type": "string", "description": "Maps to on-chain multiplier ID." },
+          "rate": { "type": "string", "description": "The annualized yield rate as a decimal string (e.g., \"0.0376\" for 3.76%)." },
+          "networks": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "The networks this rate applies to (e.g., [\"ethereum\", \"polygon\"])."
+          },
+          "jurisdiction": { "$ref": "#/components/schemas/Jurisdiction" },
+          "tier": { "$ref": "#/components/schemas/Tier" },
+          "effective_at": { "type": "string", "format": "date-time", "description": "When this rate becomes effective." },
+          "created_at": { "type": "string", "format": "date-time", "description": "When this rate was created." }
+        }
+      },
+      "GetRewardDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "rates": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RewardRate" },
+            "description": "Current reward rates."
+          },
+          "next_accrual": { "type": "string", "format": "date-time", "description": "The next time rewards will accrue." },
+          "lifetime_earned": { "type": "string", "description": "Total rewards earned over the lifetime of the account." },
+          "total_available_rewards": { "type": "string", "description": "Total rewards currently available to claim in business units." },
+          "est_next_accrual_amount": { "type": "string", "description": "Estimated amount of the next accrual based on current balances, pending rewards, and multiplier rates." }
         }
       }
     }
