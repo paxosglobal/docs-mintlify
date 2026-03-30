@@ -1,0 +1,305 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos Rewards API",
+    "version": "v2-alpha"
+  },
+  "paths": {
+    "/rewards/addresses": {
+      "get": {
+        "summary": "List Reward Addresses",
+        "operationId": "ListAttributionAddresses",
+        "tags": ["Reward Addresses"],
+        "security": [
+          {
+            "OAuth2": ["rewards:read_monitoring_address"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Reward Address",
+        "operationId": "CreateAttributionAddress",
+        "tags": ["Reward Addresses"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_monitoring_address"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/addresses/{id}": {
+      "put": {
+        "summary": "Update Reward Address",
+        "operationId": "UpdateAttributionAddress",
+        "tags": ["Reward Addresses"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_monitoring_address"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Reward Address",
+        "operationId": "DeleteAttributionAddress",
+        "tags": ["Reward Addresses"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_monitoring_address"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/claim-schedules": {
+      "get": {
+        "summary": "List Claim Schedules",
+        "operationId": "ListClaimSchedules",
+        "tags": ["Claims"],
+        "security": [
+          {
+            "OAuth2": ["rewards:read_claims_schedule"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Claim Schedule",
+        "operationId": "CreateClaimSchedule",
+        "tags": ["Claims"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_claims_schedule"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/claim-schedules/{id}": {
+      "put": {
+        "summary": "Update Claim Schedule",
+        "operationId": "UpdateClaimSchedule",
+        "tags": ["Claims"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_claims_schedule"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Claim Schedule",
+        "operationId": "DeleteClaimSchedule",
+        "tags": ["Claims"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_claims_schedule"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/claims": {
+      "get": {
+        "summary": "List Claims",
+        "operationId": "ListClaims",
+        "tags": ["Claims"],
+        "security": [
+          {
+            "OAuth2": ["rewards:read_claims"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/payout-groups": {
+      "get": {
+        "summary": "List Payout Groups",
+        "operationId": "ListPayoutGroups",
+        "tags": ["Payout Groups"],
+        "security": [
+          {
+            "OAuth2": ["rewards:read_payout_groups"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Payout Group",
+        "operationId": "CreatePayoutGroup",
+        "tags": ["Payout Groups"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_payout_groups"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/payout-groups/{id}": {
+      "put": {
+        "summary": "Update Payout Group",
+        "operationId": "UpdatePayoutGroup",
+        "tags": ["Payout Groups"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_payout_groups"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Payout Group",
+        "operationId": "DeletePayoutGroup",
+        "tags": ["Payout Groups"],
+        "security": [
+          {
+            "OAuth2": ["rewards:write_payout_groups"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    },
+    "/rewards/details": {
+      "get": {
+        "summary": "Get Reward Details",
+        "operationId": "GetRewardDetails",
+        "tags": ["Rewards"],
+        "security": [
+          {
+            "OAuth2": ["rewards:read_rewards_details"]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "rewards:read_monitoring_address": "Read reward addresses",
+              "rewards:write_monitoring_address": "Create and manage reward addresses",
+              "rewards:read_claims_schedule": "Read claim schedules",
+              "rewards:write_claims_schedule": "Create and manage claim schedules",
+              "rewards:read_claims": "Read claims",
+              "rewards:read_payout_groups": "Read payout groups",
+              "rewards:write_payout_groups": "Create and manage payout groups",
+              "rewards:read_rewards_details": "Read reward details"
+            }
+          }
+        }
+      }
+    }
+  }
+}
