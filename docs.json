@@ -763,6 +763,49 @@
             ]
           },
           {
+            "group": "Rewards (Alpha)",
+            "pages": [
+              {
+                "group": "Reward Addresses",
+                "pages": [
+                  "api-reference/endpoints/reward-addresses/overview",
+                  "api-reference/endpoints/reward-addresses/list-reward-addresses",
+                  "api-reference/endpoints/reward-addresses/create-reward-address",
+                  "api-reference/endpoints/reward-addresses/update-reward-address",
+                  "api-reference/endpoints/reward-addresses/delete-reward-address"
+                ]
+              },
+              {
+                "group": "Claims",
+                "pages": [
+                  "api-reference/endpoints/claims/overview",
+                  "api-reference/endpoints/claims/list-claim-schedules",
+                  "api-reference/endpoints/claims/create-claim-schedule",
+                  "api-reference/endpoints/claims/update-claim-schedule",
+                  "api-reference/endpoints/claims/delete-claim-schedule",
+                  "api-reference/endpoints/claims/list-claims"
+                ]
+              },
+              {
+                "group": "Payout Groups",
+                "pages": [
+                  "api-reference/endpoints/payout-groups/overview",
+                  "api-reference/endpoints/payout-groups/list-payout-groups",
+                  "api-reference/endpoints/payout-groups/create-payout-group",
+                  "api-reference/endpoints/payout-groups/update-payout-group",
+                  "api-reference/endpoints/payout-groups/delete-payout-group"
+                ]
+              },
+              {
+                "group": "Rewards",
+                "pages": [
+                  "api-reference/endpoints/reward-details/overview",
+                  "api-reference/endpoints/reward-details/get-reward-details"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Events",
             "pages": [
               {
