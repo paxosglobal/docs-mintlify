@@ -16,6 +16,58 @@
     }
   ],
   "paths": {
+    "/orchestration/rules": {
+      "post": {
+        "tags": ["Orchestration Rules"],
+        "operationId": "CreateOrchestrationRule",
+        "summary": "Create Orchestration Rule",
+        "description": "Creates a persistent orchestration rule that automatically triggers orchestrations when matching deposits are received.\n\nThe rule will:\n1. Generate deposit instructions associated with the rule.\n2. Continuously monitor incoming deposits to those instructions.\n3. Automatically execute orchestrations to the specified destination.\n\nSupported Sources:\n- Crypto deposit\n- Fiat deposit\n\nSupported Destinations:\n- Crypto address on a supported network\n- Bank account\n- Profile ID\n\nError conditions:\n- [Already Exists](https://developer.paxos.com/docs/v2/problems/already-exists): Returned if a rule with the same ref_id already exists.",
+        "security": [
+          {
+            "OAuth2": ["orchestration:write_orchestration_rule"]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRuleRequest"
+              },
+              "example": {
+                "ref_id": "my-rule-001",
+                "nickname": "USDC to USDG conversion",
+                "profile_id": "e8ea8b1c-4e8d-4c59-9e7a-c985194ba2e8",
+                "source_asset": "USDC",
+                "destination_asset": "USDG",
+                "source": {
+                  "crypto": {
+                    "network": "ETHEREUM"
+                  }
+                },
+                "destination": {
+                  "profile": {
+                    "profile_id": "e8ea8b1c-4e8d-4c59-9e7a-c985194ba2e8"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrchestrationRuleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "components": {
     "schemas": {
@@ -136,25 +188,37 @@
         "type": "object",
         "properties": {
           "ref_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Client-provided unique reference ID for the rule.",
+            "example": "my-rule-001"
           },
           "nickname": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional human-readable nickname for the rule.",
+            "example": "USDC to USDG conversion"
           },
           "profile_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Profile ID of the account owner.",
+            "example": "e8ea8b1c-4e8d-4c59-9e7a-c985194ba2e8"
           },
           "identity_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Identity ID of the account owner."
           },
           "account_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Account ID where the rule applies."
           },
           "source_asset": {
-            "type": "string"
+            "type": "string",
+            "description": "Asset being converted from.\n\nValid values: USDG, PYUSD, USDP, USDC, USD",
+            "example": "USDC"
           },
           "destination_asset": {
-            "type": "string"
+            "type": "string",
+            "description": "Asset being converted to.\n\nValid values: USDG, PYUSD, USDP, USDC, USD",
+            "example": "USDG"
           },
           "source": {
             "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSource"
@@ -162,7 +226,8 @@
           "destination": {
             "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
           }
-        }
+        },
+        "required": ["ref_id", "profile_id", "source_asset", "destination_asset", "source"]
       },
       "CreateOrchestrationRuleRequestCryptoDestination": {
         "type": "object",
