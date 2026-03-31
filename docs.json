@@ -763,7 +763,8 @@
             ]
           },
           {
-            "group": "Rewards (Alpha)",
+            "group": "Rewards Engine",
+            "tag": "alpha",
             "pages": [
               {
                 "group": "Reward Addresses",
