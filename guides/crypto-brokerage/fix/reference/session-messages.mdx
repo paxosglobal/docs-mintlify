@@ -42,7 +42,7 @@ Send the Logon message to initiate the session:
 | Tag | Field | Value | Notes |
 | --- | --- | --- | --- |
 | `49` | SenderCompID | Your client ID | |
-| `56` | TargetCompID | `ITBIT` | |
+| `56` | TargetCompID | `ITBIT_PROD` / `ITBIT_SANDBOX` | |
 
 </Tab>
 <Tab title="Response">
@@ -51,7 +51,7 @@ Paxos responds with a matching Logon message:
 
 | Tag | Field | Value | Notes |
 | --- | --- | --- | --- |
-| `49` | SenderCompID | `ITBIT` | |
+| `49` | SenderCompID | `ITBIT_PROD` / `ITBIT_SANDBOX` | |
 | `56` | TargetCompID | Your client ID | |
 
 </Tab>
