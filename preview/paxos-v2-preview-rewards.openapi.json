@@ -36,7 +36,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
+              "enum": ["ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
             }
           },
           {
@@ -153,7 +153,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/AttributionAddress" }
+              "schema": { "$ref": "#/components/schemas/UpdateAttributionAddressBody" }
             }
           }
         },
@@ -200,7 +200,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
+              "enum": ["ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
             }
           },
           {
@@ -632,7 +632,8 @@
     "schemas": {
       "AttributionLedgerType": {
         "type": "string",
-        "enum": ["PAXOS", "ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"],
+        "enum": ["ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"],
+        "example": "ETHEREUM",
         "description": "An AttributionLedgerType is a data source which produces events which cause monitoring to occur. Examples include blockchains and the Paxos platform."
       },
       "AttributionAddress": {
@@ -641,11 +642,8 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Address ID."
-          },
-          "customer_id": {
-            "type": "string",
-            "description": "Partner ID."
+            "readOnly": true,
+            "description": "Address ID. Auto-generated."
           },
           "ledger": {
             "$ref": "#/components/schemas/AttributionLedgerType"
@@ -660,25 +658,51 @@
             "type": "string",
             "description": "UUID of the payout group this address belongs to."
           },
-          "metadata": {
-            "type": "string"
-          },
           "balance": {
             "type": "string",
+            "readOnly": true,
             "description": "Total custody at address. Only populated when include_balance=true in request."
           },
           "status": {
             "type": "string",
             "readOnly": true,
-            "description": "Output only. Registration status (UNREGISTERED, PENDING, ACTIVE, FAILED). Server-managed; ignored on create/update."
-          },
-          "effective_at": {
-            "type": "string",
-            "format": "date-time"
+            "description": "Output only. Registration status (UNREGISTERED, PENDING, ACTIVE, FAILED). Server-managed."
           },
           "created_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "CreateAttributionAddressBody": {
+        "type": "object",
+        "required": ["ledger", "address"],
+        "properties": {
+          "ledger": {
+            "$ref": "#/components/schemas/AttributionLedgerType"
+          },
+          "address": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "payout_group_id": {
+            "type": "string",
+            "description": "UUID of the payout group this address belongs to."
+          }
+        }
+      },
+      "UpdateAttributionAddressBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "payout_group_id": {
+            "type": "string",
+            "description": "UUID of the payout group this address belongs to."
           }
         }
       },
@@ -699,7 +723,7 @@
       "CreateAttributionAddressRequest": {
         "type": "object",
         "properties": {
-          "address": { "$ref": "#/components/schemas/AttributionAddress" }
+          "address": { "$ref": "#/components/schemas/CreateAttributionAddressBody" }
         }
       },
       "CreateAttributionAddressResponse": {
@@ -719,7 +743,7 @@
       },
       "ScheduleType": {
         "type": "string",
-        "enum": ["DAILY", "MONTHLY"]
+        "enum": ["DAILY"]
       },
       "ClaimSchedule": {
         "type": "object",
@@ -867,6 +891,7 @@
       },
       "CreatePayoutGroupRequest": {
         "type": "object",
+        "required": ["ledger", "asset_type", "jurisdiction", "name", "claimer_address"],
         "properties": {
           "ledger": { "type": "string", "description": "Ledger identifier." },
           "asset_type": { "type": "string", "description": "Asset type for this payout group." },
