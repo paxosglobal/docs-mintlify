@@ -1,0 +1,21 @@
+---
+title: 403 - Market Conditions Prevented Execution
+---
+
+A Market Conditions Prevented Execution error is returned when current market conditions prevent the execution of a trade or order.
+
+For example, this error may occur during periods of extreme volatility, insufficient liquidity, or other market conditions that make it impossible to execute the requested operation at the specified parameters.
+
+To resolve this error, you may need to adjust your order parameters, wait for market conditions to stabilize, or request a new quote.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "current market conditions prevented execution",
+  "meta": {},
+  "status": 403,
+  "title": "Market Conditions Prevented Execution",
+  "type": "https://developer.paxos.com/docs/v2/problems/market-conditions-prevented-execution"
+}
+```
+</CodeGroup>
