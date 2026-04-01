@@ -24,13 +24,6 @@
             "schema": { "type": "integer", "format": "int32" }
           },
           {
-            "name": "customer_id",
-            "description": "Optional for public API - extracted from auth context if not provided.",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
             "name": "ledger",
             "in": "query",
             "required": false,
@@ -181,33 +174,9 @@
         "parameters": [
           {
             "name": "id",
-            "description": "Address ID for deletion (preferred for REST API).",
+            "description": "Address ID to delete.",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "customer_id",
-            "description": "Partner ID (used for legacy deletion or when auth context unavailable).",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "ledger",
-            "description": "Ledger type (required for legacy deletion).",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["ETHEREUM", "SOLANA", "INK", "XLAYER", "ARBITRUM_ONE"]
-            }
-          },
-          {
-            "name": "address",
-            "description": "Wallet address (required for legacy deletion).",
-            "in": "query",
-            "required": false,
             "schema": { "type": "string" }
           }
         ],
@@ -925,18 +894,19 @@
       },
       "Jurisdiction": {
         "type": "string",
-        "enum": ["JURISDICTION_UNSPECIFIED", "EU", "US"]
+        "enum": ["EU", "US"],
+        "example": "EU"
       },
       "Tier": {
         "type": "string",
         "enum": [
-          "TIER_UNSPECIFIED",
           "FOUNDER",
           "PARTNER_CUSTODY_REMOVAL_PROGRAM",
           "PARTNER_STANDARD_CUSTODY_TIER_1",
           "PARTNER_STANDARD_CUSTODY_TIER_2",
           "PARTNER_STANDARD_CUSTODY_TIER_3"
-        ]
+        ],
+        "example": "PARTNER_STANDARD_CUSTODY_TIER_1"
       },
       "RewardRate": {
         "type": "object",
