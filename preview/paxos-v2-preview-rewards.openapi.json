@@ -691,6 +691,7 @@
       },
       "CreateAttributionAddressRequest": {
         "type": "object",
+        "required": ["address"],
         "properties": {
           "address": { "$ref": "#/components/schemas/CreateAttributionAddressBody" }
         }
