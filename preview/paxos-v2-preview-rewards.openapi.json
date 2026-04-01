@@ -354,16 +354,14 @@
             "schema": { "type": "string" }
           },
           {
-            "name": "statuses",
+            "name": "onchain_statuses",
+            "description": "Filter by onchain_status values.",
             "in": "query",
             "required": false,
             "explode": true,
             "schema": {
               "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["PENDING", "SUBMITTED", "CONFIRMED", "FAILED"]
-              }
+              "items": { "$ref": "#/components/schemas/ClaimOnchainStatus" }
             }
           },
           {
