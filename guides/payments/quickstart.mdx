@@ -128,7 +128,6 @@ curl --location 'https://api.sandbox.paxos.com/v2/transfer/deposit-addresses' \
     "crypto_network": "SOLANA",
     "ref_id": "da_73bcbb08-db06-4308-b0c2-2a6398012f8b",
     "conversion_target_asset": "USD"
-    {/* highlight-end */}
 }'
 ```
 
@@ -200,7 +199,6 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was converted to 
             "fee": "0",
             "asset": "PYUSD",
             "balance_asset": "USD",
-            {/* highlight-end */}
             "direction": "CREDIT",
             "type": "CRYPTO_DEPOSIT",
             "status": "COMPLETED",
@@ -276,10 +274,8 @@ The Profile USD balance is now `107.06`, reflecting both the previously received
 {
     "items": [
         {
-            //highlight-start
             "asset": "USD",
             "available": "107.06",
-            {/* highlight-end */}
             "trading": "0"
         }
     ]
@@ -375,7 +371,6 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was sent to the B
             "customer_id": "8cbc1177-d982-4750-a435-3c7f36245452",
             "profile_id": "eb1dbb95-8e22-471b-9ded-40bbfe309037",
             "ref_id": "cw_293a8f7c-bcb6-483f-919b-8661ae65f0e6",
-            //highlight-start
             "amount": "7.06",
             "total": "7.06",
             "fee": "0",
@@ -384,7 +379,6 @@ The response confirms that a `total` of `7.06` PYUSD (`asset`) was sent to the B
             "direction": "DEBIT",
             "type": "CRYPTO_WITHDRAWAL",
             "status": "COMPLETED",
-            {/* highlight-end */}
             "created_at": "2024-06-24T18:33:51.105228Z",
             "updated_at": "2024-06-24T18:34:24.976618Z",
             "destination_address": "BtXdwoYSWPprQT88ZCLuQcXuTz4dFHB1AJFYqr5uXoAd",
@@ -414,10 +408,8 @@ The Profile USD balance is now `100.00`, where previously it was `7.06`.
 {
     "items": [
         {
-            //highlight-start
             "asset": "USD",
             "available": "100.00",
-            {/* highlight-end */}
             "trading": "0"
         }
     ]
