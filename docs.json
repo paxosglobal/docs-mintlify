@@ -964,6 +964,13 @@
                         ]
                       },
                       {
+                        "group": "Internal Transfer",
+                        "pages": [
+                          "api-reference/webhooks/transfer-internal-transfer-debit-completed",
+                          "api-reference/webhooks/transfer-internal-transfer-credit-completed"
+                        ]
+                      },
+                      {
                         "group": "RTP",
                         "pages": [
                           "api-reference/webhooks/transfer-rtp-deposit-pending",

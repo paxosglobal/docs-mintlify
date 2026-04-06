@@ -1550,6 +1550,62 @@
         "summary": "RTP Deposit Failed",
         "description": "Triggered when an RTP deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
+    },
+    "transfer.internal_transfer_debit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.internal_transfer_debit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Internal Transfer Debit Completed",
+        "description": "Triggered when an internal transfer debit is completed and funds have been debited from the source Profile. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.internal_transfer_credit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.internal_transfer_credit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Internal Transfer Credit Completed",
+        "description": "Triggered when an internal transfer credit is completed and funds have been credited to the destination Profile. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
     }
   },
   "components": {

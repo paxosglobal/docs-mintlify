@@ -1,0 +1,15 @@
+---
+title: "transfer.internal_transfer_debit.completed"
+description: "Webhook triggered when an internal transfer debit is completed and funds are debited from the source Profile"
+openapi: "webhooks-openapi.json webhook transfer.internal_transfer_debit.completed"
+---
+
+Triggered when an internal transfer debit is COMPLETED and funds have been debited from the source Profile.
+
+<Note>
+Webhook payloads contain only event metadata. Use the [Get Event API](/api-reference/endpoints/events/get-event) with the event ID to retrieve full details.
+</Note>
+
+## Event Object Structure
+
+The Get Event API returns a [`transfer_status_change`](/api-reference/events/transfer-status-change-object) object with transfer status details.
