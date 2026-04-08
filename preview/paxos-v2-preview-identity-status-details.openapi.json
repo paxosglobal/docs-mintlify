@@ -41,25 +41,116 @@
                   "$ref": "#/components/schemas/Identity"
                 },
                 "examples": {
-                  "pending_identity": {
-                    "summary": "Identity with pending and failed requirements",
+                  "person_denied": {
+                    "summary": "Person identity denied due to failed risk awareness assessment",
                     "value": {
-                      "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
-                      "identity_type": "INSTITUTION",
-                      "summary_status": "PENDING",
-                      "created_at": "2024-01-15T10:00:00Z",
-                      "updated_at": "2024-01-15T10:30:00Z",
+                      "id": "c3d4e5f6-0000-0000-0000-000000000001",
+                      "ref_id": "user-001",
+                      "type": "PERSON",
+                      "metadata": {},
+                      "summary_status": "DENIED",
+                      "status": "DENIED",
+                      "user_disabled": false,
+                      "admin_disabled": false,
+                      "is_merchant": false,
+                      "person_details": {
+                        "first_name": "Alice",
+                        "last_name": "Johnson",
+                        "date_of_birth": "1990-05-15",
+                        "id_verification_status": "APPROVED",
+                        "sanctions_verification_status": "APPROVED"
+                      },
+                      "tax_details": [
+                        {
+                          "tax_id_type": "SSN",
+                          "tin_verification_status": "VALID"
+                        }
+                      ],
+                      "summary_tin_verification_status": "VALID",
                       "status_details": {
                         "active_controls": [],
+                        "pending_requirements": [],
+                        "failed_requirements": [
+                          {
+                            "type": "RISK_AWARENESS_ASSESSMENT",
+                            "message": "Failed PTE Risk Awareness Assessment"
+                          }
+                        ]
+                      },
+                      "created_at": "2026-03-15T08:00:00Z",
+                      "updated_at": "2026-04-05T14:30:00Z"
+                    }
+                  },
+                  "institution_pending": {
+                    "summary": "Institution identity with pending and failed requirements",
+                    "value": {
+                      "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+                      "ref_id": "acme-corp",
+                      "type": "INSTITUTION",
+                      "metadata": {
+                        "customer_ref": "acme-corp-001"
+                      },
+                      "summary_status": "PENDING",
+                      "status": "PENDING",
+                      "user_disabled": false,
+                      "admin_disabled": false,
+                      "is_merchant": false,
+                      "institution_details": {
+                        "name": "Acme Corp",
+                        "sanctions_verification_status": "APPROVED",
+                        "document_verification_status": "DENIED",
+                        "institution_type": "CORPORATION",
+                        "institution_sub_type": "PRIVATE",
+                        "business_address": {
+                          "address_line_1": "123 Main St",
+                          "city": "New York",
+                          "state": "NY",
+                          "zip": "10001",
+                          "country": "USA"
+                        },
+                        "phone_number": "+12125550100",
+                        "email": "compliance@acmecorp.com"
+                      },
+                      "institution_members": [
+                        {
+                          "id": "m1b2c3d4-0000-0000-0000-000000000001",
+                          "identity_id": "b2c3d4e5-0000-0000-0000-000000000001",
+                          "name": "Jane Smith",
+                          "roles": ["BENEFICIAL_OWNER", "CONTROL_PERSON"],
+                          "ownership": "51",
+                          "position": "CEO",
+                          "summary_status": "PENDING"
+                        },
+                        {
+                          "id": "m1b2c3d4-0000-0000-0000-000000000002",
+                          "identity_id": "a1b2c3d4-1234-5678-abcd-ef1234567890",
+                          "name": "John Doe",
+                          "roles": ["BENEFICIAL_OWNER"],
+                          "ownership": "49",
+                          "position": "CFO",
+                          "summary_status": "DISABLED"
+                        }
+                      ],
+                      "tax_details": [
+                        {
+                          "tax_id_type": "EIN",
+                          "tin_verification_status": "VALID"
+                        }
+                      ],
+                      "summary_tin_verification_status": "VALID",
+                      "status_details": {
+                        "active_controls": [
+                          {
+                            "id": "ctrl-0000-0000-0000-000000000001",
+                            "type": "SELL_ONLY",
+                            "set_by": "SET_BY_PAXOS",
+                            "is_overridable": false,
+                            "reason_code": "COMPLIANCE_KYC",
+                            "reason": "Identity pending full KYC review",
+                            "created_at": "2026-03-01T10:00:00Z"
+                          }
+                        ],
                         "pending_requirements": [
-                          {
-                            "type": "ID_VERIFICATION",
-                            "message": "Pending ID Verification"
-                          },
-                          {
-                            "type": "DOCUMENT_VERIFICATION",
-                            "message": "Pending document verification"
-                          },
                           {
                             "type": "COMPLIANCE_CHECK",
                             "message": "Pending compliance check"
@@ -69,7 +160,7 @@
                             "message": "Pending members",
                             "member_list": [
                               {
-                                "identity_id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+                                "identity_id": "b2c3d4e5-0000-0000-0000-000000000001",
                                 "summary_status": "PENDING"
                               }
                             ]
@@ -81,12 +172,8 @@
                             "message": "Failed document verification"
                           },
                           {
-                            "type": "COMPLIANCE_CHECK",
-                            "message": "Failed compliance check"
-                          },
-                          {
                             "type": "MEMBERS",
-                            "message": "Disabled members",
+                            "message": "Failed members",
                             "member_list": [
                               {
                                 "identity_id": "a1b2c3d4-1234-5678-abcd-ef1234567890",
@@ -95,32 +182,9 @@
                             ]
                           }
                         ]
-                      }
-                    }
-                  },
-                  "approved_identity": {
-                    "summary": "Approved identity with active control",
-                    "value": {
-                      "id": "a1b2c3d4-1234-5678-abcd-ef1234567890",
-                      "identity_type": "INDIVIDUAL",
-                      "summary_status": "APPROVED",
-                      "created_at": "2024-01-10T09:00:00Z",
-                      "updated_at": "2024-01-10T09:15:00Z",
-                      "status_details": {
-                        "active_controls": [
-                          {
-                            "id": "59b8e3c5-2b6e-4fa6-afcf-8c685598241d",
-                            "type": "SELL_ONLY",
-                            "set_by": "SET_BY_CLIENT",
-                            "is_overridable": true,
-                            "reason_code": "END_USER_REQUEST",
-                            "reason": "User requested sell-only mode",
-                            "created_at": "2024-01-10T09:15:00Z"
-                          }
-                        ],
-                        "pending_requirements": [],
-                        "failed_requirements": []
-                      }
+                      },
+                      "created_at": "2026-03-01T09:00:00Z",
+                      "updated_at": "2026-04-01T12:00:00Z"
                     }
                   }
                 }
@@ -166,11 +230,69 @@
             "description": "Unique identifier for the identity.",
             "example": "f190b163-208f-4d73-8deb-4fb8b24add00"
           },
-          "identity_type": {
+          "ref_id": {
+            "type": "string",
+            "description": "Client-provided reference ID for the identity.",
+            "example": "acme-corp"
+          },
+          "type": {
             "$ref": "#/components/schemas/IdentityType"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Arbitrary key-value metadata associated with the identity.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": { "customer_ref": "acme-corp-001" }
           },
           "summary_status": {
             "$ref": "#/components/schemas/IdentitySummaryStatus"
+          },
+          "status": {
+            "type": "string",
+            "description": "The raw onboarding status of the identity.",
+            "example": "PENDING"
+          },
+          "user_disabled": {
+            "type": "boolean",
+            "description": "Deprecated. Whether the identity was disabled by the client. Use `status_details.active_controls` instead.",
+            "example": false
+          },
+          "admin_disabled": {
+            "type": "boolean",
+            "description": "Deprecated. Whether the identity was disabled by Paxos. Use `status_details.active_controls` instead.",
+            "example": false
+          },
+          "is_merchant": {
+            "type": "boolean",
+            "description": "Whether this identity is a merchant.",
+            "example": false
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetails"
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/PersonDetails"
+          },
+          "institution_members": {
+            "type": "array",
+            "description": "Members of the institution (beneficial owners, control persons, etc.).",
+            "items": {
+              "$ref": "#/components/schemas/InstitutionMember"
+            }
+          },
+          "tax_details": {
+            "type": "array",
+            "description": "Tax identification details for the identity.",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetail"
+            }
+          },
+          "summary_tin_verification_status": {
+            "type": "string",
+            "description": "Aggregated TIN verification status across all tax details.",
+            "example": "VALID"
           },
           "status_details": {
             "$ref": "#/components/schemas/IdentityStatusDetails"
@@ -191,9 +313,10 @@
         "type": "string",
         "enum": [
           "INDIVIDUAL",
-          "INSTITUTION"
+          "INSTITUTION",
+          "PERSON"
         ],
-        "description": "The type of identity.\n\n- `INDIVIDUAL`: A natural person\n- `INSTITUTION`: A legal entity or business"
+        "description": "The type of identity.\n\n- `INDIVIDUAL`: A natural person\n- `INSTITUTION`: A legal entity or business\n- `PERSON`: A person associated with an institution (e.g., beneficial owner or control person)"
       },
       "IdentitySummaryStatus": {
         "type": "string",
@@ -204,6 +327,171 @@
           "DISABLED"
         ],
         "description": "The overall onboarding and compliance status of the identity.\n\n- `PENDING`: Identity is under review\n- `APPROVED`: Identity has passed all verifications and may transact\n- `DENIED`: Identity has been denied\n- `DISABLED`: Identity has been disabled and may not transact"
+      },
+      "PersonDetails": {
+        "type": "object",
+        "description": "Details specific to person identities.",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "First name of the person.",
+            "example": "Alice"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name of the person.",
+            "example": "Johnson"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of birth in YYYY-MM-DD format.",
+            "example": "1990-05-15"
+          },
+          "id_verification_status": {
+            "type": "string",
+            "description": "Status of government ID verification.",
+            "example": "APPROVED"
+          },
+          "sanctions_verification_status": {
+            "type": "string",
+            "description": "Status of sanctions screening.",
+            "example": "APPROVED"
+          }
+        }
+      },
+      "InstitutionDetails": {
+        "type": "object",
+        "description": "Details specific to institution identities.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Legal name of the institution.",
+            "example": "Acme Corp"
+          },
+          "sanctions_verification_status": {
+            "type": "string",
+            "description": "Status of sanctions screening.",
+            "example": "APPROVED"
+          },
+          "document_verification_status": {
+            "type": "string",
+            "description": "Status of document verification.",
+            "example": "DENIED"
+          },
+          "institution_type": {
+            "type": "string",
+            "description": "The legal type of the institution.",
+            "example": "CORPORATION"
+          },
+          "institution_sub_type": {
+            "type": "string",
+            "description": "The sub-type of the institution.",
+            "example": "PRIVATE"
+          },
+          "business_address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Contact phone number.",
+            "example": "+12125550100"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email address.",
+            "example": "compliance@acmecorp.com"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "description": "A physical address.",
+        "properties": {
+          "address_line_1": {
+            "type": "string",
+            "example": "123 Main St"
+          },
+          "address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "example": "New York"
+          },
+          "state": {
+            "type": "string",
+            "example": "NY"
+          },
+          "zip": {
+            "type": "string",
+            "example": "10001"
+          },
+          "country": {
+            "type": "string",
+            "example": "USA"
+          }
+        }
+      },
+      "InstitutionMember": {
+        "type": "object",
+        "description": "A member of an institution identity.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the membership record.",
+            "example": "m1b2c3d4-0000-0000-0000-000000000001"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "The identity ID of the member.",
+            "example": "b2c3d4e5-0000-0000-0000-000000000001"
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the member.",
+            "example": "Jane Smith"
+          },
+          "roles": {
+            "type": "array",
+            "description": "Roles held by the member within the institution.",
+            "items": {
+              "type": "string"
+            },
+            "example": ["BENEFICIAL_OWNER", "CONTROL_PERSON"]
+          },
+          "ownership": {
+            "type": "string",
+            "description": "Ownership percentage as a string.",
+            "example": "51"
+          },
+          "position": {
+            "type": "string",
+            "description": "Job title or position within the institution.",
+            "example": "CEO"
+          },
+          "summary_status": {
+            "type": "string",
+            "description": "The summary status of the member's identity.",
+            "example": "PENDING"
+          }
+        }
+      },
+      "TaxDetail": {
+        "type": "object",
+        "description": "Tax identification detail for an identity.",
+        "properties": {
+          "tax_id_type": {
+            "type": "string",
+            "description": "The type of tax identifier (e.g., `EIN`, `SSN`).",
+            "example": "EIN"
+          },
+          "tin_verification_status": {
+            "type": "string",
+            "description": "Verification status of the TIN.",
+            "example": "VALID"
+          }
+        }
       },
       "IdentityStatusDetails": {
         "type": "object",
@@ -243,7 +531,7 @@
           "message": {
             "type": "string",
             "description": "Human-readable description of the pending requirement.",
-            "example": "Pending ID Verification"
+            "example": "Pending compliance check"
           },
           "member_list": {
             "type": "array",
@@ -292,9 +580,10 @@
           "ID_VERIFICATION",
           "DOCUMENT_VERIFICATION",
           "COMPLIANCE_CHECK",
-          "MEMBERS"
+          "MEMBERS",
+          "RISK_AWARENESS_ASSESSMENT"
         ],
-        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)"
+        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment failed"
       },
       "MemberStatus": {
         "type": "object",
@@ -303,7 +592,7 @@
           "identity_id": {
             "type": "string",
             "description": "The identity ID of the member.",
-            "example": "f190b163-208f-4d73-8deb-4fb8b24add00"
+            "example": "b2c3d4e5-0000-0000-0000-000000000001"
           },
           "summary_status": {
             "type": "string",
