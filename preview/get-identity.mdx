@@ -1,0 +1,56 @@
+---
+openapi: get /v2/identity/identities/{id}
+---
+
+```bash OAuth Scope
+identity:read_identity
+```
+
+<Note>
+**Preview Feature**: The `status_details` object now includes `pending_requirements` and `failed_requirements` arrays. These fields provide structured insight into why an identity is `PENDING` or `DISABLED`.
+
+See [status_details](#status_details-object) for full field descriptions.
+</Note>
+
+## status_details Object
+
+The `status_details` object in the GetIdentity response now contains three fields:
+
+| Field | Description |
+|-------|-------------|
+| `active_controls` | Identity controls currently applied. See the [Identity Controls API](/api-reference/endpoints/identity-controls/overview). |
+| `pending_requirements` | Outstanding requirements blocking approval. |
+| `failed_requirements` | Requirements that have failed, blocking approval or causing disablement. |
+
+### pending_requirements
+
+Each entry in `pending_requirements` has a `type`, a human-readable `message`, and — for institution identities — an optional `member_list`.
+
+| Type | Description |
+|------|-------------|
+| `ID_VERIFICATION` | Identity verification (e.g., government ID) is pending. |
+| `DOCUMENT_VERIFICATION` | Document review is pending. |
+| `COMPLIANCE_CHECK` | Compliance screening or review is pending. |
+| `MEMBERS` | One or more institution members have outstanding requirements. Includes `member_list`. |
+
+### failed_requirements
+
+Each entry in `failed_requirements` has a `type`, a human-readable `message`, and — for institution identities — an optional `member_list`.
+
+| Type | Description |
+|------|-------------|
+| `ID_VERIFICATION` | Identity verification failed. |
+| `DOCUMENT_VERIFICATION` | Document verification failed. |
+| `COMPLIANCE_CHECK` | Compliance check failed. |
+| `MEMBERS` | One or more institution members have a failed status (disabled, denied, or error). Includes `member_list`. |
+
+### member_list
+
+Present on `MEMBERS` requirement types in both `pending_requirements` and `failed_requirements`. Each entry contains:
+
+| Field | Description |
+|-------|-------------|
+| `identity_id` | The identity ID of the member. |
+| `summary_status` | Current status of the member identity (e.g., `PENDING`, `DISABLED`, `DENIED`). |
+
+> Questions? Contact [Support](https://support.paxos.com).

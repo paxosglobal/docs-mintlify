@@ -1066,6 +1066,12 @@
             "pages": [
               "preview/overview"
             ]
+          },
+          {
+            "group": "Identity",
+            "pages": [
+              "preview/get-identity"
+            ]
           }
         ]
       },
