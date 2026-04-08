@@ -9,6 +9,12 @@ Any user accessing the Paxos Dashboard must be authorized and assigned one or mo
 - To audit the list of permissions associated with a Role: [Admin > Team Management > Roles](https://dashboard.paxos.com/admin/team-management/roles)
 - To disable user access or change Roles, use the Edit Status dropdown in the User Actions menu at [Admin > Team Management > Users](https://dashboard.paxos.com/admin/team-management/users).
 
+<Note>
+**Organization Membership**
+
+Users can only belong to one organization at a time. If a user needs to join a different organization, they must first be removed from their current organization before accepting an invitation to the new organization.
+</Note>
+
 ## Passkey-Based Login
 
 [Entity Managers](/guides/dashboard/roles#entity-manager) can manually invite users and assign their roles. Each user receives an email with a verification code and a link to [set up their passkey and sign in](/guides/dashboard/signin#passkey).
@@ -80,3 +86,17 @@ Follow these steps to map Identity Provider groups to Paxos Dashboard Roles:
 4. Enter one or more Roles to associate with this Group. 
 
 Any user with a user attribute that contains the Group will automatically be assigned the associated Role on login.
+
+## Remove Users from Organization
+
+Entity Managers and Organization Administrators can remove users from the organization. This is necessary when a user needs to leave the organization to join another one, since users can only belong to one organization at a time.
+
+Follow these steps to remove a user:
+
+1. Go to [**Admin > Team Management > Users**](https://dashboard.paxos.com/admin/team-management/users)
+2. Find the user you want to remove
+3. Click on the **User Actions** menu (three dots) next to the user
+4. Select **Remove User** from the dropdown
+5. Confirm the removal
+
+Once removed, the user can accept invitations to join other organizations.
