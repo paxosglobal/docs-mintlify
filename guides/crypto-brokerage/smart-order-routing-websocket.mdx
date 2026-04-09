@@ -1,11 +1,11 @@
 ---
-title: Order Routing WebSocket Integration
-description: Step-by-step guide to integrate with the Order Routing WebSocket API.
+title: Smart Order Routing WebSocket Integration
+description: Step-by-step guide to integrate with the Smart Order Routing WebSocket API.
 ---
 
-This guide walks you through integrating with the Paxos Order Routing WebSocket API to receive real-time market data and execution updates. The Order Routing WebSocket API requires authentication and is available only to authorized Order Routing platform customers.
+This guide walks you through integrating with the Paxos Smart Order Routing WebSocket API to receive real-time market data and execution updates. The Smart Order Routing WebSocket API requires authentication and is available only to authorized Smart Order Routing platform customers.
 
-> Before starting, ensure you have Order Routing platform access and valid OAuth2 credentials with the `exchange:read_aggregated_marketdata_stream` scope.
+> Before starting, ensure you have Smart Order Routing platform access and valid OAuth2 credentials with the `exchange:read_aggregated_marketdata_stream` scope.
 
 ## ➊ Authenticate and Get Access Token
 
@@ -39,7 +39,7 @@ const ws = new WebSocket('wss://ws.sandbox.paxos.com/', {
 });
 
 ws.on('open', () => {
-  console.log('Connected to Order Routing WebSocket');
+  console.log('Connected to Smart Order Routing WebSocket');
 });
 
 ws.on('message', (data) => {
@@ -70,7 +70,7 @@ async def connect_websocket():
     }
     
     async with websockets.connect(uri, extra_headers=headers) as websocket:
-        print('Connected to Order Routing WebSocket')
+        print('Connected to Smart Order Routing WebSocket')
         
         # Handle incoming messages
         async for message in websocket:
@@ -293,7 +293,7 @@ class OrderRoutingWebSocket {
     });
 
     this.ws.on('open', () => {
-      console.log('Connected to Order Routing WebSocket');
+      console.log('Connected to Smart Order Routing WebSocket');
       this.subscribeToMarkets(['BTCUSD', 'ETHUSD']);
     });
 
@@ -477,6 +477,6 @@ ws.on('message', (data) => {
 
 ## Next Steps
 
-- Review the [Order Routing Market Data](/api-reference/websockets/order-routing-market-data) reference
-- Explore the [Order Routing Execution Data](/api-reference/websockets/order-routing-execution-data) reference
+- Review the [Smart Order Routing Market Data](/api-reference/websockets/smart-order-routing-market-data) reference
+- Explore the [Smart Order Routing Execution Data](/api-reference/websockets/smart-order-routing-execution-data) reference
 - Contact [Support](https://support.paxos.com) for production access

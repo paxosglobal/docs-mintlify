@@ -1,15 +1,15 @@
 ---
-title: Order Routing WebSocket API
-description: Authenticated real-time market data for Order Routing platform customers.
+title: Smart Order Routing WebSocket API
+description: Authenticated real-time market data for Smart Order Routing platform customers.
 tags:
-  - Order Routing
+  - Smart Order Routing
   - WebSocket
   - Market Data
 ---
 
-The Order Routing WebSocket API provides authenticated, real-time streaming market data and execution data to authorized Order Routing platform customers. This API uses a bidirectional WebSocket connection for both request-response operations and streaming data delivery.
+The Smart Order Routing WebSocket API provides authenticated, real-time streaming market data and execution data to authorized Smart Order Routing platform customers. This API uses a bidirectional WebSocket connection for both request-response operations and streaming data delivery.
 
-> This API is available only to Order Routing customers on the allow list. For public market data access or DMA (Direct Market Access) to itBit, use the [public WebSocket API](/api-reference/websockets/overview).
+> This API is available only to Smart Order Routing customers on the allow list. For public market data access or DMA (Direct Market Access) to itBit, use the [public WebSocket API](/api-reference/websockets/overview).
 
 ## Connection
 
@@ -228,7 +228,7 @@ Get all active subscriptions for your connection.
 
 ## Data Channels
 
-The Order Routing WebSocket API supports four types of streaming data channels:
+The Smart Order Routing WebSocket API supports four types of streaming data channels:
 
 ### Market Data Channel
 Provides real-time order book updates with initial snapshots and incremental changes.
@@ -236,7 +236,7 @@ Provides real-time order book updates with initial snapshots and incremental cha
 - **Channel type:** `market_data`
 - **Initial message:** Full order book snapshot
 - **Subsequent messages:** Incremental updates
-- **[View detailed documentation →](/api-reference/websockets/order-routing-market-data)**
+- **[View detailed documentation →](/api-reference/websockets/smart-order-routing-market-data)**
 
 **Example streaming message:**
 ```json
@@ -258,7 +258,7 @@ Provides real-time updates of the best bid and best ask prices only.
 - **Channel type:** `market_data.top_of_book`
 - **Message frequency:** On best price changes
 - **Lightweight alternative to full order book**
-- **[View detailed documentation →](/api-reference/websockets/order-routing-top-of-book)**
+- **[View detailed documentation →](/api-reference/websockets/smart-order-routing-top-of-book)**
 
 **Example streaming message:**
 ```json
@@ -279,7 +279,7 @@ Provides real-time trade execution notifications.
 
 - **Channel type:** `execution_data`
 - **Message frequency:** On each trade execution
-- **[View detailed documentation →](/api-reference/websockets/order-routing-execution-data)**
+- **[View detailed documentation →](/api-reference/websockets/smart-order-routing-execution-data)**
 
 **Example streaming message:**
 ```json
@@ -300,7 +300,7 @@ Provides logical-level liveness signal for connection monitoring.
 - **Channel type:** `heartbeat`
 - **Message frequency:** Periodic heartbeat messages
 - **No parameters required**
-- **[View detailed documentation →](/api-reference/websockets/order-routing-heartbeat)**
+- **[View detailed documentation →](/api-reference/websockets/smart-order-routing-heartbeat)**
 
 **Example streaming message:**
 ```json

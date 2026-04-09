@@ -244,7 +244,7 @@
                 ]
               },
               "guides/crypto-brokerage/websocket",
-              "guides/crypto-brokerage/order-routing-websocket",
+              "guides/crypto-brokerage/smart-order-routing-websocket",
               "guides/crypto-brokerage/orders-precision-rounding",
               "guides/crypto-brokerage/commissions-rebates",
               "guides/crypto-brokerage/ledger-type",
@@ -862,13 +862,13 @@
                 ]
               },
               {
-                "group": "Order Routing WebSocket API",
+                "group": "Smart Order Routing WebSocket API",
                 "pages": [
-                  "api-reference/websockets/order-routing-overview",
-                  "api-reference/websockets/order-routing-market-data",
-                  "api-reference/websockets/order-routing-top-of-book",
-                  "api-reference/websockets/order-routing-execution-data",
-                  "api-reference/websockets/order-routing-heartbeat"
+                  "api-reference/websockets/smart-order-routing-overview",
+                  "api-reference/websockets/smart-order-routing-market-data",
+                  "api-reference/websockets/smart-order-routing-top-of-book",
+                  "api-reference/websockets/smart-order-routing-execution-data",
+                  "api-reference/websockets/smart-order-routing-heartbeat"
                 ]
               }
             ]
