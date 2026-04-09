@@ -162,13 +162,14 @@ These rejections occur after the order reaches the matching engine. Unlike the e
 
 ## Execution Report - Expired
 
-Expired Execution Reports are returned for market buy orders that close with a small amount of unexecuted quote currency remaining. **ExecType (`150`)** = `C`, **OrdStatus (`39`)** = `C` (Expired).
+Expired Execution Reports are sent when an order expires before being fully filled. **ExecType (`150`)** = `C`, **OrdStatus (`39`)** = `C` (Expired).
 
-<Note>
+There are two scenarios that produce an Expired execution report:
 
-Market buy order executions are captured in [Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) messages. The Expired message is a summary confirming the order is closed.
+- **Market buy orders** (non-Smart Order Routing) that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed. Executions are captured in [Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) messages.
+- **Smart Order Routing GTT orders** that reach their expiration time before being fully filled. The order may have been partially filled.
 
-</Note>
+> Smart Order Routing is an optional feature that routes orders across multiple venues. Contact [Paxos Support](https://support.paxos.com) for more information.
 
 ### Standard FIX Fields
 
@@ -199,8 +200,8 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | `32` | lastShares | Always | |
 | `109` | ClientID | Always | |
 | `1` | Account | Always | |
-| `31` | LastPx | Always | |
-| `151` | LeavesQty | Always | `0` |
+| `31` | LastPx | Always | `0` |
+| `151` | LeavesQty | Always | Unfilled quantity. `0` for market buy expiry. |
 | `60` | TransactTime | Always | |
 | `58` | Text | Always | `Expired Order` |
 | `20` | ExecTransType | Always | `0` (New) |
@@ -213,7 +214,7 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | `40` | OrdType | Always | |
 | `39` | OrdStatus | Always | `C` (Expired) |
 | `37` | OrderID | Always | |
-| `381` | GrossTradeAmt | Always | **lastShares (`32`)** * **LastPx (`31`)** |
+| `381` | GrossTradeAmt | Always | Gross trade amount. `0` for market buy expiry. |
 | `59` | TimeInForce | Always | `1` = GTC, `3` = IOC, `4` = FOK, `6` = GTT |
 
 **Conditional**
@@ -225,7 +226,7 @@ Market buy order executions are captured in [Partial Fill](/guides/crypto-broker
 | `38` | OrderQty | Limit and market sell orders | Base quantity |
 | `152` | CashOrderQty | Market buy orders | Fiat notional |
 | `18` | ExecInst | Post-only orders | `6` (Post-Only) |
-| `5851` | LiquidityInd | When available | `1` = Add, `2` = Remove |
+| `5851` | LiquidityInd | Market buy expiry only | `2` (Remove) |
 | `126` | ExpireTime | GTT orders | `YYYYMMDD-HH:MM:SS` format |
 
 **Brokerage Clients**
