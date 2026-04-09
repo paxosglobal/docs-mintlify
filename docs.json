@@ -718,8 +718,7 @@
                 "pages": [
                   "api-reference/endpoints/pricing/overview",
                   "api-reference/endpoints/pricing/list-prices",
-                  "api-reference/endpoints/pricing/list-tickers",
-                  "api-reference/endpoints/pricing/list-historical-prices"
+                   "api-reference/endpoints/pricing/list-historical-prices"
                 ]
               },
               {
