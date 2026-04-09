@@ -30,7 +30,9 @@ Each entry in `pending_requirements` has a `type`, a human-readable `message`, a
 |------|-------------|
 | `ID_VERIFICATION` | Identity verification (e.g., government ID) is pending. |
 | `DOCUMENT_VERIFICATION` | Document review is pending. |
-| `COMPLIANCE_CHECK` | Compliance screening or review is pending. |
+| `SCREENING_CHECK` | Sanctions or other screening check is pending. |
+| `COMPLIANCE_CHECK` | Compliance review is pending. |
+| `ENHANCED_DUE_DILIGENCE` | Enhanced due diligence review is pending. |
 | `MEMBERS` | One or more institution members have outstanding requirements. Includes `member_list`. |
 
 ### failed_requirements
@@ -44,6 +46,7 @@ Each entry in `failed_requirements` has a `type`, a human-readable `message`, an
 | `COMPLIANCE_CHECK` | Compliance check failed. |
 | `MEMBERS` | One or more institution members have a failed status (disabled, denied, or error). Includes `member_list`. |
 | `RISK_AWARENESS_ASSESSMENT` | Risk awareness assessment failed. |
+| `KYC_REFRESH` | KYC refresh is required. |
 
 ### member_list
 

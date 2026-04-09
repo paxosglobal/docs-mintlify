@@ -42,7 +42,7 @@
                 },
                 "examples": {
                   "person_denied": {
-                    "summary": "Person identity denied due to failed risk awareness assessment",
+                    "summary": "Person identity denied with pending EDD and failed requirements",
                     "value": {
                       "id": "c3d4e5f6-0000-0000-0000-000000000001",
                       "ref_id": "user-001",
@@ -69,11 +69,20 @@
                       "summary_tin_verification_status": "VALID",
                       "status_details": {
                         "active_controls": [],
-                        "pending_requirements": [],
+                        "pending_requirements": [
+                          {
+                            "type": "ENHANCED_DUE_DILIGENCE",
+                            "message": "Pending enhanced due diligence"
+                          }
+                        ],
                         "failed_requirements": [
                           {
                             "type": "RISK_AWARENESS_ASSESSMENT",
                             "message": "Failed PTE Risk Awareness Assessment"
+                          },
+                          {
+                            "type": "KYC_REFRESH",
+                            "message": "KYC refresh required"
                           }
                         ]
                       },
@@ -97,8 +106,8 @@
                       "is_merchant": false,
                       "institution_details": {
                         "name": "Acme Corp",
-                        "sanctions_verification_status": "APPROVED",
-                        "document_verification_status": "DENIED",
+                        "sanctions_verification_status": "PENDING",
+                        "document_verification_status": "PENDING",
                         "institution_type": "CORPORATION",
                         "institution_sub_type": "PRIVATE",
                         "business_address": {
@@ -152,6 +161,14 @@
                         ],
                         "pending_requirements": [
                           {
+                            "type": "DOCUMENT_VERIFICATION",
+                            "message": "Pending document verification"
+                          },
+                          {
+                            "type": "SCREENING_CHECK",
+                            "message": "Pending screening check"
+                          },
+                          {
                             "type": "COMPLIANCE_CHECK",
                             "message": "Pending compliance check"
                           },
@@ -167,10 +184,6 @@
                           }
                         ],
                         "failed_requirements": [
-                          {
-                            "type": "DOCUMENT_VERIFICATION",
-                            "message": "Failed document verification"
-                          },
                           {
                             "type": "MEMBERS",
                             "message": "Failed members",
@@ -569,10 +582,12 @@
         "enum": [
           "ID_VERIFICATION",
           "DOCUMENT_VERIFICATION",
+          "SCREENING_CHECK",
           "COMPLIANCE_CHECK",
+          "ENHANCED_DUE_DILIGENCE",
           "MEMBERS"
         ],
-        "description": "The type of pending requirement.\n\n- `ID_VERIFICATION`: Identity verification (e.g., government ID check) is pending\n- `DOCUMENT_VERIFICATION`: Document review is pending\n- `COMPLIANCE_CHECK`: Compliance screening or review is pending\n- `MEMBERS`: One or more institution members have not yet completed their requirements"
+        "description": "The type of pending requirement.\n\n- `ID_VERIFICATION`: Identity verification (e.g., government ID check) is pending\n- `DOCUMENT_VERIFICATION`: Document review is pending\n- `SCREENING_CHECK`: Sanctions or other screening check is pending\n- `COMPLIANCE_CHECK`: Compliance review is pending\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review is pending\n- `MEMBERS`: One or more institution members have not yet completed their requirements"
       },
       "FailedRequirementType": {
         "type": "string",
@@ -581,9 +596,10 @@
           "DOCUMENT_VERIFICATION",
           "COMPLIANCE_CHECK",
           "MEMBERS",
-          "RISK_AWARENESS_ASSESSMENT"
+          "RISK_AWARENESS_ASSESSMENT",
+          "KYC_REFRESH"
         ],
-        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment failed"
+        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment failed\n- `KYC_REFRESH`: KYC refresh is required"
       },
       "MemberStatus": {
         "type": "object",
