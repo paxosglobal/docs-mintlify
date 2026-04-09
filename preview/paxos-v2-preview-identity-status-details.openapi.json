@@ -77,10 +77,6 @@
                         ],
                         "failed_requirements": [
                           {
-                            "type": "RISK_AWARENESS_ASSESSMENT",
-                            "message": "Failed PTE Risk Awareness Assessment"
-                          },
-                          {
                             "type": "KYC_REFRESH",
                             "message": "KYC refresh required"
                           }
@@ -596,10 +592,9 @@
           "DOCUMENT_VERIFICATION",
           "COMPLIANCE_CHECK",
           "MEMBERS",
-          "RISK_AWARENESS_ASSESSMENT",
           "KYC_REFRESH"
         ],
-        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment failed\n- `KYC_REFRESH`: KYC refresh is required"
+        "description": "The type of failed requirement.\n\n- `ID_VERIFICATION`: Identity verification failed\n- `DOCUMENT_VERIFICATION`: Document verification failed\n- `COMPLIANCE_CHECK`: Compliance check failed\n- `MEMBERS`: One or more institution members have a failed status (e.g., disabled, denied, or error)\n- `KYC_REFRESH`: KYC refresh is required"
       },
       "MemberStatus": {
         "type": "object",
