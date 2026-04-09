@@ -166,8 +166,10 @@ Expired Execution Reports are sent when an order expires before being fully fill
 
 There are two scenarios that produce an Expired execution report:
 
-- **Market buy orders** (non-Order Routing) that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed. Executions are captured in [Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) messages.
-- **Order Routing GTT orders** that reach their expiration time before being fully filled. The order may have been partially filled.
+- **Market buy orders** (non-Smart Order Routing) that close with a small amount of unexecuted quote currency remaining. The Expired message is a summary confirming the order is closed. Executions are captured in [Partial Fill](/guides/crypto-brokerage/fix/reference/execution-report-fills) messages.
+- **Smart Order Routing GTT orders** that reach their expiration time before being fully filled. The order may have been partially filled.
+
+> Smart Order Routing is an optional feature that routes orders across multiple venues. Contact [Paxos Support](https://support.paxos.com) for more information.
 
 ### Standard FIX Fields
 
