@@ -240,11 +240,11 @@
                             "member_list": [
                               {
                                 "identity_id": "b8e1f234-0011-4abc-9900-aabbccddeeff",
-                                "summary_status": "DENIED"
+                                "status": "DENIED"
                               },
                               {
                                 "identity_id": "c9f2a345-1122-5bcd-aa11-bbccddeeff00",
-                                "summary_status": "PENDING"
+                                "status": "PENDING"
                               }
                             ]
                           },
@@ -682,9 +682,9 @@
             "description": "The identity ID of the member.",
             "example": "b8e1f234-0011-4abc-9900-aabbccddeeff"
           },
-          "summary_status": {
+          "status": {
             "type": "string",
-            "description": "The summary status of the member identity.",
+            "description": "The status of the member identity.",
             "example": "DENIED"
           }
         }
