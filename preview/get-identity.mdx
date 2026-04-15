@@ -7,53 +7,53 @@ identity:read_identity
 ```
 
 <Note>
-**Preview Feature**: The `status_details` object now includes `pending_requirements` and `failed_requirements` arrays. These fields provide structured insight into why an identity is `PENDING` or `DISABLED`.
+**Preview Feature**: The `status_details` object now includes a `requirements` array. This field provides structured insight into why an identity is `PENDING` or `DENIED`.
 
 See [status_details](#status_details-object) for full field descriptions.
 </Note>
 
 ## status_details Object
 
-The `status_details` object in the GetIdentity response now contains three fields:
+The `status_details` object in the GetIdentity response contains two fields:
 
 | Field | Description |
 |-------|-------------|
 | `active_controls` | Identity controls currently applied. See the [Identity Controls API](/api-reference/endpoints/identity-controls/overview). |
-| `pending_requirements` | Outstanding requirements blocking approval. |
-| `failed_requirements` | Requirements that have failed, blocking approval or causing disablement. |
+| `requirements` | All outstanding requirements for this identity, including both pending and failed entries. |
 
-### pending_requirements
+### requirements
 
-Each entry in `pending_requirements` has a `type`, a human-readable `message`, and — for institution identities — an optional `member_list`.
+Each entry in `requirements` has the following fields:
 
-| Type | Description |
-|------|-------------|
-| `ID_VERIFICATION` | Identity verification (e.g., government ID) is pending. |
-| `DOCUMENT_VERIFICATION` | Document review is pending. |
-| `SCREENING_CHECK` | Sanctions or other screening check is pending. |
-| `COMPLIANCE_CHECK` | Compliance review is pending. |
-| `ENHANCED_DUE_DILIGENCE` | Enhanced due diligence review is pending. |
-| `MEMBERS` | One or more institution members have outstanding requirements. Includes `member_list`. |
+| Field | Description |
+|-------|-------------|
+| `type` | The requirement type. See types below. |
+| `status` | `PENDING` — not yet fulfilled; may be under review or require user action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
+| `awaiting_action_from` | Who must act to resolve the requirement: `USER`, `PAXOS`, or `PARTNER`. Not present on `MEMBERS` type. **Coming soon.** |
+| `reason` | Human-readable description of the requirement status. |
+| `errors` | Specific error details, each with a `code` and `description`. Not present on `MEMBERS` type. **Coming soon.** |
+| `member_list` | For `MEMBERS` type only — list of members with their `identity_id` and `summary_status`. |
 
-### failed_requirements
+#### Requirement types
 
-Each entry in `failed_requirements` has a `type`, a human-readable `message`, and — for institution identities — an optional `member_list`.
-
-| Type | Description |
-|------|-------------|
-| `ID_VERIFICATION` | Identity verification failed. |
-| `DOCUMENT_VERIFICATION` | Document verification failed. |
-| `COMPLIANCE_CHECK` | Compliance check failed. |
-| `MEMBERS` | One or more institution members have a failed status (disabled, denied, or error). Includes `member_list`. |
-| `KYC_REFRESH` | KYC refresh is required. |
+| Type | Applies to | Description |
+|------|-----------|-------------|
+| `ID_VERIFICATION` | Person | Government ID verification. |
+| `DOCUMENT_VERIFICATION` | Institution | Business document review. |
+| `SCREENING_CHECK` | Both | Sanctions or watchlist screening. |
+| `COMPLIANCE_CHECK` | Both | Internal compliance review. |
+| `ENHANCED_DUE_DILIGENCE` | Institution | Enhanced due diligence review. |
+| `RISK_AWARENESS_ASSESSMENT` | Person | Risk awareness assessment. |
+| `KYC_REFRESH` | Person | Periodic re-verification of identity information. |
+| `MEMBERS` | Institution | One or more institution members have outstanding requirements. Includes `member_list`. |
 
 ### member_list
 
-Present on `MEMBERS` requirement types in both `pending_requirements` and `failed_requirements`. Each entry contains:
+Present on `MEMBERS` requirement types. Each entry contains:
 
 | Field | Description |
 |-------|-------------|
 | `identity_id` | The identity ID of the member. |
-| `summary_status` | Current status of the member identity (e.g., `PENDING`, `DISABLED`, `DENIED`). |
+| `summary_status` | Current status of the member identity (e.g., `PENDING`, `DENIED`, `DISABLED`). |
 
 > Questions? Contact [Support](https://support.paxos.com).
