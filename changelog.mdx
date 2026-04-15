@@ -11,6 +11,18 @@ rss: true
 - [Rewards](/api-reference/endpoints/reward-details/overview): Retrieve a breakdown of earned rewards by type and time period.
 </Update>
 
+<Update label="April 20, 2026" description="v2 API">
+**List Markets: Market Status**: The [List Markets](/api-reference/endpoints/market-data/list-markets) endpoint now returns a `market_status` field on each market, providing real-time trading availability, reason codes, and scheduled maintenance windows.
+
+The `market_status` object includes:
+- `buy_status` / `sell_status` — Trading availability: `AVAILABLE` or `UNAVAILABLE`
+- `buy_reason` / `sell_reason` — Reason a side is unavailable: `SCHEDULED_MAINTENANCE`, `TRADING_SUSPENDED`, or `UNSCHEDULED_MAINTENANCE`
+- `updated_at` — Timestamp of the most recent status update
+- `scheduled_maintenance` — Array of upcoming maintenance windows, each with `starts_at`, `ends_at`, and `recurrence` (`NONE`, `DAILY`, `WEEKLY`)
+
+A market reports `AVAILABLE` when at least one venue is healthy. It becomes `UNAVAILABLE` when all venues are down, surfacing the most severe reason code.
+</Update>
+
 <Update label="April 1, 2026" description="v2 API">
 **List Orchestrations**: Added `ref_id` query parameter to the [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations) endpoint. Use this repeated parameter to filter orchestrations by client-provided idempotency key.
 </Update>
