@@ -32,7 +32,7 @@ Each entry in `requirements` has the following fields:
 | `awaiting_action_from` | Who must act to resolve the requirement: `USER`, `PAXOS`, or `PARTNER`. Not present on `MEMBERS` type. **Coming soon.** |
 | `reason` | Human-readable description of the requirement status. |
 | `errors` | Specific error details, each with a `code` and `description`. Not present on `MEMBERS` type. **Coming soon.** |
-| `member_list` | For `MEMBERS` type only — list of members with their `identity_id` and `summary_status`. |
+| `member_list` | For `MEMBERS` type only — list of members with their `identity_id` and `status`. |
 
 #### Requirement types
 
@@ -54,6 +54,6 @@ Present on `MEMBERS` requirement types. Each entry contains:
 | Field | Description |
 |-------|-------------|
 | `identity_id` | The identity ID of the member. |
-| `summary_status` | Current status of the member identity (e.g., `PENDING`, `DENIED`, `DISABLED`). |
+| `status` | Current status of the member identity (e.g., `PENDING`, `DENIED`, `DISABLED`). |
 
 > Questions? Contact [Support](https://support.paxos.com).
