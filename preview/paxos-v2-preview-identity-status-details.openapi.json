@@ -75,7 +75,7 @@
                         "requirements": [
                           {
                             "type": "ID_VERIFICATION",
-                            "status": "FAILED",
+                            "requirements_status": "FAILED",
                             "awaiting_action_from": "USER",
                             "reason": "Your information could not be verified.",
                             "errors": [
@@ -87,7 +87,7 @@
                           },
                           {
                             "type": "SCREENING_CHECK",
-                            "status": "PENDING",
+                            "requirements_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
                             "reason": "Your information is under review.",
                             "errors": [
@@ -99,7 +99,7 @@
                           },
                           {
                             "type": "COMPLIANCE_CHECK",
-                            "status": "PENDING",
+                            "requirements_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
                             "reason": "Your account is under review.",
                             "errors": [
@@ -111,7 +111,7 @@
                           },
                           {
                             "type": "RISK_AWARENESS_ASSESSMENT",
-                            "status": "FAILED",
+                            "requirements_status": "FAILED",
                             "awaiting_action_from": "USER",
                             "reason": "Risk awareness assessment is required.",
                             "errors": [
@@ -123,7 +123,7 @@
                           },
                           {
                             "type": "KYC_REFRESH",
-                            "status": "FAILED",
+                            "requirements_status": "FAILED",
                             "awaiting_action_from": "USER",
                             "reason": "Identity re-verification is required.",
                             "errors": [
@@ -195,7 +195,7 @@
                         "requirements": [
                           {
                             "type": "DOCUMENT_VERIFICATION",
-                            "status": "FAILED",
+                            "requirements_status": "FAILED",
                             "awaiting_action_from": "USER",
                             "reason": "Document verification could not be completed.",
                             "errors": [
@@ -211,7 +211,7 @@
                           },
                           {
                             "type": "SCREENING_CHECK",
-                            "status": "PENDING",
+                            "requirements_status": "PENDING",
                             "awaiting_action_from": "PARTNER",
                             "reason": "Your information is under review.",
                             "errors": [
@@ -223,7 +223,7 @@
                           },
                           {
                             "type": "COMPLIANCE_CHECK",
-                            "status": "PENDING",
+                            "requirements_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
                             "reason": "Your account is under review.",
                             "errors": [
@@ -235,7 +235,7 @@
                           },
                           {
                             "type": "MEMBERS",
-                            "status": "FAILED",
+                            "requirements_status": "FAILED",
                             "reason": "One or more members could not be verified.",
                             "member_list": [
                               {
@@ -250,7 +250,7 @@
                           },
                           {
                             "type": "ENHANCED_DUE_DILIGENCE",
-                            "status": "PENDING",
+                            "requirements_status": "PENDING",
                             "awaiting_action_from": "USER",
                             "reason": "Additional information is required.",
                             "errors": [
@@ -324,7 +324,9 @@
             "example": { "customer_ref": "acme-corp-001" }
           },
           "summary_status": {
-            "$ref": "#/components/schemas/IdentitySummaryStatus"
+            "allOf": [{ "$ref": "#/components/schemas/IdentitySummaryStatus" }],
+            "description": "Deprecated. Use `status` instead. The overall onboarding and compliance status of the identity. `status` and `summary_status` return the same values.",
+            "deprecated": true
           },
           "status": {
             "type": "string",
@@ -549,7 +551,8 @@
           },
           "summary_status": {
             "type": "string",
-            "description": "The summary status of the member's identity.",
+            "description": "Deprecated. Use `status` instead. The status of the member's identity. `status` and `summary_status` return the same values.",
+            "deprecated": true,
             "example": "DENIED"
           }
         }
@@ -593,12 +596,12 @@
       "Requirement": {
         "type": "object",
         "description": "A requirement associated with the identity's onboarding or compliance review. Requirements with `status: FAILED` indicate an action is needed; requirements with `status: PENDING` are under review.",
-        "required": ["type", "status"],
+        "required": ["type", "requirements_status"],
         "properties": {
           "type": {
             "$ref": "#/components/schemas/RequirementType"
           },
-          "status": {
+          "requirements_status": {
             "$ref": "#/components/schemas/RequirementStatus"
           },
           "awaiting_action_from": {
