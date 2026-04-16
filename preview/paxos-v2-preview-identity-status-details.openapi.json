@@ -615,7 +615,7 @@
           },
           "errors": {
             "type": "array",
-            "description": "Specific error details for this requirement. Not present on `MEMBERS` type requirements. **Coming soon** — this field will be added in a future release.",
+            "description": "Specific error details for developer use only. Do not expose `code` or `description` values directly to end users — use `reason` for user-facing messaging. Not present on `MEMBERS` type requirements. **Coming soon** — this field will be added in a future release.",
             "items": {
               "$ref": "#/components/schemas/RequirementError"
             }
@@ -635,7 +635,7 @@
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code.",
+            "description": "Machine-readable error code. Will be a fixed enum of values in the final release.",
             "example": "submission_blurry"
           },
           "description": {
