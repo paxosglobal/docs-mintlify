@@ -28,7 +28,7 @@ Each entry in `requirements` has the following fields:
 | Field | Description |
 |-------|-------------|
 | `type` | The requirement type. See types below. |
-| `requirements_status` | `PENDING` — not yet fulfilled; may be under review or require user action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
+| `requirement_status` | `PENDING` — not yet fulfilled; may be under review or require user action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
 | `awaiting_action_from` | Who must act to resolve the requirement: `USER`, `PAXOS`, or `PARTNER`. Not present on `MEMBERS` type. **Coming soon.** |
 | `reason` | Human-readable description of the requirement status. |
 | `errors` | Specific error details for developer use only — do not expose `code` or `description` values directly to end users. Use `reason` for user-facing messaging. `code` will be a fixed enum of values. Not present on `MEMBERS` type. **Coming soon.** |
