@@ -1,0 +1,19 @@
+---
+title: 403 - Step-Up Auth Required
+---
+
+A Step-Up Auth Required error is returned when an operation requires additional authentication before it can proceed.
+
+This problem type indicates that the client should initiate a step-up authentication flow (such as WebAuthn) and retry the request with the resulting credentials.
+
+<CodeGroup>
+```json Example
+{
+  "detail": "step-up authentication required",
+  "meta": {},
+  "status": 403,
+  "title": "Step-Up Auth Required",
+  "type": "https://developer.paxos.com/docs/v2/problems/step-up-auth-required"
+}
+```
+</CodeGroup>
