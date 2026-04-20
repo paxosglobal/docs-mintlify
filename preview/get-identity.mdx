@@ -32,7 +32,7 @@ Each entry in `requirements` has the following fields:
 | `awaiting_action_from` | Who must act to resolve the requirement: `USER`, `PAXOS`, or `PARTNER`. Not present on `MEMBERS` type. **Coming soon.** |
 | `reason` | Human-readable description of the requirement status. |
 | `errors` | Specific error details for developer use only — do not expose `code` or `description` values directly to end users. Use `reason` for user-facing messaging. `code` will be a fixed enum of values. Not present on `MEMBERS` type. **Coming soon.** |
-| `member_list` | For `MEMBERS` type only — list of members with their `identity_id` and `status`. |
+| `member_statuses` | For `MEMBERS` type only — list of members with their `identity_id` and `status`. |
 
 #### Requirement types
 
@@ -45,9 +45,9 @@ Each entry in `requirements` has the following fields:
 | `ENHANCED_DUE_DILIGENCE` | Institution | Enhanced due diligence review. |
 | `RISK_AWARENESS_ASSESSMENT` | Person | Risk awareness assessment. |
 | `KYC_REFRESH` | Person | Periodic re-verification of identity information. |
-| `MEMBERS` | Institution | One or more institution members have outstanding requirements. Includes `member_list`. |
+| `MEMBERS` | Institution | One or more institution members have outstanding requirements. Includes `member_statuses`. |
 
-### member_list
+### member_statuses (MEMBERS type only)
 
 Present on `MEMBERS` requirement types. Each entry contains:
 

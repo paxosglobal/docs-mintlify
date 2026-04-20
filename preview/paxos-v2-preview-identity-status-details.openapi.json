@@ -237,7 +237,7 @@
                             "type": "MEMBERS",
                             "requirements_status": "FAILED",
                             "reason": "One or more members could not be verified.",
-                            "member_list": [
+                            "member_statuses": [
                               {
                                 "identity_id": "b8e1f234-0011-4abc-9900-aabbccddeeff",
                                 "status": "DENIED"
@@ -620,7 +620,7 @@
               "$ref": "#/components/schemas/RequirementError"
             }
           },
-          "member_list": {
+          "member_statuses": {
             "type": "array",
             "description": "For institution identities, the list of members with their current status. Only present when `type` is `MEMBERS`.",
             "items": {
