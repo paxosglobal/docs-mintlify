@@ -834,9 +834,9 @@
           "rate_id": { "type": "string", "description": "Rate ID associated with this payout group." },
           "jurisdiction": { "type": "string", "description": "Jurisdiction for this payout group." },
           "name": { "type": "string", "description": "User-readable name for this group." },
-          "claimer_address": { "type": "string", "description": "Address that will claim rewards for this group." },
-          "manager_address": { "type": "string", "description": "Address that manages this payout group (optional)." },
-          "destination_address": { "type": "string", "description": "Address that will receive payouts from this group (optional)." },
+          "claimer_address": { "type": "string", "description": "Address with signing authority to claim rewards for this group." },
+          "manager_address": { "type": "string", "description": "Address that manages this payout group. Defaults to claimer_address if not explicitly set." },
+          "destination_address": { "type": "string", "description": "Address that receives reward payouts for this group. Defaults to claimer_address if not explicitly set." },
           "onchain_group_id": { "type": "string", "format": "int64", "description": "On-chain group ID (optional)." },
           "onchain_status": { "type": "string", "description": "Status of the on-chain group." },
           "balance": { "type": "string", "description": "Current balance of unclaimed rewards." },
@@ -865,7 +865,7 @@
           "asset_type": { "type": "string", "description": "Asset type for this payout group." },
           "jurisdiction": { "type": "string", "description": "Jurisdiction for this payout group." },
           "name": { "type": "string", "description": "User-readable name for this group." },
-          "claimer_address": { "type": "string", "description": "Address that will claim rewards for this group." },
+          "claimer_address": { "type": "string", "description": "Address with signing authority to claim rewards for this group." },
           "schedule_type": { "$ref": "#/components/schemas/ScheduleType" }
         }
       },
