@@ -77,7 +77,7 @@
                             "type": "ID_VERIFICATION",
                             "requirement_status": "FAILED",
                             "awaiting_action_from": "USER",
-                            "reason": "Your information could not be verified.",
+                            "reason": "ID Verification failed",
                             "errors": [
                               {
                                 "code": "submission_blurry",
@@ -89,7 +89,7 @@
                             "type": "SCREENING_CHECK",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
-                            "reason": "Your information is under review.",
+                            "reason": "Screening Check pending",
                             "errors": [
                               {
                                 "code": "screening_match_detected",
@@ -101,7 +101,7 @@
                             "type": "COMPLIANCE_CHECK",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
-                            "reason": "Your account is under review.",
+                            "reason": "Compliance Check pending",
                             "errors": [
                               {
                                 "code": "compliance_review_required",
@@ -113,7 +113,7 @@
                             "type": "RISK_AWARENESS_ASSESSMENT",
                             "requirement_status": "FAILED",
                             "awaiting_action_from": "USER",
-                            "reason": "Risk awareness assessment is required.",
+                            "reason": "Risk Awareness Assessment failed",
                             "errors": [
                               {
                                 "code": "assessment_not_completed",
@@ -125,7 +125,7 @@
                             "type": "KYC_REFRESH",
                             "requirement_status": "FAILED",
                             "awaiting_action_from": "USER",
-                            "reason": "Identity re-verification is required.",
+                            "reason": "KYC Refresh failed",
                             "errors": [
                               {
                                 "code": "kyc_refresh_overdue",
@@ -197,7 +197,7 @@
                             "type": "DOCUMENT_VERIFICATION",
                             "requirement_status": "FAILED",
                             "awaiting_action_from": "USER",
-                            "reason": "Document verification could not be completed.",
+                            "reason": "Document Verification failed",
                             "errors": [
                               {
                                 "code": "document_expired",
@@ -213,7 +213,7 @@
                             "type": "SCREENING_CHECK",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "PARTNER",
-                            "reason": "Your information is under review.",
+                            "reason": "Screening Check pending",
                             "errors": [
                               {
                                 "code": "screening_in_progress",
@@ -225,7 +225,7 @@
                             "type": "COMPLIANCE_CHECK",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
-                            "reason": "Your account is under review.",
+                            "reason": "Compliance Check pending",
                             "errors": [
                               {
                                 "code": "compliance_review_required",
@@ -236,7 +236,7 @@
                           {
                             "type": "MEMBERS",
                             "requirement_status": "FAILED",
-                            "reason": "One or more members could not be verified.",
+                            "reason": "Members failed",
                             "member_statuses": [
                               {
                                 "identity_id": "b8e1f234-0011-4abc-9900-aabbccddeeff",
@@ -252,7 +252,7 @@
                             "type": "ENHANCED_DUE_DILIGENCE",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "USER",
-                            "reason": "Additional information is required.",
+                            "reason": "Enhanced Due Diligence pending",
                             "errors": [
                               {
                                 "code": "edd_documentation_required",
@@ -610,8 +610,8 @@
           },
           "reason": {
             "type": "string",
-            "description": "Human-readable description of the requirement status.",
-            "example": "Your information could not be verified."
+            "description": "Human-readable summary of the requirement status, in the format `<Type> <status>` (e.g., `ID Verification failed`, `Screening Check pending`).",
+            "example": "ID Verification failed"
           },
           "errors": {
             "type": "array",
