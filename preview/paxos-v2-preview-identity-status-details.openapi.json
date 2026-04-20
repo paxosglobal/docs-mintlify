@@ -333,6 +333,9 @@
             "description": "The raw onboarding status of the identity.",
             "example": "PENDING"
           },
+          "status_details": {
+            "$ref": "#/components/schemas/IdentityStatusDetails"
+          },
           "user_disabled": {
             "type": "boolean",
             "description": "Deprecated. Whether the identity was disabled by the client. Use `status_details.active_controls` instead.",
@@ -372,9 +375,6 @@
             "type": "string",
             "description": "Aggregated TIN verification status across all tax details.",
             "example": "VALID"
-          },
-          "status_details": {
-            "$ref": "#/components/schemas/IdentityStatusDetails"
           },
           "created_at": {
             "type": "string",
