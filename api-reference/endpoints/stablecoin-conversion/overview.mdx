@@ -159,14 +159,14 @@ The Orchestrations API supports [webhook notifications](/guides/developer/orches
 **Before — [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions):**
 
 ```bash highlight={1}
-curl 'https://api.paxos.com/v2/conversion/stablecoins?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.gt=2026-04-20T11:00:00Z' \
+curl 'https://api.paxos.com/v2/conversion/stablecoins?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.begin=2026-04-20T11:00:00Z' \
   -H 'Authorization: Bearer {access_token}'
 ```
 
 **After — [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations):**
 
 ```bash highlight={1}
-curl 'https://api.paxos.com/v2/orchestration/orchestrations?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.gt=2026-04-20T11:00:00Z' \
+curl 'https://api.paxos.com/v2/orchestration/orchestrations?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.gte=2026-04-20T11:00:00Z' \
   -H 'Authorization: Bearer {access_token}'
 ```
 
