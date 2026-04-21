@@ -10,34 +10,28 @@ description: Get answers to commonly asked questions.
 
 <Accordion title="How can I get started with conversions?" id="get-started">
 
-The [stablecoin conversion guide](/guides/developer/convert) takes you through the simple process. Reach out to [Support](https://support.paxos.com) if you need assistance.
+The [Orchestrations Convert guide](/guides/developer/orchestrations/convert) walks you through the process. Reach out to [Support](https://support.paxos.com) if you need assistance.
+
+> The legacy [Stablecoin Conversion API](/api-reference/endpoints/stablecoin-conversion/overview) has been deprecated. See the [migration guide](/api-reference/endpoints/stablecoin-conversion/overview#migration-guide) if you are an existing customer.
 
 </Accordion>
 
 <Accordion title="What are the conversion fees?" id="fees">
 
-None. Conversions between the [supported asset pairs](/guides/developer/convert#assets) incur no fees.
+Refer to [Paxos Pricing](https://dashboard.paxos.com/admin/settings?document=paxos-pricing-doc) on the Dashboard (**Admin > Entity Settings > Documents > Paxos Pricing**) for current fee details.
 
 </Accordion>
 
 <Accordion title="Are there any conversion limits?" id="limits">
 
-By default, there is a $500,000 USD transaction limit per conversion.
-Contact [Support](https://support.paxos.com) for additional details.
+See [Paxos Stablecoin Processing Times & Limits](https://support.paxos.com/articles/6157930592-paxos-stablecoin-processing-times-limits) for details. Contact [Support](https://support.paxos.com) for additional information.
 
 </Accordion>
 
 <Accordion title="What is dust?" id="dust">
 
 Dust is a small amount of an asset leftover from a transaction.
-Dust can accumulate when converting [assets with different precisions](/guides/developer/convert#assets).
-
-</Accordion>
-
-<Accordion title="Can I cancel a conversion?" id="cancel">
-
-Most conversions execute near instantaneously; however, under rare conditions a settlement delay may occur.
-You can use the [Cancel Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/cancel-stablecoin-conversion) endpoint to cancel a pending conversion.
+Dust can accumulate when converting assets with different precisions.
 
 </Accordion>
 

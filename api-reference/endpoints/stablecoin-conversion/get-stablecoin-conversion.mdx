@@ -1,6 +1,13 @@
 ---
 openapi: get /conversion/stablecoins/{id}
+tag: "Deprecated"
 ---
+
+<Danger title="This endpoint has been replaced">
+The [Orchestrations API](/api-reference/endpoints/orchestration/overview) replaces this endpoint.
+
+New customers should use [Get Orchestration](/api-reference/endpoints/orchestration/get-orchestration) instead. Existing customers should follow the [migration guide](/api-reference/endpoints/stablecoin-conversion/overview#migration-guide).
+</Danger>
 
 ```bash OAuth Scope
 conversion:read_conversion_stablecoin

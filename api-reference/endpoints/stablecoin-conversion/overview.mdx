@@ -1,19 +1,173 @@
 ---
 title: "Overview"
-description: "Convert between fiat and stablecoin using the Stablecoin Conversion API."
+description: "Convert funds already on platform between fiat and stablecoin using the Stablecoin Conversion API."
+tag: "Deprecated"
 ---
 
 Convert between fiat and stablecoin using [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) and check the status of a [single conversion](/api-reference/endpoints/stablecoin-conversion/get-stablecoin-conversion) or retrieve a [list of conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions).
 
-<Warning title="Stablecoin Conversions Deprecation Notice">
-The Stablecoin Conversions API will be deprecated.
+<Danger title="This API has been replaced by the Orchestrations API">
+The [Orchestrations API](/api-reference/endpoints/orchestration/overview) replaces this API, offering additional capabilities including rule-based orchestrations, and flexible routing to profiles, external crypto addresses, and fiat accounts.
 
-Paxos will migrate all active conversion rules to the Orchestrations API format by December 2025.
+New customers should use the [Orchestrations API](/api-reference/endpoints/orchestration/overview) instead. Existing customers should follow the [migration guide](#migration-guide) below.
+</Danger>
 
-Customers should transition to the Orchestrations API to ensure continuity of service.
-</Warning>
+## Migration Guide
 
-## Learn More
+This guide covers migrating **profile-to-profile conversions** — the only flow supported by the old API. For additional capabilities like rule-based orchestrations and crypto or fiat withdrawals, see the [Orchestrations developer guides](/guides/developer/orchestrations/orchestrations).
 
-Learn more about stablecoin conversions in the [Convert Developer Guide](/guides/developer/convert).
+The [Orchestrations API](/api-reference/endpoints/orchestration/overview) is the replacement for the Stablecoin Conversions API. It supports the same 1:1 conversions between USD and stablecoins, plus:
 
+- **[Rule-based orchestrations](/guides/developer/orchestrations/mint#creating-mint-orchestration-rules)** — automatically convert incoming deposits without API calls
+- **Flexible routing** — send converted funds to profiles, external crypto addresses, or fiat accounts
+- **[Webhook notifications](/guides/developer/orchestrations/orchestrations#monitoring-orchestration-status)** — get notified when orchestrations complete instead of polling
+- **[Approvals](/guides/dashboard/admin/approvals)** — require multi-party sign-off on sensitive actions like conversions
+
+## ➊ Update OAuth Scopes
+
+Add the orchestration scopes to your API credentials in [API Management](/guides/dashboard/admin/api) (**Admin > API Management**):
+
+**Before:**
+
+```
+conversion:read_conversion_stablecoin conversion:write_conversion_stablecoin
+```
+
+**After:**
+
+```
+orchestration:read_orchestration orchestration:write_orchestration
+```
+
+## ➋ Update the Request
+
+The Orchestrations API uses `source` and `destination` objects to specify where funds come from and go to, and `destination_asset` instead of `target_asset`.
+
+> In the old API, `profile_id` served as both source and destination. In the Orchestrations API, `source` and `destination` explicitly define the flow. For a same-profile conversion, use the same profile ID for both.
+
+**Before — [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion):**
+
+```bash highlight={1,6-7,9}
+curl -X POST 'https://api.paxos.com/v2/conversion/stablecoins' \
+  -H 'Authorization: Bearer {access_token}' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "ref_id": "usd-pyusd-a3b1c2d4",
+    "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c",
+    "amount": "100",
+    "source_asset": "USD",
+    "target_asset": "PYUSD",
+    "metadata": {
+      "my_id": "4f8a2b6c-9d1e-4c3a-b5f7-0e2d8a7c1b9f"
+    }
+  }'
+```
+
+**After — [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration):**
+
+```bash highlight={1,6,8-18}
+curl -X POST 'https://api.paxos.com/v2/orchestration/orchestrations' \
+  -H 'Authorization: Bearer {access_token}' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "ref_id": "usd-pyusd-a3b1c2d4",
+    "source_amount": "100",
+    "source_asset": "USD",
+    "destination_asset": "PYUSD",
+    "source": {
+      "profile": {
+        "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c"
+      }
+    },
+    "destination": {
+      "profile": {
+        "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c"
+      }
+    },
+    "metadata": {
+      "my_id": "4f8a2b6c-9d1e-4c3a-b5f7-0e2d8a7c1b9f"
+    }
+  }'
+```
+
+## ➌ Update Response Handling
+
+**Before — [Create Stablecoin Conversion](/api-reference/endpoints/stablecoin-conversion/create-stablecoin-conversion) Response:**
+
+```json highlight={4,6-7}
+{
+  "id": "e9a2f4c1-6b8d-4e3a-b5c7-1d0f9e8a7b6c",
+  "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c",
+  "amount": "100",
+  "source_asset": "USD",
+  "target_asset": "PYUSD",
+  "status": "CREATED",
+  "ref_id": "usd-pyusd-a3b1c2d4",
+  "created_at": "2026-04-20T12:30:01.397730Z",
+  "updated_at": "2026-04-20T12:30:01.472464Z",
+  "metadata": {
+    "my_id": "4f8a2b6c-9d1e-4c3a-b5f7-0e2d8a7c1b9f"
+  }
+}
+```
+
+**After — [Create Orchestration](/api-reference/endpoints/orchestration/create-orchestration) Response:**
+
+```json highlight={4,6-7,12-21}
+{
+  "id": "3d7a1e5b-9c2f-4d8a-a6b3-0e4f2c8d1a9b",
+  "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c",
+  "source_amount": "100",
+  "source_asset": "USD",
+  "destination_asset": "PYUSD",
+  "status": "PROCESSING",
+  "ref_id": "usd-pyusd-a3b1c2d4",
+  "customer_id": "a1b2c3d4-5e6f-7a8b-9c0d-e1f2a3b4c5d6",
+  "created_at": "2026-04-20T12:30:01.397730Z",
+  "updated_at": "2026-04-20T12:30:01.397730Z",
+  "source": {
+    "profile": {
+      "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c"
+    }
+  },
+  "destination": {
+    "profile": {
+      "profile_id": "7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c"
+    }
+  },
+  "metadata": {
+    "my_id": "4f8a2b6c-9d1e-4c3a-b5f7-0e2d8a7c1b9f"
+  }
+}
+```
+
+**Summary of changes:**
+
+- **Renamed fields:**
+  - `amount` → `source_amount`
+  - `target_asset` → `destination_asset`
+- **Source/destination split:**
+  - `profile_id` → `source.profile.profile_id` and `destination.profile.profile_id`
+- **Status values** — see all [Orchestration statuses](/api-reference/endpoints/orchestration/create-orchestration#response-status):
+  - `CREATED` → `PROCESSING`
+  - `SETTLED` → `COMPLETED`
+
+## ➍ Update Status Monitoring
+
+The Orchestrations API supports [webhook notifications](/guides/developer/orchestrations/orchestrations#monitoring-orchestration-status), so you no longer need to poll for status updates. If you prefer polling, switch from [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions) to [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations):
+
+**Before — [List Stablecoin Conversions](/api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions):**
+
+```bash highlight={1}
+curl 'https://api.paxos.com/v2/conversion/stablecoins?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.begin=2026-04-20T11:00:00Z' \
+  -H 'Authorization: Bearer {access_token}'
+```
+
+**After — [List Orchestrations](/api-reference/endpoints/orchestration/list-orchestrations):**
+
+```bash highlight={1}
+curl 'https://api.paxos.com/v2/orchestration/orchestrations?profile_id=7c4e8f2a-1d3b-4a5e-9f6c-8b2d7e0a4f1c&created_at.gte=2026-04-20T11:00:00Z' \
+  -H 'Authorization: Bearer {access_token}'
+```
+
+> Questions about migration? Contact [Support](https://support.paxos.com).

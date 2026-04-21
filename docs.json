@@ -198,14 +198,6 @@
             ]
           },
           {
-            "group": "Stablecoin Operations",
-            "pages": [
-              "guides/developer/mint",
-              "guides/developer/convert",
-              "guides/developer/redeem"
-            ]
-          },
-          {
             "group": "Fiat Transfers",
             "pages": [
               "guides/developer/fiat-transfers/index",
@@ -650,6 +642,7 @@
               },
               {
                 "group": "Stablecoin Conversion",
+                "tag": "Deprecated",
                 "pages": [
                   "api-reference/endpoints/stablecoin-conversion/overview",
                   "api-reference/endpoints/stablecoin-conversion/list-stablecoin-conversions",
