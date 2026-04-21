@@ -85,28 +85,26 @@ curl -X POST 'https://api.paxos.com/v2/orchestration/orchestrations' \
 
 ```json
 {
-  "orchestration": {
-    "id": "orch_789ghi",
-    "ref_id": "redeem_usdc_usd_bank",
-    "profile_id": "{profile_id}",
-    "source_asset": "USDC",
-    "source_amount": "500",
-    "destination_asset": "USD",
-    "destination_amount": "500",
-    "source": {
-      "profile": {
-        "profile_id": "{profile_id}"
-      }
-    },
-    "destination": {
-      "fiat": {
-        "bank_account_id": "{bank_account_id}",
-        "memo": "Redemption payment"
-      }
-    },
-    "status": "PROCESSING",
-    "created_at": "2024-01-15T10:00:00Z"
-  }
+  "id": "orch_789ghi",
+  "ref_id": "redeem_usdc_usd_bank",
+  "profile_id": "{profile_id}",
+  "source_asset": "USDC",
+  "source_amount": "500",
+  "destination_asset": "USD",
+  "source": {
+    "profile": {
+      "profile_id": "{profile_id}"
+    }
+  },
+  "destination": {
+    "fiat": {
+      "bank_account_id": "{bank_account_id}",
+      "memo": "Redemption payment"
+    }
+  },
+  "status": "PROCESSING",
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
 }
 ```
 
