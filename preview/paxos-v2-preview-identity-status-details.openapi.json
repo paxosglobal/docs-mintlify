@@ -52,7 +52,7 @@
                       "user_disabled": false,
                       "admin_disabled": false,
                       "created_at": "2026-04-01T10:00:00Z",
-                      "updated_at": "2026-04-15T09:30:00Z",
+                      "updated_at": "2026-04-21T09:30:00Z",
                       "person_details": {
                         "first_name": "Jane",
                         "last_name": "Smith",
@@ -76,12 +76,11 @@
                           {
                             "type": "ID_VERIFICATION",
                             "requirement_status": "FAILED",
-                            "awaiting_action_from": "USER",
-                            "reason": "ID Verification failed",
+                            "awaiting_action_from": "PAXOS",
                             "errors": [
                               {
-                                "code": "submission_blurry",
-                                "description": "Cannot validate ID — upload a photo of your ID that is clear"
+                                "code": "identity_verification_failed",
+                                "description": "Identity verification could not be completed."
                               }
                             ]
                           },
@@ -89,47 +88,32 @@
                             "type": "SCREENING_CHECK",
                             "requirement_status": "PENDING",
                             "awaiting_action_from": "PAXOS",
-                            "reason": "Screening Check pending",
                             "errors": [
                               {
-                                "code": "screening_match_detected",
-                                "description": "Your information requires manual review."
-                              }
-                            ]
-                          },
-                          {
-                            "type": "COMPLIANCE_CHECK",
-                            "requirement_status": "PENDING",
-                            "awaiting_action_from": "PAXOS",
-                            "reason": "Compliance Check pending",
-                            "errors": [
-                              {
-                                "code": "compliance_review_required",
-                                "description": "Your account has been flagged for compliance review."
+                                "code": "screening_in_progress",
+                                "description": "Screening verification is in progress."
                               }
                             ]
                           },
                           {
                             "type": "RISK_AWARENESS_ASSESSMENT",
                             "requirement_status": "FAILED",
-                            "awaiting_action_from": "USER",
-                            "reason": "Risk Awareness Assessment failed",
+                            "awaiting_action_from": "PAXOS",
                             "errors": [
                               {
-                                "code": "assessment_not_completed",
-                                "description": "Risk awareness assessment must be completed."
+                                "code": "assessment_failed",
+                                "description": "Risk awareness assessment was not passed."
                               }
                             ]
                           },
                           {
                             "type": "KYC_REFRESH",
                             "requirement_status": "FAILED",
-                            "awaiting_action_from": "USER",
-                            "reason": "KYC Refresh failed",
+                            "awaiting_action_from": "CLIENT",
                             "errors": [
                               {
                                 "code": "kyc_refresh_overdue",
-                                "description": "Your identity verification has expired and must be renewed."
+                                "description": "Identity verification has expired and must be renewed."
                               }
                             ]
                           }
@@ -148,7 +132,7 @@
                       "user_disabled": false,
                       "admin_disabled": false,
                       "created_at": "2026-03-15T08:00:00Z",
-                      "updated_at": "2026-04-15T11:00:00Z",
+                      "updated_at": "2026-04-21T11:00:00Z",
                       "institution_details": {
                         "name": "Acme Capital LLC",
                         "document_verification_status": "DENIED"
@@ -181,39 +165,24 @@
                             "reason_code": "COMPLIANCE_EDD",
                             "reason": "Account restricted pending enhanced due diligence completion.",
                             "created_at": "2026-04-05T14:00:00Z"
-                          },
-                          {
-                            "id": "ctrl-003",
-                            "type": "DORMANT",
-                            "set_by": "SET_BY_CLIENT",
-                            "is_overridable": true,
-                            "reason_code": "INACTIVITY",
-                            "reason": "Account marked dormant due to prolonged inactivity.",
-                            "created_at": "2026-03-01T00:00:00Z"
                           }
                         ],
                         "requirements": [
                           {
                             "type": "DOCUMENT_VERIFICATION",
                             "requirement_status": "FAILED",
-                            "awaiting_action_from": "USER",
-                            "reason": "Document Verification failed",
+                            "awaiting_action_from": "PAXOS",
                             "errors": [
                               {
-                                "code": "document_expired",
-                                "description": "Submitted document is expired"
-                              },
-                              {
-                                "code": "document_unreadable",
-                                "description": "Submitted documents could not be verified"
+                                "code": "document_verification_failed",
+                                "description": "Document verification could not be completed."
                               }
                             ]
                           },
                           {
                             "type": "SCREENING_CHECK",
                             "requirement_status": "PENDING",
-                            "awaiting_action_from": "PARTNER",
-                            "reason": "Screening Check pending",
+                            "awaiting_action_from": "PAXOS",
                             "errors": [
                               {
                                 "code": "screening_in_progress",
@@ -222,37 +191,19 @@
                             ]
                           },
                           {
-                            "type": "COMPLIANCE_CHECK",
-                            "requirement_status": "PENDING",
-                            "awaiting_action_from": "PAXOS",
-                            "reason": "Compliance Check pending",
-                            "errors": [
-                              {
-                                "code": "compliance_review_required",
-                                "description": "Your account has been flagged for compliance review."
-                              }
-                            ]
-                          },
-                          {
                             "type": "MEMBERS",
                             "requirement_status": "FAILED",
-                            "reason": "Members failed",
-                            "member_statuses": [
+                            "errors": [
                               {
-                                "identity_id": "b8e1f234-0011-4abc-9900-aabbccddeeff",
-                                "status": "DENIED"
-                              },
-                              {
-                                "identity_id": "c9f2a345-1122-5bcd-aa11-bbccddeeff00",
-                                "status": "PENDING"
+                                "code": "member_verification_failed",
+                                "description": "One or more members could not be verified."
                               }
                             ]
                           },
                           {
                             "type": "ENHANCED_DUE_DILIGENCE",
                             "requirement_status": "PENDING",
-                            "awaiting_action_from": "USER",
-                            "reason": "Enhanced Due Diligence pending",
+                            "awaiting_action_from": "CLIENT",
                             "errors": [
                               {
                                 "code": "edd_documentation_required",
@@ -606,42 +557,43 @@
           },
           "awaiting_action_from": {
             "allOf": [{ "$ref": "#/components/schemas/AwaitingActionFrom" }],
-            "description": "Indicates who must act to resolve the requirement. Not present on `MEMBERS` type requirements. **Coming soon** — this field will be added in a future release."
-          },
-          "reason": {
-            "type": "string",
-            "description": "Human-readable summary of the requirement status, in the format `<Type> <status>` (e.g., `ID Verification failed`, `Screening Check pending`).",
-            "example": "ID Verification failed"
+            "description": "Indicates who must act to resolve the requirement. Not present on `MEMBERS` type requirements."
           },
           "errors": {
             "type": "array",
-            "description": "Specific error details for developer use only. Do not expose `code` or `description` values directly to end users — use `reason` for user-facing messaging. Not present on `MEMBERS` type requirements. **Coming soon** — this field will be added in a future release.",
+            "description": "Specific error details for developer use only. Do not expose `code` or `description` values directly to end users. `code` is a fixed enum of values; additional codes may be added in the future.",
             "items": {
               "$ref": "#/components/schemas/RequirementError"
-            }
-          },
-          "member_statuses": {
-            "type": "array",
-            "description": "For institution identities, the list of members with their current status. Only present when `type` is `MEMBERS`.",
-            "items": {
-              "$ref": "#/components/schemas/MemberStatus"
             }
           }
         }
       },
       "RequirementError": {
         "type": "object",
-        "description": "A specific error associated with a failed or pending requirement.",
+        "description": "A specific error associated with a failed or pending requirement. For developer use only — do not expose these values directly to end users.",
         "properties": {
           "code": {
             "type": "string",
-            "description": "Machine-readable error code. Will be a fixed enum of values in the final release.",
-            "example": "submission_blurry"
+            "enum": [
+              "identity_verification_failed",
+              "document_verification_failed",
+              "screening_in_progress",
+              "screening_failed",
+              "assessment_failed",
+              "kyc_refresh_overdue",
+              "member_verification_failed",
+              "member_verification_pending",
+              "edd_documentation_required",
+              "compliance_review_required",
+              "compliance_review_failed"
+            ],
+            "description": "Machine-readable error code. Additional codes may be added in the future.",
+            "example": "identity_verification_failed"
           },
           "description": {
             "type": "string",
             "description": "Human-readable description of the error.",
-            "example": "Cannot validate ID — upload a photo of your ID that is clear"
+            "example": "Identity verification could not be completed."
           }
         }
       },
@@ -657,7 +609,7 @@
           "KYC_REFRESH",
           "MEMBERS"
         ],
-        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Sanctions or watchlist screening\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `MEMBERS`: One or more institution members have outstanding requirements"
+        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
       },
       "RequirementStatus": {
         "type": "string",
@@ -665,16 +617,15 @@
           "PENDING",
           "FAILED"
         ],
-        "description": "The status of the requirement.\n\n- `PENDING`: The requirement has not yet been fulfilled. May be under review by Paxos or a partner, or may require action from the user — check `awaiting_action_from` for details.\n- `FAILED`: The requirement was not met. May or may not require action — check `awaiting_action_from` for details."
+        "description": "The status of the requirement.\n\n- `PENDING`: The requirement has not yet been fulfilled. May be under review by Paxos or may require action from the client — check `awaiting_action_from` for details.\n- `FAILED`: The requirement was not met. May or may not require action — check `awaiting_action_from` for details."
       },
       "AwaitingActionFrom": {
         "type": "string",
         "enum": [
-          "USER",
           "PAXOS",
-          "PARTNER"
+          "CLIENT"
         ],
-        "description": "Indicates who must act to resolve the requirement.\n\n- `USER`: The end user must take action (e.g., resubmit a document)\n- `PAXOS`: Paxos is reviewing and no action is needed from the user\n- `PARTNER`: The partner (client application) must take action"
+        "description": "Indicates who must act to resolve the requirement.\n\n- `PAXOS`: Paxos is reviewing and no action is needed from the client\n- `CLIENT`: The client application must take action"
       },
       "MemberStatus": {
         "type": "object",

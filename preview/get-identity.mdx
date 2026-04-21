@@ -28,11 +28,9 @@ Each entry in `requirements` has the following fields:
 | Field | Description |
 |-------|-------------|
 | `type` | The requirement type. See types below. |
-| `requirement_status` | `PENDING` — not yet fulfilled; may be under review or require user action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
-| `awaiting_action_from` | Who must act to resolve the requirement: `USER`, `PAXOS`, or `PARTNER`. Not present on `MEMBERS` type. **Coming soon.** |
-| `reason` | Human-readable summary in the format `<Type> <status>` (e.g., `ID Verification failed`, `Screening Check pending`). Use this for user-facing messaging. |
-| `errors` | Specific error details for developer use only — do not expose `code` or `description` values directly to end users. Use `reason` for user-facing messaging. `code` will be a fixed enum of values. Not present on `MEMBERS` type. **Coming soon.** |
-| `member_statuses` | For `MEMBERS` type only — list of members with their `identity_id` and `status`. |
+| `requirement_status` | `PENDING` — not yet fulfilled; may be under review or require client action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
+| `awaiting_action_from` | Who must act to resolve the requirement: `PAXOS` or `CLIENT`. Not present on `MEMBERS` type. |
+| `errors` | Specific error details for developer use only — do not expose `code` or `description` values directly to end users. `code` is a fixed enum of values; additional codes may be added in the future. |
 
 #### Requirement types
 
@@ -40,20 +38,11 @@ Each entry in `requirements` has the following fields:
 |------|-----------|-------------|
 | `ID_VERIFICATION` | Person | Government ID verification. |
 | `DOCUMENT_VERIFICATION` | Institution | Business document review. |
-| `SCREENING_CHECK` | Both | Sanctions or watchlist screening. |
+| `SCREENING_CHECK` | Both | Background screening check. |
 | `COMPLIANCE_CHECK` | Both | Internal compliance review. |
 | `ENHANCED_DUE_DILIGENCE` | Institution | Enhanced due diligence review. |
 | `RISK_AWARENESS_ASSESSMENT` | Person | Risk awareness assessment. |
 | `KYC_REFRESH` | Person | Periodic re-verification of identity information. |
-| `MEMBERS` | Institution | One or more institution members have outstanding requirements. Includes `member_statuses`. |
-
-### member_statuses (MEMBERS type only)
-
-Present on `MEMBERS` requirement types. Each entry contains:
-
-| Field | Description |
-|-------|-------------|
-| `identity_id` | The identity ID of the member. |
-| `status` | Current status of the member identity (e.g., `PENDING`, `DENIED`, `DISABLED`). |
+| `MEMBERS` | Institution only | One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending. |
 
 > Questions? Contact [Support](https://support.paxos.com).
