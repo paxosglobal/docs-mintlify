@@ -42,13 +42,13 @@
                 },
                 "examples": {
                   "person_pending": {
-                    "summary": "Person identity pending with failed and pending requirements",
+                    "summary": "Person identity disabled due to expired KYC refresh",
                     "value": {
                       "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
                       "type": "PERSON",
                       "ref_id": "user-abc-123",
-                      "status": "PENDING",
-                      "summary_status": "PENDING",
+                      "status": "DISABLED",
+                      "summary_status": "DISABLED",
                       "user_disabled": false,
                       "admin_disabled": false,
                       "created_at": "2026-04-01T10:00:00Z",
@@ -57,33 +57,22 @@
                         "first_name": "Jane",
                         "last_name": "Smith",
                         "date_of_birth": "1990-05-15",
-                        "id_verification_status": "DENIED",
+                        "id_verification_status": "APPROVED",
                         "sanctions_verification_status": "PENDING"
                       },
                       "status_details": {
                         "active_controls": [
                           {
                             "id": "ctrl-001",
-                            "type": "FROZEN",
+                            "type": "SELL_ONLY",
                             "set_by": "SET_BY_PAXOS",
                             "is_overridable": false,
                             "reason_code": "COMPLIANCE_KYC",
-                            "reason": "Account frozen pending identity re-verification.",
+                            "reason": "KYC refresh expired",
                             "created_at": "2026-04-10T08:00:00Z"
                           }
                         ],
                         "requirements": [
-                          {
-                            "type": "ID_VERIFICATION",
-                            "requirement_status": "FAILED",
-                            "awaiting_action_from": "PAXOS",
-                            "errors": [
-                              {
-                                "code": "identity_verification_failed",
-                                "description": "Identity verification could not be completed."
-                              }
-                            ]
-                          },
                           {
                             "type": "SCREENING_CHECK",
                             "requirement_status": "PENDING",
@@ -92,17 +81,6 @@
                               {
                                 "code": "screening_in_progress",
                                 "description": "Screening verification is in progress."
-                              }
-                            ]
-                          },
-                          {
-                            "type": "RISK_AWARENESS_ASSESSMENT",
-                            "requirement_status": "FAILED",
-                            "awaiting_action_from": "PAXOS",
-                            "errors": [
-                              {
-                                "code": "assessment_failed",
-                                "description": "Risk awareness assessment was not passed."
                               }
                             ]
                           },
@@ -135,7 +113,7 @@
                       "updated_at": "2026-04-21T11:00:00Z",
                       "institution_details": {
                         "name": "Acme Capital LLC",
-                        "document_verification_status": "DENIED"
+                        "document_verification_status": "APPROVED"
                       },
                       "institution_members": [
                         {
@@ -152,44 +130,12 @@
                           "roles": ["CONTROL_PERSON"],
                           "ownership": "49",
                           "name": "Jane Doe",
-                          "summary_status": "PENDING"
+                          "summary_status": "APPROVED"
                         }
                       ],
                       "status_details": {
-                        "active_controls": [
-                          {
-                            "id": "ctrl-002",
-                            "type": "SELL_ONLY",
-                            "set_by": "SET_BY_PAXOS",
-                            "is_overridable": true,
-                            "reason_code": "COMPLIANCE_EDD",
-                            "reason": "Account restricted pending enhanced due diligence completion.",
-                            "created_at": "2026-04-05T14:00:00Z"
-                          }
-                        ],
+                        "active_controls": [],
                         "requirements": [
-                          {
-                            "type": "DOCUMENT_VERIFICATION",
-                            "requirement_status": "FAILED",
-                            "awaiting_action_from": "PAXOS",
-                            "errors": [
-                              {
-                                "code": "document_verification_failed",
-                                "description": "Document verification could not be completed."
-                              }
-                            ]
-                          },
-                          {
-                            "type": "SCREENING_CHECK",
-                            "requirement_status": "PENDING",
-                            "awaiting_action_from": "PAXOS",
-                            "errors": [
-                              {
-                                "code": "screening_in_progress",
-                                "description": "Screening verification is in progress."
-                              }
-                            ]
-                          },
                           {
                             "type": "MEMBERS",
                             "requirement_status": "FAILED",
