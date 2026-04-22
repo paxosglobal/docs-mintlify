@@ -342,11 +342,10 @@
       "IdentityType": {
         "type": "string",
         "enum": [
-          "INDIVIDUAL",
-          "INSTITUTION",
-          "PERSON"
+          "PERSON",
+          "INSTITUTION"
         ],
-        "description": "The type of identity.\n\n- `INDIVIDUAL`: A natural person\n- `INSTITUTION`: A legal entity or business\n- `PERSON`: A person associated with an institution (e.g., beneficial owner or control person)"
+        "description": "The type of identity.\n\n- `PERSON`: A natural person\n- `INSTITUTION`: A legal entity or business"
       },
       "IdentitySummaryStatus": {
         "type": "string",
