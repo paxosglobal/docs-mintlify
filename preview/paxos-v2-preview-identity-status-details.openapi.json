@@ -276,12 +276,12 @@
           },
           "summary_status": {
             "allOf": [{ "$ref": "#/components/schemas/IdentitySummaryStatus" }],
-            "description": "Deprecated. Use `status` instead. The overall onboarding and compliance status of the identity. `status` and `summary_status` return the same values.",
+            "description": "Deprecated. Use `status` instead. The overall status of the identity. `status` and `summary_status` return the same values.",
             "deprecated": true
           },
           "status": {
             "type": "string",
-            "description": "The raw onboarding status of the identity.",
+            "description": "The overall status of the identity.",
             "example": "PENDING"
           },
           "status_details": {
@@ -290,11 +290,13 @@
           "user_disabled": {
             "type": "boolean",
             "description": "Deprecated. Whether the identity was disabled by the client. Use `status_details.active_controls` instead.",
+            "deprecated": true,
             "example": false
           },
           "admin_disabled": {
             "type": "boolean",
             "description": "Deprecated. Whether the identity was disabled by Paxos. Use `status_details.active_controls` instead.",
+            "deprecated": true,
             "example": false
           },
           "is_merchant": {
@@ -324,7 +326,8 @@
           },
           "summary_tin_verification_status": {
             "type": "string",
-            "description": "Aggregated TIN verification status across all tax details.",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
             "example": "VALID"
           },
           "created_at": {
@@ -355,7 +358,7 @@
           "DENIED",
           "DISABLED"
         ],
-        "description": "The overall onboarding and compliance status of the identity.\n\n- `PENDING`: Identity is under review\n- `APPROVED`: Identity has passed all verifications and may transact\n- `DENIED`: Identity has been denied\n- `DISABLED`: Identity has been disabled and may not transact"
+        "description": "The overall status of the identity.\n\n- `PENDING`: Identity is under review\n- `APPROVED`: Identity has passed all verifications and may transact\n- `DENIED`: Identity has been denied\n- `DISABLED`: Identity has been disabled and may not transact"
       },
       "PersonDetails": {
         "type": "object",
@@ -379,12 +382,14 @@
           },
           "id_verification_status": {
             "type": "string",
-            "description": "Status of government ID verification.",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
             "example": "DENIED"
           },
           "sanctions_verification_status": {
             "type": "string",
-            "description": "Status of sanctions screening.",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
             "example": "PENDING"
           }
         }
@@ -400,12 +405,14 @@
           },
           "sanctions_verification_status": {
             "type": "string",
-            "description": "Status of sanctions screening.",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
             "example": "APPROVED"
           },
           "document_verification_status": {
             "type": "string",
-            "description": "Status of document verification.",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
             "example": "DENIED"
           },
           "institution_type": {
@@ -525,7 +532,7 @@
       },
       "IdentityStatusDetails": {
         "type": "object",
-        "description": "Detailed breakdown of the identity's current status, including active restrictions and outstanding requirements.",
+        "description": "Detailed breakdown of the identity's current status, including active controls and outstanding requirements.",
         "properties": {
           "active_controls": {
             "type": "array",
@@ -584,7 +591,8 @@
               "member_verification_pending",
               "edd_documentation_required",
               "compliance_review_required",
-              "compliance_review_failed"
+              "compliance_review_failed",
+              "tin_not_found"
             ],
             "description": "Machine-readable error code. Additional codes may be added in the future.",
             "example": "identity_verification_failed"
@@ -606,9 +614,10 @@
           "ENHANCED_DUE_DILIGENCE",
           "RISK_AWARENESS_ASSESSMENT",
           "KYC_REFRESH",
+          "TIN_VERIFICATION",
           "MEMBERS"
         ],
-        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
+        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `TIN_VERIFICATION`: Tax identification number verification\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
       },
       "RequirementStatus": {
         "type": "string",

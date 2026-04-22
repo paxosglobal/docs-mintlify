@@ -7,7 +7,7 @@ identity:read_identity
 ```
 
 <Note>
-**Preview Feature**: The `status_details` object now includes a `requirements` array. This field provides structured insight into why an identity is `PENDING` or `DENIED`.
+**Preview Feature**: The `status_details` object now includes a `requirements` array. This field provides structured insight into why an identity is `PENDING`, `DENIED`, or `DISABLED`.
 
 See [status_details](#status_details-object) for full field descriptions.
 </Note>
@@ -43,6 +43,7 @@ Each entry in `requirements` has the following fields:
 | `ENHANCED_DUE_DILIGENCE` | Institution | Enhanced due diligence review. |
 | `RISK_AWARENESS_ASSESSMENT` | Person | Risk awareness assessment. |
 | `KYC_REFRESH` | Person | Periodic re-verification of identity information. |
+| `TIN_VERIFICATION` | Both | Tax identification number verification. |
 | `MEMBERS` | Institution only | One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending. |
 
 > Questions? Contact [Support](https://support.paxos.com).
