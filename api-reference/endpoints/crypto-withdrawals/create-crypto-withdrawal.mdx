@@ -2,6 +2,10 @@
 openapi: post /transfer/crypto-withdrawals
 ---
 
+<Note>
+If you have [request signing](/guides/developer/request-signing) enabled, this endpoint will not work until Paxos configures it on the backend. Contact [Support](https://support.paxos.com) to complete the setup.
+</Note>
+
 ```bash OAuth Scope
 transfer:write_crypto_withdrawal
 ```
