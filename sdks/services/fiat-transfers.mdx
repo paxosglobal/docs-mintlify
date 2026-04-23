@@ -1,0 +1,74 @@
+---
+title: 'Fiat Transfers'
+description: 'SDK reference for the Fiat Transfers service — manage fiat accounts, deposit instructions, and withdrawals.'
+---
+
+The Fiat Transfers service manages fiat bank accounts, deposit instructions, and fiat withdrawals.
+
+**Client accessor**: `client.FiatTransfers`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListFiatAccounts` | `GET /transfer/fiat-accounts` | List fiat bank accounts |
+| `CreateFiatAccount` | `POST /transfer/fiat-accounts` | Register a fiat bank account |
+| `GetFiatAccount` | `GET /transfer/fiat-accounts/{id}` | Get a fiat account by ID |
+| `UpdateFiatAccount` | `PATCH /transfer/fiat-accounts/{id}` | Update a fiat account |
+| `DeleteFiatAccount` | `DELETE /transfer/fiat-accounts/{id}` | Delete a fiat account |
+| `ListFiatDepositInstructions` | `GET /transfer/fiat-deposit-instructions` | List fiat deposit instructions |
+| `CreateFiatDepositInstructions` | `POST /transfer/fiat-deposit-instructions` | Create deposit instructions |
+| `GetFiatDepositInstructions` | `GET /transfer/fiat-deposit-instructions/{id}` | Get deposit instructions by ID |
+| `CreateFiatWithdrawal` | `POST /transfer/fiat-withdrawals` | Initiate a fiat withdrawal |
+
+## CreateFiatWithdrawal
+
+<CodeGroup>
+
+```go Go
+withdrawal, err := client.FiatTransfers.CreateFiatWithdrawal(ctx, &paxos.CreateFiatWithdrawalRequest{
+    ProfileID:     "profile_123",
+    FiatAccountID: "fiat_acct_456",
+    Amount:        "1000.00",
+    Asset:         "USD",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Withdrawal %s: %s\n", withdrawal.ID, withdrawal.Status)
+```
+
+```python Python
+withdrawal = client.fiat_transfers.create_fiat_withdrawal(
+    profile_id="profile_123",
+    fiat_account_id="fiat_acct_456",
+    amount="1000.00",
+    asset="USD",
+)
+print(f"Withdrawal {withdrawal.id}: {withdrawal.status}")
+```
+
+```typescript TypeScript
+const withdrawal = await client.fiatTransfers.createFiatWithdrawal({
+  profileId: "profile_123",
+  fiatAccountId: "fiat_acct_456",
+  amount: "1000.00",
+  asset: "USD",
+});
+console.log(`Withdrawal ${withdrawal.id}: ${withdrawal.status}`);
+```
+
+```java Java
+FiatWithdrawal withdrawal = client.fiatTransfers().createFiatWithdrawal(
+    CreateFiatWithdrawalRequest.builder()
+        .profileId("profile_123")
+        .fiatAccountId("fiat_acct_456")
+        .amount("1000.00")
+        .asset("USD")
+        .build());
+System.out.printf("Withdrawal %s: %s%n", withdrawal.getId(), withdrawal.getStatus());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Fiat Transfers API Reference](/api-reference/endpoints/fiat-transfers/overview).

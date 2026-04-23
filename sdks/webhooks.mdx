@@ -1,0 +1,183 @@
+---
+title: 'Events & Webhooks'
+description: 'Consume Paxos events through webhooks or the Events API for real-time notifications.'
+---
+
+Paxos delivers notifications about resource changes (identity approvals, transfer completions, orchestration status updates) through events. You can consume events in two ways:
+
+- **Webhooks** — Paxos pushes a notification to your endpoint when something happens
+- **Events API** — You poll the [Events API](/api-reference/endpoints/events/overview) to fetch events on your own schedule
+
+## Webhook Payload Pattern
+
+Paxos webhooks use a reduced-payload approach. The webhook notification contains a summary (event ID, type, source, and timestamp) but **not** the full resource. Your application must call `GetEvent` to fetch the complete event details.
+
+This pattern ensures that sensitive data is only delivered through authenticated API calls.
+
+<CodeGroup>
+
+```go Go
+// In your webhook HTTP handler
+func handleWebhook(w http.ResponseWriter, r *http.Request) {
+    body, _ := io.ReadAll(r.Body)
+
+    // ParseEvent extracts the event ID from the webhook body,
+    // then fetches the full event via the Events API
+    event, err := client.Webhooks.ParseEvent(r.Context(), body)
+    if err != nil {
+        http.Error(w, "failed to parse event", http.StatusBadRequest)
+        return
+    }
+
+    switch event.Type {
+    case "identity.approved":
+        fmt.Printf("Identity %s approved\n", event.ResourceID)
+    case "transfer.crypto.deposit.completed":
+        fmt.Printf("Crypto deposit %s completed\n", event.ResourceID)
+    }
+
+    w.WriteHeader(http.StatusOK)
+}
+```
+
+```python Python
+# In your webhook handler (e.g., Flask or FastAPI)
+@app.post("/webhooks/paxos")
+def handle_webhook(request):
+    body = request.body
+
+    # parse_event extracts the event ID from the webhook body,
+    # then fetches the full event via the Events API
+    event = client.webhooks.parse_event(body)
+
+    if event.type == "identity.approved":
+        print(f"Identity {event.resource_id} approved")
+    elif event.type == "transfer.crypto.deposit.completed":
+        print(f"Crypto deposit {event.resource_id} completed")
+
+    return {"status": "ok"}
+```
+
+```typescript TypeScript
+// In your webhook handler (e.g., Express)
+app.post("/webhooks/paxos", async (req, res) => {
+  const body = req.body;
+
+  // parseEvent extracts the event ID from the webhook body,
+  // then fetches the full event via the Events API
+  const event = await client.webhooks.parseEvent(body);
+
+  switch (event.type) {
+    case "identity.approved":
+      console.log(`Identity ${event.resourceId} approved`);
+      break;
+    case "transfer.crypto.deposit.completed":
+      console.log(`Crypto deposit ${event.resourceId} completed`);
+      break;
+  }
+
+  res.sendStatus(200);
+});
+```
+
+```java Java
+// In your webhook handler (e.g., Spring Boot)
+@PostMapping("/webhooks/paxos")
+public ResponseEntity<Void> handleWebhook(@RequestBody byte[] body) {
+    Event event = client.webhooks().parseEvent(body);
+
+    switch (event.getType()) {
+        case "identity.approved":
+            System.out.printf("Identity %s approved%n", event.getResourceId());
+            break;
+        case "transfer.crypto.deposit.completed":
+            System.out.printf("Crypto deposit %s completed%n", event.getResourceId());
+            break;
+    }
+
+    return ResponseEntity.ok().build();
+}
+```
+
+</CodeGroup>
+
+## Webhook Endpoint Security
+
+Paxos authenticates with your webhook endpoint using one of two methods. Configure these in the [Dashboard](https://dashboard.paxos.com/):
+
+- **API Key** — Set a custom header name and value. Paxos includes this header in every webhook request. Validate it in your handler.
+- **OAuth** — Provide your OAuth token endpoint. Paxos obtains a token from your endpoint before calling your webhook.
+
+<Note>
+Paxos does not currently sign webhook payloads. Payload signing is planned for a future release. In the meantime, `ParseEvent` fetches the canonical event from the API to ensure authenticity.
+</Note>
+
+## Polling with the Events API
+
+As an alternative to webhooks, poll the [Events API](/api-reference/endpoints/events/overview) to fetch events:
+
+<CodeGroup>
+
+```go Go
+iter := client.Events.ListEvents(ctx, &paxos.ListEventsRequest{
+    Limit: 100,
+})
+
+for iter.Next() {
+    event := iter.Current()
+    fmt.Printf("Event: %s — %s\n", event.ID, event.Type)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
+}
+```
+
+```python Python
+for event in client.events.list_events(limit=100):
+    print(f"Event: {event.id} — {event.type}")
+```
+
+```typescript TypeScript
+for await (const event of client.events.listEvents({ limit: 100 })) {
+  console.log(`Event: ${event.id} — ${event.type}`);
+}
+```
+
+```java Java
+for (Event event : client.events().listEvents(
+        ListEventsRequest.builder().limit(100).build())) {
+    System.out.printf("Event: %s — %s%n", event.getId(), event.getType());
+}
+```
+
+</CodeGroup>
+
+## Common Event Types
+
+| Event Type | Description |
+|---|---|
+| `identity.approved` | Identity has been approved for transactions |
+| `identity.denied` | Identity verification was denied |
+| `transfer.crypto.deposit.completed` | Crypto deposit confirmed on-chain |
+| `transfer.crypto.withdrawal.completed` | Crypto withdrawal confirmed on-chain |
+| `transfer.wire.deposit.completed` | Wire deposit has arrived |
+| `transfer.wire.withdrawal.completed` | Wire withdrawal has been sent |
+| `orchestration.completed` | Stablecoin orchestration finished successfully |
+| `orchestration.failed` | Stablecoin orchestration failed |
+
+For the full list of event types and webhook payloads, see the [Webhooks API Reference](/api-reference/webhooks/identity-approved).
+
+## Handling Events Idempotently
+
+Webhooks may be delivered more than once. Deduplicate by tracking the `event.id`:
+
+```go
+// Example: skip already-processed events
+if alreadyProcessed(event.ID) {
+    return // skip duplicate
+}
+process(event)
+markAsProcessed(event.ID)
+```
+
+> For more details on webhook configuration and retry behavior, see the [Webhooks Guide](/guides/webhooks/index).

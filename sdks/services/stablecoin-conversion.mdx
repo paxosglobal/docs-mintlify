@@ -1,0 +1,69 @@
+---
+title: 'Stablecoin Conversion'
+description: 'SDK reference for the Stablecoin Conversion service — create, list, and cancel stablecoin conversions.'
+---
+
+The Stablecoin Conversion service manages conversions between fiat and Paxos-issued stablecoins (USDP, PYUSD, USDG).
+
+**Client accessor**: `client.StablecoinConversion`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListStablecoinConversions` | `GET /conversion/stablecoin-conversions` | List conversions |
+| `CreateStablecoinConversion` | `POST /conversion/stablecoin-conversions` | Create a conversion |
+| `GetStablecoinConversion` | `GET /conversion/stablecoin-conversions/{id}` | Get a conversion by ID |
+| `CancelStablecoinConversion` | `DELETE /conversion/stablecoin-conversions/{id}` | Cancel a pending conversion |
+
+## CreateStablecoinConversion
+
+<CodeGroup>
+
+```go Go
+conversion, err := client.StablecoinConversion.CreateStablecoinConversion(ctx, &paxos.CreateStablecoinConversionRequest{
+    ProfileID: "profile_123",
+    Amount:    "1000.00",
+    SourceAsset: "USD",
+    TargetAsset: "USDP",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Conversion %s: %s\n", conversion.ID, conversion.Status)
+```
+
+```python Python
+conversion = client.stablecoin_conversion.create_stablecoin_conversion(
+    profile_id="profile_123",
+    amount="1000.00",
+    source_asset="USD",
+    target_asset="USDP",
+)
+print(f"Conversion {conversion.id}: {conversion.status}")
+```
+
+```typescript TypeScript
+const conversion = await client.stablecoinConversion.createStablecoinConversion({
+  profileId: "profile_123",
+  amount: "1000.00",
+  sourceAsset: "USD",
+  targetAsset: "USDP",
+});
+console.log(`Conversion ${conversion.id}: ${conversion.status}`);
+```
+
+```java Java
+StablecoinConversion conversion = client.stablecoinConversion().createStablecoinConversion(
+    CreateStablecoinConversionRequest.builder()
+        .profileId("profile_123")
+        .amount("1000.00")
+        .sourceAsset("USD")
+        .targetAsset("USDP")
+        .build());
+System.out.printf("Conversion %s: %s%n", conversion.getId(), conversion.getStatus());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Stablecoin Conversion API Reference](/api-reference/endpoints/stablecoin-conversion/overview).

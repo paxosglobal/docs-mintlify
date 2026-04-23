@@ -1,0 +1,203 @@
+---
+title: 'Pagination'
+description: 'Iterate through large result sets using auto-pagination iterators or manual cursor control.'
+---
+
+Paxos APIs use cursor-based pagination. The SDK provides auto-pagination iterators that handle page fetching automatically, so you can iterate through results without managing cursors.
+
+## How Paxos Pagination Works
+
+- List endpoints return a page of results plus a `next_page_cursor`
+- Pass the cursor to the next request to fetch the following page
+- When `next_page_cursor` is absent, you've reached the last page
+- The `limit` parameter controls the number of items per page
+
+## Auto-Pagination (Recommended)
+
+The SDK's iterators fetch pages transparently. Iterate through results as if they were a single collection:
+
+<CodeGroup>
+
+```go Go
+iter := client.Transfers.ListTransfers(ctx, &paxos.ListTransfersRequest{
+    ProfileID: "profile_123",
+    Limit:     50,
+})
+
+for iter.Next() {
+    transfer := iter.Current()
+    fmt.Printf("Transfer: %s — %s %s\n", transfer.ID, transfer.Amount, transfer.Asset)
+}
+if err := iter.Err(); err != nil {
+    log.Fatal(err)
+}
+```
+
+```python Python
+for transfer in client.transfers.list_transfers(profile_id="profile_123", limit=50):
+    print(f"Transfer: {transfer.id} — {transfer.amount} {transfer.asset}")
+```
+
+```typescript TypeScript
+for await (const transfer of client.transfers.listTransfers({
+  profileId: "profile_123",
+  limit: 50,
+})) {
+  console.log(`Transfer: ${transfer.id} — ${transfer.amount} ${transfer.asset}`);
+}
+```
+
+```java Java
+for (Transfer transfer : client.transfers().listTransfers(
+        ListTransfersRequest.builder()
+            .profileId("profile_123")
+            .limit(50)
+            .build())) {
+    System.out.printf("Transfer: %s — %s %s%n",
+        transfer.getId(), transfer.getAmount(), transfer.getAsset());
+}
+```
+
+</CodeGroup>
+
+The iterator fetches pages of 50 items at a time behind the scenes. When one page is exhausted, it automatically fetches the next one.
+
+## Manual Pagination
+
+If you need direct control over page cursors (for example, to store a cursor and resume later), use the page-level methods:
+
+<CodeGroup>
+
+```go Go
+var cursor string
+
+for {
+    resp, err := client.Transfers.ListTransfersPage(ctx, &paxos.ListTransfersRequest{
+        ProfileID:  "profile_123",
+        Limit:      50,
+        PageCursor: cursor,
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    for _, transfer := range resp.Items {
+        fmt.Printf("Transfer: %s\n", transfer.ID)
+    }
+
+    if resp.NextPageCursor == "" {
+        break
+    }
+    cursor = resp.NextPageCursor
+}
+```
+
+```python Python
+cursor = None
+
+while True:
+    page = client.transfers.list_transfers_page(
+        profile_id="profile_123",
+        limit=50,
+        page_cursor=cursor,
+    )
+
+    for transfer in page.items:
+        print(f"Transfer: {transfer.id}")
+
+    if not page.next_page_cursor:
+        break
+    cursor = page.next_page_cursor
+```
+
+```typescript TypeScript
+let cursor: string | undefined;
+
+do {
+  const page = await client.transfers.listTransfersPage({
+    profileId: "profile_123",
+    limit: 50,
+    pageCursor: cursor,
+  });
+
+  for (const transfer of page.items) {
+    console.log(`Transfer: ${transfer.id}`);
+  }
+
+  cursor = page.nextPageCursor;
+} while (cursor);
+```
+
+```java Java
+String cursor = null;
+
+do {
+    ListTransfersResponse page = client.transfers().listTransfersPage(
+        ListTransfersRequest.builder()
+            .profileId("profile_123")
+            .limit(50)
+            .pageCursor(cursor)
+            .build());
+
+    for (Transfer transfer : page.getItems()) {
+        System.out.printf("Transfer: %s%n", transfer.getId());
+    }
+
+    cursor = page.getNextPageCursor();
+} while (cursor != null);
+```
+
+</CodeGroup>
+
+## Performance Tips
+
+- **Set an appropriate page size** — Larger pages mean fewer network round-trips but more memory per page. Start with 50–100.
+- **Break early** — If you're searching for a specific item, stop iterating once you find it.
+- **Process pages in parallel** — If ordering doesn't matter, fetch the next page while processing the current one.
+
+## Error Handling During Pagination
+
+If a network error or API error occurs mid-iteration, the iterator surfaces it:
+
+<CodeGroup>
+
+```go Go
+for iter.Next() {
+    // process items
+}
+if err := iter.Err(); err != nil {
+    // handle error — you can resume from the last successfully processed item
+    log.Printf("pagination failed: %v", err)
+}
+```
+
+```python Python
+try:
+    for transfer in client.transfers.list_transfers(profile_id="profile_123"):
+        process(transfer)
+except paxos.APIError as e:
+    print(f"Pagination failed: {e.detail}")
+```
+
+```typescript TypeScript
+try {
+  for await (const transfer of client.transfers.listTransfers({ profileId: "profile_123" })) {
+    process(transfer);
+  }
+} catch (e) {
+  console.error("Pagination failed:", e);
+}
+```
+
+```java Java
+try {
+    for (Transfer transfer : client.transfers().listTransfers(
+            ListTransfersRequest.builder().profileId("profile_123").build())) {
+        process(transfer);
+    }
+} catch (PaxosApiException e) {
+    System.err.println("Pagination failed: " + e.getDetail());
+}
+```
+
+</CodeGroup>

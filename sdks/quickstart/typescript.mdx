@@ -1,0 +1,63 @@
+---
+title: 'TypeScript Quickstart'
+description: 'Install the Paxos TypeScript SDK and make your first API call in under 5 minutes.'
+---
+
+<Steps>
+
+### Install the SDK
+
+Requires Node.js 18 or later.
+
+```bash
+npm install @paxos/sdk
+```
+
+### Set Up Credentials
+
+Create API credentials in the [Paxos Dashboard](https://dashboard.sandbox.paxos.com/) and export them as environment variables.
+
+```bash
+export PAXOS_CLIENT_ID="your_client_id"
+export PAXOS_CLIENT_SECRET="your_client_secret"
+```
+
+> If you don't have a Sandbox account, [sign up here](https://dashboard.sandbox.paxos.com/).
+
+### Make Your First API Call
+
+Create a file called `index.ts` with the following code. This example creates a client, lists your profiles, and prints the result.
+
+```typescript
+import { PaxosClient } from "@paxos/sdk";
+
+const client = new PaxosClient({
+  clientId: process.env.PAXOS_CLIENT_ID!,
+  clientSecret: process.env.PAXOS_CLIENT_SECRET!,
+  sandbox: true,
+});
+
+async function main() {
+  // List profiles
+  for await (const profile of client.profiles.listProfiles({ limit: 10 })) {
+    console.log(`Profile: ${profile.id} (${profile.nickname})`);
+  }
+}
+
+main().catch(console.error);
+```
+
+Run the program:
+
+```bash
+npx tsx index.ts
+```
+
+</Steps>
+
+## Next Steps
+
+- Learn how the SDK manages [Authentication](/sdks/authentication) automatically
+- Explore [Error Handling](/sdks/error-handling) patterns
+- Set up the [Sandbox](/sdks/sandbox) environment for testing
+- Browse the [Transfers](/sdks/services/transfers) service reference

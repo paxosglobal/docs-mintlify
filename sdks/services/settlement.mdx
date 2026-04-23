@@ -1,0 +1,66 @@
+---
+title: 'Settlement'
+description: 'SDK reference for the Settlement service — create, affirm, cancel, and list settlement transactions.'
+---
+
+The Settlement service manages bilateral settlement transactions between counterparties.
+
+**Client accessor**: `client.Settlement`
+
+## Available Methods
+
+| Method | HTTP Equivalent | Description |
+|---|---|---|
+| `ListTransactions` | `GET /settlement/transactions` | List settlement transactions |
+| `CreateTransaction` | `POST /settlement/transactions` | Create a settlement transaction |
+| `GetTransaction` | `GET /settlement/transactions/{id}` | Get a transaction by ID |
+| `CancelTransaction` | `DELETE /settlement/transactions/{id}` | Cancel a pending transaction |
+| `AffirmTransaction` | `POST /settlement/transactions/{id}/affirm` | Affirm a transaction |
+
+## CreateTransaction
+
+<CodeGroup>
+
+```go Go
+txn, err := client.Settlement.CreateTransaction(ctx, &paxos.CreateSettlementTransactionRequest{
+    ProfileID: "profile_123",
+    Amount:    "5000.00",
+    Asset:     "USD",
+})
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Printf("Settlement %s: %s\n", txn.ID, txn.Status)
+```
+
+```python Python
+txn = client.settlement.create_transaction(
+    profile_id="profile_123",
+    amount="5000.00",
+    asset="USD",
+)
+print(f"Settlement {txn.id}: {txn.status}")
+```
+
+```typescript TypeScript
+const txn = await client.settlement.createTransaction({
+  profileId: "profile_123",
+  amount: "5000.00",
+  asset: "USD",
+});
+console.log(`Settlement ${txn.id}: ${txn.status}`);
+```
+
+```java Java
+SettlementTransaction txn = client.settlement().createTransaction(
+    CreateSettlementTransactionRequest.builder()
+        .profileId("profile_123")
+        .amount("5000.00")
+        .asset("USD")
+        .build());
+System.out.printf("Settlement %s: %s%n", txn.getId(), txn.getStatus());
+```
+
+</CodeGroup>
+
+> For the full REST API documentation, see the [Settlement API Reference](/api-reference/endpoints/settlement/overview).
