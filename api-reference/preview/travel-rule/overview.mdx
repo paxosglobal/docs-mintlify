@@ -1,0 +1,97 @@
+---
+title: 'Overview'
+description: 'Travel Rule API Enhancements reference'
+---
+
+<Warning>
+🚧 **Preview API — not for production use.** The Travel Rule API Enhancements are a preview. Request shapes, response shapes, enforcement policy, and the `Travel Rule Information Required` problem contract may change in backwards-incompatible ways before general availability. Do not rely on these endpoints in production traffic without coordinating with [Paxos Support](https://support.paxos.com).
+</Warning>
+
+The Travel Rule preview extends existing crypto transfer endpoints so that Paxos can consistently collect, validate, and report Travel Rule information across every API-driven crypto transfer. It introduces:
+
+- A searchable VASP directory used to identify known custodians during Travel Rule collection.
+- An identity-scoped address book on `CryptoDestinationAddress`, so Travel Rule metadata submitted by an end user can be reused on every subsequent transaction to the same destination.
+- Up-front enforcement of Travel Rule information on `CreateCryptoWithdrawal`, `CreateCryptoWithdrawalFee`, `CreateOrchestration`, and `CreateOrchestrationRule`, signalled by a new `Travel Rule Information Required` 403 problem.
+- Richer beneficiary data: an optional physical address, a `self` shortcut for "this address is mine", and explicit VASP identification by `id` or free-text `name`.
+
+## What's new
+
+### Identity-scoped crypto destination addresses
+`CryptoDestinationAddress` records gain an optional `identity_id`. In 3P flows, a given destination belongs to a particular end user; saved Travel Rule metadata is looked up using `(customer_id, identity_id, crypto_network, address)`. In Dashboard flows, `identity_id` remains unset.
+
+`ListCryptoDestinationAddresses` accepts a new `identity_id` query parameter for retrieving an end user's saved destinations.
+
+`PutCryptoDestinationAddress` accepts `(crypto_network, address)` — optionally scoped by `identity_id` — as a unique identifier for upserts, so clients no longer need to round-trip through the opaque `id` field.
+
+### Travel Rule enforcement
+`CreateCryptoWithdrawal`, `CreateCryptoWithdrawalFee`, `CreateOrchestration`, and `CreateOrchestrationRule` now determine up-front whether Travel Rule information is required based on the transaction and the end user's recent transfer activity. If required information is missing, the request fails with a `Travel Rule Information Required` 403 problem whose `meta` field carries the `identity_id`, `crypto_network`, and `address` the client needs to pass to `PutCryptoDestinationAddress`.
+
+`CreateOrchestrationRule` always enforces Travel Rule information because the per-transaction amount is not known at rule-creation time.
+
+`CreateCryptoWithdrawalFee` validates Travel Rule information at fee-quote time so clients can surface missing data to the user before the guaranteed fee begins its expiry window.
+
+### Crypto destination in orchestrations
+`CreateOrchestration.destination.crypto` and `CreateOrchestrationRule.destination.crypto` accept `(crypto_network, address)` instead of the previous `address_id`. This keeps the destination visible to request signing and lets Paxos resolve saved Travel Rule metadata from the matching `CryptoDestinationAddress`.
+
+### VASP identification
+`PutCryptoDestinationAddress` now requires exactly one of `vasp.id` or `vasp.name` when `custodian_type = VASP`:
+
+- Pass `vasp.id` if the VASP is known to Paxos. Use the new `ListVasps` `search` parameter to power a type-ahead VASP selector in your UI.
+- Pass `vasp.name` (free text) for an "Other" VASP not present in the directory.
+
+### Beneficiary "self" shortcut and physical addresses
+`beneficiary.self = true` tells Paxos that the destination belongs to the sending identity. Paxos automatically populates person or institution details from the identity record — clients should not ask the user to re-enter their own details.
+
+`beneficiary.person_details` and `beneficiary.institution_details` each accept an optional `physical_address` using Paxos's standard address structure.
+
+## Recommended client flow
+
+➊ **List saved destinations.** Call `ListCryptoDestinationAddresses` with `identity_id` set (in 3P flows) to populate an address book. If the user picks a saved address with Travel Rule metadata already present, no additional collection is needed.
+
+➋ **Collect Travel Rule information for new destinations.** Present the user with:
+
+- A radio choice between "This address is mine" and "This address belongs to someone else." If the user selects "mine", set `beneficiary.self = true`.
+- A custodian-type selector (`VASP` or `PRIVATE`). For `VASP`, provide a search box backed by `ListVasps?search=...`. On selection, pass `vasp.id`; if the user can't find a match, let them type a free-text name and pass `vasp.name`.
+- Optional fields for a physical address.
+
+➌ **Persist and transact.** Call `PutCryptoDestinationAddress` with the collected metadata, then call `CreateCryptoWithdrawal`, `CreateCryptoWithdrawalFee`, `CreateOrchestration`, or `CreateOrchestrationRule` passing `(crypto_network, address)` (plus `identity_id` in 3P flows).
+
+### Reducing friction: the try-catch pattern
+Clients whose users mostly submit small-dollar transfers can skip up-front collection and catch the `Travel Rule Information Required` 403 problem. When the problem is returned, use the `meta.identity_id`, `meta.crypto_network`, and `meta.address` values to drive Travel Rule collection, call `PutCryptoDestinationAddress`, and retry the exact same transaction request.
+
+## Available endpoints
+
+### VASPs
+- `GET /v2/travelrule/vasps` — list and type-ahead search VASPs.
+- `GET /v2/travelrule/vasps/{id}` — fetch a single VASP.
+
+### Crypto Destination Addresses
+- `GET /v2/transfer/crypto-destination-addresses` — list saved destinations, optionally scoped by `identity_id`.
+- `PUT /v2/transfer/crypto-destination-address` — upsert a destination and its Travel Rule metadata.
+
+### Crypto Withdrawals
+- `POST /v2/transfer/crypto-withdrawals` — submit a withdrawal; Travel Rule metadata is resolved from the matching destination address.
+- `POST /v2/transfer/crypto-withdrawal-fees` — quote a withdrawal fee with Travel Rule validation.
+
+### Orchestrations
+- `POST /v2/orchestrations` — create an orchestration; `destination.crypto` uses `(crypto_network, address)`.
+- `POST /v2/orchestration-rules` — create an orchestration rule; `destination.crypto` uses `(crypto_network, address)`.
+
+## Authentication
+
+All endpoints require OAuth2 authentication with the following scopes:
+
+- **`transfer:read_crypto_destination_address`** — required for listing VASPs and saved destinations.
+- **`transfer:write_crypto_destination_address`** — required for `PutCryptoDestinationAddress`.
+- **`transfer:write_crypto_withdrawal`** — required for withdrawals and fee quotes.
+- **`orchestration:write_orchestration`** — required for creating orchestrations.
+- **`orchestration:write_orchestration_rule`** — required for creating orchestration rules.
+
+## Breaking changes
+
+- `address_id` is replaced by `(crypto_network, address)` in `CreateOrchestration.destination.crypto` and `CreateOrchestrationRule.destination.crypto`.
+- `PutCryptoDestinationAddress` requires exactly one of `vasp.id` or `vasp.name` when `custodian_type = VASP`.
+- A new unique constraint covers `(customer_id, identity_id, crypto_network, address)` on saved destinations. The constraint applies to records created after the preview ships, so historical data is unaffected.
+- The top-level `beneficiary` field on `CreateCryptoWithdrawal` is deprecated in favor of Travel Rule metadata on the saved destination address.
+
+> Questions? Contact [Paxos Support](https://support.paxos.com).
