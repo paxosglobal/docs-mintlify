@@ -41,7 +41,7 @@
   "paths": {
     "/travelrule/vasps": {
       "get": {
-        "summary": "[Preview] List VASPs",
+        "summary": "List VASPs",
         "description": "List known Virtual Asset Service Providers (VASPs). Use the `search` parameter to power a type-ahead VASP selector during Travel Rule collection.\n\nPaxos exposes its own stable identifier for each VASP. When the user selects a known VASP, pass the returned `id` as `vasp.id` to `PutCryptoDestinationAddress`. If no matching VASP is found, collect the VASP name as free text and pass it as `vasp.name` instead.",
         "operationId": "ListVasps",
         "tags": [
@@ -144,7 +144,7 @@
     },
     "/travelrule/vasps/{id}": {
       "get": {
-        "summary": "[Preview] Get VASP",
+        "summary": "Get VASP",
         "description": "Look up a single VASP by its Paxos identifier.",
         "operationId": "GetVasp",
         "tags": [
@@ -189,7 +189,7 @@
     },
     "/transfer/crypto-destination-addresses": {
       "get": {
-        "summary": "[Preview] List Crypto Destination Addresses",
+        "summary": "List Crypto Destination Addresses",
         "description": "List saved crypto destination addresses. In 3P flows, pass `identity_id` to scope the list to addresses owned by a particular end user. Omit `identity_id` to return only addresses not associated with any identity (for example, Dashboard-managed addresses).",
         "operationId": "ListCryptoDestinationAddresses",
         "tags": [
@@ -291,7 +291,7 @@
     },
     "/transfer/crypto-destination-address": {
       "put": {
-        "summary": "[Preview] Put Crypto Destination Address",
+        "summary": "Put Crypto Destination Address",
         "description": "Create or update a crypto destination address and its associated Travel Rule metadata. This endpoint is the primary way clients supply Travel Rule information for a destination that an end user will transact with.\n\n**Uniqueness.** A destination is uniquely identified by `(customer, identity_id, crypto_network, address)`. Provide `(crypto_network, address)` and, in 3P flows, `identity_id` to upsert an existing record. The legacy `id` field is still accepted but not required.\n\n**VASP identification.** When `custodian_type = VASP`, you must supply exactly one of `vasp.id` (for a known VASP looked up via `ListVasps`) or `vasp.name` (free text, for an \"Other\" VASP not found in the directory).\n\n**Self beneficiary.** If the end user is transferring to their own address, set `beneficiary.self = true` and omit `person_details`/`institution_details`; Paxos automatically populates the beneficiary from the identity record.",
         "operationId": "PutCryptoDestinationAddress",
         "tags": [
@@ -336,7 +336,7 @@
     },
     "/transfer/crypto-withdrawals": {
       "post": {
-        "summary": "[Preview] Create Crypto Withdrawal",
+        "summary": "Create Crypto Withdrawal",
         "description": "Submit a crypto withdrawal. Travel Rule information is enforced up-front based on compliance policy for the requested amount, identity, and recent transfer volume.\n\n**Resolving Travel Rule metadata.** Paxos looks up the saved `CryptoDestinationAddress` matching `(customer, identity_id, crypto_network, destination_address)` and applies its `travelrule_metadata`. If required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem; call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same withdrawal request.\n\n**Deprecation.** The top-level `beneficiary` field is deprecated in favor of persisting Travel Rule metadata on the destination address via `PutCryptoDestinationAddress`. It remains accepted for backwards compatibility.",
         "operationId": "CreateCryptoWithdrawal",
         "tags": [
@@ -384,7 +384,7 @@
     },
     "/transfer/crypto-withdrawal-fees": {
       "post": {
-        "summary": "[Preview] Create Crypto Withdrawal Fee",
+        "summary": "Create Crypto Withdrawal Fee",
         "description": "Quote a guaranteed fee for a prospective crypto withdrawal. Travel Rule information is validated at this step so that clients can surface any missing information to the end user before the guaranteed fee starts its expiry window.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry this request to obtain a fresh fee quote.",
         "operationId": "CreateCryptoWithdrawalFee",
         "tags": [
@@ -432,7 +432,7 @@
     },
     "/orchestrations": {
       "post": {
-        "summary": "[Preview] Create Orchestration",
+        "summary": "Create Orchestration",
         "description": "Create an orchestration that moves assets from a source to a destination. Travel Rule information is enforced up-front when the destination is a crypto address and the transaction meets the reporting threshold for the identity.\n\n**Destination change.** The `destination.crypto` block accepts `(crypto_network, address)` rather than the previous `address_id`. This keeps the destination visible to request signing and lets Paxos resolve saved Travel Rule metadata from the matching `CryptoDestinationAddress`.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same orchestration request.",
         "operationId": "CreateOrchestration",
         "tags": [
@@ -480,7 +480,7 @@
     },
     "/orchestration-rules": {
       "post": {
-        "summary": "[Preview] Create Orchestration Rule",
+        "summary": "Create Orchestration Rule",
         "description": "Create a recurring orchestration rule. Because per-transaction amounts are unknown when the rule is created, Travel Rule information is required up-front for any rule with a crypto destination.\n\n**Destination change.** The `destination.crypto` block accepts `(crypto_network, address)` rather than the previous `crypto_address_id`.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same rule creation request.",
         "operationId": "CreateOrchestrationRule",
         "tags": [
