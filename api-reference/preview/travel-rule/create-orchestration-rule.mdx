@@ -1,0 +1,15 @@
+---
+openapi: "/api-reference/preview/paxos-v2-preview-travel-rule.openapi.json POST /orchestration-rules"
+---
+
+<Warning>
+🚧 **Preview API — not for production use.** This endpoint is part of the Travel Rule API Enhancements preview. The request shape, response shape, and enforcement behavior may change in backwards-incompatible ways before general availability. Do not rely on this endpoint for production traffic without coordinating with [Paxos Support](https://support.paxos.com).
+</Warning>
+
+`destination.crypto` accepts `(crypto_network, address)` rather than the previous `crypto_address_id`.
+
+Because per-transaction amounts are unknown at rule-creation time, Travel Rule information is required up-front for any rule with a crypto destination. If required information is missing, the request fails with a `Travel Rule Information Required` 403 problem. Use the `meta` fields to call [Put Crypto Destination Address](/api-reference/preview/travel-rule/put-crypto-destination-address), then retry the exact same rule creation request.
+
+```bash OAuth Scope
+orchestration:write_orchestration_rule
+```

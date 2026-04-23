@@ -1,0 +1,13 @@
+---
+openapi: "/api-reference/preview/paxos-v2-preview-travel-rule.openapi.json GET /transfer/crypto-destination-addresses"
+---
+
+<Warning>
+🚧 **Preview API — not for production use.** This endpoint is part of the Travel Rule API Enhancements preview. The request shape, response shape, and enforcement behavior may change in backwards-incompatible ways before general availability. Do not rely on this endpoint for production traffic without coordinating with [Paxos Support](https://support.paxos.com).
+</Warning>
+
+In 3P flows, pass `identity_id` to scope the list to addresses owned by a particular end user. Omit `identity_id` to return only addresses not associated with any identity (for example, Dashboard-managed addresses).
+
+```bash OAuth Scope
+transfer:read_crypto_destination_address
+```

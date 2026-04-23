@@ -1,0 +1,1280 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Paxos Travel Rule API (Preview)",
+    "version": "v2-preview",
+    "description": "Preview APIs for Travel Rule Enhancements. These APIs extend existing `/v2/travelrule`, `/v2/transfer`, and `/v2/orchestrations` endpoints to consistently collect, validate, and report Travel Rule information across all API-driven crypto transfer flows.\n\n**Scope of changes:**\n- Expose `ListVasps` with a new `search` query parameter.\n- Extend `CryptoDestinationAddress` with `identity_id`, a `beneficiary.self` shortcut, and physical addresses on beneficiaries.\n- Require explicit VASP identification (`vasp.id` or `vasp.name`) when `custodian_type = VASP`.\n- Replace `address_id` with `(network, address)` in `CreateOrchestration` and `CreateOrchestrationRule` destinations.\n- Enforce up-front Travel Rule validation on `CreateCryptoWithdrawal`, `CreateCryptoWithdrawalFee`, `CreateOrchestration`, and `CreateOrchestrationRule`, returning a new `TravelRuleInformationRequired` 403 problem when information is missing.\n\nSee the Travel Rule Preview overview for migration guidance and recommended client UX flows."
+  },
+  "servers": [
+    {
+      "url": "https://api.paxos.com/v2",
+      "description": "Production"
+    },
+    {
+      "url": "https://api.sandbox.paxos.com/v2",
+      "description": "Sandbox"
+    }
+  ],
+  "security": [
+    {
+      "OAuth2": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "VASPs",
+      "description": "Virtual Asset Service Provider directory used to identify known custodians during Travel Rule collection."
+    },
+    {
+      "name": "Crypto Destination Addresses",
+      "description": "Manage saved crypto destination addresses and their associated Travel Rule metadata."
+    },
+    {
+      "name": "Crypto Withdrawals",
+      "description": "Submit crypto withdrawals with Travel Rule enforcement."
+    },
+    {
+      "name": "Orchestrations",
+      "description": "Create orchestrations and orchestration rules with Travel Rule enforcement."
+    }
+  ],
+  "paths": {
+    "/travelrule/vasps": {
+      "get": {
+        "summary": "[Preview] List VASPs",
+        "description": "List known Virtual Asset Service Providers (VASPs). Use the `search` parameter to power a type-ahead VASP selector during Travel Rule collection.\n\nPaxos exposes its own stable identifier for each VASP. When the user selects a known VASP, pass the returned `id` as `vasp.id` to `PutCryptoDestinationAddress`. If no matching VASP is found, collect the VASP name as free text and pass it as `vasp.name` instead.",
+        "operationId": "ListVasps",
+        "tags": [
+          "VASPs"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "description": "Case-insensitive substring match against the VASP's name. Use this to back a type-ahead VASP selector as the user types.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ids",
+            "description": "Optionally filter by specific VASP IDs.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "order",
+            "description": "Sort order.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "default": "ASC"
+            }
+          },
+          {
+            "name": "order_by",
+            "description": "Field used for sorting.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NAME"
+              ],
+              "default": "NAME"
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Cursor for the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of VASPs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVaspsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:read_crypto_destination_address"
+            ]
+          }
+        ]
+      }
+    },
+    "/travelrule/vasps/{id}": {
+      "get": {
+        "summary": "[Preview] Get VASP",
+        "description": "Look up a single VASP by its Paxos identifier.",
+        "operationId": "GetVasp",
+        "tags": [
+          "VASPs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The VASP.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetVaspResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:read_crypto_destination_address"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/crypto-destination-addresses": {
+      "get": {
+        "summary": "[Preview] List Crypto Destination Addresses",
+        "description": "List saved crypto destination addresses. In 3P flows, pass `identity_id` to scope the list to addresses owned by a particular end user. Omit `identity_id` to return only addresses not associated with any identity (for example, Dashboard-managed addresses).",
+        "operationId": "ListCryptoDestinationAddresses",
+        "tags": [
+          "Crypto Destination Addresses"
+        ],
+        "parameters": [
+          {
+            "name": "identity_id",
+            "description": "**Preview addition.** The identity that owns the saved destination addresses. If unset, only addresses with no associated identity are returned.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ids",
+            "description": "Optionally filter by the UUIDs of the crypto destination addresses. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "crypto_networks",
+            "description": "Optionally filter by the `crypto_network` of the destination addresses. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CryptoNetwork"
+              }
+            }
+          },
+          {
+            "name": "addresses",
+            "description": "Optionally filter by specific addresses. Limit 100.",
+            "in": "query",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of results to return. Defaults to 100.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "page_cursor",
+            "description": "Cursor for the next page of results.",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of crypto destination addresses.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCryptoDestinationAddressesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:read_crypto_destination_address"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/crypto-destination-address": {
+      "put": {
+        "summary": "[Preview] Put Crypto Destination Address",
+        "description": "Create or update a crypto destination address and its associated Travel Rule metadata. This endpoint is the primary way clients supply Travel Rule information for a destination that an end user will transact with.\n\n**Uniqueness.** A destination is uniquely identified by `(customer, identity_id, crypto_network, address)`. Provide `(crypto_network, address)` and, in 3P flows, `identity_id` to upsert an existing record. The legacy `id` field is still accepted but not required.\n\n**VASP identification.** When `custodian_type = VASP`, you must supply exactly one of `vasp.id` (for a known VASP looked up via `ListVasps`) or `vasp.name` (free text, for an \"Other\" VASP not found in the directory).\n\n**Self beneficiary.** If the end user is transferring to their own address, set `beneficiary.self = true` and omit `person_details`/`institution_details`; Paxos automatically populates the beneficiary from the identity record.",
+        "operationId": "PutCryptoDestinationAddress",
+        "tags": [
+          "Crypto Destination Addresses"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PutCryptoDestinationAddressRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The upserted crypto destination address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutCryptoDestinationAddressResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_crypto_destination_address"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/crypto-withdrawals": {
+      "post": {
+        "summary": "[Preview] Create Crypto Withdrawal",
+        "description": "Submit a crypto withdrawal. Travel Rule information is enforced up-front based on compliance policy for the requested amount, identity, and recent transfer volume.\n\n**Resolving Travel Rule metadata.** Paxos looks up the saved `CryptoDestinationAddress` matching `(customer, identity_id, crypto_network, destination_address)` and applies its `travelrule_metadata`. If required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem; call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same withdrawal request.\n\n**Deprecation.** The top-level `beneficiary` field is deprecated in favor of persisting Travel Rule metadata on the destination address via `PutCryptoDestinationAddress`. It remains accepted for backwards compatibility.",
+        "operationId": "CreateCryptoWithdrawal",
+        "tags": [
+          "Crypto Withdrawals"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCryptoWithdrawalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created withdrawal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCryptoWithdrawalResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/TravelRuleInformationRequired"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_crypto_withdrawal"
+            ]
+          }
+        ]
+      }
+    },
+    "/transfer/crypto-withdrawal-fees": {
+      "post": {
+        "summary": "[Preview] Create Crypto Withdrawal Fee",
+        "description": "Quote a guaranteed fee for a prospective crypto withdrawal. Travel Rule information is validated at this step so that clients can surface any missing information to the end user before the guaranteed fee starts its expiry window.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry this request to obtain a fresh fee quote.",
+        "operationId": "CreateCryptoWithdrawalFee",
+        "tags": [
+          "Crypto Withdrawals"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCryptoWithdrawalFeeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The fee quote.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCryptoWithdrawalFeeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/TravelRuleInformationRequired"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "transfer:write_crypto_withdrawal"
+            ]
+          }
+        ]
+      }
+    },
+    "/orchestrations": {
+      "post": {
+        "summary": "[Preview] Create Orchestration",
+        "description": "Create an orchestration that moves assets from a source to a destination. Travel Rule information is enforced up-front when the destination is a crypto address and the transaction meets the reporting threshold for the identity.\n\n**Destination change.** The `destination.crypto` block accepts `(crypto_network, address)` rather than the previous `address_id`. This keeps the destination visible to request signing and lets Paxos resolve saved Travel Rule metadata from the matching `CryptoDestinationAddress`.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same orchestration request.",
+        "operationId": "CreateOrchestration",
+        "tags": [
+          "Orchestrations"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created orchestration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrchestrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/TravelRuleInformationRequired"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:write_orchestration"
+            ]
+          }
+        ]
+      }
+    },
+    "/orchestration-rules": {
+      "post": {
+        "summary": "[Preview] Create Orchestration Rule",
+        "description": "Create a recurring orchestration rule. Because per-transaction amounts are unknown when the rule is created, Travel Rule information is required up-front for any rule with a crypto destination.\n\n**Destination change.** The `destination.crypto` block accepts `(crypto_network, address)` rather than the previous `crypto_address_id`.\n\nIf required Travel Rule information is missing, the request fails with a `TravelRuleInformationRequired` 403 problem. Call `PutCryptoDestinationAddress` with the missing fields, then retry the exact same rule creation request.",
+        "operationId": "CreateOrchestrationRule",
+        "tags": [
+          "Orchestrations"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationRuleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created orchestration rule.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrchestrationRuleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/TravelRuleInformationRequired"
+          }
+        },
+        "security": [
+          {
+            "OAuth2": [
+              "orchestration:write_orchestration_rule"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "transfer:read_crypto_destination_address": "Read saved crypto destination addresses and VASPs.",
+              "transfer:write_crypto_destination_address": "Create or update saved crypto destination addresses and Travel Rule metadata.",
+              "transfer:write_crypto_withdrawal": "Submit crypto withdrawals.",
+              "orchestration:write_orchestration": "Create orchestrations.",
+              "orchestration:write_orchestration_rule": "Create orchestration rules."
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request was malformed.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid credentials.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The resource was not found.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "TravelRuleInformationRequired": {
+        "description": "Travel Rule information is required for this transaction but was not provided.\n\nThe `meta` field includes `identity_id` (if applicable), `crypto_network`, and `address` values that the client should pass to `PutCryptoDestinationAddress` along with the collected Travel Rule metadata. After saving the Travel Rule information, retry the exact same request.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/TravelRuleInformationRequiredProblem"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "CryptoNetwork": {
+        "type": "string",
+        "enum": [
+          "BITCOIN",
+          "ETHEREUM",
+          "BITCOIN_CASH",
+          "LITECOIN",
+          "SOLANA",
+          "POLYGON_POS",
+          "BASE",
+          "ARBITRUM_ONE",
+          "STELLAR",
+          "INK",
+          "XLAYER"
+        ],
+        "description": "A CryptoNetwork is a blockchain transmitting cryptocurrencies."
+      },
+      "CustodianType": {
+        "type": "string",
+        "enum": [
+          "VASP",
+          "PRIVATE"
+        ],
+        "description": "The category of custodian controlling the destination address."
+      },
+      "Vasp": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Paxos-issued stable identifier for the VASP."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the VASP."
+          }
+        }
+      },
+      "ListVaspsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vasp"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "GetVaspResponse": {
+        "type": "object",
+        "properties": {
+          "vasp": {
+            "$ref": "#/components/schemas/Vasp"
+          }
+        }
+      },
+      "PhysicalAddress": {
+        "type": "object",
+        "description": "A postal address for a beneficiary person or institution. All fields are optional so clients can collect whatever components the end user provides.",
+        "properties": {
+          "street_line_1": {
+            "type": "string"
+          },
+          "street_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string",
+            "description": "State, province, or other principal subdivision."
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code."
+          }
+        }
+      },
+      "BeneficiaryPerson": {
+        "type": "object",
+        "required": [
+          "first_name",
+          "last_name"
+        ],
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "physical_address": {
+            "$ref": "#/components/schemas/PhysicalAddress",
+            "description": "**Preview addition.** Optional physical address for the beneficiary person."
+          }
+        }
+      },
+      "BeneficiaryInstitution": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "physical_address": {
+            "$ref": "#/components/schemas/PhysicalAddress",
+            "description": "**Preview addition.** Optional physical address for the beneficiary institution."
+          }
+        }
+      },
+      "Beneficiary": {
+        "type": "object",
+        "description": "The beneficiary of a crypto transfer. Specify exactly one of `self`, `person_details`, or `institution_details`.",
+        "properties": {
+          "self": {
+            "type": "boolean",
+            "description": "**Preview addition.** Set to `true` if the destination address belongs to the sending identity. When `self = true`, Paxos automatically populates person or institution details from the identity record; do not set `person_details` or `institution_details`."
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/BeneficiaryPerson"
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/BeneficiaryInstitution"
+          }
+        }
+      },
+      "TravelRuleMetadata": {
+        "type": "object",
+        "description": "Travel Rule metadata associated with a crypto destination address.",
+        "properties": {
+          "beneficiary": {
+            "$ref": "#/components/schemas/Beneficiary"
+          },
+          "custodian_type": {
+            "$ref": "#/components/schemas/CustodianType"
+          },
+          "vasp": {
+            "$ref": "#/components/schemas/VaspReference"
+          }
+        }
+      },
+      "VaspReference": {
+        "type": "object",
+        "description": "Identifies the VASP holding the destination address. When `custodian_type = VASP`, exactly one of `id` or `name` is required.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Paxos VASP identifier, looked up via `ListVasps`. Use this when the VASP is known to Paxos."
+          },
+          "name": {
+            "type": "string",
+            "description": "**Preview addition.** Free-text VASP name for custodians not present in the Paxos directory (the \"Other\" case). Only set if `id` is not known."
+          }
+        }
+      },
+      "CryptoDestinationAddressStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "APPROVED",
+          "REJECTED"
+        ]
+      },
+      "CryptoDestinationAddress": {
+        "type": "object",
+        "required": [
+          "id",
+          "crypto_network",
+          "address"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "**Preview addition.** The identity that owns this saved destination address in 3P flows. Unset for addresses created through the Dashboard or other non-3P flows."
+          },
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "address": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CryptoDestinationAddressStatus"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bookmarked": {
+            "type": "boolean"
+          },
+          "travelrule_metadata": {
+            "$ref": "#/components/schemas/TravelRuleMetadata"
+          }
+        }
+      },
+      "ListCryptoDestinationAddressesResponse": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CryptoDestinationAddress"
+            }
+          },
+          "next_page_cursor": {
+            "type": "string"
+          }
+        }
+      },
+      "PutCryptoDestinationAddressRequest": {
+        "type": "object",
+        "description": "Upsert request for a crypto destination address. Provide `(crypto_network, address)` to identify the address, optionally scoped by `identity_id` in 3P flows.",
+        "required": [
+          "crypto_network",
+          "address"
+        ],
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "**Preview addition.** The identity that owns this saved destination address. Required in 3P flows; omit for Dashboard-style flows where the address is not scoped to a particular identity."
+          },
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "address": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "Optional human-readable nickname. If omitted on creation, Paxos generates one."
+          },
+          "bookmarked_status": {
+            "type": "boolean"
+          },
+          "travelrule_metadata": {
+            "$ref": "#/components/schemas/TravelRuleMetadata"
+          }
+        }
+      },
+      "PutCryptoDestinationAddressResponse": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/CryptoDestinationAddress"
+          }
+        }
+      },
+      "CreateCryptoWithdrawalRequest": {
+        "type": "object",
+        "required": [
+          "profile_id",
+          "asset",
+          "destination_address",
+          "crypto_network"
+        ],
+        "properties": {
+          "ref_id": {
+            "type": "string",
+            "description": "Client-specified idempotency ID. Retries must reuse the same `ref_id`."
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "The identity of the end user making the withdrawal. Required in 3P flows so Paxos can resolve the associated `CryptoDestinationAddress` and its Travel Rule metadata."
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "destination_address": {
+            "type": "string"
+          },
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "asset": {
+            "type": "string"
+          },
+          "balance_asset": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount to withdraw. Specify exactly one of `amount` or `total`.",
+            "pattern": "^[0-9]*\\.?[0-9]+$"
+          },
+          "total": {
+            "type": "string",
+            "description": "Total amount to withdraw, including fees. Specify exactly one of `amount` or `total`.",
+            "pattern": "^[0-9]*\\.?[0-9]+$"
+          },
+          "fee_id": {
+            "type": "string"
+          },
+          "memo": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "beneficiary": {
+            "$ref": "#/components/schemas/Beneficiary",
+            "description": "**Deprecated.** Persist Travel Rule metadata on the destination address via `PutCryptoDestinationAddress` instead. Retained for backwards compatibility; inline beneficiary data is not recommended for new integrations."
+          }
+        }
+      },
+      "CreateCryptoWithdrawalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateCryptoWithdrawalFeeRequest": {
+        "type": "object",
+        "required": [
+          "asset",
+          "destination_address",
+          "crypto_network"
+        ],
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "The identity of the end user the fee is being quoted for. Required in 3P flows so Paxos can resolve the associated `CryptoDestinationAddress` and its Travel Rule metadata."
+          },
+          "destination_address": {
+            "type": "string"
+          },
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "asset": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^[0-9]*\\.?[0-9]+$"
+          },
+          "total": {
+            "type": "string",
+            "pattern": "^[0-9]*\\.?[0-9]+$"
+          }
+        }
+      },
+      "CreateCryptoWithdrawalFeeResponse": {
+        "type": "object",
+        "properties": {
+          "fee_id": {
+            "type": "string"
+          },
+          "fee_amount": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateOrchestrationRequestCryptoDestination": {
+        "type": "object",
+        "description": "Crypto destination for an orchestration. Specify `(crypto_network, address)` so the destination remains visible to request signing and Paxos can resolve saved Travel Rule metadata.",
+        "required": [
+          "crypto_network",
+          "address"
+        ],
+        "properties": {
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestFiatDestination": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestProfileDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRequestProfileSource": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRequestSource": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestProfileSource"
+          }
+        }
+      },
+      "CreateOrchestrationRequest": {
+        "type": "object",
+        "required": [
+          "ref_id",
+          "source_asset",
+          "destination_asset",
+          "source_amount"
+        ],
+        "properties": {
+          "ref_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source_amount": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/CreateOrchestrationRequestDestination"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateOrchestrationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestCryptoDestination": {
+        "type": "object",
+        "description": "Crypto destination for an orchestration rule. Specify `(crypto_network, address)` to uniquely identify the saved destination address whose Travel Rule metadata will be applied to every transaction produced by the rule.",
+        "required": [
+          "crypto_network",
+          "address"
+        ],
+        "properties": {
+          "crypto_network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestProfileDestination": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestFiatDestination": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestDestination": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestCryptoDestination"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestFiatDestination"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestProfileDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestCryptoSource": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "$ref": "#/components/schemas/CryptoNetwork"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestFiatSource": {
+        "type": "object",
+        "properties": {
+          "bank_account_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequestSource": {
+        "type": "object",
+        "properties": {
+          "crypto": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestCryptoSource"
+          },
+          "fiat": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestFiatSource"
+          }
+        }
+      },
+      "CreateOrchestrationRuleRequest": {
+        "type": "object",
+        "required": [
+          "ref_id",
+          "profile_id",
+          "source_asset",
+          "destination_asset",
+          "source"
+        ],
+        "properties": {
+          "ref_id": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "profile_id": {
+            "type": "string"
+          },
+          "identity_id": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "source_asset": {
+            "type": "string"
+          },
+          "destination_asset": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestSource"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/CreateOrchestrationRuleRequestDestination"
+          }
+        }
+      },
+      "CreateOrchestrationRuleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "meta": {
+            "type": "object"
+          }
+        }
+      },
+      "TravelRuleInformationRequiredProblem": {
+        "type": "object",
+        "description": "Returned when the transaction requires Travel Rule information that has not been supplied on the matching `CryptoDestinationAddress`.\n\nThe `meta` field carries the keys a client needs to resolve the issue with `PutCryptoDestinationAddress`.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://api.paxos.com/v2/problems/travel_rule_information_required"
+          },
+          "title": {
+            "type": "string",
+            "example": "Travel Rule Information Required"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "example": 403
+          },
+          "detail": {
+            "type": "string",
+            "example": "Travel Rule information is required for this destination address but has not been provided."
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "identity_id": {
+                "type": "string",
+                "description": "The identity that should own the saved `CryptoDestinationAddress`. Omitted when no identity is associated with the request."
+              },
+              "crypto_network": {
+                "$ref": "#/components/schemas/CryptoNetwork"
+              },
+              "address": {
+                "type": "string",
+                "description": "The destination address that requires Travel Rule information."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

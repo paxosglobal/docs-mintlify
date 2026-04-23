@@ -1,0 +1,20 @@
+---
+openapi: "/api-reference/preview/paxos-v2-preview-travel-rule.openapi.json PUT /transfer/crypto-destination-address"
+---
+
+<Warning>
+🚧 **Preview API — not for production use.** This endpoint is part of the Travel Rule API Enhancements preview. The request shape, response shape, and enforcement behavior may change in backwards-incompatible ways before general availability. Do not rely on this endpoint for production traffic without coordinating with [Paxos Support](https://support.paxos.com).
+</Warning>
+
+Create or update a saved crypto destination address and its Travel Rule metadata. `(crypto_network, address)` — optionally scoped by `identity_id` in 3P flows — uniquely identifies the record, so clients no longer need to round-trip through the opaque `id` field.
+
+When `custodian_type = VASP`, supply exactly one of:
+
+- `vasp.id` — for a known VASP looked up via [List VASPs](/api-reference/preview/travel-rule/list-vasps).
+- `vasp.name` — free text, for an "Other" VASP not present in the directory.
+
+Set `beneficiary.self = true` when the destination belongs to the sending identity; Paxos automatically populates beneficiary details from the identity record, and `person_details`/`institution_details` should be omitted.
+
+```bash OAuth Scope
+transfer:write_crypto_destination_address
+```

@@ -1,0 +1,17 @@
+---
+openapi: "/api-reference/preview/paxos-v2-preview-travel-rule.openapi.json POST /transfer/crypto-withdrawals"
+---
+
+<Warning>
+🚧 **Preview API — not for production use.** This endpoint is part of the Travel Rule API Enhancements preview. The request shape, response shape, and enforcement behavior may change in backwards-incompatible ways before general availability. Do not rely on this endpoint for production traffic without coordinating with [Paxos Support](https://support.paxos.com).
+</Warning>
+
+Travel Rule information is enforced up-front based on compliance policy for the requested amount, identity, and recent transfer volume. Paxos resolves Travel Rule metadata from the saved `CryptoDestinationAddress` matching `(customer, identity_id, crypto_network, destination_address)`.
+
+If required information is missing, the request fails with a `Travel Rule Information Required` 403 problem. Use the `meta` fields to call [Put Crypto Destination Address](/api-reference/preview/travel-rule/put-crypto-destination-address), then retry the exact same withdrawal request.
+
+The top-level `beneficiary` field is deprecated. Persist Travel Rule metadata on the destination address instead.
+
+```bash OAuth Scope
+transfer:write_crypto_withdrawal
+```
