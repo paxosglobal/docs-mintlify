@@ -996,14 +996,26 @@
             "group": "Travel Rule Preview",
             "pages": [
               "api-reference/preview/travel-rule/overview",
-              "api-reference/preview/travel-rule/list-vasps",
-              "api-reference/preview/travel-rule/get-vasp",
-              "api-reference/preview/travel-rule/list-crypto-destination-addresses",
-              "api-reference/preview/travel-rule/put-crypto-destination-address",
-              "api-reference/preview/travel-rule/create-crypto-withdrawal-fee",
-              "api-reference/preview/travel-rule/create-crypto-withdrawal",
-              "api-reference/preview/travel-rule/create-orchestration",
-              "api-reference/preview/travel-rule/create-orchestration-rule"
+              {
+                "group": "New endpoints",
+                "tag": "NEW",
+                "pages": [
+                  "api-reference/preview/travel-rule/list-vasps",
+                  "api-reference/preview/travel-rule/get-vasp"
+                ]
+              },
+              {
+                "group": "Modified endpoints",
+                "tag": "MODIFIED",
+                "pages": [
+                  "api-reference/preview/travel-rule/list-crypto-destination-addresses",
+                  "api-reference/preview/travel-rule/put-crypto-destination-address",
+                  "api-reference/preview/travel-rule/create-crypto-withdrawal-fee",
+                  "api-reference/preview/travel-rule/create-crypto-withdrawal",
+                  "api-reference/preview/travel-rule/create-orchestration",
+                  "api-reference/preview/travel-rule/create-orchestration-rule"
+                ]
+              }
             ]
           }
         ]
