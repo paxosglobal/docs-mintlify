@@ -5,3 +5,32 @@ openapi: post /transfer/deposit-addresses
 ```bash OAuth Scope
 transfer:write_deposit_address
 ```
+
+<ResponseExample>
+
+```json ETHEREUM (EVM-compatible)
+{
+  "id": "34bd61ed-cf0a-4012-8be4-d347667b6154",
+  "profile_id": "b7b77d82-e6a7-4ae9-9904-36231aedf985",
+  "customer_id": "9b8c9cba-801e-4418-adc0-ede709df6339",
+  "identity_id": "54385e67-d7ef-40d1-b488-ceda6dd9b264",
+  "ref_id": "deposit_address_0",
+  "crypto_network": "ETHEREUM",
+  "address": "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7",
+  "conversion_target_asset": "USD",
+  "compatible_crypto_networks": [
+    "ETHEREUM",
+    "POLYGON_POS",
+    "BASE",
+    "ARBITRUM_ONE",
+    "INK",
+    "XLAYER"
+  ],
+  "metadata": {
+    "my_id": "4024ee50-eefb-4f2e-85c7-e7899c0b7da5"
+  },
+  "created_at": "2020-01-17T18:36:08.737Z"
+}
+```
+
+</ResponseExample>
