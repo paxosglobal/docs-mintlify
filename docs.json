@@ -365,6 +365,12 @@
             ]
           },
           {
+            "group": "Notifications",
+            "pages": [
+              "guides/dashboard/admin/notifications"
+            ]
+          },
+          {
             "group": "Resources",
             "pages": [
               "guides/dashboard/passkeys"
