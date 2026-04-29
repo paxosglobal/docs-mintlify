@@ -717,7 +717,7 @@
                 "pages": [
                   "api-reference/endpoints/pricing/overview",
                   "api-reference/endpoints/pricing/list-prices",
-                   "api-reference/endpoints/pricing/list-historical-prices"
+                  "api-reference/endpoints/pricing/list-historical-prices"
                 ]
               },
               {
@@ -967,6 +967,13 @@
                           "api-reference/webhooks/transfer-rtp-deposit-pending",
                           "api-reference/webhooks/transfer-rtp-deposit-completed",
                           "api-reference/webhooks/transfer-rtp-deposit-failed"
+                        ]
+                      },
+                      {
+                        "group": "Internal Transfer",
+                        "pages": [
+                          "api-reference/webhooks/transfer-internal-transfer-debit-completed",
+                          "api-reference/webhooks/transfer-internal-transfer-credit-completed"
                         ]
                       },
                       {

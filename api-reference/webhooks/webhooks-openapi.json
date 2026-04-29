@@ -1550,6 +1550,62 @@
         "summary": "RTP Deposit Failed",
         "description": "Triggered when an RTP deposit has failed processing. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
       }
+    },
+    "transfer.internal_transfer_debit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.internal_transfer_debit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Internal Transfer Debit Completed",
+        "description": "Triggered when an internal transfer debit has completed. Funds have been debited from the source Profile and credited to the destination Profile. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
+    },
+    "transfer.internal_transfer_credit.completed": {
+      "post": {
+        "requestBody": {
+          "description": "Webhook payload containing event metadata. Use the event ID with the Get Event API to retrieve full details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEvent"
+              },
+              "example": {
+                "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
+                "type": "transfer.internal_transfer_credit.completed",
+                "source": "com.paxos",
+                "time": "2025-01-07T14:30:02Z",
+                "object": "event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook successfully received"
+          }
+        },
+        "summary": "Internal Transfer Credit Completed",
+        "description": "Triggered when an internal transfer credit has completed. Funds have been credited to the destination Profile from the source Profile. Your endpoint should respond with a 2xx status code to acknowledge receipt. Use the event ID to call the Get Event API for full details."
+      }
     }
   },
   "components": {
@@ -1596,7 +1652,9 @@
           },
           "source": {
             "type": "string",
-            "enum": ["com.paxos"],
+            "enum": [
+              "com.paxos"
+            ],
             "title": "Source",
             "description": "Always 'com.paxos'"
           },
@@ -1608,12 +1666,20 @@
           },
           "object": {
             "type": "string",
-            "enum": ["event"],
+            "enum": [
+              "event"
+            ],
             "title": "Object Type",
             "description": "Always 'event'"
           }
         },
-        "required": ["id", "type", "source", "time", "object"],
+        "required": [
+          "id",
+          "type",
+          "source",
+          "time",
+          "object"
+        ],
         "example": {
           "id": "bd019f1c-89a7-4372-9d21-eaad9280dc41",
           "type": "identity.approved",
@@ -1657,11 +1723,18 @@
             "description": "List of document types required for identity verification"
           }
         },
-        "required": ["id", "identity_id", "required_documents"],
+        "required": [
+          "id",
+          "identity_id",
+          "required_documents"
+        ],
         "example": {
           "id": "d840cf31-352f-4190-a476-7522bf3eafda",
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
-          "required_documents": ["DRIVERS_LICENSE", "PASSPORT"]
+          "required_documents": [
+            "DRIVERS_LICENSE",
+            "PASSPORT"
+          ]
         }
       },
       "IdentityStatusChangeObject": {
@@ -1683,18 +1756,35 @@
           },
           "old_summary_status": {
             "type": "string",
-            "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
+            "enum": [
+              "PENDING",
+              "ERROR",
+              "APPROVED",
+              "DENIED",
+              "DISABLED"
+            ],
             "title": "Previous Status",
             "description": "The previous summary status of the identity"
           },
           "new_summary_status": {
             "type": "string",
-            "enum": ["PENDING", "ERROR", "APPROVED", "DENIED", "DISABLED"],
+            "enum": [
+              "PENDING",
+              "ERROR",
+              "APPROVED",
+              "DENIED",
+              "DISABLED"
+            ],
             "title": "New Status",
             "description": "The new summary status of the identity"
           }
         },
-        "required": ["id", "identity_id", "old_summary_status", "new_summary_status"],
+        "required": [
+          "id",
+          "identity_id",
+          "old_summary_status",
+          "new_summary_status"
+        ],
         "example": {
           "id": "d840cf31-352f-4190-a476-7522bf3eafda",
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
@@ -1732,7 +1822,10 @@
             "description": "Scheduled date for the next KYC refresh (optional)"
           }
         },
-        "required": ["id", "identity_id"],
+        "required": [
+          "id",
+          "identity_id"
+        ],
         "example": {
           "id": "d840cf31-352f-4190-a476-7522bf3eafda",
           "identity_id": "4fd025ab-f29f-47e6-a02e-df90a61c7ec9",
@@ -1764,12 +1857,20 @@
           },
           "status": {
             "type": "string",
-            "enum": ["PROCESSING", "COMPLETED", "FAILED"],
+            "enum": [
+              "PROCESSING",
+              "COMPLETED",
+              "FAILED"
+            ],
             "title": "Orchestration Status",
             "description": "Status of the orchestration"
           }
         },
-        "required": ["id", "ref_id", "status"],
+        "required": [
+          "id",
+          "ref_id",
+          "status"
+        ],
         "example": {
           "id": "ee1a802f-7557-4c59-b833-9a1ef29630d5",
           "orchestration_rule_id": "86d3929f-0090-45e5-8195-dbcf63c43eec",
@@ -1790,13 +1891,22 @@
           },
           "type": {
             "type": "string",
-            "enum": ["CRYPTO_DEPOSIT", "CRYPTO_WITHDRAWAL", "ACT_DEPOSIT", "ACT_WITHDRAWAL"],
+            "enum": [
+              "CRYPTO_DEPOSIT",
+              "CRYPTO_WITHDRAWAL",
+              "ACT_DEPOSIT",
+              "ACT_WITHDRAWAL"
+            ],
             "title": "Transfer Type",
             "description": "Type of transfer"
           },
           "status": {
             "type": "string",
-            "enum": ["PENDING", "COMPLETED", "FAILED"],
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "FAILED"
+            ],
             "title": "Transfer Status",
             "description": "Status of transfer"
           },
@@ -1826,7 +1936,11 @@
             "description": "Memo associated with the transfer as an identifier (optional, present for fiat transfers when available)"
           }
         },
-        "required": ["id", "type", "status"],
+        "required": [
+          "id",
+          "type",
+          "status"
+        ],
         "example": {
           "id": "550e8400-e29b-41d4-a716-446655440000",
           "type": "CRYPTO_DEPOSIT",
