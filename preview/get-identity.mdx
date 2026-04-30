@@ -28,7 +28,7 @@ Each entry in `requirements` has the following fields:
 | Field | Description |
 |-------|-------------|
 | `type` | The requirement type. See types below. |
-| `requirement_status` | `PENDING` — not yet fulfilled; may be under review or require client action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
+| `status` | `PENDING` — not yet fulfilled; may be under review or require client action. `FAILED` — requirement was not met; check `awaiting_action_from` to determine if action is needed. |
 | `awaiting_action_from` | Who must act to resolve the requirement: `PAXOS` or `CLIENT`. Not present on `MEMBERS` type. |
 | `errors` | Specific error details for developer use only — do not expose `code` or `description` values directly to end users. `code` is a fixed enum of values; additional codes may be added in the future. |
 
@@ -43,7 +43,7 @@ Each entry in `requirements` has the following fields:
 | `ENHANCED_DUE_DILIGENCE` | Institution | Enhanced due diligence review. |
 | `RISK_AWARENESS_ASSESSMENT` | Person | Risk awareness assessment. |
 | `KYC_REFRESH` | Person | Periodic re-verification of identity information. |
-| `TIN_VERIFICATION` | Both | Tax identification number verification. |
+| `TAX_DETAILS_VERIFICATION` | Both | Tax identification number verification. |
 | `MEMBERS` | Institution only | One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending. |
 
 > Questions? Contact [Support](https://support.paxos.com).

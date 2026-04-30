@@ -75,7 +75,7 @@
                         "requirements": [
                           {
                             "type": "SCREENING_CHECK",
-                            "requirement_status": "PENDING",
+                            "status": "PENDING",
                             "awaiting_action_from": "PAXOS",
                             "errors": [
                               {
@@ -86,7 +86,7 @@
                           },
                           {
                             "type": "KYC_REFRESH",
-                            "requirement_status": "FAILED",
+                            "status": "FAILED",
                             "awaiting_action_from": "CLIENT",
                             "errors": [
                               {
@@ -138,7 +138,7 @@
                         "requirements": [
                           {
                             "type": "MEMBERS",
-                            "requirement_status": "FAILED",
+                            "status": "FAILED",
                             "errors": [
                               {
                                 "code": "member_verification_failed",
@@ -148,7 +148,7 @@
                           },
                           {
                             "type": "ENHANCED_DUE_DILIGENCE",
-                            "requirement_status": "PENDING",
+                            "status": "PENDING",
                             "awaiting_action_from": "CLIENT",
                             "errors": [
                               {
@@ -226,9 +226,8 @@
             "deprecated": true
           },
           "status": {
-            "type": "string",
-            "description": "The overall status of the identity.",
-            "example": "PENDING"
+            "allOf": [{ "$ref": "#/components/schemas/IdentitySummaryStatus" }],
+            "description": "The overall status of the identity."
           },
           "status_details": {
             "$ref": "#/components/schemas/IdentityStatusDetails"
@@ -499,12 +498,12 @@
       "Requirement": {
         "type": "object",
         "description": "A requirement associated with the identity's onboarding or compliance review. Requirements with `status: FAILED` indicate an action is needed; requirements with `status: PENDING` are under review.",
-        "required": ["type", "requirement_status"],
+        "required": ["type", "status"],
         "properties": {
           "type": {
             "$ref": "#/components/schemas/RequirementType"
           },
-          "requirement_status": {
+          "status": {
             "$ref": "#/components/schemas/RequirementStatus"
           },
           "awaiting_action_from": {
@@ -538,7 +537,9 @@
               "edd_documentation_required",
               "compliance_review_required",
               "compliance_review_failed",
-              "tin_not_found"
+              "tin_not_found",
+              "identity_verification_required",
+              "document_upload_required"
             ],
             "description": "Machine-readable error code. Additional codes may be added in the future.",
             "example": "identity_verification_failed"
@@ -560,10 +561,10 @@
           "ENHANCED_DUE_DILIGENCE",
           "RISK_AWARENESS_ASSESSMENT",
           "KYC_REFRESH",
-          "TIN_VERIFICATION",
+          "TAX_DETAILS_VERIFICATION",
           "MEMBERS"
         ],
-        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `TIN_VERIFICATION`: Tax identification number verification\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
+        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `TAX_DETAILS_VERIFICATION`: Tax identification number verification\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
       },
       "RequirementStatus": {
         "type": "string",
