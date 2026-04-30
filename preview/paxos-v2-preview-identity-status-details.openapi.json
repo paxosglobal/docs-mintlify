@@ -1,0 +1,735 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paxos Identity API (Preview: Status Details)",
+    "version": "v2-preview"
+  },
+  "security": [
+    {
+      "OAuth2": ["identity:read_identity"]
+    }
+  ],
+  "paths": {
+    "/v2/identity/identities/{id}": {
+      "get": {
+        "summary": "Get Identity",
+        "description": "Retrieve a single identity by ID. This preview includes the updated `status_details` object with a unified `requirements` array containing both pending and failed requirements.",
+        "operationId": "GetIdentityPreview",
+        "tags": ["Identity"],
+        "security": [
+          {
+            "OAuth2": ["identity:read_identity"]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The identity ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                },
+                "examples": {
+                  "person_pending": {
+                    "summary": "Person identity disabled due to expired KYC refresh",
+                    "value": {
+                      "id": "f190b163-208f-4d73-8deb-4fb8b24add00",
+                      "type": "PERSON",
+                      "ref_id": "user-abc-123",
+                      "status": "DISABLED",
+                      "summary_status": "DISABLED",
+                      "user_disabled": false,
+                      "admin_disabled": false,
+                      "created_at": "2026-04-01T10:00:00Z",
+                      "updated_at": "2026-04-21T09:30:00Z",
+                      "person_details": {
+                        "first_name": "Jane",
+                        "last_name": "Smith",
+                        "date_of_birth": "1990-05-15",
+                        "id_verification_status": "APPROVED",
+                        "sanctions_verification_status": "PENDING"
+                      },
+                      "status_details": {
+                        "active_controls": [
+                          {
+                            "id": "ctrl-001",
+                            "type": "SELL_ONLY",
+                            "set_by": "SET_BY_PAXOS",
+                            "is_overridable": false,
+                            "reason_code": "COMPLIANCE_KYC",
+                            "reason": "KYC refresh expired",
+                            "created_at": "2026-04-10T08:00:00Z"
+                          }
+                        ],
+                        "requirements": [
+                          {
+                            "type": "SCREENING_CHECK",
+                            "status": "PENDING",
+                            "awaiting_action_from": "PAXOS",
+                            "errors": [
+                              {
+                                "code": "screening_in_progress",
+                                "description": "Screening verification is in progress."
+                              }
+                            ]
+                          },
+                          {
+                            "type": "KYC_REFRESH",
+                            "status": "FAILED",
+                            "awaiting_action_from": "CLIENT",
+                            "errors": [
+                              {
+                                "code": "kyc_refresh_overdue",
+                                "description": "Identity verification has expired and must be renewed."
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "institution_pending": {
+                    "summary": "Institution identity with pending and failed requirements",
+                    "value": {
+                      "id": "a3c2d891-ff14-4a02-b891-7700de3c1200",
+                      "type": "INSTITUTION",
+                      "ref_id": "inst-xyz-456",
+                      "status": "PENDING",
+                      "summary_status": "PENDING",
+                      "user_disabled": false,
+                      "admin_disabled": false,
+                      "created_at": "2026-03-15T08:00:00Z",
+                      "updated_at": "2026-04-21T11:00:00Z",
+                      "institution_details": {
+                        "name": "Acme Capital LLC",
+                        "document_verification_status": "APPROVED"
+                      },
+                      "institution_members": [
+                        {
+                          "id": "m1",
+                          "identity_id": "b8e1f234-0011-4abc-9900-aabbccddeeff",
+                          "roles": ["BENEFICIAL_OWNER"],
+                          "ownership": "51",
+                          "name": "John Doe",
+                          "summary_status": "DENIED"
+                        },
+                        {
+                          "id": "m2",
+                          "identity_id": "c9f2a345-1122-5bcd-aa11-bbccddeeff00",
+                          "roles": ["CONTROL_PERSON"],
+                          "ownership": "49",
+                          "name": "Jane Doe",
+                          "summary_status": "APPROVED"
+                        }
+                      ],
+                      "status_details": {
+                        "active_controls": [],
+                        "requirements": [
+                          {
+                            "type": "MEMBERS",
+                            "status": "FAILED",
+                            "errors": [
+                              {
+                                "code": "member_verification_failed",
+                                "description": "One or more members could not be verified."
+                              }
+                            ]
+                          },
+                          {
+                            "type": "ENHANCED_DUE_DILIGENCE",
+                            "status": "PENDING",
+                            "awaiting_action_from": "CLIENT",
+                            "errors": [
+                              {
+                                "code": "edd_documentation_required",
+                                "description": "Additional documentation is required to complete enhanced due diligence review."
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth.paxos.com/oauth2/token",
+            "scopes": {
+              "identity:read_identity": "Read identity data"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Identity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the identity.",
+            "example": "f190b163-208f-4d73-8deb-4fb8b24add00"
+          },
+          "ref_id": {
+            "type": "string",
+            "description": "Client-provided reference ID for the identity.",
+            "example": "user-abc-123"
+          },
+          "type": {
+            "$ref": "#/components/schemas/IdentityType"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Arbitrary key-value metadata associated with the identity.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "example": { "customer_ref": "acme-corp-001" }
+          },
+          "summary_status": {
+            "allOf": [{ "$ref": "#/components/schemas/IdentitySummaryStatus" }],
+            "description": "Deprecated. Use `status` instead. The overall status of the identity. `status` and `summary_status` return the same values.",
+            "deprecated": true
+          },
+          "status": {
+            "allOf": [{ "$ref": "#/components/schemas/IdentitySummaryStatus" }],
+            "description": "The overall status of the identity."
+          },
+          "status_details": {
+            "$ref": "#/components/schemas/IdentityStatusDetails"
+          },
+          "user_disabled": {
+            "type": "boolean",
+            "description": "Deprecated. Whether the identity was disabled by the client. Use `status_details.active_controls` instead.",
+            "deprecated": true,
+            "example": false
+          },
+          "admin_disabled": {
+            "type": "boolean",
+            "description": "Deprecated. Whether the identity was disabled by Paxos. Use `status_details.active_controls` instead.",
+            "deprecated": true,
+            "example": false
+          },
+          "is_merchant": {
+            "type": "boolean",
+            "description": "Whether this identity is a merchant.",
+            "example": false
+          },
+          "institution_details": {
+            "$ref": "#/components/schemas/InstitutionDetails"
+          },
+          "person_details": {
+            "$ref": "#/components/schemas/PersonDetails"
+          },
+          "institution_members": {
+            "type": "array",
+            "description": "Members of the institution (beneficial owners, control persons, etc.).",
+            "items": {
+              "$ref": "#/components/schemas/InstitutionMember"
+            }
+          },
+          "tax_details": {
+            "type": "array",
+            "description": "Tax identification details for the identity.",
+            "items": {
+              "$ref": "#/components/schemas/TaxDetail"
+            }
+          },
+          "summary_tin_verification_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
+            "example": "VALID"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time the identity was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time the identity was last updated."
+          }
+        }
+      },
+      "IdentityType": {
+        "type": "string",
+        "enum": [
+          "PERSON",
+          "INSTITUTION"
+        ],
+        "description": "The type of identity.\n\n- `PERSON`: A natural person\n- `INSTITUTION`: A legal entity or business"
+      },
+      "IdentitySummaryStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "APPROVED",
+          "DENIED",
+          "DISABLED"
+        ],
+        "description": "The overall status of the identity.\n\n- `PENDING`: Identity is under review\n- `APPROVED`: Identity has passed all verifications and may transact\n- `DENIED`: Identity has been denied\n- `DISABLED`: Identity has been disabled and may not transact"
+      },
+      "PersonDetails": {
+        "type": "object",
+        "description": "Details specific to person identities.",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "First name of the person.",
+            "example": "Jane"
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name of the person.",
+            "example": "Smith"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of birth in YYYY-MM-DD format.",
+            "example": "1990-05-15"
+          },
+          "id_verification_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
+            "example": "DENIED"
+          },
+          "sanctions_verification_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
+            "example": "PENDING"
+          }
+        }
+      },
+      "InstitutionDetails": {
+        "type": "object",
+        "description": "Details specific to institution identities.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Legal name of the institution.",
+            "example": "Acme Capital LLC"
+          },
+          "sanctions_verification_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
+            "example": "APPROVED"
+          },
+          "document_verification_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status_details.requirements` instead.",
+            "deprecated": true,
+            "example": "DENIED"
+          },
+          "institution_type": {
+            "type": "string",
+            "description": "The legal type of the institution.",
+            "example": "CORPORATION"
+          },
+          "institution_sub_type": {
+            "type": "string",
+            "description": "The sub-type of the institution.",
+            "example": "PRIVATE"
+          },
+          "business_address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Contact phone number.",
+            "example": "+12125550100"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact email address.",
+            "example": "compliance@acmecorp.com"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "description": "A physical address.",
+        "properties": {
+          "address_line_1": {
+            "type": "string",
+            "example": "123 Main St"
+          },
+          "address_line_2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string",
+            "example": "New York"
+          },
+          "state": {
+            "type": "string",
+            "example": "NY"
+          },
+          "zip": {
+            "type": "string",
+            "example": "10001"
+          },
+          "country": {
+            "type": "string",
+            "example": "USA"
+          }
+        }
+      },
+      "InstitutionMember": {
+        "type": "object",
+        "description": "A member of an institution identity.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the membership record.",
+            "example": "m1"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "The identity ID of the member.",
+            "example": "b8e1f234-0011-4abc-9900-aabbccddeeff"
+          },
+          "name": {
+            "type": "string",
+            "description": "Full name of the member.",
+            "example": "John Doe"
+          },
+          "roles": {
+            "type": "array",
+            "description": "Roles held by the member within the institution.",
+            "items": {
+              "type": "string"
+            },
+            "example": ["BENEFICIAL_OWNER"]
+          },
+          "ownership": {
+            "type": "string",
+            "description": "Ownership percentage as a string.",
+            "example": "51"
+          },
+          "position": {
+            "type": "string",
+            "description": "Job title or position within the institution.",
+            "example": "CEO"
+          },
+          "summary_status": {
+            "type": "string",
+            "description": "Deprecated. Use `status` instead. The status of the member's identity. `status` and `summary_status` return the same values.",
+            "deprecated": true,
+            "example": "DENIED"
+          }
+        }
+      },
+      "TaxDetail": {
+        "type": "object",
+        "description": "Tax identification detail for an identity.",
+        "properties": {
+          "tax_id_type": {
+            "type": "string",
+            "description": "The type of tax identifier (e.g., `EIN`, `SSN`).",
+            "example": "EIN"
+          },
+          "tin_verification_status": {
+            "type": "string",
+            "description": "Verification status of the TIN.",
+            "example": "VALID"
+          }
+        }
+      },
+      "IdentityStatusDetails": {
+        "type": "object",
+        "description": "Detailed breakdown of the identity's current status, including active controls and outstanding requirements.",
+        "properties": {
+          "active_controls": {
+            "type": "array",
+            "description": "Identity controls currently applied to this identity. See the [Identity Controls API](/api-reference/endpoints/identity-controls/overview) for details.",
+            "items": {
+              "$ref": "#/components/schemas/IdentityControl"
+            }
+          },
+          "requirements": {
+            "type": "array",
+            "description": "All outstanding requirements for this identity, including both pending and failed entries. Each requirement includes its current `status` and, where applicable, the `awaiting_action_from` party and error details.",
+            "items": {
+              "$ref": "#/components/schemas/Requirement"
+            }
+          }
+        }
+      },
+      "Requirement": {
+        "type": "object",
+        "description": "A requirement associated with the identity's onboarding or compliance review. Requirements with `status: FAILED` indicate an action is needed; requirements with `status: PENDING` are under review.",
+        "required": ["type", "status"],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/RequirementType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RequirementStatus"
+          },
+          "awaiting_action_from": {
+            "allOf": [{ "$ref": "#/components/schemas/AwaitingActionFrom" }],
+            "description": "Indicates who must act to resolve the requirement. Not present on `MEMBERS` type requirements."
+          },
+          "errors": {
+            "type": "array",
+            "description": "Specific error details for developer use only. Do not expose `code` or `description` values directly to end users. `code` is a fixed enum of values; additional codes may be added in the future.",
+            "items": {
+              "$ref": "#/components/schemas/RequirementError"
+            }
+          }
+        }
+      },
+      "RequirementError": {
+        "type": "object",
+        "description": "A specific error associated with a failed or pending requirement. For developer use only — do not expose these values directly to end users.",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "identity_verification_failed",
+              "document_verification_failed",
+              "screening_in_progress",
+              "screening_failed",
+              "assessment_failed",
+              "kyc_refresh_overdue",
+              "member_verification_failed",
+              "member_verification_pending",
+              "edd_documentation_required",
+              "compliance_review_required",
+              "compliance_review_failed",
+              "tin_not_found",
+              "identity_verification_required",
+              "document_upload_required"
+            ],
+            "description": "Machine-readable error code. Additional codes may be added in the future.",
+            "example": "identity_verification_failed"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the error.",
+            "example": "Identity verification could not be completed."
+          }
+        }
+      },
+      "RequirementType": {
+        "type": "string",
+        "enum": [
+          "ID_VERIFICATION",
+          "DOCUMENT_VERIFICATION",
+          "SCREENING_CHECK",
+          "COMPLIANCE_CHECK",
+          "ENHANCED_DUE_DILIGENCE",
+          "RISK_AWARENESS_ASSESSMENT",
+          "KYC_REFRESH",
+          "TAX_DETAILS_VERIFICATION",
+          "MEMBERS"
+        ],
+        "description": "The type of requirement.\n\n- `ID_VERIFICATION`: Government ID verification (person identities)\n- `DOCUMENT_VERIFICATION`: Business document review (institution identities)\n- `SCREENING_CHECK`: Background screening check\n- `COMPLIANCE_CHECK`: Internal compliance review\n- `ENHANCED_DUE_DILIGENCE`: Enhanced due diligence review\n- `RISK_AWARENESS_ASSESSMENT`: Risk awareness assessment (person identities)\n- `KYC_REFRESH`: Periodic re-verification of identity information\n- `TAX_DETAILS_VERIFICATION`: Tax identification number verification\n- `MEMBERS`: One or more institution members have outstanding requirements. Check `institution_members` in the response for details on which members are failing or pending"
+      },
+      "RequirementStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "FAILED"
+        ],
+        "description": "The status of the requirement.\n\n- `PENDING`: The requirement has not yet been fulfilled. May be under review by Paxos or may require action from the client — check `awaiting_action_from` for details.\n- `FAILED`: The requirement was not met. May or may not require action — check `awaiting_action_from` for details."
+      },
+      "AwaitingActionFrom": {
+        "type": "string",
+        "enum": [
+          "PAXOS",
+          "CLIENT"
+        ],
+        "description": "Indicates who must act to resolve the requirement.\n\n- `PAXOS`: Paxos is reviewing and no action is needed from the client\n- `CLIENT`: The client application must take action"
+      },
+      "MemberStatus": {
+        "type": "object",
+        "description": "Status of an institution member identity.",
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "description": "The identity ID of the member.",
+            "example": "b8e1f234-0011-4abc-9900-aabbccddeeff"
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the member identity.",
+            "example": "DENIED"
+          }
+        }
+      },
+      "IdentityControl": {
+        "type": "object",
+        "description": "An active control applied to an identity.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this control."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["SELL_ONLY", "CLOSED", "FROZEN", "DORMANT"],
+            "description": "The type of control applied to the identity."
+          },
+          "set_by": {
+            "type": "string",
+            "enum": ["SET_BY_PAXOS", "SET_BY_CLIENT"],
+            "description": "Indicates who set the control."
+          },
+          "is_overridable": {
+            "type": "boolean",
+            "description": "Whether this control can be deleted by the client application."
+          },
+          "reason_code": {
+            "type": "string",
+            "description": "Reason code for why the control was applied."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Freetext reason why this identity control was set."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time this identity control was created."
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time this identity control was deleted."
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "title": { "type": "string" },
+                "status": { "type": "integer" },
+                "detail": { "type": "string" }
+              }
+            },
+            "example": {
+              "type": "about:blank",
+              "title": "Bad Request",
+              "status": 400,
+              "detail": "Invalid request format or missing required fields"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "title": { "type": "string" },
+                "status": { "type": "integer" },
+                "detail": { "type": "string" }
+              }
+            },
+            "example": {
+              "type": "about:blank",
+              "title": "Unauthorized",
+              "status": 401,
+              "detail": "no authorization header set"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "title": { "type": "string" },
+                "status": { "type": "integer" },
+                "detail": { "type": "string" }
+              }
+            },
+            "example": {
+              "type": "about:blank",
+              "title": "Forbidden",
+              "status": 403,
+              "detail": "user account is disabled"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": { "type": "string" },
+                "title": { "type": "string" },
+                "status": { "type": "integer" },
+                "detail": { "type": "string" }
+              }
+            },
+            "example": {
+              "type": "about:blank",
+              "title": "Not Found",
+              "status": 404,
+              "detail": "identity not found"
+            }
+          }
+        }
+      }
+    }
+  }
+}
